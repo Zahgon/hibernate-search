@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.EngineSettings;
 import org.hibernate.search.engine.cfg.spi.ConfigurationProperty;
@@ -48,271 +47,94 @@ import org.hibernate.search.util.common.impl.SuppressingCloser;
 
 public class SearchIntegrationBuilder implements SearchIntegration.Builder {
 
-	private static final ConfigurationProperty<BeanReference<? extends FailureHandler>> BACKGROUND_FAILURE_HANDLER =
-			ConfigurationProperty.forKey( EngineSettings.Radicals.BACKGROUND_FAILURE_HANDLER )
-					.asBeanReference( FailureHandler.class )
-					.withDefault( EngineSettings.Defaults.BACKGROUND_FAILURE_HANDLER )
-					.build();
+    private static final ConfigurationProperty<BeanReference<? extends FailureHandler>> BACKGROUND_FAILURE_HANDLER = ConfigurationProperty.forKey(EngineSettings.Radicals.BACKGROUND_FAILURE_HANDLER).asBeanReference(FailureHandler.class).withDefault(EngineSettings.Defaults.BACKGROUND_FAILURE_HANDLER).build();
 
-	private static final ConfigurationProperty<BeanReference<? extends ThreadProvider>> THREAD_PROVIDER =
-			ConfigurationProperty.forKey( EngineSpiSettings.Radicals.THREAD_PROVIDER )
-					.asBeanReference( ThreadProvider.class )
-					.withDefault( EngineSpiSettings.Defaults.THREAD_PROVIDER )
-					.build();
+    private static final ConfigurationProperty<BeanReference<? extends ThreadProvider>> THREAD_PROVIDER = ConfigurationProperty.forKey(EngineSpiSettings.Radicals.THREAD_PROVIDER).asBeanReference(ThreadProvider.class).withDefault(EngineSpiSettings.Defaults.THREAD_PROVIDER).build();
 
-	private final SearchIntegrationEnvironment environment;
-	private final Optional<SearchIntegrationImpl> previousIntegration;
-	private final Map<MappingKey<?, ?>, MappingInitiator<?, ?>> mappingInitiators = new LinkedHashMap<>();
+    private final SearchIntegrationEnvironment environment;
 
-	private boolean frozen = false;
+    private final Optional<SearchIntegrationImpl> previousIntegration;
 
-	public SearchIntegrationBuilder(SearchIntegrationEnvironment environment,
-			Optional<SearchIntegrationImpl> previousIntegration) {
-		this.environment = environment;
-		this.previousIntegration = previousIntegration;
-		environment.propertyChecker().beforeBoot();
-	}
+    private final Map<MappingKey<?, ?>, MappingInitiator<?, ?>> mappingInitiators = new LinkedHashMap<>();
 
-	@Override
-	public <PBM extends MappingPartialBuildState> SearchIntegration.Builder addMappingInitiator(
-			MappingKey<PBM, ?> mappingKey, MappingInitiator<?, PBM> initiator) {
-		if ( frozen ) {
-			throw new AssertionFailure(
-					"Attempt to add a mapping initiator"
-							+ " after Hibernate Search has started to build the mappings."
-			);
-		}
+    private boolean frozen = false;
 
-		MappingInitiator<?, ?> existing = mappingInitiators.putIfAbsent( mappingKey, initiator );
+    public SearchIntegrationBuilder(SearchIntegrationEnvironment environment, Optional<SearchIntegrationImpl> previousIntegration) {
+        this.environment = environment;
+        this.previousIntegration = previousIntegration;
+        environment.propertyChecker().beforeBoot();
+    }
 
-		if ( existing != null ) {
-			throw new AssertionFailure(
-					"Mapping key '" + mappingKey + "' has multiple initiators: '"
-							+ existing + "', '" + initiator + "'."
-			);
-		}
-		return this;
-	}
+    @Override
+    public <PBM extends MappingPartialBuildState> SearchIntegration.Builder addMappingInitiator(MappingKey<PBM, ?> mappingKey, MappingInitiator<?, PBM> initiator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIntegrationPartialBuildState prepareBuild() {
-		ConfigurationPropertySource propertySource = environment.propertySource();
-		BeanResolver beanResolver = environment.beanResolver();
-		BeanHolder<? extends FailureHandler> failureHandlerHolder = null;
-		BeanHolder<? extends ThreadProvider> threadProviderHolder = null;
-		IndexManagerBuildingStateHolder indexManagerBuildingStateHolder = null;
-		// Use a LinkedHashMap for deterministic iteration
-		List<MappingBuildingState<?, ?>> mappingBuildingStates = new ArrayList<>();
-		Map<MappingKey<?, ?>, MappingPartialBuildState> partiallyBuiltMappings = new HashMap<>();
-		RootFailureCollector failureCollector = new RootFailureCollector( EngineEventContextMessages.INSTANCE.bootstrap() );
-		boolean checkingRootFailures = false;
-		EngineThreads engineThreads = null;
-		TimingSource timingSource = null;
+    @Override
+    public SearchIntegrationPartialBuildState prepareBuild() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		try {
-			frozen = true;
+    private static class MappingBuildingState<C, PBM extends MappingPartialBuildState> {
 
-			failureHandlerHolder = BACKGROUND_FAILURE_HANDLER.getAndTransform( propertySource, beanResolver::resolve );
-			// Wrap the failure handler to prevent it from throwing exceptions
-			failureHandlerHolder = BeanHolder.of( new FailSafeFailureHandlerWrapper( failureHandlerHolder.get() ) )
-					.withDependencyAutoClosing( failureHandlerHolder );
-			FailureHandler failureHandler = failureHandlerHolder.get();
+        private final MappingBuildContext buildContext;
 
-			threadProviderHolder = THREAD_PROVIDER.getAndTransform( propertySource, beanResolver::resolve );
-			ThreadPoolProviderImpl threadPoolProvider = new ThreadPoolProviderImpl( threadProviderHolder );
-			engineThreads = new EngineThreads( threadPoolProvider );
-			timingSource = new DefaultTimingSource( engineThreads );
+        private final MappingKey<PBM, ?> mappingKey;
 
-			RootBuildContext rootBuildContext = new RootBuildContext(
-					propertySource,
-					environment.classResolver(), environment.resourceResolver(), beanResolver,
-					failureCollector, threadPoolProvider, failureHandler,
-					engineThreads, timingSource
-			);
+        private final MappingInitiator<C, PBM> mappingInitiator;
 
-			indexManagerBuildingStateHolder =
-					new IndexManagerBuildingStateHolder( beanResolver, propertySource, rootBuildContext );
+        private TypeMetadataContributorProvider<C> metadataContributorProvider;
 
-			// Step #1: collect configuration for all mappings
-			for ( Map.Entry<MappingKey<?, ?>, MappingInitiator<?, ?>> entry : mappingInitiators.entrySet() ) {
-				// We know the key and initiator have compatible types, see how they are put into the map
-				@SuppressWarnings({ "rawtypes", "unchecked" })
-				MappingBuildingState<?, ?> mappingBuildingState = new MappingBuildingState<>(
-						rootBuildContext,
-						(MappingKey) entry.getKey(), entry.getValue()
-				);
-				mappingBuildingStates.add( mappingBuildingState );
-				mappingBuildingState.collect();
-			}
-			checkingRootFailures = true;
-			failureCollector.checkNoFailure();
-			checkingRootFailures = false;
+        // Initially null, set in createMapper()
+        private Mapper<PBM> mapper;
 
-			// Step #2: create mappers
-			for ( MappingBuildingState<?, ?> mappingBuildingState : mappingBuildingStates ) {
-				mappingBuildingState.createMapper();
-			}
-			checkingRootFailures = true;
-			failureCollector.checkNoFailure();
-			checkingRootFailures = false;
+        MappingBuildingState(RootBuildContext rootBuildContext, MappingKey<PBM, ?> mappingKey, MappingInitiator<C, PBM> mappingInitiator) {
+            this.mappingKey = mappingKey;
+            this.buildContext = new MappingBuildContextImpl(rootBuildContext, mappingKey);
+            this.mappingInitiator = mappingInitiator;
+        }
 
-			// Step #3: determine indexed types and the necessary backends
-			BackendsInfo backendsInfo = new BackendsInfo();
-			for ( MappingBuildingState<?, ?> mappingBuildingState : mappingBuildingStates ) {
-				mappingBuildingState.determineIndexedTypes( backendsInfo );
-			}
-			checkingRootFailures = true;
-			failureCollector.checkNoFailure();
-			checkingRootFailures = false;
+        void collect() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Step #4: create backends that will be necessary for mappers
-			indexManagerBuildingStateHolder.createBackends( backendsInfo );
-			checkingRootFailures = true;
-			failureCollector.checkNoFailure();
-			checkingRootFailures = false;
+        void createMapper() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Step #5: map indexed types and create the corresponding index managers
-			MappedIndexManagerFactory mappedIndexManagerFactory =
-					new MappedIndexManagerFactoryImpl( indexManagerBuildingStateHolder );
-			for ( MappingBuildingState<?, ?> mappingBuildingState : mappingBuildingStates ) {
-				mappingBuildingState.mapIndexedTypes( mappedIndexManagerFactory );
-			}
-			checkingRootFailures = true;
-			failureCollector.checkNoFailure();
-			checkingRootFailures = false;
+        void determineIndexedTypes(BackendsInfo backendsInfo) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Step #6: create mappings
-			for ( MappingBuildingState<?, ?> mappingBuildingState : mappingBuildingStates ) {
-				mappingBuildingState.partiallyBuildAndAddTo( partiallyBuiltMappings );
-			}
-			checkingRootFailures = true;
-			failureCollector.checkNoFailure();
-			checkingRootFailures = false;
+        void mapIndexedTypes(MappedIndexManagerFactory indexManagerFactory) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return new SearchIntegrationPartialBuildStateImpl(
-					environment.beanProvider(), beanResolver,
-					failureHandlerHolder,
-					threadPoolProvider,
-					partiallyBuiltMappings,
-					indexManagerBuildingStateHolder.getBackendNonStartedStates(),
-					indexManagerBuildingStateHolder.getIndexManagersNonStartedStates(),
-					environment.propertyChecker(),
-					engineThreads, timingSource, previousIntegration
-			);
-		}
-		catch (RuntimeException e) {
-			RuntimeException rethrownException;
-			if ( checkingRootFailures ) {
-				// The exception was thrown by one of the failure checks above. No need for an additional check.
-				rethrownException = e;
-			}
-			else {
-				/*
-				 * The exception was thrown by something other than the failure checks above
-				 * (a mapper, a backend, ...).
-				 * We should check that no failure was collected before.
-				 */
-				try {
-					failureCollector.checkNoFailure();
-					// No other failure, just rethrow the exception.
-					rethrownException = e;
-				}
-				catch (SearchException e2) {
-					/*
-					 * At least one failure was collected, most likely before "e" was even thrown.
-					 * Let's throw "e2" (which mentions prior failures), only mentioning "e" as a suppressed exception.
-					 */
-					rethrownException = e2;
-					rethrownException.addSuppressed( e );
-				}
-			}
+        void partiallyBuildAndAddTo(Map<MappingKey<?, ?>, MappingPartialBuildState> mappings) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			SuppressingCloser closer = new SuppressingCloser( rethrownException );
-			// Release the failure handler before aborting
-			closer.push( failureHandlerHolder );
-			// Close the mappers and mappings created so far before aborting
-			closer.pushAll( MappingPartialBuildState::closeOnFailure, partiallyBuiltMappings.values() );
-			closer.pushAll( MappingBuildingState::closeOnFailure, mappingBuildingStates );
-			// Close the resources contained in the index manager building state before aborting
-			closer.pushAll( holder -> holder.closeOnFailure( closer ), indexManagerBuildingStateHolder );
-			// Close environment resources before aborting
-			closer.pushAll( BeanHolder::close, threadProviderHolder );
-			closer.pushAll( SearchIntegrationEnvironment::close, environment );
-			closer.push( EngineThreads::onStop, engineThreads );
-			closer.push( TimingSource::stop, timingSource );
+        public void closeOnFailure() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			throw rethrownException;
-		}
-	}
+        private class MappingConfigurationCollectorImpl implements MappingConfigurationCollector<C> {
 
-	private static class MappingBuildingState<C, PBM extends MappingPartialBuildState> {
-		private final MappingBuildContext buildContext;
+            private final TypeMetadataContributorProvider.Builder<C> builder;
 
-		private final MappingKey<PBM, ?> mappingKey;
-		private final MappingInitiator<C, PBM> mappingInitiator;
+            private MappingConfigurationCollectorImpl(TypeMetadataContributorProvider.Builder<C> builder) {
+                this.builder = builder;
+            }
 
-		private TypeMetadataContributorProvider<C> metadataContributorProvider;
+            @Override
+            public void collectContributor(MappableTypeModel typeModel, C contributor) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-		private Mapper<PBM> mapper; // Initially null, set in createMapper()
-
-		MappingBuildingState(RootBuildContext rootBuildContext,
-				MappingKey<PBM, ?> mappingKey, MappingInitiator<C, PBM> mappingInitiator) {
-			this.mappingKey = mappingKey;
-			this.buildContext = new MappingBuildContextImpl( rootBuildContext, mappingKey );
-			this.mappingInitiator = mappingInitiator;
-		}
-
-		void collect() {
-			TypeMetadataContributorProvider.Builder<C> builder = TypeMetadataContributorProvider.builder();
-			mappingInitiator.configure( buildContext, new MappingConfigurationCollectorImpl( builder ) );
-			metadataContributorProvider = builder.build();
-		}
-
-		void createMapper() {
-			mapper = mappingInitiator.createMapper( buildContext, metadataContributorProvider );
-		}
-
-		void determineIndexedTypes(BackendsInfo backendsInfo) {
-			mapper.prepareMappedTypes( backendsInfo );
-		}
-
-		void mapIndexedTypes(MappedIndexManagerFactory indexManagerFactory) {
-			mapper.mapTypes( indexManagerFactory );
-		}
-
-		void partiallyBuildAndAddTo(Map<MappingKey<?, ?>, MappingPartialBuildState> mappings) {
-			try {
-				PBM partiallyBuiltMapping = mapper.prepareBuild();
-				mappings.put( mappingKey, partiallyBuiltMapping );
-			}
-			catch (MappingAbortedException e) {
-				e.collectSilentlyAndCheck( buildContext.failureCollector() );
-			}
-		}
-
-		public void closeOnFailure() {
-			if ( mapper != null ) {
-				mapper.closeOnFailure();
-			}
-		}
-
-		private class MappingConfigurationCollectorImpl implements MappingConfigurationCollector<C> {
-			private final TypeMetadataContributorProvider.Builder<C> builder;
-
-			private MappingConfigurationCollectorImpl(TypeMetadataContributorProvider.Builder<C> builder) {
-				this.builder = builder;
-			}
-
-			@Override
-			public void collectContributor(MappableTypeModel typeModel, C contributor) {
-				builder.contributor( typeModel, contributor );
-			}
-
-			@Override
-			public void collectDiscoverer(TypeMetadataDiscoverer<C> metadataDiscoverer) {
-				builder.discoverer( metadataDiscoverer );
-			}
-		}
-
-	}
+            @Override
+            public void collectDiscoverer(TypeMetadataDiscoverer<C> metadataDiscoverer) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 }

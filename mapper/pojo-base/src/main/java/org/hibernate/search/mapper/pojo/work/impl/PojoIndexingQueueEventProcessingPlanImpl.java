@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.work.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.engine.backend.common.spi.MultiEntityOperationExecutionReport;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.mapper.pojo.identity.impl.IdentifierMappingImplementor;
@@ -18,56 +17,39 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
 
 public final class PojoIndexingQueueEventProcessingPlanImpl implements PojoIndexingQueueEventProcessingPlan {
 
-	private final PojoWorkTypeContextProvider typeContextProvider;
-	private final PojoWorkSessionContext sessionContext;
-	private final PojoIndexingPlan delegate;
+    private final PojoWorkTypeContextProvider typeContextProvider;
 
-	public PojoIndexingQueueEventProcessingPlanImpl(PojoWorkTypeContextProvider typeContextProvider,
-			PojoWorkSessionContext sessionContext, PojoIndexingPlan delegate) {
-		this.typeContextProvider = typeContextProvider;
-		this.sessionContext = sessionContext;
-		this.delegate = delegate;
-	}
+    private final PojoWorkSessionContext sessionContext;
 
-	@Override
-	public void append(String entityName, String serializedId, PojoIndexingQueueEventPayload payload) {
-		PojoWorkTypeContext<?, ?> typeContext = typeContext( entityName );
-		Object id = typeContext.identifierMapping().fromDocumentIdentifier( serializedId, sessionContext );
-		DirtinessDescriptor dirtiness = payload.dirtiness;
-		PojoTypeIndexingPlan typePlan = delegate.typeIfIncludedOrNull( typeContext.typeIdentifier() );
-		if ( typePlan == null ) {
-			return;
-		}
-		typePlan.addOrUpdateOrDelete( id, payload.routes,
-				// Force the reindexing now if the entity was marked as dirty because of a contained entity;
-				// this is to avoid sending events forever and to force the processing of "updateBecauseOfContained" now.
-				// See org.hibernate.search.mapper.pojo.work.impl.PojoTypeIndexingPlanIndexOrEventQueueDelegate.addOrUpdate
-				dirtiness.updatedBecauseOfContained() || dirtiness.forceSelfDirty(),
-				dirtiness.forceContainingDirty(),
-				typeContext.pathOrdinals().toPathSelection( dirtiness.dirtyPaths() )
-		);
-	}
+    private final PojoIndexingPlan delegate;
 
-	@Override
-	public CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
-		return delegate.executeAndReport( operationSubmitter );
-	}
+    public PojoIndexingQueueEventProcessingPlanImpl(PojoWorkTypeContextProvider typeContextProvider, PojoWorkSessionContext sessionContext, PojoIndexingPlan delegate) {
+        this.typeContextProvider = typeContextProvider;
+        this.sessionContext = sessionContext;
+        this.delegate = delegate;
+    }
 
-	@Override
-	public <I> String toSerializedId(String entityName, I identifier) {
-		@SuppressWarnings("unchecked") // the provided identifier is supposed to have the right type
-		IdentifierMappingImplementor<I, ?> identifierMapping =
-				(IdentifierMappingImplementor<I, ?>) typeContext( entityName ).identifierMapping();
-		return identifierMapping.toDocumentIdentifier( identifier, sessionContext.mappingContext() );
-	}
+    @Override
+    public void append(String entityName, String serializedId, PojoIndexingQueueEventPayload payload) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object toIdentifier(String entityName, String serializedId) {
-		PojoWorkTypeContext<?, ?> typeContext = typeContext( entityName );
-		return typeContext.identifierMapping().fromDocumentIdentifier( serializedId, sessionContext );
-	}
+    @Override
+    public CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private PojoWorkTypeContext<?, ?> typeContext(String entityName) {
-		return typeContextProvider.byEntityName().getOrFail( entityName );
-	}
+    @Override
+    public <I> String toSerializedId(String entityName, I identifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Object toIdentifier(String entityName, String serializedId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private PojoWorkTypeContext<?, ?> typeContext(String entityName) {
+        return typeContextProvider.byEntityName().getOrFail(entityName);
+    }
 }

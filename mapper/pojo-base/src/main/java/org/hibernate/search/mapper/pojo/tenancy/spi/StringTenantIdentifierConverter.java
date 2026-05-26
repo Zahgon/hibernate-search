@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.tenancy.spi;
 
 import java.util.Objects;
-
 import org.hibernate.search.mapper.pojo.logging.impl.FormattingLog;
 import org.hibernate.search.mapper.pojo.tenancy.TenantIdentifierConverter;
 import org.hibernate.search.util.common.annotation.Incubating;
@@ -17,25 +16,17 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public class StringTenantIdentifierConverter implements TenantIdentifierConverter {
 
-	public static final StringTenantIdentifierConverter INSTANCE = new StringTenantIdentifierConverter();
+    public static final StringTenantIdentifierConverter INSTANCE = new StringTenantIdentifierConverter();
 
-	public static final String NAME = "string-tenant-identifier-converter";
+    public static final String NAME = "string-tenant-identifier-converter";
 
-	@Override
-	public String toStringValue(Object tenantId) {
-		if ( tenantId == null ) {
-			return null;
-		}
-		if ( !( tenantId instanceof CharSequence ) ) {
-			throw FormattingLog.INSTANCE.nonStringTenantId( tenantId );
-		}
-		else {
-			return Objects.toString( tenantId );
-		}
-	}
+    @Override
+    public String toStringValue(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object fromStringValue(String tenantId) {
-		return tenantId;
-	}
+    @Override
+    public Object fromStringValue(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

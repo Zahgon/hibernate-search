@@ -18,84 +18,52 @@ import org.hibernate.search.util.common.impl.SuppressingCloser;
  */
 final class HibernateOrmBeanContainerBeanProvider implements BeanProvider {
 
+    private static final BeanContainer.LifecycleOptions LIFECYCLE_OPTIONS = new BeanContainer.LifecycleOptions() {
 
-	private static final BeanContainer.LifecycleOptions LIFECYCLE_OPTIONS = new BeanContainer.LifecycleOptions() {
-		@Override
-		public boolean canUseCachedReferences() {
-			return false;
-		}
+        @Override
+        public boolean canUseCachedReferences() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean useJpaCompliantCreation() {
-			return false;
-		}
-	};
+        @Override
+        public boolean useJpaCompliantCreation() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	private final BeanContainer beanContainer;
+    private final BeanContainer beanContainer;
 
-	private final BeanInstanceProducer fallbackInstanceProducer;
+    private final BeanInstanceProducer fallbackInstanceProducer;
 
-	HibernateOrmBeanContainerBeanProvider(BeanContainer beanContainer) {
-		Contracts.assertNotNull( beanContainer, "beanContainer" );
-		this.beanContainer = beanContainer;
-		this.fallbackInstanceProducer = new BeanInstanceProducer() {
-			@Override
-			public <B> B produceBeanInstance(Class<B> aClass) {
-				throw ConfigurationLog.INSTANCE.beanNotFoundInBeanContainer( beanContainer );
-			}
+    HibernateOrmBeanContainerBeanProvider(BeanContainer beanContainer) {
+        Contracts.assertNotNull(beanContainer, "beanContainer");
+        this.beanContainer = beanContainer;
+        this.fallbackInstanceProducer = new BeanInstanceProducer() {
 
-			@Override
-			public <B> B produceBeanInstance(String s, Class<B> aClass) {
-				throw ConfigurationLog.INSTANCE.beanNotFoundInBeanContainer( beanContainer );
-			}
-		};
-	}
+            @Override
+            public <B> B produceBeanInstance(Class<B> aClass) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-	@Override
-	public void close() {
-		// Nothing to do
-	}
+            @Override
+            public <B> B produceBeanInstance(String s, Class<B> aClass) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        };
+    }
 
-	@Override
-	public <T> BeanHolder<T> forType(Class<T> typeReference) {
-		ContainedBean<T> containedBean = beanContainer.getBean(
-				typeReference, LIFECYCLE_OPTIONS, fallbackInstanceProducer
-		);
-		BeanHolder<T> result = new HibernateOrmContainedBeanBeanHolderAdapter<>( containedBean );
-		// In some cases (ExtendedBeanManager in particular), the bean is retrieved lazily.
-		// This means the fallback instance producer is never called, which is a problem.
-		// Since we don't need lazy retrieval in our case (all beans are retrieved at bootstrap),
-		// we trigger initialization ourselves and use the fallback if necessary.
-		try {
-			result.get();
-		}
-		catch (Exception e) {
-			new SuppressingCloser( e ).push( result );
-			ConfigurationLog.INSTANCE.errorResolvingBean( typeReference, e );
-			try {
-				result = BeanHolder.of( fallbackInstanceProducer.produceBeanInstance( typeReference ) );
-			}
-			catch (Exception e2) {
-				// Keep track of the original failure to retrieve the bean from the bean container.
-				e2.addSuppressed( e );
-				throw e2;
-			}
-		}
-		return result;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> BeanHolder<T> forTypeAndName(Class<T> typeReference, String nameReference) {
-		ContainedBean<T> containedBean = beanContainer.getBean(
-				nameReference, typeReference, LIFECYCLE_OPTIONS, fallbackInstanceProducer
-		);
-		BeanHolder<T> result = new HibernateOrmContainedBeanBeanHolderAdapter<>( containedBean );
-		// In some cases (ExtendedBeanManager in particular), the bean is retrieved lazily.
-		// This means the fallback instance producer is never called, which is a problem.
-		// Since we don't need lazy retrieval in our case (all beans are retrieved at bootstrap),
-		// we trigger initialization ourselves and use the fallback if necessary.
-		result.get();
-		return result;
-	}
+    @Override
+    public <T> BeanHolder<T> forType(Class<T> typeReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public <T> BeanHolder<T> forTypeAndName(Class<T> typeReference, String nameReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

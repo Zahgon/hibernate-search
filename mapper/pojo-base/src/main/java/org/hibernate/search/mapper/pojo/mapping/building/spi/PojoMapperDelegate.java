@@ -17,47 +17,44 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
  */
 public interface PojoMapperDelegate<MPBS> extends BackendMapperContext {
 
-	/**
-	 * Close any allocated resource.
-	 * <p>
-	 * This method is called when an error occurs while starting up Hibernate Search.
-	 * When this method is called, it is guaranteed to be the last call on this object.
-	 */
-	void closeOnFailure();
+    /**
+     * Close any allocated resource.
+     * <p>
+     * This method is called when an error occurs while starting up Hibernate Search.
+     * When this method is called, it is guaranteed to be the last call on this object.
+     */
+    void closeOnFailure();
 
-	@Override
-	default BackendMappingHints hints() {
-		return BackendMappingHints.NONE;
-	}
+    @Override
+    default BackendMappingHints hints() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param <E> The indexed entity type.
-	 * @param rawTypeModel The raw type model for an indexed entity type,
-	 * i.e. a type mapped to an index directly.
-	 * @param entityName The name of the entity type.
-	 * @return A collector of extended mapping information.
-	 */
-	<E> PojoIndexedTypeExtendedMappingCollector createIndexedTypeExtendedMappingCollector(
-			PojoRawTypeModel<E> rawTypeModel, String entityName);
+    /**
+     * @param <E> The indexed entity type.
+     * @param rawTypeModel The raw type model for an indexed entity type,
+     * i.e. a type mapped to an index directly.
+     * @param entityName The name of the entity type.
+     * @return A collector of extended mapping information.
+     */
+    <E> PojoIndexedTypeExtendedMappingCollector createIndexedTypeExtendedMappingCollector(PojoRawTypeModel<E> rawTypeModel, String entityName);
 
-	/**
-	 * @param rawTypeModel The raw type model for a contained entity type,
-	 * i.e. a type mapped to indexes only indirectly by indexed-embedding.
-	 * @param entityName The name of the entity type.
-	 * @param <E> The contained entity type.
-	 * @return A collector of extended mapping information.
-	 */
-	<E> PojoContainedTypeExtendedMappingCollector createContainedTypeExtendedMappingCollector(
-			PojoRawTypeModel<E> rawTypeModel, String entityName);
+    /**
+     * @param rawTypeModel The raw type model for a contained entity type,
+     * i.e. a type mapped to indexes only indirectly by indexed-embedding.
+     * @param entityName The name of the entity type.
+     * @param <E> The contained entity type.
+     * @return A collector of extended mapping information.
+     */
+    <E> PojoContainedTypeExtendedMappingCollector createContainedTypeExtendedMappingCollector(PojoRawTypeModel<E> rawTypeModel, String entityName);
 
-	/**
-	 * Partially build the mapping based on the information provided previously.
-	 * <p>
-	 * May only be called once on a given object.
-	 *
-	 * @param mappingDelegate A {@link PojoMappingDelegate}.
-	 * @return The partially-built mapping.
-	 */
-	MPBS prepareBuild(PojoMappingDelegate mappingDelegate);
-
+    /**
+     * Partially build the mapping based on the information provided previously.
+     * <p>
+     * May only be called once on a given object.
+     *
+     * @param mappingDelegate A {@link PojoMappingDelegate}.
+     * @return The partially-built mapping.
+     */
+    MPBS prepareBuild(PojoMappingDelegate mappingDelegate);
 }

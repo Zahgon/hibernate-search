@@ -12,37 +12,31 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslCo
 import org.hibernate.search.engine.search.predicate.spi.ExistsPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 
-public final class ExistsPredicateFieldStepImpl<SR>
-		extends AbstractPredicateFinalStep
-		implements ExistsPredicateFieldStep<SR, ExistsPredicateOptionsStep<?>>,
-		ExistsPredicateOptionsStep<ExistsPredicateOptionsStep<?>> {
+public final class ExistsPredicateFieldStepImpl<SR> extends AbstractPredicateFinalStep implements ExistsPredicateFieldStep<SR, ExistsPredicateOptionsStep<?>>, ExistsPredicateOptionsStep<ExistsPredicateOptionsStep<?>> {
 
-	private ExistsPredicateBuilder builder;
+    private ExistsPredicateBuilder builder;
 
-	public ExistsPredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
-		super( dslContext );
-	}
+    public ExistsPredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
+        super(dslContext);
+    }
 
-	@Override
-	public ExistsPredicateOptionsStep<?> field(String fieldPath) {
-		this.builder = dslContext.scope().fieldQueryElement( fieldPath, PredicateTypeKeys.EXISTS );
-		return this;
-	}
+    @Override
+    public ExistsPredicateOptionsStep<?> field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ExistsPredicateOptionsStep<?> boost(float boost) {
-		this.builder.boost( boost );
-		return this;
-	}
+    @Override
+    public ExistsPredicateOptionsStep<?> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ExistsPredicateOptionsStep<?> constantScore() {
-		this.builder.constantScore();
-		return this;
-	}
+    @Override
+    public ExistsPredicateOptionsStep<?> constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		return builder.build();
-	}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,33 +10,31 @@ import org.hibernate.search.mapper.pojo.bridge.builtin.programmatic.LatitudeLong
 
 public class LatitudeMarker {
 
-	private final String markerSet;
+    private final String markerSet;
 
-	/**
-	 * Private constructor, use {@link GeoPointBinder#latitude()} instead.
-	 */
-	private LatitudeMarker(String markerSet) {
-		this.markerSet = markerSet;
-	}
+    /**
+     * Private constructor, use {@link GeoPointBinder#latitude()} instead.
+     */
+    private LatitudeMarker(String markerSet) {
+        this.markerSet = markerSet;
+    }
 
-	public String getMarkerSet() {
-		return markerSet;
-	}
+    public String getMarkerSet() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Binder implements LatitudeLongitudeMarkerBinder {
+    public static class Binder implements LatitudeLongitudeMarkerBinder {
 
-		private String markerSet;
+        private String markerSet;
 
-		@Override
-		public Binder markerSet(String markerSet) {
-			this.markerSet = markerSet;
-			return this;
-		}
+        @Override
+        public Binder markerSet(String markerSet) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void bind(MarkerBindingContext context) {
-			context.marker( new LatitudeMarker( markerSet ) );
-		}
-
-	}
+        @Override
+        public void bind(MarkerBindingContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -19,59 +19,35 @@ import org.hibernate.search.util.common.annotation.Incubating;
  * @param <N> The type representing the targeted index node.
  * @param <F> The indexed field value type.
  */
-public interface SearchIndexValueFieldTypeContext<
-		SC extends SearchIndexScope<?>,
-		N,
-		F>
-		extends SearchIndexNodeTypeContext<SC, N> {
+public interface SearchIndexValueFieldTypeContext<SC extends SearchIndexScope<?>, N, F> extends SearchIndexNodeTypeContext<SC, N> {
 
-	Class<F> valueClass();
+    Class<F> valueClass();
 
-	DslConverter<?, F> mappingDslConverter();
+    DslConverter<?, F> mappingDslConverter();
 
-	DslConverter<F, F> indexDslConverter();
+    DslConverter<F, F> indexDslConverter();
 
-	DslConverter<?, ?> rawDslConverter();
+    DslConverter<?, ?> rawDslConverter();
 
-	@Incubating
-	DslConverter<?, F> parserDslConverter();
+    @Incubating
+    DslConverter<?, F> parserDslConverter();
 
-	default DslConverter<?, F> dslConverter(ValueModel valueModel) {
-		switch ( valueModel ) {
-			case RAW:
-				throw new AssertionFailure( "Raw dsl converter is not supported" );
-			case INDEX:
-				return indexDslConverter();
-			case STRING:
-				return parserDslConverter();
-			case MAPPING:
-			default:
-				return mappingDslConverter();
-		}
-	}
+    default DslConverter<?, F> dslConverter(ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ProjectionConverter<?, ?> rawProjectionConverter();
+    ProjectionConverter<?, ?> rawProjectionConverter();
 
-	ProjectionConverter<F, ?> mappingProjectionConverter();
+    ProjectionConverter<F, ?> mappingProjectionConverter();
 
-	ProjectionConverter<F, F> indexProjectionConverter();
+    ProjectionConverter<F, F> indexProjectionConverter();
 
-	@Incubating
-	ProjectionConverter<F, ?> formatterProjectionConverter();
+    @Incubating
+    ProjectionConverter<F, ?> formatterProjectionConverter();
 
-	default ProjectionConverter<F, ?> projectionConverter(ValueModel valueModel) {
-		switch ( valueModel ) {
-			case RAW:
-				throw new AssertionFailure( "Raw projection converter is not supported" );
-			case INDEX:
-				return indexProjectionConverter();
-			case STRING:
-				return formatterProjectionConverter();
-			case MAPPING:
-			default:
-				return mappingProjectionConverter();
-		}
-	}
+    default ProjectionConverter<F, ?> projectionConverter(ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	boolean highlighterTypeSupported(SearchHighlighterType type);
+    boolean highlighterTypeSupported(SearchHighlighterType type);
 }

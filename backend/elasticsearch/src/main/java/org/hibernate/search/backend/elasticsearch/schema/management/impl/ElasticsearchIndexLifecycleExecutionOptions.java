@@ -11,28 +11,26 @@ import org.hibernate.search.backend.elasticsearch.index.IndexStatus;
  */
 public class ElasticsearchIndexLifecycleExecutionOptions {
 
-	private final IndexStatus requiredStatus;
+    private final IndexStatus requiredStatus;
 
-	private final int requiredStatusTimeoutInMs;
+    private final int requiredStatusTimeoutInMs;
 
-	public ElasticsearchIndexLifecycleExecutionOptions(
-			IndexStatus requiredStatus, int requiredStatusTimeoutInMs) {
-		this.requiredStatus = requiredStatus;
-		this.requiredStatusTimeoutInMs = requiredStatusTimeoutInMs;
-	}
+    public ElasticsearchIndexLifecycleExecutionOptions(IndexStatus requiredStatus, int requiredStatusTimeoutInMs) {
+        this.requiredStatus = requiredStatus;
+        this.requiredStatusTimeoutInMs = requiredStatusTimeoutInMs;
+    }
 
-	/**
-	 * @return the status the index needs to be at least in, otherwise we'll fail starting up.
-	 */
-	public IndexStatus getRequiredStatus() {
-		return requiredStatus;
-	}
+    /**
+     * @return the status the index needs to be at least in, otherwise we'll fail starting up.
+     */
+    public IndexStatus getRequiredStatus() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return the time to wait for the {@link #getRequiredStatus() required index status}, in milliseconds.
-	 */
-	public int getRequiredStatusTimeoutInMs() {
-		return requiredStatusTimeoutInMs;
-	}
-
+    /**
+     * @return the time to wait for the {@link #getRequiredStatus() required index status}, in milliseconds.
+     */
+    public int getRequiredStatusTimeoutInMs() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

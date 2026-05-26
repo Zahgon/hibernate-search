@@ -26,55 +26,30 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoImplicitReindexingResolverPropertyNode<T, P> extends PojoImplicitReindexingResolverNode<T> {
 
-	private final ValueReadHandle<P> handle;
-	private final PojoImplicitReindexingResolverNode<? super P> nested;
+    private final ValueReadHandle<P> handle;
 
-	private final PojoModelPath modelPath;
+    private final PojoImplicitReindexingResolverNode<? super P> nested;
 
-	public PojoImplicitReindexingResolverPropertyNode(ValueReadHandle<P> handle,
-			PojoImplicitReindexingResolverNode<? super P> nested,
-			PojoModelPath modelPath) {
-		this.handle = handle;
-		this.nested = nested;
-		this.modelPath = modelPath;
-	}
+    private final PojoModelPath modelPath;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoImplicitReindexingResolverNode::close, nested );
-		}
-	}
+    public PojoImplicitReindexingResolverPropertyNode(ValueReadHandle<P> handle, PojoImplicitReindexingResolverNode<? super P> nested, PojoModelPath modelPath) {
+        this.handle = handle;
+        this.nested = nested;
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process property" );
-		appender.attribute( "handle", handle );
-		appender.attribute( "nested", nested );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			T dirty, PojoImplicitReindexingResolverRootContext context) {
-		P propertyValue;
-		try {
-			try {
-				propertyValue = handle.get( dirty );
-			}
-			catch (RuntimeException e) {
-				context.propagateOrIgnorePropertyAccessException( e );
-				return;
-			}
-			if ( propertyValue != null ) {
-				nested.resolveEntitiesToReindex( collector, propertyValue, context );
-			}
-		}
-		catch (SearchProcessingWithContextException e) {
-			// The context was already added to the exception, just re-throw:
-			throw e;
-		}
-		catch (RuntimeException e) {
-			throw IndexingLog.INSTANCE.searchProcessingFailure( e, e.getMessage(), PojoEventContexts.fromPath( modelPath ) );
-		}
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, T dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

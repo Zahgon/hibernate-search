@@ -16,88 +16,54 @@ import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 
 final class FieldModelContributorContextImpl<F> implements FieldModelContributorContext {
 
-	private final ValueBridge<?, F> bridge;
-	private final IndexFieldTypeOptionsStep<?, ? super F> fieldTypeOptionsStep;
+    private final ValueBridge<?, F> bridge;
 
-	FieldModelContributorContextImpl(ValueBridge<?, F> bridge, IndexFieldTypeOptionsStep<?, ? super F> fieldTypeOptionsStep) {
-		this.bridge = bridge;
-		this.fieldTypeOptionsStep = fieldTypeOptionsStep;
-	}
+    private final IndexFieldTypeOptionsStep<?, ? super F> fieldTypeOptionsStep;
 
-	@Override
-	public void indexNullAs(String value) {
-		searchableProjectableIndexFieldTypeOptionsStep().indexNullAs( bridge.parse( value ) );
-	}
+    FieldModelContributorContextImpl(ValueBridge<?, F> bridge, IndexFieldTypeOptionsStep<?, ? super F> fieldTypeOptionsStep) {
+        this.bridge = bridge;
+        this.fieldTypeOptionsStep = fieldTypeOptionsStep;
+    }
 
-	/*
+    @Override
+    public void indexNullAs(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /*
 	 * If fieldTypeOptionsStep is an instance of IndexFieldTypeOptionsStep<?, ? super F>
 	 * and StandardIndexFieldTypeOptionsStep,
 	 * it's an instance of StandardIndexFieldTypeOptionsStep<?, ? super F>
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, ? super F> standardTypeOptionsStep() {
-		if ( fieldTypeOptionsStep instanceof StandardIndexFieldTypeOptionsStep ) {
-			return (StandardIndexFieldTypeOptionsStep<?, ? super F>) fieldTypeOptionsStep;
-		}
-		else {
-			throw MappingLog.INSTANCE.invalidFieldEncodingForStandardFieldMapping(
-					fieldTypeOptionsStep, StandardIndexFieldTypeOptionsStep.class
-			);
-		}
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, ? super F> standardTypeOptionsStep() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StringIndexFieldTypeOptionsStep<?> stringTypeOptionsStep() {
-		if ( fieldTypeOptionsStep instanceof StringIndexFieldTypeOptionsStep ) {
-			return (StringIndexFieldTypeOptionsStep<?>) fieldTypeOptionsStep;
-		}
-		else {
-			throw MappingLog.INSTANCE.invalidFieldEncodingForStringFieldMapping(
-					fieldTypeOptionsStep, StringIndexFieldTypeOptionsStep.class
-			);
-		}
-	}
+    @Override
+    public StringIndexFieldTypeOptionsStep<?> stringTypeOptionsStep() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ScaledNumberIndexFieldTypeOptionsStep<?, ?> scaledNumberTypeOptionsStep() {
-		if ( fieldTypeOptionsStep instanceof ScaledNumberIndexFieldTypeOptionsStep ) {
-			return (ScaledNumberIndexFieldTypeOptionsStep<?, ?>) fieldTypeOptionsStep;
-		}
-		else {
-			throw MappingLog.INSTANCE.invalidFieldEncodingForScaledNumberFieldMapping(
-					fieldTypeOptionsStep, ScaledNumberIndexFieldTypeOptionsStep.class
-			);
-		}
-	}
+    @Override
+    public ScaledNumberIndexFieldTypeOptionsStep<?, ?> scaledNumberTypeOptionsStep() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public VectorFieldTypeOptionsStep<?, ?> vectorTypeOptionsStep() {
-		if ( fieldTypeOptionsStep instanceof VectorFieldTypeOptionsStep ) {
-			return (VectorFieldTypeOptionsStep<?, ?>) fieldTypeOptionsStep;
-		}
-		else {
-			throw MappingLog.INSTANCE.invalidFieldEncodingForVectorFieldMapping(
-					fieldTypeOptionsStep, VectorFieldTypeOptionsStep.class
-			);
-		}
-	}
+    @Override
+    public VectorFieldTypeOptionsStep<?, ?> vectorTypeOptionsStep() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public SearchableProjectableIndexFieldTypeOptionsStep<?, ? super F> searchableProjectableIndexFieldTypeOptionsStep() {
-		if ( fieldTypeOptionsStep instanceof VectorFieldTypeOptionsStep ) {
-			return (VectorFieldTypeOptionsStep<?, F>) fieldTypeOptionsStep;
-		}
-		return standardTypeOptionsStep();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public SearchableProjectableIndexFieldTypeOptionsStep<?, ? super F> searchableProjectableIndexFieldTypeOptionsStep() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void checkNonStandardTypeOptionsStep() {
-		if ( fieldTypeOptionsStep instanceof StandardIndexFieldTypeOptionsStep ) {
-			throw MappingLog.INSTANCE.invalidFieldEncodingForNonStandardFieldMapping(
-					fieldTypeOptionsStep, StandardIndexFieldTypeOptionsStep.class
-			);
-		}
-	}
+    @Override
+    public void checkNonStandardTypeOptionsStep() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

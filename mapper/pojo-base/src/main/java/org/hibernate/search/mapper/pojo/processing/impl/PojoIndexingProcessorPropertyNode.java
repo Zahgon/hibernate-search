@@ -24,44 +24,30 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoIndexingProcessorPropertyNode<T, P> extends PojoIndexingProcessor<T> {
 
-	private final ValueReadHandle<P> handle;
-	private final PojoIndexingProcessor<? super P> nested;
+    private final ValueReadHandle<P> handle;
 
-	private final PojoModelPath modelPath;
+    private final PojoIndexingProcessor<? super P> nested;
 
-	public PojoIndexingProcessorPropertyNode(ValueReadHandle<P> handle, PojoIndexingProcessor<? super P> nested,
-			PojoModelPath modelPath) {
-		this.handle = handle;
-		this.nested = nested;
-		this.modelPath = modelPath;
-	}
+    private final PojoModelPath modelPath;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoIndexingProcessor::close, nested );
-		}
-	}
+    public PojoIndexingProcessorPropertyNode(ValueReadHandle<P> handle, PojoIndexingProcessor<? super P> nested, PojoModelPath modelPath) {
+        this.handle = handle;
+        this.nested = nested;
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process property" );
-		appender.attribute( "handle", handle );
-		appender.attribute( "nested", nested );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
-		try {
-			P propertyValue = handle.get( source );
-			nested.process( target, propertyValue, context );
-		}
-		catch (SearchProcessingWithContextException e) {
-			// The context was already added to the exception, just re-throw:
-			throw e;
-		}
-		catch (RuntimeException e) {
-			throw IndexingLog.INSTANCE.searchProcessingFailure( e, e.getMessage(), PojoEventContexts.fromPath( modelPath ) );
-		}
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

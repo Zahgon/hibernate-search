@@ -6,28 +6,24 @@ package org.hibernate.search.backend.elasticsearch.types.dsl.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchFieldCodec;
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchLocalDateFieldCodec;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
-
 import com.google.gson.Gson;
 
-class ElasticsearchLocalDateIndexFieldTypeOptionsStep
-		extends
-		AbstractElasticsearchTemporalIndexFieldTypeOptionsStep<ElasticsearchLocalDateIndexFieldTypeOptionsStep, LocalDate> {
+class ElasticsearchLocalDateIndexFieldTypeOptionsStep extends AbstractElasticsearchTemporalIndexFieldTypeOptionsStep<ElasticsearchLocalDateIndexFieldTypeOptionsStep, LocalDate> {
 
-	ElasticsearchLocalDateIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, LocalDate.class, DefaultStringConverters.LOCAL_DATE );
-	}
+    ElasticsearchLocalDateIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, LocalDate.class, DefaultStringConverters.LOCAL_DATE);
+    }
 
-	@Override
-	protected ElasticsearchFieldCodec<LocalDate> createCodec(Gson gson, DateTimeFormatter formatter) {
-		return new ElasticsearchLocalDateFieldCodec( gson, formatter );
-	}
+    @Override
+    protected ElasticsearchFieldCodec<LocalDate> createCodec(Gson gson, DateTimeFormatter formatter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchLocalDateIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchLocalDateIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

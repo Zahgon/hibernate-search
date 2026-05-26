@@ -15,54 +15,34 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 public class Elasticsearch812VectorFieldTypeMappingContributor implements ElasticsearchVectorFieldTypeMappingContributor {
 
-	@Override
-	public void contribute(PropertyMapping mapping, Context context) {
-		mapping.setType( DataTypes.DENSE_VECTOR );
-		mapping.setDims( context.dimension() );
-		mapping.setElementType( context.type() );
-		String resolvedVectorSimilarity = resolveDefault( context.vectorSimilarity() );
-		if ( resolvedVectorSimilarity != null ) {
-			mapping.setSimilarity( resolvedVectorSimilarity );
-		}
-		if ( indexOptionAddCondition( context ) ) {
-			ElasticsearchDenseVectorIndexOptions indexOptions = new ElasticsearchDenseVectorIndexOptions();
-			indexOptions.setType( "hnsw" );
-			if ( context.m() != null ) {
-				indexOptions.setM( context.m() );
-			}
-			if ( context.efConstruction() != null ) {
-				indexOptions.setEfConstruction( context.efConstruction() );
-			}
-			mapping.setIndexOptions( indexOptions );
-		}
-	}
+    @Override
+    public void contribute(PropertyMapping mapping, Context context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected boolean indexOptionAddCondition(Context context) {
-		return context.m() != null || context.efConstruction() != null;
-	}
+    protected boolean indexOptionAddCondition(Context context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <F> void contribute(ElasticsearchIndexValueFieldType.Builder<F> builder, Context context) {
-		if ( context.searchable() ) {
-			builder.queryElementFactory( PredicateTypeKeys.KNN,
-					new ElasticsearchKnnPredicate.Elasticsearch812Factory<>( builder.codec() ) );
-		}
-	}
+    @Override
+    public <F> void contribute(ElasticsearchIndexValueFieldType.Builder<F> builder, Context context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static String resolveDefault(VectorSimilarity vectorSimilarity) {
-		switch ( vectorSimilarity ) {
-			case DEFAULT:
-				return null;
-			case L2:
-				return "l2_norm";
-			case DOT_PRODUCT:
-				return "dot_product";
-			case COSINE:
-				return "cosine";
-			case MAX_INNER_PRODUCT:
-				return "max_inner_product";
-			default:
-				throw new AssertionFailure( "Unexpected value for Similarity: " + vectorSimilarity );
-		}
-	}
+    private static String resolveDefault(VectorSimilarity vectorSimilarity) {
+        switch(vectorSimilarity) {
+            case DEFAULT:
+                return null;
+            case L2:
+                return "l2_norm";
+            case DOT_PRODUCT:
+                return "dot_product";
+            case COSINE:
+                return "cosine";
+            case MAX_INNER_PRODUCT:
+                return "max_inner_product";
+            default:
+                throw new AssertionFailure("Unexpected value for Similarity: " + vectorSimilarity);
+        }
+    }
 }

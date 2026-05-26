@@ -8,17 +8,20 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 final class SimpleThreadFactory implements ThreadFactory {
-	private final ThreadGroup group;
-	private final String namePrefix;
-	private final AtomicInteger threadNumber = new AtomicInteger( 0 );
 
-	SimpleThreadFactory(ThreadGroup group, String namePrefix) {
-		this.group = group;
-		this.namePrefix = namePrefix;
-	}
+    private final ThreadGroup group;
 
-	@Override
-	public Thread newThread(Runnable r) {
-		return new Thread( group, r, namePrefix + threadNumber.getAndIncrement(), 0 );
-	}
+    private final String namePrefix;
+
+    private final AtomicInteger threadNumber = new AtomicInteger(0);
+
+    SimpleThreadFactory(ThreadGroup group, String namePrefix) {
+        this.group = group;
+        this.namePrefix = namePrefix;
+    }
+
+    @Override
+    public Thread newThread(Runnable r) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

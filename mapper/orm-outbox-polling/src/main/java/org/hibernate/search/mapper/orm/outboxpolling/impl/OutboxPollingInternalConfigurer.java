@@ -13,17 +13,18 @@ import org.hibernate.search.mapper.orm.outboxpolling.event.impl.OutboxEventFinde
  */
 public interface OutboxPollingInternalConfigurer {
 
-	OutboxEventFinderProvider wrapEventFinder(DefaultOutboxEventFinder.Provider delegate);
+    OutboxEventFinderProvider wrapEventFinder(DefaultOutboxEventFinder.Provider delegate);
 
-	AgentRepositoryProvider wrapAgentRepository(AgentRepositoryProvider delegate);
+    AgentRepositoryProvider wrapAgentRepository(AgentRepositoryProvider delegate);
 
-	OutboxPollingInternalConfigurer DEFAULT = new OutboxPollingInternalConfigurer() {
-		public OutboxEventFinderProvider wrapEventFinder(DefaultOutboxEventFinder.Provider delegate) {
-			return delegate;
-		}
+    OutboxPollingInternalConfigurer DEFAULT = new OutboxPollingInternalConfigurer() {
 
-		public AgentRepositoryProvider wrapAgentRepository(AgentRepositoryProvider delegate) {
-			return delegate;
-		}
-	};
+        public OutboxEventFinderProvider wrapEventFinder(DefaultOutboxEventFinder.Provider delegate) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public AgentRepositoryProvider wrapAgentRepository(AgentRepositoryProvider delegate) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 }

@@ -14,74 +14,58 @@ import java.util.NoSuchElementException;
  */
 public abstract class HashTable<T> implements Iterable<T> {
 
-	final Object[] buckets;
+    final Object[] buckets;
 
-	HashTable(int size) {
-		this.buckets = new Object[size];
-	}
+    HashTable(int size) {
+        this.buckets = new Object[size];
+    }
 
-	/**
-	 * @return The size of this hash table, i.e. the number of buckets.
-	 */
-	public final int size() {
-		return buckets.length;
-	}
+    /**
+     * @return The size of this hash table, i.e. the number of buckets.
+     */
+    public final int size() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Iterator<T> iterator() {
-		return new Iterator<T>() {
-			int index = 0;
+    @Override
+    public Iterator<T> iterator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public boolean hasNext() {
-				return index < buckets.length;
-			}
+    /**
+     * @param key A key to hash in order to compute an index.
+     * @return The content of the bucket assigned to the given {@code key}.
+     */
+    public final T get(CharSequence key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			@SuppressWarnings("unchecked")
-			public T next() {
-				if ( !hasNext() ) {
-					throw new NoSuchElementException();
-				}
-				return (T) buckets[index++];
-			}
-		};
-	}
+    /**
+     * @param index The index of a bucket in this hash table.
+     * @return The content of the bucket at index {@code index}.
+     * @throws ArrayIndexOutOfBoundsException If the given index is negative or higher than the table's size.
+     */
+    @SuppressWarnings("unchecked")
+    public final T get(int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param key A key to hash in order to compute an index.
-	 * @return The content of the bucket assigned to the given {@code key}.
-	 */
-	public final T get(CharSequence key) {
-		return get( computeIndex( key ) );
-	}
+    /**
+     * @param index The index of a bucket in this hash table.
+     * @param value The value to set for the bucket at index {@code index}.
+     * @throws ArrayIndexOutOfBoundsException If the given index is negative or higher than the table's size.
+     */
+    public final void set(int index, T value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param index The index of a bucket in this hash table.
-	 * @return The content of the bucket at index {@code index}.
-	 * @throws ArrayIndexOutOfBoundsException If the given index is negative or higher than the table's size.
-	 */
-	@SuppressWarnings("unchecked")
-	public final T get(int index) {
-		return (T) buckets[index];
-	}
-
-	/**
-	 * @param index The index of a bucket in this hash table.
-	 * @param value The value to set for the bucket at index {@code index}.
-	 * @throws ArrayIndexOutOfBoundsException If the given index is negative or higher than the table's size.
-	 */
-	public final void set(int index, T value) {
-		buckets[index] = value;
-	}
-
-	/**
-	 * Hashes a {@code key} and computes an array index based on that hash.
-	 * <p>
-	 * The maximum index is defined by constructor parameters passed to the hash function.
-	 *
-	 * @param key A key to hash in order to compute an index.
-	 * @return The index to use for the given {@code key} in a hash table of size {@code size}.
-	 */
-	public abstract int computeIndex(CharSequence key);
+    /**
+     * Hashes a {@code key} and computes an array index based on that hash.
+     * <p>
+     * The maximum index is defined by constructor parameters passed to the hash function.
+     *
+     * @param key A key to hash in order to compute an index.
+     * @return The index to use for the given {@code key} in a hash table of size {@code size}.
+     */
+    public abstract int computeIndex(CharSequence key);
 }

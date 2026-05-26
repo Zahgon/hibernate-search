@@ -13,29 +13,25 @@ import org.hibernate.search.query.dsl.FacetRangeLimitContext;
  * @author Hardy Ferentschik
  */
 public class ConnectedFacetRangeAboveBelowContext<T> implements FacetRangeAboveBelowContext<T> {
-	private final FacetBuildingContext context;
 
-	public ConnectedFacetRangeAboveBelowContext(FacetBuildingContext context) {
-		this.context = context;
-	}
+    private final FacetBuildingContext context;
 
-	@Override
-	public FacetRangeLimitContext<T> from(T rangeStart) {
-		context.setRangeStart( rangeStart );
-		return new ConnectedFacetRangeLimitContext<T>( context );
-	}
+    public ConnectedFacetRangeAboveBelowContext(FacetBuildingContext context) {
+        this.context = context;
+    }
 
-	@Override
-	public FacetRangeBelowContinuationContext<T> below(T min) {
-		context.setRangeStart( null );
-		context.setRangeEnd( min );
-		return new ConnectedFacetRangeBelowContinuationContext( context );
-	}
+    @Override
+    public FacetRangeLimitContext<T> from(T rangeStart) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FacetRangeAboveContext<T> above(T max) {
-		context.setRangeStart( max );
-		context.setRangeEnd( null );
-		return new ConnectedFacetRangeAboveContext<T>( context );
-	}
+    @Override
+    public FacetRangeBelowContinuationContext<T> below(T min) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public FacetRangeAboveContext<T> above(T max) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

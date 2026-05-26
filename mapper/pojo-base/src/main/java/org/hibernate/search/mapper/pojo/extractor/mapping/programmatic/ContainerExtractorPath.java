@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-
 import org.hibernate.search.mapper.pojo.extractor.ContainerExtractor;
 import org.hibernate.search.mapper.pojo.extractor.ContainerExtractorConfigurationContext;
 import org.hibernate.search.mapper.pojo.extractor.builtin.BuiltinContainerExtractors;
@@ -34,118 +33,88 @@ import org.hibernate.search.mapper.pojo.extractor.builtin.BuiltinContainerExtrac
  */
 public class ContainerExtractorPath {
 
-	private static final ContainerExtractorPath DEFAULT = new ContainerExtractorPath(
-			true, Collections.emptyList()
-	);
-	private static final ContainerExtractorPath NONE = new ContainerExtractorPath(
-			false, Collections.emptyList()
-	);
+    private static final ContainerExtractorPath DEFAULT = new ContainerExtractorPath(true, Collections.emptyList());
 
-	/**
-	 * @return A path that will apply the default extractor(s) based on the property type.
-	 */
-	public static ContainerExtractorPath defaultExtractors() {
-		return DEFAULT;
-	}
+    private static final ContainerExtractorPath NONE = new ContainerExtractorPath(false, Collections.emptyList());
 
-	/**
-	 * @return A path that will not apply any container extractor.
-	 */
-	public static ContainerExtractorPath noExtractors() {
-		return NONE;
-	}
+    /**
+     * @return A path that will apply the default extractor(s) based on the property type.
+     */
+    public static ContainerExtractorPath defaultExtractors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param extractorName A container extractor referenced by its name.
-	 * @return A path that will apply the referenced container extractor.
-	 * @see BuiltinContainerExtractors
-	 */
-	public static ContainerExtractorPath explicitExtractor(String extractorName) {
-		return new ContainerExtractorPath(
-				false,
-				Collections.singletonList( extractorName )
-		);
-	}
+    /**
+     * @return A path that will not apply any container extractor.
+     */
+    public static ContainerExtractorPath noExtractors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param extractorNames A list of container extractors referenced by their name.
-	 * @return A path that will apply the referenced container extractors in order.
-	 */
-	public static ContainerExtractorPath explicitExtractors(List<String> extractorNames) {
-		if ( extractorNames.isEmpty() ) {
-			return noExtractors();
-		}
-		else {
-			return new ContainerExtractorPath(
-					false,
-					Collections.unmodifiableList( new ArrayList<>( extractorNames ) )
-			);
-		}
-	}
+    /**
+     * @param extractorName A container extractor referenced by its name.
+     * @return A path that will apply the referenced container extractor.
+     * @see BuiltinContainerExtractors
+     */
+    public static ContainerExtractorPath explicitExtractor(String extractorName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final boolean applyDefaultExtractors;
-	private final List<String> explicitExtractorNames;
+    /**
+     * @param extractorNames A list of container extractors referenced by their name.
+     * @return A path that will apply the referenced container extractors in order.
+     */
+    public static ContainerExtractorPath explicitExtractors(List<String> extractorNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private ContainerExtractorPath(boolean applyDefaultExtractors, List<String> explicitExtractorNames) {
-		this.applyDefaultExtractors = applyDefaultExtractors;
-		this.explicitExtractorNames = explicitExtractorNames;
-	}
+    private final boolean applyDefaultExtractors;
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( !( obj instanceof ContainerExtractorPath ) ) {
-			return false;
-		}
-		ContainerExtractorPath other = (ContainerExtractorPath) obj;
-		return applyDefaultExtractors == other.applyDefaultExtractors
-				&& Objects.equals( explicitExtractorNames, other.explicitExtractorNames );
-	}
+    private final List<String> explicitExtractorNames;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( applyDefaultExtractors, explicitExtractorNames );
-	}
+    private ContainerExtractorPath(boolean applyDefaultExtractors, List<String> explicitExtractorNames) {
+        this.applyDefaultExtractors = applyDefaultExtractors;
+        this.explicitExtractorNames = explicitExtractorNames;
+    }
 
-	@Override
-	public String toString() {
-		if ( isDefault() ) {
-			return "<default value extractors>";
-		}
-		else if ( explicitExtractorNames.isEmpty() ) {
-			return "<no value extractors>";
-		}
-		else {
-			StringJoiner joiner = new StringJoiner( ", ", "<", ">" );
-			for ( String extractorName : explicitExtractorNames ) {
-				joiner.add( extractorName );
-			}
-			return joiner.toString();
-		}
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return {@code true} if this path represents the default extractor(s),
-	 * which will be determined automatically based on the property type.
-	 * {@code false} otherwise.
-	 */
-	public boolean isDefault() {
-		return applyDefaultExtractors;
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return {@code true} if this path is empty,
-	 * i.e. it represents direct access to the property value.
-	 * {@code false} otherwise.
-	 */
-	public boolean isEmpty() {
-		return !isDefault() && explicitExtractorNames.isEmpty();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The list of extractor names explicitly referenced by this path.
-	 * Empty if this path represents the default extractor(s).
-	 */
-	public List<String> explicitExtractorNames() {
-		return explicitExtractorNames;
-	}
+    /**
+     * @return {@code true} if this path represents the default extractor(s),
+     * which will be determined automatically based on the property type.
+     * {@code false} otherwise.
+     */
+    public boolean isDefault() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return {@code true} if this path is empty,
+     * i.e. it represents direct access to the property value.
+     * {@code false} otherwise.
+     */
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return The list of extractor names explicitly referenced by this path.
+     * Empty if this path represents the default extractor(s).
+     */
+    public List<String> explicitExtractorNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

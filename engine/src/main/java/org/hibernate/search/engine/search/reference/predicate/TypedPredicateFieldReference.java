@@ -11,9 +11,9 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface TypedPredicateFieldReference<SR, T> extends FieldReference<SR> {
 
-	Class<T> predicateType();
+    Class<T> predicateType();
 
-	default ValueModel valueModel() {
-		return ValueModel.MAPPING;
-	}
+    default ValueModel valueModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

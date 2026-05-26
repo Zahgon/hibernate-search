@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.predicate.dsl;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 
 /**
@@ -60,156 +59,153 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
  *
  * @param <S> The "self" type (the actual exposed type of this collector).
  */
-public interface BooleanPredicateOptionsCollector<SR, S extends BooleanPredicateOptionsCollector<SR, ?>>
-		extends CommonMinimumShouldMatchOptionsStep<S> {
+public interface BooleanPredicateOptionsCollector<SR, S extends BooleanPredicateOptionsCollector<SR, ?>> extends CommonMinimumShouldMatchOptionsStep<S> {
 
-	/**
-	 * Delegates setting clauses and options to a given consumer.
-	 * <p>
-	 * Best used with lambda expressions.
-	 *
-	 * @param contributor A consumer that will add clauses and options to the collector that it consumes.
-	 * Should generally be a lambda expression.
-	 * @return {@code this}, for method chaining.
-	 */
-	S with(Consumer<? super S> contributor);
+    /**
+     * Delegates setting clauses and options to a given consumer.
+     * <p>
+     * Best used with lambda expressions.
+     *
+     * @param contributor A consumer that will add clauses and options to the collector that it consumes.
+     * Should generally be a lambda expression.
+     * @return {@code this}, for method chaining.
+     */
+    S with(Consumer<? super S> contributor);
 
-	/**
-	 * Add a <a href="#must">"must" clause</a> based on a previously-built {@link SearchPredicate}.
-	 *
-	 * @param searchPredicate The predicate that must match.
-	 * @return {@code this}, for method chaining.
-	 */
-	S must(SearchPredicate searchPredicate);
+    /**
+     * Add a <a href="#must">"must" clause</a> based on a previously-built {@link SearchPredicate}.
+     *
+     * @param searchPredicate The predicate that must match.
+     * @return {@code this}, for method chaining.
+     */
+    S must(SearchPredicate searchPredicate);
 
-	/**
-	 * Add a <a href="#mustnot">"must not" clause</a> based on a previously-built {@link SearchPredicate}.
-	 *
-	 * @param searchPredicate The predicate that must not match.
-	 * @return {@code this}, for method chaining.
-	 */
-	S mustNot(SearchPredicate searchPredicate);
+    /**
+     * Add a <a href="#mustnot">"must not" clause</a> based on a previously-built {@link SearchPredicate}.
+     *
+     * @param searchPredicate The predicate that must not match.
+     * @return {@code this}, for method chaining.
+     */
+    S mustNot(SearchPredicate searchPredicate);
 
-	/**
-	 * Add a <a href="#should">"should" clause</a> based on a previously-built {@link SearchPredicate}.
-	 *
-	 * @param searchPredicate The predicate that should match.
-	 * @return {@code this}, for method chaining.
-	 */
-	S should(SearchPredicate searchPredicate);
+    /**
+     * Add a <a href="#should">"should" clause</a> based on a previously-built {@link SearchPredicate}.
+     *
+     * @param searchPredicate The predicate that should match.
+     * @return {@code this}, for method chaining.
+     */
+    S should(SearchPredicate searchPredicate);
 
-	/**
-	 * Add a <a href="#filter">"filter" clause</a> based on a previously-built {@link SearchPredicate}.
-	 *
-	 * @param searchPredicate The predicate that must match.
-	 * @return {@code this}, for method chaining.
-	 */
-	S filter(SearchPredicate searchPredicate);
+    /**
+     * Add a <a href="#filter">"filter" clause</a> based on a previously-built {@link SearchPredicate}.
+     *
+     * @param searchPredicate The predicate that must match.
+     * @return {@code this}, for method chaining.
+     */
+    S filter(SearchPredicate searchPredicate);
 
-	/*
+    /*
 	 * Syntactic sugar allowing to skip the toPredicate() call by passing a PredicateFinalStep
 	 * directly.
 	 */
+    /**
+     * Add a <a href="#must">"must" clause</a> based on an almost-built {@link SearchPredicate}.
+     *
+     * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
+     * @return {@code this}, for method chaining.
+     */
+    default S must(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Add a <a href="#must">"must" clause</a> based on an almost-built {@link SearchPredicate}.
-	 *
-	 * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
-	 * @return {@code this}, for method chaining.
-	 */
-	default S must(PredicateFinalStep dslFinalStep) {
-		return must( dslFinalStep.toPredicate() );
-	}
+    /**
+     * Add a <a href="#mustnot">"must not" clause</a> based on an almost-built {@link SearchPredicate}.
+     *
+     * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
+     * @return {@code this}, for method chaining.
+     */
+    default S mustNot(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Add a <a href="#mustnot">"must not" clause</a> based on an almost-built {@link SearchPredicate}.
-	 *
-	 * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
-	 * @return {@code this}, for method chaining.
-	 */
-	default S mustNot(PredicateFinalStep dslFinalStep) {
-		return mustNot( dslFinalStep.toPredicate() );
-	}
+    /**
+     * Add a <a href="#should">"should" clause</a> based on an almost-built {@link SearchPredicate}.
+     *
+     * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
+     * @return {@code this}, for method chaining.
+     */
+    default S should(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Add a <a href="#should">"should" clause</a> based on an almost-built {@link SearchPredicate}.
-	 *
-	 * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
-	 * @return {@code this}, for method chaining.
-	 */
-	default S should(PredicateFinalStep dslFinalStep) {
-		return should( dslFinalStep.toPredicate() );
-	}
+    /**
+     * Add a <a href="#filter">"filter" clause</a> based on an almost-built {@link SearchPredicate}.
+     *
+     * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
+     * @return {@code this}, for method chaining.
+     */
+    default S filter(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Add a <a href="#filter">"filter" clause</a> based on an almost-built {@link SearchPredicate}.
-	 *
-	 * @param dslFinalStep A final step in the predicate DSL allowing the retrieval of a {@link SearchPredicate}.
-	 * @return {@code this}, for method chaining.
-	 */
-	default S filter(PredicateFinalStep dslFinalStep) {
-		return filter( dslFinalStep.toPredicate() );
-	}
-
-	/*
+    /*
 	 * Alternative syntax taking advantage of lambdas,
 	 * allowing the structure of the predicate building code to mirror the structure of predicates,
 	 * even for complex predicate building requiring for example if/else statements.
 	 */
+    /**
+     * Add a <a href="#must">"must" clause</a> to be defined by the given function.
+     * <p>
+     * Best used with lambda expressions.
+     *
+     * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
+     * returning the final step in the predicate DSL.
+     * Should generally be a lambda expression.
+     * @return {@code this}, for method chaining.
+     */
+    S must(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	/**
-	 * Add a <a href="#must">"must" clause</a> to be defined by the given function.
-	 * <p>
-	 * Best used with lambda expressions.
-	 *
-	 * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
-	 * returning the final step in the predicate DSL.
-	 * Should generally be a lambda expression.
-	 * @return {@code this}, for method chaining.
-	 */
-	S must(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    /**
+     * Add a <a href="#mustnot">"must not" clause</a> to be defined by the given function.
+     * <p>
+     * Best used with lambda expressions.
+     *
+     * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
+     * returning the final step in the predicate DSL.
+     * Should generally be a lambda expression.
+     * @return {@code this}, for method chaining.
+     */
+    S mustNot(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	/**
-	 * Add a <a href="#mustnot">"must not" clause</a> to be defined by the given function.
-	 * <p>
-	 * Best used with lambda expressions.
-	 *
-	 * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
-	 * returning the final step in the predicate DSL.
-	 * Should generally be a lambda expression.
-	 * @return {@code this}, for method chaining.
-	 */
-	S mustNot(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    /**
+     * Add a <a href="#should">"should" clause</a> to be defined by the given function.
+     * <p>
+     * Best used with lambda expressions.
+     *
+     * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
+     * returning the final step in the predicate DSL.
+     * Should generally be a lambda expression.
+     * @return {@code this}, for method chaining.
+     */
+    S should(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	/**
-	 * Add a <a href="#should">"should" clause</a> to be defined by the given function.
-	 * <p>
-	 * Best used with lambda expressions.
-	 *
-	 * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
-	 * returning the final step in the predicate DSL.
-	 * Should generally be a lambda expression.
-	 * @return {@code this}, for method chaining.
-	 */
-	S should(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    /**
+     * Add a <a href="#filter">"filter" clause</a> to be defined by the given function.
+     * <p>
+     * Best used with lambda expressions.
+     *
+     * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
+     * returning the final step in the predicate DSL.
+     * Should generally be a lambda expression.
+     * @return {@code this}, for method chaining.
+     */
+    S filter(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	/**
-	 * Add a <a href="#filter">"filter" clause</a> to be defined by the given function.
-	 * <p>
-	 * Best used with lambda expressions.
-	 *
-	 * @param clauseContributor A function that will use the factory passed in parameter to create a predicate,
-	 * returning the final step in the predicate DSL.
-	 * Should generally be a lambda expression.
-	 * @return {@code this}, for method chaining.
-	 */
-	S filter(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
-
-	/**
-	 * Checks if this predicate contains at least one clause.
-	 *
-	 * @return {@code true} if any clauses were added, i.e. any of the {@code must(..)}/{@code should(..)}/{@code mustNot(..)}/{@code filter(..)}
-	 * were called at least once, {@code false} otherwise.
-	 */
-	boolean hasClause();
+    /**
+     * Checks if this predicate contains at least one clause.
+     *
+     * @return {@code true} if any clauses were added, i.e. any of the {@code must(..)}/{@code should(..)}/{@code mustNot(..)}/{@code filter(..)}
+     * were called at least once, {@code false} otherwise.
+     */
+    boolean hasClause();
 }

@@ -9,9 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import javax.lang.model.element.ElementKind;
-
 import org.hibernate.search.engine.mapper.model.spi.MappableTypeModel;
 import org.hibernate.search.mapper.pojo.bridge.IdentifierBridge;
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
@@ -32,145 +30,135 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 import org.hibernate.search.util.common.annotation.impl.SuppressJQAssistant;
 
 public enum HibernateSearchProcessorEnum {
-	;
+    ;
 
-	public static final Binder BINDER = new Binder();
-	public static final Model MODEL = new Model();
+    public static final Binder BINDER = new Binder();
 
-	@SuppressJQAssistant(reason = "Need to cast to an impl type to get access to not-yet exposed method")
-	public static class Binder implements ValueBinder, IdentifierBinder {
+    public static final Model MODEL = new Model();
 
-		@Override
-		public void bind(IdentifierBindingContext<?> context) {
-			if ( context.bridgedElement() instanceof PojoModelValueElement<?> element ) {
-				if ( element.typeModel() instanceof ProcessorPojoRawTypeModel<?> pr ) {
-					context.bridge( Object.class, new Bridge( pr.name() ) );
-				}
-			}
-		}
+    @SuppressJQAssistant(reason = "Need to cast to an impl type to get access to not-yet exposed method")
+    public static class Binder implements ValueBinder, IdentifierBinder {
 
-		@Override
-		public void bind(ValueBindingContext<?> context) {
-			if ( context.bridgedElement() instanceof PojoModelValueElement<?> element ) {
-				if ( element.typeModel() instanceof ProcessorPojoRawTypeModel<?> pr ) {
-					context.bridge( Object.class, new Bridge( pr.name() ) );
-				}
-			}
-		}
-	}
+        @Override
+        public void bind(IdentifierBindingContext<?> context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public static class Model implements PojoRawTypeModel<HibernateSearchProcessorEnum> {
+        @Override
+        public void bind(ValueBindingContext<?> context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public PojoRawTypeIdentifier<HibernateSearchProcessorEnum> typeIdentifier() {
-			return PojoRawTypeIdentifier.of( HibernateSearchProcessorEnum.class );
-		}
+    public static class Model implements PojoRawTypeModel<HibernateSearchProcessorEnum> {
 
-		@Override
-		public boolean isAbstract() {
-			return false;
-		}
+        @Override
+        public PojoRawTypeIdentifier<HibernateSearchProcessorEnum> typeIdentifier() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean isSubTypeOf(MappableTypeModel otherModel) {
-			if ( otherModel instanceof ProcessorPojoRawTypeModel<?> other ) {
-				return other.typeElement().getKind() == ElementKind.ENUM;
-			}
-			return false;
-		}
+        @Override
+        public boolean isAbstract() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Stream<? extends PojoRawTypeModel<? super HibernateSearchProcessorEnum>> ascendingSuperTypes() {
-			return Stream.empty();
-		}
+        @Override
+        public boolean isSubTypeOf(MappableTypeModel otherModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Stream<? extends PojoRawTypeModel<? super HibernateSearchProcessorEnum>> descendingSuperTypes() {
-			return Stream.empty();
-		}
+        @Override
+        public Stream<? extends PojoRawTypeModel<? super HibernateSearchProcessorEnum>> ascendingSuperTypes() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Stream<? extends Annotation> annotations() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public Stream<? extends PojoRawTypeModel<? super HibernateSearchProcessorEnum>> descendingSuperTypes() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public PojoConstructorModel<HibernateSearchProcessorEnum> mainConstructor() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public Stream<? extends Annotation> annotations() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public PojoConstructorModel<HibernateSearchProcessorEnum> constructor(Class<?>... parameterTypes) {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public PojoConstructorModel<HibernateSearchProcessorEnum> mainConstructor() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Collection<PojoConstructorModel<HibernateSearchProcessorEnum>> declaredConstructors() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public PojoConstructorModel<HibernateSearchProcessorEnum> constructor(Class<?>... parameterTypes) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Collection<PojoPropertyModel<?>> declaredProperties() {
-			return List.of();
-		}
+        @Override
+        public Collection<PojoConstructorModel<HibernateSearchProcessorEnum>> declaredConstructors() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public PojoTypeModel<? extends HibernateSearchProcessorEnum> cast(PojoTypeModel<?> other) {
-			return (PojoTypeModel<? extends HibernateSearchProcessorEnum>) other;
-		}
+        @Override
+        public Collection<PojoPropertyModel<?>> declaredProperties() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public PojoCaster<HibernateSearchProcessorEnum> caster() {
-			throw new UnsupportedOperationException();
-		}
+        @SuppressWarnings("unchecked")
+        @Override
+        public PojoTypeModel<? extends HibernateSearchProcessorEnum> cast(PojoTypeModel<?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String name() {
-			return HibernateSearchProcessorEnum.class.getSimpleName();
-		}
+        @Override
+        public PojoCaster<HibernateSearchProcessorEnum> caster() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public PojoPropertyModel<?> property(String propertyName) {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public String name() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public <U> Optional<PojoTypeModel<? extends U>> castTo(Class<U> target) {
-			return Optional.empty();
-		}
+        @Override
+        public PojoPropertyModel<?> property(String propertyName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Optional<? extends PojoTypeModel<?>> typeArgument(Class<?> rawSuperType, int typeParameterIndex) {
-			return Optional.empty();
-		}
+        @Override
+        public <U> Optional<PojoTypeModel<? extends U>> castTo(Class<U> target) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Optional<? extends PojoTypeModel<?>> arrayElementType() {
-			return Optional.empty();
-		}
-	}
+        @Override
+        public Optional<? extends PojoTypeModel<?>> typeArgument(Class<?> rawSuperType, int typeParameterIndex) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public record Bridge(String valueType) implements ValueBridge<Object, String>, IdentifierBridge<Object> {
+        @Override
+        public Optional<? extends PojoTypeModel<?>> arrayElementType() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public String toIndexedValue(Object value, ValueBridgeToIndexedValueContext context) {
-			return "";
-		}
+    public record Bridge(String valueType) implements ValueBridge<Object, String>, IdentifierBridge<Object> {
 
-		@Override
-		public void close() {
-			// nothing to do here, but have to override as both interfaces have a default
-		}
+        @Override
+        public String toIndexedValue(Object value, ValueBridgeToIndexedValueContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String toDocumentIdentifier(Object propertyValue, IdentifierBridgeToDocumentIdentifierContext context) {
-			return "";
-		}
+        @Override
+        public void close() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Object fromDocumentIdentifier(String documentIdentifier, IdentifierBridgeFromDocumentIdentifierContext context) {
-			return null;
-		}
-	}
+        @Override
+        public String toDocumentIdentifier(Object propertyValue, IdentifierBridgeToDocumentIdentifierContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public Object fromDocumentIdentifier(String documentIdentifier, IdentifierBridgeFromDocumentIdentifierContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

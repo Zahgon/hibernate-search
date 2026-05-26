@@ -8,19 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultBooleanBridge extends AbstractPassThroughDefaultBridge<Boolean> {
 
-	public static final DefaultBooleanBridge INSTANCE = new DefaultBooleanBridge();
+    public static final DefaultBooleanBridge INSTANCE = new DefaultBooleanBridge();
 
-	private DefaultBooleanBridge() {
-	}
+    private DefaultBooleanBridge() {
+    }
 
-	@Override
-	protected String toString(Boolean value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Boolean value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Boolean fromString(String value) {
-		return ParseUtils.parseBoolean( value );
-	}
-
+    @Override
+    protected Boolean fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -7,39 +7,27 @@ package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Supplier;
-
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningLongMultiValuesSource;
-
 import org.apache.lucene.search.CollectorManager;
 
-public class AggregationFunctionCollectorManager<T extends AggregationFunction<?>>
-		implements CollectorManager<AggregationFunctionCollector<T>, Long> {
+public class AggregationFunctionCollectorManager<T extends AggregationFunction<?>> implements CollectorManager<AggregationFunctionCollector<T>, Long> {
 
-	private final JoiningLongMultiValuesSource source;
-	private final Supplier<AggregationFunction<T>> functionSupplier;
+    private final JoiningLongMultiValuesSource source;
 
-	public AggregationFunctionCollectorManager(JoiningLongMultiValuesSource source,
-			Supplier<AggregationFunction<T>> functionSupplier) {
-		this.source = source;
-		this.functionSupplier = functionSupplier;
-	}
+    private final Supplier<AggregationFunction<T>> functionSupplier;
 
-	@Override
-	public AggregationFunctionCollector<T> newCollector() {
-		return new AggregationFunctionCollector<>( source, functionSupplier.get() );
-	}
+    public AggregationFunctionCollectorManager(JoiningLongMultiValuesSource source, Supplier<AggregationFunction<T>> functionSupplier) {
+        this.source = source;
+        this.functionSupplier = functionSupplier;
+    }
 
-	@Override
-	public Long reduce(Collection<AggregationFunctionCollector<T>> collectors) throws IOException {
-		if ( collectors.isEmpty() ) {
-			return null;
-		}
+    @Override
+    public AggregationFunctionCollector<T> newCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		var iterator = collectors.iterator();
-		var identity = iterator.next();
-		while ( iterator.hasNext() ) {
-			identity.merge( iterator.next() );
-		}
-		return identity.result();
-	}
+    @Override
+    public Long reduce(Collection<AggregationFunctionCollector<T>> collectors) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

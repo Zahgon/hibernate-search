@@ -8,7 +8,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import org.hibernate.search.util.common.AssertionFailure;
 
 /**
@@ -17,31 +16,30 @@ import org.hibernate.search.util.common.AssertionFailure;
 @Deprecated(since = "6.2")
 public interface ValueReadHandleFactory extends ValueHandleFactory {
 
-	@Override
-	default <T> ValueCreateHandle<T> createForConstructor(Constructor<T> constructor) throws IllegalAccessException {
-		throw new AssertionFailure( this + " doesn't support constructor handles."
-				+ " '" + getClass().getName() + " should be updated to implement createForConstructor(Constructor)." );
-	}
+    @Override
+    default <T> ValueCreateHandle<T> createForConstructor(Constructor<T> constructor) throws IllegalAccessException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A factory producing value handles that rely on {@code java.lang.reflect}
-	 * to get the value of a field/method,
-	 * i.e {@link Method#invoke(Object, Object...)} and {@link Field#get(Object)}.
-	 * @deprecated Use {@link ValueHandleFactory#usingJavaLangReflect()} instead.
-	 */
-	@Deprecated(since = "6.2")
-	static ValueReadHandleFactory usingJavaLangReflect() {
-		return new MemberValueHandleFactory();
-	}
+    /**
+     * @return A factory producing value handles that rely on {@code java.lang.reflect}
+     * to get the value of a field/method,
+     * i.e {@link Method#invoke(Object, Object...)} and {@link Field#get(Object)}.
+     * @deprecated Use {@link ValueHandleFactory#usingJavaLangReflect()} instead.
+     */
+    @Deprecated(since = "6.2")
+    static ValueReadHandleFactory usingJavaLangReflect() {
+        return new MemberValueHandleFactory();
+    }
 
-	/**
-	 * @param lookup A lookup with sufficient access rights to access all relevant fields and methods.
-	 * @return A factory producing value handles that rely on {@link java.lang.invoke.MethodHandle}
-	 * to get the value of a field/method.
-	 * @deprecated Use {@link ValueHandleFactory#usingMethodHandle(MethodHandles.Lookup)} instead.
-	 */
-	@Deprecated(since = "6.2")
-	static ValueReadHandleFactory usingMethodHandle(MethodHandles.Lookup lookup) {
-		return new MethodHandleValueHandleFactory( lookup );
-	}
+    /**
+     * @param lookup A lookup with sufficient access rights to access all relevant fields and methods.
+     * @return A factory producing value handles that rely on {@link java.lang.invoke.MethodHandle}
+     * to get the value of a field/method.
+     * @deprecated Use {@link ValueHandleFactory#usingMethodHandle(MethodHandles.Lookup)} instead.
+     */
+    @Deprecated(since = "6.2")
+    static ValueReadHandleFactory usingMethodHandle(MethodHandles.Lookup lookup) {
+        return new MethodHandleValueHandleFactory(lookup);
+    }
 }

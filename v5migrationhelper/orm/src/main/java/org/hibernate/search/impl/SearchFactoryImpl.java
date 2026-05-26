@@ -7,7 +7,6 @@ package org.hibernate.search.impl;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.SearchFactory;
 import org.hibernate.search.backend.lucene.LuceneBackend;
 import org.hibernate.search.backend.lucene.index.LuceneIndexManager;
@@ -17,7 +16,6 @@ import org.hibernate.search.query.dsl.QueryContextBuilder;
 import org.hibernate.search.spi.SearchIntegrator;
 import org.hibernate.search.util.logging.impl.LoggerFactory;
 import org.hibernate.search.util.logging.impl.MigrationHelperLog;
-
 import org.apache.lucene.analysis.Analyzer;
 
 /**
@@ -28,60 +26,46 @@ import org.apache.lucene.analysis.Analyzer;
  */
 final class SearchFactoryImpl implements SearchFactory {
 
-	public static final MigrationHelperLog log = LoggerFactory.make( MethodHandles.lookup() );
+    public static final MigrationHelperLog log = LoggerFactory.make(MethodHandles.lookup());
 
-	private final V5MigrationOrmSearchIntegratorAdapter searchIntegrator;
+    private final V5MigrationOrmSearchIntegratorAdapter searchIntegrator;
 
-	public SearchFactoryImpl(V5MigrationOrmSearchIntegratorAdapter searchIntegrator) {
-		this.searchIntegrator = searchIntegrator;
-	}
+    public SearchFactoryImpl(V5MigrationOrmSearchIntegratorAdapter searchIntegrator) {
+        this.searchIntegrator = searchIntegrator;
+    }
 
-	@Override
-	public void optimize() {
-		optimize( Object.class );
-	}
+    @Override
+    public void optimize() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void optimize(Class<?> clazz) {
-		searchIntegrator.toSearchMapping().scope( clazz ).workspace().mergeSegments();
-	}
+    @Override
+    public void optimize(Class<?> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Analyzer getAnalyzer(String name) {
-		return searchIntegrator.toSearchMapping().backend().unwrap( LuceneBackend.class ).analyzer( name )
-				.orElseThrow( () -> log.unknownAnalyzer( name ) );
-	}
+    @Override
+    public Analyzer getAnalyzer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Analyzer getAnalyzer(Class<?> clazz) {
-		return searchIntegrator.toSearchMapping().indexedEntity( clazz )
-				.indexManager().unwrap( LuceneIndexManager.class )
-				.indexingAnalyzer();
-	}
+    @Override
+    public Analyzer getAnalyzer(Class<?> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public QueryContextBuilder buildQueryBuilder() {
-		return searchIntegrator.buildQueryBuilder();
-	}
+    @Override
+    public QueryContextBuilder buildQueryBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<Class<?>> getIndexedTypes() {
-		return searchIntegrator.toSearchMapping().allIndexedEntities()
-				.stream().map( SearchIndexedEntity::javaClass )
-				.collect( Collectors.toSet() );
-	}
+    @Override
+    public Set<Class<?>> getIndexedTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T unwrap(Class<T> cls) {
-		if ( SearchIntegrator.class.isAssignableFrom( cls ) ) {
-			return (T) searchIntegrator;
-		}
-		else if ( SearchMapping.class.isAssignableFrom( cls ) ) {
-			return (T) searchIntegrator.toSearchMapping();
-		}
-		else {
-			throw log.cannotUnwrapSearchFactory( cls );
-		}
-	}
-
+    @Override
+    public <T> T unwrap(Class<T> cls) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

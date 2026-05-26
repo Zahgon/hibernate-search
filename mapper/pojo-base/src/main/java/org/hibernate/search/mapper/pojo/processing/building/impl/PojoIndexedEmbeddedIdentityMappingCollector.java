@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.processing.building.impl;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.engine.backend.types.Searchable;
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.IdentifierBinder;
@@ -21,44 +20,27 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
 class PojoIndexedEmbeddedIdentityMappingCollector<E> implements PojoIdentityMappingCollector {
 
-	private final PojoRawTypeModel<E> typeModel;
-	private final PojoMappingHelper mappingHelper;
+    private final PojoRawTypeModel<E> typeModel;
 
-	private BoundPojoModelPathPropertyNode<?, ?> identifierModelPath;
-	private IdentifierBinder identifierBinder;
-	private Map<String, Object> params = Collections.emptyMap();
+    private final PojoMappingHelper mappingHelper;
 
-	PojoIndexedEmbeddedIdentityMappingCollector(PojoRawTypeModel<E> typeModel, PojoMappingHelper mappingHelper) {
-		this.typeModel = typeModel;
-		this.mappingHelper = mappingHelper;
-	}
+    private BoundPojoModelPathPropertyNode<?, ?> identifierModelPath;
 
-	@Override
-	public <T> void identifierBridge(BoundPojoModelPathPropertyNode<?, T> modelPath,
-			IdentifierBinder binder, Map<String, Object> params) {
-		this.identifierModelPath = modelPath;
-		this.identifierBinder = binder;
-		this.params = params;
-	}
+    private IdentifierBinder identifierBinder;
 
-	public void contributeIdentifierField(AbstractPojoIndexingProcessorTypeNodeBuilder<?, ?> embeddedTypeNodeBuilder) {
-		if ( identifierModelPath == null ) {
-			// Fall back to the entity ID if possible
-			Optional<BoundPojoModelPathPropertyNode<E, ?>> entityIdPropertyPath = mappingHelper.indexModelBinder()
-					.createEntityIdPropertyPath( typeModel );
-			if ( entityIdPropertyPath.isPresent() ) {
-				identifierBridge( entityIdPropertyPath.get(), null, params );
-			}
-			else {
-				throw MappingLog.INSTANCE.missingIdentifierMapping( typeModel );
-			}
-		}
+    private Map<String, Object> params = Collections.emptyMap();
 
-		embeddedTypeNodeBuilder.property( identifierModelPath.getPropertyModel().name() )
-				.value( ContainerExtractorPath.defaultExtractors() )
-				.valueBinder( identifierBinder == null ? null : new IdentifierBinderToValueBinderAdapter( identifierBinder ),
-						params, null,
-						context -> context.standardTypeOptionsStep().searchable( Searchable.YES )
-								.projectable( Projectable.YES ) );
-	}
+    PojoIndexedEmbeddedIdentityMappingCollector(PojoRawTypeModel<E> typeModel, PojoMappingHelper mappingHelper) {
+        this.typeModel = typeModel;
+        this.mappingHelper = mappingHelper;
+    }
+
+    @Override
+    public <T> void identifierBridge(BoundPojoModelPathPropertyNode<?, T> modelPath, IdentifierBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void contributeIdentifierField(AbstractPojoIndexingProcessorTypeNodeBuilder<?, ?> embeddedTypeNodeBuilder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

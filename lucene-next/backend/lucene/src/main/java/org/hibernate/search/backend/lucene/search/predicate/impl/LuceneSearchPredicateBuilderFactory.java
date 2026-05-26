@@ -13,53 +13,52 @@ import org.hibernate.search.engine.search.predicate.spi.QueryStringPredicateBuil
 import org.hibernate.search.engine.search.predicate.spi.SearchPredicateBuilderFactory;
 import org.hibernate.search.engine.search.predicate.spi.SimpleQueryStringPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.WithParametersPredicateBuilder;
-
 import org.apache.lucene.search.Query;
 
 public class LuceneSearchPredicateBuilderFactory implements SearchPredicateBuilderFactory {
 
-	private final LuceneSearchIndexScope<?> scope;
+    private final LuceneSearchIndexScope<?> scope;
 
-	public LuceneSearchPredicateBuilderFactory(LuceneSearchIndexScope<?> scope) {
-		this.scope = scope;
-	}
+    public LuceneSearchPredicateBuilderFactory(LuceneSearchIndexScope<?> scope) {
+        this.scope = scope;
+    }
 
-	@Override
-	public MatchAllPredicateBuilder matchAll() {
-		return new LuceneMatchAllPredicate.Builder( scope );
-	}
+    @Override
+    public MatchAllPredicateBuilder matchAll() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MatchNonePredicateBuilder matchNone() {
-		return new LuceneMatchNonePredicate.Builder( scope );
-	}
+    @Override
+    public MatchNonePredicateBuilder matchNone() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MatchIdPredicateBuilder id() {
-		return new LuceneMatchIdPredicate.Builder( scope );
-	}
+    @Override
+    public MatchIdPredicateBuilder id() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BooleanPredicateBuilder bool() {
-		return new LuceneBooleanPredicate.Builder( scope );
-	}
+    @Override
+    public BooleanPredicateBuilder bool() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringPredicateBuilder simpleQueryString() {
-		return new LuceneSimpleQueryStringPredicate.Builder( scope );
-	}
+    @Override
+    public SimpleQueryStringPredicateBuilder simpleQueryString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public QueryStringPredicateBuilder queryString() {
-		return new LuceneQueryStringPredicate.Builder( scope );
-	}
+    @Override
+    public QueryStringPredicateBuilder queryString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WithParametersPredicateBuilder withParameters() {
-		return new LuceneWithParametersPredicate.Builder( scope );
-	}
+    @Override
+    public WithParametersPredicateBuilder withParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public LuceneSearchPredicate fromLuceneQuery(Query query) {
-		return new LuceneUserProvidedLuceneQueryPredicate( scope, query );
-	}
+    public LuceneSearchPredicate fromLuceneQuery(Query query) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

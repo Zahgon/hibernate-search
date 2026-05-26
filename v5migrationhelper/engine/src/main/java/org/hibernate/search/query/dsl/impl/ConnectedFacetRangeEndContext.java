@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import org.hibernate.search.query.dsl.FacetRangeAboveContext;
@@ -13,39 +12,32 @@ import org.hibernate.search.query.facet.FacetingRequest;
 /**
  * @author Hardy Ferentschik
  */
-public class ConnectedFacetRangeEndContext<T> extends ConnectedFacetParameterContext
-		implements FacetRangeEndContext<T> {
-	private final FacetBuildingContext context;
+public class ConnectedFacetRangeEndContext<T> extends ConnectedFacetParameterContext implements FacetRangeEndContext<T> {
 
-	public ConnectedFacetRangeEndContext(FacetBuildingContext context) {
-		super( context );
-		this.context = context;
-	}
+    private final FacetBuildingContext context;
 
-	@Override
-	public FacetRangeEndContext<T> excludeLimit() {
-		context.setIncludeRangeEnd( false );
-		return this;
-	}
+    public ConnectedFacetRangeEndContext(FacetBuildingContext context) {
+        super(context);
+        this.context = context;
+    }
 
-	@Override
-	public FacetRangeAboveContext<T> above(T max) {
-		context.makeRange();
-		context.setRangeStart( max );
-		context.setRangeEnd( null );
-		return new ConnectedFacetRangeAboveContext<T>( context );
-	}
+    @Override
+    public FacetRangeEndContext<T> excludeLimit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FacetRangeLimitContext<T> from(T rangeStart) {
-		context.makeRange();
-		context.setRangeStart( rangeStart );
-		return new ConnectedFacetRangeLimitContext<T>( context );
-	}
+    @Override
+    public FacetRangeAboveContext<T> above(T max) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FacetingRequest createFacetingRequest() {
-		context.makeRange();
-		return context.getFacetingRequest();
-	}
+    @Override
+    public FacetRangeLimitContext<T> from(T rangeStart) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public FacetingRequest createFacetingRequest() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

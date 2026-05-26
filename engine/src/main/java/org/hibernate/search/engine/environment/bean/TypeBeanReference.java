@@ -8,35 +8,30 @@ import org.hibernate.search.util.common.impl.Contracts;
 
 class TypeBeanReference<T> implements BeanReference<T> {
 
-	final Class<T> type;
-	final BeanRetrieval retrieval;
+    final Class<T> type;
 
-	TypeBeanReference(Class<T> type, BeanRetrieval retrieval) {
-		this.retrieval = retrieval;
-		Contracts.assertNotNull( type, "type" );
-		this.type = type;
-	}
+    final BeanRetrieval retrieval;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[type=" + type + ", retrieval=" + retrieval + "]";
-	}
+    TypeBeanReference(Class<T> type, BeanRetrieval retrieval) {
+        this.retrieval = retrieval;
+        Contracts.assertNotNull(type, "type");
+        this.type = type;
+    }
 
-	@Override
-	public BeanHolder<T> resolve(BeanResolver beanResolver) {
-		return beanResolver.resolve( type, retrieval );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // Checked using reflection
-	public <U> BeanReference<? extends U> asSubTypeOf(Class<U> expectedType) {
-		if ( expectedType.isAssignableFrom( type ) ) {
-			return (BeanReference<? extends U>) this;
-		}
-		else {
-			// We don't know the concrete type of returned beans, so we'll have to check upon retrieval
-			return BeanReference.super.asSubTypeOf( expectedType );
-		}
-	}
+    @Override
+    public BeanHolder<T> resolve(BeanResolver beanResolver) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    // Checked using reflection
+    @SuppressWarnings("unchecked")
+    public <U> BeanReference<? extends U> asSubTypeOf(Class<U> expectedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

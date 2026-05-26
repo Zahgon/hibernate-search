@@ -7,33 +7,30 @@ package org.hibernate.search.backend.elasticsearch.search.query.impl;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.search.query.ElasticsearchSearchResult;
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.query.SearchResultTotal;
 import org.hibernate.search.engine.search.query.spi.SimpleSearchResult;
-
 import com.google.gson.JsonObject;
 
-class ElasticsearchSearchResultImpl<H> extends SimpleSearchResult<H>
-		implements ElasticsearchSearchResult<H> {
+class ElasticsearchSearchResultImpl<H> extends SimpleSearchResult<H> implements ElasticsearchSearchResult<H> {
 
-	private final JsonObject responseBody;
-	private final String scrollId;
+    private final JsonObject responseBody;
 
-	ElasticsearchSearchResultImpl(JsonObject responseBody, SearchResultTotal resultTotal, List<H> hits,
-			Map<AggregationKey<?>, ?> aggregationResults, Integer took, Boolean timedOut, String scrollId) {
-		super( resultTotal, hits, aggregationResults, ( took == null ) ? null : Duration.ofMillis( took ), timedOut );
-		this.responseBody = responseBody;
-		this.scrollId = scrollId;
-	}
+    private final String scrollId;
 
-	@Override
-	public JsonObject responseBody() {
-		return responseBody;
-	}
+    ElasticsearchSearchResultImpl(JsonObject responseBody, SearchResultTotal resultTotal, List<H> hits, Map<AggregationKey<?>, ?> aggregationResults, Integer took, Boolean timedOut, String scrollId) {
+        super(resultTotal, hits, aggregationResults, (took == null) ? null : Duration.ofMillis(took), timedOut);
+        this.responseBody = responseBody;
+        this.scrollId = scrollId;
+    }
 
-	public String scrollId() {
-		return scrollId;
-	}
+    @Override
+    public JsonObject responseBody() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public String scrollId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

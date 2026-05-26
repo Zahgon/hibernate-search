@@ -11,25 +11,22 @@ import org.hibernate.search.engine.search.sort.dsl.spi.AbstractSortThenStep;
 import org.hibernate.search.engine.search.sort.dsl.spi.SearchSortDslContext;
 import org.hibernate.search.engine.search.sort.spi.ScoreSortBuilder;
 
-public final class ScoreSortOptionsStepImpl<SR>
-		extends AbstractSortThenStep<SR>
-		implements ScoreSortOptionsStep<SR, ScoreSortOptionsStepImpl<SR>> {
+public final class ScoreSortOptionsStepImpl<SR> extends AbstractSortThenStep<SR> implements ScoreSortOptionsStep<SR, ScoreSortOptionsStepImpl<SR>> {
 
-	private final ScoreSortBuilder builder;
+    private final ScoreSortBuilder builder;
 
-	public ScoreSortOptionsStepImpl(SearchSortDslContext<SR, ?, ?> dslContext) {
-		super( dslContext );
-		this.builder = dslContext.scope().sortBuilders().score();
-	}
+    public ScoreSortOptionsStepImpl(SearchSortDslContext<SR, ?, ?> dslContext) {
+        super(dslContext);
+        this.builder = dslContext.scope().sortBuilders().score();
+    }
 
-	@Override
-	public ScoreSortOptionsStepImpl<SR> order(SortOrder order) {
-		builder.order( order );
-		return this;
-	}
+    @Override
+    public ScoreSortOptionsStepImpl<SR> order(SortOrder order) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchSort build() {
-		return builder.build();
-	}
+    @Override
+    protected SearchSort build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

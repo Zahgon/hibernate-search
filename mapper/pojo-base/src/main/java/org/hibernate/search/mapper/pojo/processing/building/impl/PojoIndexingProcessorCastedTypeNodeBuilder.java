@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.processing.building.impl;
 
 import java.util.Collection;
-
 import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexBindingContext;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.AbstractPojoIndexingDependencyCollectorDirectValueNode;
@@ -24,38 +23,26 @@ import org.hibernate.search.mapper.pojo.processing.impl.PojoIndexingProcessorCas
  */
 public class PojoIndexingProcessorCastedTypeNodeBuilder<T, U> extends AbstractPojoIndexingProcessorTypeNodeBuilder<T, U> {
 
-	private final BoundPojoModelPathCastedTypeNode<T, U> modelPath;
+    private final BoundPojoModelPathCastedTypeNode<T, U> modelPath;
 
-	public PojoIndexingProcessorCastedTypeNodeBuilder(
-			BoundPojoModelPathCastedTypeNode<T, U> modelPath,
-			PojoMappingHelper mappingHelper, IndexBindingContext bindingContext,
-			PojoIdentityMappingCollector identityMappingCollector,
-			Collection<IndexObjectFieldReference> parentIndexObjectReferences) {
-		super( mappingHelper, bindingContext, identityMappingCollector, parentIndexObjectReferences );
-		this.modelPath = modelPath;
-	}
+    public PojoIndexingProcessorCastedTypeNodeBuilder(BoundPojoModelPathCastedTypeNode<T, U> modelPath, PojoMappingHelper mappingHelper, IndexBindingContext bindingContext, PojoIdentityMappingCollector identityMappingCollector, Collection<IndexObjectFieldReference> parentIndexObjectReferences) {
+        super(mappingHelper, bindingContext, identityMappingCollector, parentIndexObjectReferences);
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	public BoundPojoModelPathCastedTypeNode<T, U> getModelPath() {
-		return modelPath;
-	}
+    @Override
+    public BoundPojoModelPathCastedTypeNode<T, U> getModelPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected PojoIndexingDependencyCollectorTypeNode<U> toType(
-			AbstractPojoIndexingDependencyCollectorDirectValueNode<?, T> valueDependencyCollector) {
-		// By construction, the casted type should be the same as U
-		return (PojoIndexingDependencyCollectorTypeNode<U>) valueDependencyCollector
-				.castedType( getModelPath().getTypeModel().rawType() );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    protected PojoIndexingDependencyCollectorTypeNode<U> toType(AbstractPojoIndexingDependencyCollectorDirectValueNode<?, T> valueDependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected PojoIndexingProcessor<T> doBuild(Collection<IndexObjectFieldReference> parentIndexObjectReferences,
-			PojoIndexingProcessor<? super U> nested) {
-		return new PojoIndexingProcessorCastedTypeNode<>(
-				getModelPath().getTypeModel().rawType().caster(),
-				parentIndexObjectReferences, nested,
-				typeAdditionalMetadata().isEntity()
-		);
-	}
+    @Override
+    protected PojoIndexingProcessor<T> doBuild(Collection<IndexObjectFieldReference> parentIndexObjectReferences, PojoIndexingProcessor<? super U> nested) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

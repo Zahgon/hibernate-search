@@ -15,7 +15,6 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.RangePredicateBuilder;
 import org.hibernate.search.util.common.data.Range;
 import org.hibernate.search.util.common.data.RangeBoundInclusion;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermRangeQuery;
@@ -23,68 +22,54 @@ import org.apache.lucene.util.BytesRef;
 
 public class LuceneTextRangePredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneTextRangePredicate(Builder<?> builder) {
-		super( builder );
-	}
+    private LuceneTextRangePredicate(Builder<?> builder) {
+        super(builder);
+    }
 
-	public static class Factory<F>
-			extends
-			AbstractLuceneCodecAwareSearchQueryElementFactory<RangePredicateBuilder, F, LuceneFieldCodec<F, String>> {
-		public Factory(LuceneFieldCodec<F, String> codec) {
-			super( codec );
-		}
+    public static class Factory<F> extends AbstractLuceneCodecAwareSearchQueryElementFactory<RangePredicateBuilder, F, LuceneFieldCodec<F, String>> {
 
-		@Override
-		public Builder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( codec, scope, field );
-		}
-	}
+        public Factory(LuceneFieldCodec<F, String> codec) {
+            super(codec);
+        }
 
-	private static class Builder<F> extends AbstractBuilder<F> implements RangePredicateBuilder {
-		private final LuceneFieldCodec<F, String> codec;
+        @Override
+        public Builder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private Range<String> range;
+    private static class Builder<F> extends AbstractBuilder<F> implements RangePredicateBuilder {
 
-		private Builder(LuceneFieldCodec<F, String> codec, LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			this.codec = codec;
-		}
+        private final LuceneFieldCodec<F, String> codec;
 
-		@Override
-		public void within(Range<?> range, ValueModel lowerBoundModel, ValueModel upperBoundModel) {
-			this.range = convertAndEncode( codec, range, lowerBoundModel, upperBoundModel );
-		}
+        private Range<String> range;
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneTextRangePredicate( this );
-		}
+        private Builder(LuceneFieldCodec<F, String> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            this.codec = codec;
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			// Note that a range query only makes sense if only one token is returned by the analyzer
-			// and we should even consider forcing having a normalizer here, instead of supporting
-			// range queries on analyzed fields.
+        @Override
+        public void within(Range<?> range, ValueModel lowerBoundModel, ValueModel upperBoundModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return new TermRangeQuery(
-					absoluteFieldPath,
-					normalize( range.lowerBoundValue().orElse( null ) ),
-					normalize( range.upperBoundValue().orElse( null ) ),
-					// we force the true value if the bound is null because of some Lucene checks down the hill
-					RangeBoundInclusion.INCLUDED.equals( range.lowerBoundInclusion() )
-							|| !range.lowerBoundValue().isPresent(),
-					RangeBoundInclusion.INCLUDED.equals( range.upperBoundInclusion() )
-							|| !range.upperBoundValue().isPresent()
-			);
-		}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private BytesRef normalize(String value) {
-			if ( value == null ) {
-				return null;
-			}
-			Analyzer searchAnalyzerOrNormalizer = field.type().searchAnalyzerOrNormalizer();
-			return searchAnalyzerOrNormalizer.normalize( absoluteFieldPath, value );
-		}
-	}
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private BytesRef normalize(String value) {
+            if (value == null) {
+                return null;
+            }
+            Analyzer searchAnalyzerOrNormalizer = field.type().searchAnalyzerOrNormalizer();
+            return searchAnalyzerOrNormalizer.normalize(absoluteFieldPath, value);
+        }
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.search.definition.impl;
 
 import java.util.List;
-
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.definition.ProjectionDefinition;
@@ -22,68 +21,37 @@ import org.hibernate.search.util.common.reflect.spi.ValueCreateHandle;
 import org.hibernate.search.util.common.spi.ToStringTreeAppendable;
 import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
-public final class PojoConstructorProjectionDefinition<T>
-		implements CompositeProjectionDefinition<T>, ToStringTreeAppendable {
+public final class PojoConstructorProjectionDefinition<T> implements CompositeProjectionDefinition<T>, ToStringTreeAppendable {
 
-	private final PojoConstructorIdentifier constructor;
-	private final ValueCreateHandle<? extends T> handle;
-	private final List<BeanHolder<? extends ProjectionDefinition<?>>> parameters;
+    private final PojoConstructorIdentifier constructor;
 
-	public PojoConstructorProjectionDefinition(PojoConstructorIdentifier constructor,
-			ValueCreateHandle<? extends T> valueCreateHandle,
-			List<BeanHolder<? extends ProjectionDefinition<?>>> parameters) {
-		this.constructor = constructor;
-		this.handle = valueCreateHandle;
-		this.parameters = parameters;
-	}
+    private final ValueCreateHandle<? extends T> handle;
 
-	@Override
-	public String toString() {
-		return "PojoConstructorProjectionDefinition["
-				+ "constructor=" + constructor
-				+ ']';
-	}
+    private final List<BeanHolder<? extends ProjectionDefinition<?>>> parameters;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "constructor", constructor );
-		appender.startList( "parameters" );
-		for ( BeanHolder<? extends ProjectionDefinition<?>> innerDefinition : parameters ) {
-			appender.value( innerDefinition.get() );
-		}
-		appender.endList();
-	}
+    public PojoConstructorProjectionDefinition(PojoConstructorIdentifier constructor, ValueCreateHandle<? extends T> valueCreateHandle, List<BeanHolder<? extends ProjectionDefinition<?>>> parameters) {
+        this.constructor = constructor;
+        this.handle = valueCreateHandle;
+        this.parameters = parameters;
+    }
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.pushAll( BeanHolder::close, parameters );
-		}
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeProjectionValueStep<?, T> apply(CompositeProjectionInnerStep initialStep,
-			ProjectionDefinitionContext context) {
-		int i = -1;
-		try {
-			SearchProjection<?>[] innerProjections = new SearchProjection<?>[parameters.size()];
-			for ( i = 0; i < parameters.size(); i++ ) {
-				innerProjections[i] = parameters.get( i ).get().create( context );
-			}
-			return initialStep.from( innerProjections ).asArray( handle );
-		}
-		catch (ConstructorProjectionApplicationException e) {
-			// We already know what prevented from applying a projection constructor correctly,
-			// just add a parent constructor and re-throw:
-			ProjectionConstructorPath path = new ProjectionConstructorPath( constructor, e.projectionConstructorPath(), i );
-			throw ProjectionLog.INSTANCE.errorApplyingProjectionConstructor(
-					e.getCause().getMessage(), e, path
-			);
-		}
-		catch (SearchException e) {
-			ProjectionConstructorPath path = new ProjectionConstructorPath( constructor );
-			throw ProjectionLog.INSTANCE.errorApplyingProjectionConstructor( e.getMessage(), e, path );
-		}
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CompositeProjectionValueStep<?, T> apply(CompositeProjectionInnerStep initialStep, ProjectionDefinitionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

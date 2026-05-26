@@ -5,36 +5,31 @@
 package org.hibernate.search.backend.lucene.orchestration.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.work.impl.IndexingWork;
 import org.hibernate.search.engine.backend.orchestration.spi.BatchedWork;
 
 public class LuceneBatchedWork<T> implements BatchedWork<LuceneBatchedWorkProcessor> {
-	public final IndexingWork<T> work;
-	public final CompletableFuture<T> future;
 
-	LuceneBatchedWork(IndexingWork<T> work, CompletableFuture<T> future) {
-		this.work = work;
-		this.future = future;
-	}
+    public final IndexingWork<T> work;
 
-	@Override
-	public void submitTo(LuceneBatchedWorkProcessor processor) {
-		try {
-			T result = processor.submit( work );
-			future.complete( result );
-		}
-		catch (RuntimeException e) {
-			markAsFailed( e );
-		}
-	}
+    public final CompletableFuture<T> future;
 
-	@Override
-	public void markAsFailed(Throwable t) {
-		future.completeExceptionally( t );
-	}
+    LuceneBatchedWork(IndexingWork<T> work, CompletableFuture<T> future) {
+        this.work = work;
+        this.future = future;
+    }
 
-	String getQueuingKey() {
-		return work.getQueuingKey();
-	}
+    @Override
+    public void submitTo(LuceneBatchedWorkProcessor processor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void markAsFailed(Throwable t) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    String getQueuingKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

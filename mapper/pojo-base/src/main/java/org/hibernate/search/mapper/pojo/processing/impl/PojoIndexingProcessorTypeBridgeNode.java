@@ -18,29 +18,24 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoIndexingProcessorTypeBridgeNode<T> extends PojoIndexingProcessor<T> {
 
-	private final BeanHolder<? extends TypeBridge<? super T>> bridgeHolder;
+    private final BeanHolder<? extends TypeBridge<? super T>> bridgeHolder;
 
-	public PojoIndexingProcessorTypeBridgeNode(BeanHolder<? extends TypeBridge<? super T>> bridgeHolder) {
-		this.bridgeHolder = bridgeHolder;
-	}
+    public PojoIndexingProcessorTypeBridgeNode(BeanHolder<? extends TypeBridge<? super T>> bridgeHolder) {
+        this.bridgeHolder = bridgeHolder;
+    }
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( TypeBridge::close, bridgeHolder, BeanHolder::get );
-			closer.push( BeanHolder::close, bridgeHolder );
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "apply type bridge" );
-		appender.attribute( "bridge", bridgeHolder );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
-		bridgeHolder.get().write( target, source, context.sessionContext().typeBridgeWriteContext() );
-	}
-
+    @Override
+    public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

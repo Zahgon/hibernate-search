@@ -14,70 +14,72 @@ import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.ValueBinder;
 
 public final class DefaultEnumBridge<T extends Enum<T>> extends AbstractStringBasedDefaultBridge<T> {
 
-	private final Class<T> enumType;
+    private final Class<T> enumType;
 
-	public DefaultEnumBridge(Class<T> enumType) {
-		this.enumType = enumType;
-	}
+    public DefaultEnumBridge(Class<T> enumType) {
+        this.enumType = enumType;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + enumType.getName() + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(IdentifierBridge<?> other) {
-		return isCompatibleWith( (Object) other );
-	}
+    @Override
+    public boolean isCompatibleWith(IdentifierBridge<?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ValueBridge<?, ?> other) {
-		return isCompatibleWith( (Object) other );
-	}
+    @Override
+    public boolean isCompatibleWith(ValueBridge<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean isCompatibleWith(Object other) {
-		if ( !getClass().equals( other.getClass() ) ) {
-			return false;
-		}
-		DefaultEnumBridge<?> castedOther = (DefaultEnumBridge<?>) other;
-		return enumType.equals( castedOther.enumType );
-	}
+    private boolean isCompatibleWith(Object other) {
+        if (!getClass().equals(other.getClass())) {
+            return false;
+        }
+        DefaultEnumBridge<?> castedOther = (DefaultEnumBridge<?>) other;
+        return enumType.equals(castedOther.enumType);
+    }
 
-	@Override
-	protected String toString(T value) {
-		return value.name();
-	}
+    @Override
+    protected String toString(T value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected T fromString(String value) {
-		return ParseUtils.parseEnum( enumType, value );
-	}
+    @Override
+    protected T fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Binder implements IdentifierBinder, ValueBinder {
-		public static final Binder INSTANCE = new Binder();
+    public static class Binder implements IdentifierBinder, ValueBinder {
 
-		private Binder() {
-		}
+        public static final Binder INSTANCE = new Binder();
 
-		@Override
-		@SuppressWarnings({ "unchecked", "rawtypes" }) // The bridge resolver performs the checks using reflection
-		public void bind(IdentifierBindingContext<?> context) {
-			doBind( context, (Class) context.bridgedElement().rawType() );
-		}
+        private Binder() {
+        }
 
-		private <V extends Enum<V>> void doBind(IdentifierBindingContext<?> context, Class<V> enumType) {
-			context.bridge( enumType, new DefaultEnumBridge<>( enumType ) );
-		}
+        @Override
+        // The bridge resolver performs the checks using reflection
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        public void bind(IdentifierBindingContext<?> context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		@SuppressWarnings({ "unchecked", "rawtypes" }) // The bridge resolver performs the checks using reflection
-		public void bind(ValueBindingContext<?> context) {
-			doBind( context, (Class) context.bridgedElement().rawType() );
-		}
+        private <V extends Enum<V>> void doBind(IdentifierBindingContext<?> context, Class<V> enumType) {
+            context.bridge(enumType, new DefaultEnumBridge<>(enumType));
+        }
 
-		private <V extends Enum<V>> void doBind(ValueBindingContext<?> context, Class<V> enumType) {
-			context.bridge( enumType, new DefaultEnumBridge<>( enumType ) );
-		}
-	}
+        @Override
+        // The bridge resolver performs the checks using reflection
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        public void bind(ValueBindingContext<?> context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        private <V extends Enum<V>> void doBind(ValueBindingContext<?> context, Class<V> enumType) {
+            context.bridge(enumType, new DefaultEnumBridge<>(enumType));
+        }
+    }
 }

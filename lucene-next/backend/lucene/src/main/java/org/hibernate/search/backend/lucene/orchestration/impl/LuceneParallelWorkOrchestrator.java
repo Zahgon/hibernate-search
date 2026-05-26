@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.orchestration.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.work.impl.IndexManagementWork;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 
@@ -25,19 +24,16 @@ import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
  */
 public interface LuceneParallelWorkOrchestrator {
 
-	default <T> CompletableFuture<T> submit(IndexManagementWork<T> work, OperationSubmitter operationSubmitter) {
-		CompletableFuture<T> future = new CompletableFuture<>();
-		submit( future, work, operationSubmitter );
-		return future;
-	}
+    default <T> CompletableFuture<T> submit(IndexManagementWork<T> work, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	<T> void submit(CompletableFuture<T> future, IndexManagementWork<T> work, OperationSubmitter operationSubmitter);
+    <T> void submit(CompletableFuture<T> future, IndexManagementWork<T> work, OperationSubmitter operationSubmitter);
 
-	/**
-	 * Force a commit immediately.
-	 * <p>
-	 * The commit will be executed <strong>in the current thread</strong>.
-	 */
-	void forceCommitInCurrentThread();
-
+    /**
+     * Force a commit immediately.
+     * <p>
+     * The commit will be executed <strong>in the current thread</strong>.
+     */
+    void forceCommitInCurrentThread();
 }

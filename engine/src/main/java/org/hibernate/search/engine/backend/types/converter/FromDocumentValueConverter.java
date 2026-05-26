@@ -15,24 +15,23 @@ import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentV
  */
 public interface FromDocumentValueConverter<F, V> {
 
-	/**
-	 * @param value The value to convert from the document model.
-	 * @param context A context that can be
-	 * {@link FromDocumentValueConvertContext#extension(FromDocumentValueConvertContextExtension) extended}
-	 * to a more useful type, giving access to such things as a Hibernate ORM Session (if using the Hibernate ORM mapper).
-	 * @return The converted value.
-	 */
-	V fromDocumentValue(F value, FromDocumentValueConvertContext context);
+    /**
+     * @param value The value to convert from the document model.
+     * @param context A context that can be
+     * {@link FromDocumentValueConvertContext#extension(FromDocumentValueConvertContextExtension) extended}
+     * to a more useful type, giving access to such things as a Hibernate ORM Session (if using the Hibernate ORM mapper).
+     * @return The converted value.
+     */
+    V fromDocumentValue(F value, FromDocumentValueConvertContext context);
 
-	/**
-	 * @param other Another {@link FromDocumentValueConverter}, never {@code null}.
-	 * @return {@code true} if the given object behaves exactly the same as this object,
-	 * i.e. its {@link #fromDocumentValue(Object, FromDocumentValueConvertContext)}
-	 * method is guaranteed to always return the same value as this object's
-	 * when given the same input. {@code false} otherwise, or when in doubt.
-	 */
-	default boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
-		return equals( other );
-	}
-
+    /**
+     * @param other Another {@link FromDocumentValueConverter}, never {@code null}.
+     * @return {@code true} if the given object behaves exactly the same as this object,
+     * i.e. its {@link #fromDocumentValue(Object, FromDocumentValueConvertContext)}
+     * method is guaranteed to always return the same value as this object's
+     * when given the same input. {@code false} otherwise, or when in doubt.
+     */
+    default boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

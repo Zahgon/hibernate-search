@@ -7,19 +7,18 @@ package org.hibernate.search.backend.elasticsearch.search.aggregation.dsl.impl;
 import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.dsl.AggregationFinalStep;
 import org.hibernate.search.engine.search.aggregation.spi.SearchAggregationBuilder;
-
 import com.google.gson.JsonObject;
 
-final class ElasticsearchJsonAggregationFinalStep
-		implements AggregationFinalStep<JsonObject> {
-	private final SearchAggregationBuilder<JsonObject> builder;
+final class ElasticsearchJsonAggregationFinalStep implements AggregationFinalStep<JsonObject> {
 
-	ElasticsearchJsonAggregationFinalStep(SearchAggregationBuilder<JsonObject> builder) {
-		this.builder = builder;
-	}
+    private final SearchAggregationBuilder<JsonObject> builder;
 
-	@Override
-	public SearchAggregation<JsonObject> toAggregation() {
-		return builder.build();
-	}
+    ElasticsearchJsonAggregationFinalStep(SearchAggregationBuilder<JsonObject> builder) {
+        this.builder = builder;
+    }
+
+    @Override
+    public SearchAggregation<JsonObject> toAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

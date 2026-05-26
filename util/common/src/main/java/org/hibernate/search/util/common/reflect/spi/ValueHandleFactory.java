@@ -11,28 +11,27 @@ import java.lang.reflect.Method;
 
 public interface ValueHandleFactory {
 
-	<T> ValueCreateHandle<T> createForConstructor(Constructor<T> constructor) throws IllegalAccessException;
+    <T> ValueCreateHandle<T> createForConstructor(Constructor<T> constructor) throws IllegalAccessException;
 
-	ValueReadHandle<?> createForField(Field field) throws IllegalAccessException;
+    ValueReadHandle<?> createForField(Field field) throws IllegalAccessException;
 
-	ValueReadHandle<?> createForMethod(Method method) throws IllegalAccessException;
+    ValueReadHandle<?> createForMethod(Method method) throws IllegalAccessException;
 
-	/**
-	 * @return A factory producing value handles that rely on {@code java.lang.reflect}
-	 * to get the value of a field/method,
-	 * i.e {@link Method#invoke(Object, Object...)} and {@link Field#get(Object)}.
-	 */
-	static ValueHandleFactory usingJavaLangReflect() {
-		return new MemberValueHandleFactory();
-	}
+    /**
+     * @return A factory producing value handles that rely on {@code java.lang.reflect}
+     * to get the value of a field/method,
+     * i.e {@link Method#invoke(Object, Object...)} and {@link Field#get(Object)}.
+     */
+    static ValueHandleFactory usingJavaLangReflect() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param lookup A lookup with sufficient access rights to access all relevant fields and methods.
-	 * @return A factory producing value handles that rely on {@link java.lang.invoke.MethodHandle}
-	 * to get the value of a field/method.
-	 */
-	static ValueHandleFactory usingMethodHandle(MethodHandles.Lookup lookup) {
-		return new MethodHandleValueHandleFactory( lookup );
-	}
-
+    /**
+     * @param lookup A lookup with sufficient access rights to access all relevant fields and methods.
+     * @return A factory producing value handles that rely on {@link java.lang.invoke.MethodHandle}
+     * to get the value of a field/method.
+     */
+    static ValueHandleFactory usingMethodHandle(MethodHandles.Lookup lookup) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

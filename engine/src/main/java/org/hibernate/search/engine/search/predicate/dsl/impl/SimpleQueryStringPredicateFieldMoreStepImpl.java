@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.engine.search.predicate.dsl.SimpleQueryFlag;
 import org.hibernate.search.engine.search.predicate.dsl.SimpleQueryStringPredicateFieldMoreStep;
 import org.hibernate.search.engine.search.predicate.dsl.SimpleQueryStringPredicateOptionsStep;
@@ -16,66 +15,53 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslCo
 import org.hibernate.search.engine.search.predicate.spi.CommonQueryStringPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.SimpleQueryStringPredicateBuilder;
 
-class SimpleQueryStringPredicateFieldMoreStepImpl<SR>
-		implements SimpleQueryStringPredicateFieldMoreStep<
-				SR,
-				SimpleQueryStringPredicateFieldMoreStepImpl<SR>,
-				SimpleQueryStringPredicateOptionsStep<?>> {
+class SimpleQueryStringPredicateFieldMoreStepImpl<SR> implements SimpleQueryStringPredicateFieldMoreStep<SR, SimpleQueryStringPredicateFieldMoreStepImpl<SR>, SimpleQueryStringPredicateOptionsStep<?>> {
 
-	private final CommonState commonState;
+    private final CommonState commonState;
 
-	private final List<CommonQueryStringPredicateBuilder.FieldState> fieldStates = new ArrayList<>();
+    private final List<CommonQueryStringPredicateBuilder.FieldState> fieldStates = new ArrayList<>();
 
-	SimpleQueryStringPredicateFieldMoreStepImpl(CommonState commonState, List<String> fieldPaths) {
-		this.commonState = commonState;
-		for ( String fieldPath : fieldPaths ) {
-			fieldStates.add( commonState.field( fieldPath ) );
-		}
-	}
+    SimpleQueryStringPredicateFieldMoreStepImpl(CommonState commonState, List<String> fieldPaths) {
+        this.commonState = commonState;
+        for (String fieldPath : fieldPaths) {
+            fieldStates.add(commonState.field(fieldPath));
+        }
+    }
 
-	@Override
-	public SimpleQueryStringPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
-		return new SimpleQueryStringPredicateFieldMoreStepImpl<>( commonState, Arrays.asList( fieldPaths ) );
-	}
+    @Override
+    public SimpleQueryStringPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringPredicateFieldMoreStepImpl<SR> boost(float boost) {
-		fieldStates.forEach( c -> c.boost( boost ) );
-		return this;
-	}
+    @Override
+    public SimpleQueryStringPredicateFieldMoreStepImpl<SR> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringPredicateOptionsStep<?> matching(String queryString) {
-		return commonState.matching( queryString );
-	}
+    @Override
+    public SimpleQueryStringPredicateOptionsStep<?> matching(String queryString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static class CommonState
-			extends
-			AbstractStringQueryPredicateCommonState<CommonState,
-					SimpleQueryStringPredicateOptionsStep<CommonState>,
-					SimpleQueryStringPredicateBuilder>
-			implements SimpleQueryStringPredicateOptionsStep<CommonState> {
+    static class CommonState extends AbstractStringQueryPredicateCommonState<CommonState, SimpleQueryStringPredicateOptionsStep<CommonState>, SimpleQueryStringPredicateBuilder> implements SimpleQueryStringPredicateOptionsStep<CommonState> {
 
-		CommonState(SearchPredicateDslContext<?> dslContext) {
-			super( dslContext );
-		}
+        CommonState(SearchPredicateDslContext<?> dslContext) {
+            super(dslContext);
+        }
 
-		@Override
-		protected SimpleQueryStringPredicateBuilder createBuilder(SearchPredicateDslContext<?> dslContext) {
-			return dslContext.scope().predicateBuilders().simpleQueryString();
-		}
+        @Override
+        protected SimpleQueryStringPredicateBuilder createBuilder(SearchPredicateDslContext<?> dslContext) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState flags(Set<SimpleQueryFlag> flags) {
-			builder.flags( flags );
-			return this;
-		}
+        @Override
+        public CommonState flags(Set<SimpleQueryFlag> flags) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected CommonState thisAsT() {
-			return this;
-		}
-
-	}
-
+        @Override
+        protected CommonState thisAsT() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

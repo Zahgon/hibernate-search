@@ -8,67 +8,59 @@ import org.hibernate.search.backend.elasticsearch.client.common.spi.Elasticsearc
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchResponse;
 import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
 import org.hibernate.search.engine.common.timing.Deadline;
-
 import com.google.gson.JsonObject;
 
 public class ScrollWork<R> extends AbstractNonBulkableWork<R> {
 
-	private final ElasticsearchSearchResultExtractor<R> resultExtractor;
-	private final Deadline deadline;
-	private final boolean failOnDeadline;
+    private final ElasticsearchSearchResultExtractor<R> resultExtractor;
 
-	protected ScrollWork(Builder<R> builder) {
-		super( builder );
-		this.resultExtractor = builder.resultExtractor;
-		this.deadline = builder.deadline;
-		this.failOnDeadline = builder.failOnDeadline;
-	}
+    private final Deadline deadline;
 
-	@Override
-	protected R generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		JsonObject body = response.body();
-		return resultExtractor.extract( body, failOnDeadline ? deadline : null );
-	}
+    private final boolean failOnDeadline;
 
-	public static class Builder<R>
-			extends AbstractBuilder<Builder<R>> {
-		private final String scrollId;
-		private final String scrollTimeout;
-		private final ElasticsearchSearchResultExtractor<R> resultExtractor;
-		private Deadline deadline;
-		private boolean failOnDeadline;
+    protected ScrollWork(Builder<R> builder) {
+        super(builder);
+        this.resultExtractor = builder.resultExtractor;
+        this.deadline = builder.deadline;
+        this.failOnDeadline = builder.failOnDeadline;
+    }
 
-		public Builder(String scrollId, String scrollTimeout, ElasticsearchSearchResultExtractor<R> resultExtractor) {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-			this.scrollId = scrollId;
-			this.scrollTimeout = scrollTimeout;
-			this.resultExtractor = resultExtractor;
-		}
+    @Override
+    protected R generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder<R> deadline(Deadline deadline, boolean failOnDeadline) {
-			this.deadline = deadline;
-			this.failOnDeadline = failOnDeadline;
-			return this;
-		}
+    public static class Builder<R> extends AbstractBuilder<Builder<R>> {
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			JsonObject body = new JsonObject();
-			body.addProperty( "scroll_id", scrollId );
-			body.addProperty( "scroll", scrollTimeout );
+        private final String scrollId;
 
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.post()
-							.pathComponent( Paths._SEARCH )
-							.pathComponent( Paths.SCROLL )
-							.body( body );
+        private final String scrollTimeout;
 
-			return builder.build();
-		}
+        private final ElasticsearchSearchResultExtractor<R> resultExtractor;
 
-		@Override
-		public ScrollWork<R> build() {
-			return new ScrollWork<>( this );
-		}
-	}
+        private Deadline deadline;
+
+        private boolean failOnDeadline;
+
+        public Builder(String scrollId, String scrollTimeout, ElasticsearchSearchResultExtractor<R> resultExtractor) {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+            this.scrollId = scrollId;
+            this.scrollTimeout = scrollTimeout;
+            this.resultExtractor = resultExtractor;
+        }
+
+        public Builder<R> deadline(Deadline deadline, boolean failOnDeadline) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public ScrollWork<R> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

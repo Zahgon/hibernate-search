@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.identity.impl;
 
 import java.util.function.Supplier;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeMappingContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
 import org.hibernate.search.mapper.pojo.logging.impl.IndexingLog;
@@ -16,51 +15,47 @@ import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
 
 public final class UnmappedPropertyIdentifierMapping<I, E> implements IdentifierMappingImplementor<I, E> {
 
-	private final PojoCaster<? super I> caster;
-	private final ValueReadHandle<I> property;
-	private final PojoRawTypeIdentifier<E> typeIdentifier;
+    private final PojoCaster<? super I> caster;
 
-	public UnmappedPropertyIdentifierMapping(PojoRawTypeIdentifier<E> typeIdentifier, PojoCaster<? super I> caster,
-			ValueReadHandle<I> property) {
-		this.caster = caster;
-		this.property = property;
-		this.typeIdentifier = typeIdentifier;
-	}
+    private final ValueReadHandle<I> property;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[entityType = " + typeIdentifier + "]";
-	}
+    private final PojoRawTypeIdentifier<E> typeIdentifier;
 
-	@Override
-	public void close() {
-		// Nothing to close
-	}
+    public UnmappedPropertyIdentifierMapping(PojoRawTypeIdentifier<E> typeIdentifier, PojoCaster<? super I> caster, ValueReadHandle<I> property) {
+        this.caster = caster;
+        this.property = property;
+        this.typeIdentifier = typeIdentifier;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // We can only cast to the raw type, if I is generic we need an unchecked cast
-	public I getIdentifier(Object providedId, Supplier<? extends E> entitySupplierOrNull) {
-		if ( providedId != null ) {
-			return (I) caster.cast( providedId );
-		}
-		if ( entitySupplierOrNull == null ) {
-			throw IndexingLog.INSTANCE.nullProvidedIdentifierAndEntity();
-		}
-		return property.get( entitySupplierOrNull.get() );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public I getIdentifierOrNull(E entity) {
-		return property.get( entity );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toDocumentIdentifier(Object identifier, BridgeMappingContext context) {
-		throw MappingLog.INSTANCE.cannotWorkWithIdentifierBecauseUnconfiguredIdentifierMapping( typeIdentifier );
-	}
+    @Override
+    // We can only cast to the raw type, if I is generic we need an unchecked cast
+    @SuppressWarnings("unchecked")
+    public I getIdentifier(Object providedId, Supplier<? extends E> entitySupplierOrNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public I fromDocumentIdentifier(String documentId, BridgeSessionContext sessionContext) {
-		throw MappingLog.INSTANCE.cannotWorkWithIdentifierBecauseUnconfiguredIdentifierMapping( typeIdentifier );
-	}
+    @Override
+    public I getIdentifierOrNull(E entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toDocumentIdentifier(Object identifier, BridgeMappingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public I fromDocumentIdentifier(String documentId, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

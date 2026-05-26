@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.orchestration.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.work.impl.BulkableWork;
 import org.hibernate.search.engine.backend.orchestration.spi.BatchedWorkProcessor;
 
@@ -24,36 +23,31 @@ import org.hibernate.search.engine.backend.orchestration.spi.BatchedWorkProcesso
  */
 class ElasticsearchBatchedWorkProcessor implements BatchedWorkProcessor {
 
-	private final ElasticsearchWorkSequenceBuilder sequenceBuilder;
-	private final ElasticsearchWorkBulker bulker;
+    private final ElasticsearchWorkSequenceBuilder sequenceBuilder;
 
-	public ElasticsearchBatchedWorkProcessor(ElasticsearchWorkSequenceBuilder sequenceBuilder,
-			ElasticsearchWorkBulker bulker) {
-		this.sequenceBuilder = sequenceBuilder;
-		this.bulker = bulker;
-	}
+    private final ElasticsearchWorkBulker bulker;
 
-	@Override
-	public void beginBatch() {
-		bulker.reset();
-		sequenceBuilder.init( CompletableFuture.completedFuture( null ) );
-	}
+    public ElasticsearchBatchedWorkProcessor(ElasticsearchWorkSequenceBuilder sequenceBuilder, ElasticsearchWorkBulker bulker) {
+        this.sequenceBuilder = sequenceBuilder;
+        this.bulker = bulker;
+    }
 
-	public <T> CompletableFuture<T> submit(BulkableWork<T> work) {
-		return bulker.add( work );
-	}
+    @Override
+    public void beginBatch() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<Void> endBatch() {
-		CompletableFuture<Void> future = sequenceBuilder.build();
-		bulker.finalizeBulkWork();
-		// Sequence futures are not expected to fail even if one work fails,
-		// so we can safely return this future directly.
-		return future;
-	}
+    public <T> CompletableFuture<T> submit(BulkableWork<T> work) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void complete() {
-		// Nothing to do: if all individual works have completed, we're done.
-	}
+    @Override
+    public CompletableFuture<Void> endBatch() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void complete() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.scope.impl;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.engine.backend.index.IndexManager;
 import org.hibernate.search.engine.common.EntityReference;
 import org.hibernate.search.engine.search.aggregation.dsl.SearchAggregationFactory;
@@ -20,58 +19,53 @@ import org.hibernate.search.scope.spi.V5MigrationSearchScope;
 
 public class V5MigrationOrmSearchScopeAdapter implements V5MigrationSearchScope {
 
-	private final SearchScope<?> delegate;
+    private final SearchScope<?> delegate;
 
-	public V5MigrationOrmSearchScopeAdapter(SearchScope<?> delegate) {
-		this.delegate = delegate;
-	}
+    public V5MigrationOrmSearchScopeAdapter(SearchScope<?> delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public Set<Class<?>> targetTypes() {
-		return delegate.includedTypes().stream().map( SearchIndexedEntity::javaClass ).collect( Collectors.toSet() );
-	}
+    @Override
+    public Set<Class<?>> targetTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<IndexManager> indexManagers() {
-		return delegate.includedTypes().stream().map( SearchIndexedEntity::indexManager ).collect( Collectors.toSet() );
-	}
+    @Override
+    public Set<IndexManager> indexManagers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchPredicateFactory predicate() {
-		return delegate.predicate();
-	}
+    @Override
+    public SearchPredicateFactory predicate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSortFactory sort() {
-		return delegate.sort();
-	}
+    @Override
+    public SearchSortFactory sort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjectionFactory<?, ?> projection() {
-		return delegate.projection();
-	}
+    @Override
+    public SearchProjectionFactory<?, ?> projection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjection<Object> idProjection() {
-		var factory = delegate.projection();
-		// Not using factory.id() because that one throws an exception if IDs have inconsistent types.
-		return factory.composite().from( factory.entityReference() )
-				.as( EntityReference::id ).toProjection();
-	}
+    @Override
+    public SearchProjection<Object> idProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjection<? extends Class<?>> objectClassProjection() {
-		var factory = delegate.projection();
-		return factory.composite().from( factory.entityReference() )
-				.as( EntityReference::type ).toProjection();
-	}
+    @Override
+    public SearchProjection<? extends Class<?>> objectClassProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchAggregationFactory aggregation() {
-		return delegate.aggregation();
-	}
+    @Override
+    public SearchAggregationFactory aggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SearchScope<?> toSearchScope() {
-		return delegate;
-	}
+    public SearchScope<?> toSearchScope() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

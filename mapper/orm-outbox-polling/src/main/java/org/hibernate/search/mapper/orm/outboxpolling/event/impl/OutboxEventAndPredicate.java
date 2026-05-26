@@ -8,27 +8,26 @@ import org.hibernate.query.Query;
 
 public class OutboxEventAndPredicate implements OutboxEventPredicate {
 
-	public static OutboxEventAndPredicate of(OutboxEventPredicate left, OutboxEventPredicate right) {
-		return new OutboxEventAndPredicate( left, right );
-	}
+    public static OutboxEventAndPredicate of(OutboxEventPredicate left, OutboxEventPredicate right) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final OutboxEventPredicate left;
-	private final OutboxEventPredicate right;
+    private final OutboxEventPredicate left;
 
-	private OutboxEventAndPredicate(OutboxEventPredicate left, OutboxEventPredicate right) {
-		this.left = left;
-		this.right = right;
-	}
+    private final OutboxEventPredicate right;
 
-	@Override
-	public String queryPart(String eventAlias) {
-		return "(" + left.queryPart( eventAlias ) + ") and (" + right.queryPart( eventAlias ) + ")";
-	}
+    private OutboxEventAndPredicate(OutboxEventPredicate left, OutboxEventPredicate right) {
+        this.left = left;
+        this.right = right;
+    }
 
-	@Override
-	public void setParams(Query<?> query) {
-		// Assuming no conflicts...
-		left.setParams( query );
-		right.setParams( query );
-	}
+    @Override
+    public String queryPart(String eventAlias) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void setParams(Query<?> query) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

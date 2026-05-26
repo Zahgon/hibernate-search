@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.index.impl;
 
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.ElasticsearchBackend;
 import org.hibernate.search.backend.elasticsearch.analysis.impl.ElasticsearchAnalysisPerformer;
 import org.hibernate.search.backend.elasticsearch.cfg.ElasticsearchIndexSettings;
@@ -50,196 +49,107 @@ import org.hibernate.search.engine.common.timing.spi.TimingSource;
 import org.hibernate.search.engine.reporting.FailureHandler;
 import org.hibernate.search.engine.search.loading.spi.SearchLoadingContextBuilder;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import com.google.gson.Gson;
 
 public class IndexManagerBackendContext implements SearchBackendContext, WorkExecutionBackendContext {
 
-	private static final OptionalConfigurationProperty<IndexStatus> LIFECYCLE_MINIMAL_REQUIRED_STATUS =
-			ConfigurationProperty.forKey( ElasticsearchIndexSettings.SCHEMA_MANAGEMENT_MINIMAL_REQUIRED_STATUS )
-					.as( IndexStatus.class, IndexStatus::of )
-					.build();
+    private static final OptionalConfigurationProperty<IndexStatus> LIFECYCLE_MINIMAL_REQUIRED_STATUS = ConfigurationProperty.forKey(ElasticsearchIndexSettings.SCHEMA_MANAGEMENT_MINIMAL_REQUIRED_STATUS).as(IndexStatus.class, IndexStatus::of).build();
 
-	private static final ConfigurationProperty<Integer> LIFECYCLE_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT =
-			ConfigurationProperty.forKey( ElasticsearchIndexSettings.SCHEMA_MANAGEMENT_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT )
-					.asIntegerPositiveOrZero()
-					.withDefault( ElasticsearchIndexSettings.Defaults.SCHEMA_MANAGEMENT_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT )
-					.build();
+    private static final ConfigurationProperty<Integer> LIFECYCLE_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT = ConfigurationProperty.forKey(ElasticsearchIndexSettings.SCHEMA_MANAGEMENT_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT).asIntegerPositiveOrZero().withDefault(ElasticsearchIndexSettings.Defaults.SCHEMA_MANAGEMENT_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT).build();
 
-	private final ElasticsearchBackend backendAPI;
-	private final EventContext eventContext;
-	private final BackendThreads threads;
-	private final ElasticsearchLink link;
-	private final Gson userFacingGson;
-	private final MultiTenancyStrategy multiTenancyStrategy;
-	private final FailureHandler failureHandler;
-	private final TimingSource timingSource;
-	private final ElasticsearchParallelWorkOrchestrator generalPurposeOrchestrator;
-	private final ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider;
+    private final ElasticsearchBackend backendAPI;
 
-	public IndexManagerBackendContext(ElasticsearchBackend backendAPI,
-			EventContext eventContext,
-			BackendThreads threads, ElasticsearchLink link, Gson userFacingGson,
-			MultiTenancyStrategy multiTenancyStrategy,
-			FailureHandler failureHandler,
-			TimingSource timingSource,
-			ElasticsearchParallelWorkOrchestrator generalPurposeOrchestrator,
-			ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider) {
-		this.backendAPI = backendAPI;
-		this.eventContext = eventContext;
-		this.threads = threads;
-		this.link = link;
-		this.userFacingGson = userFacingGson;
-		this.multiTenancyStrategy = multiTenancyStrategy;
-		this.failureHandler = failureHandler;
-		this.timingSource = timingSource;
-		this.generalPurposeOrchestrator = generalPurposeOrchestrator;
-		this.propertyMappingValidatorProvider = propertyMappingValidatorProvider;
-	}
+    private final EventContext eventContext;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + eventContext + "]";
-	}
+    private final BackendThreads threads;
 
-	@Override
-	public IndexIndexingPlan createIndexingPlan(
-			ElasticsearchSerialWorkOrchestrator orchestrator,
-			WorkExecutionIndexManagerContext indexManagerContext,
-			BackendSessionContext sessionContext,
-			DocumentRefreshStrategy refreshStrategy) {
-		multiTenancyStrategy.documentIdHelper().checkTenantId( sessionContext.tenantIdentifier(), eventContext );
+    private final ElasticsearchLink link;
 
-		return new ElasticsearchIndexIndexingPlan(
-				link.getWorkFactory(), orchestrator,
-				indexManagerContext,
-				sessionContext,
-				refreshStrategy
-		);
-	}
+    private final Gson userFacingGson;
 
-	@Override
-	public IndexIndexer createIndexer(
-			ElasticsearchSerialWorkOrchestrator orchestrator,
-			WorkExecutionIndexManagerContext indexManagerContext,
-			BackendSessionContext sessionContext) {
-		multiTenancyStrategy.documentIdHelper().checkTenantId( sessionContext.tenantIdentifier(), eventContext );
+    private final MultiTenancyStrategy multiTenancyStrategy;
 
-		return new ElasticsearchIndexIndexer( link.getWorkFactory(), orchestrator,
-				indexManagerContext, sessionContext
-		);
-	}
+    private final FailureHandler failureHandler;
 
-	@Override
-	public IndexWorkspace createWorkspace(WorkExecutionIndexManagerContext indexManagerContext, Set<String> tenantIds) {
-		multiTenancyStrategy.documentIdHelper().checkTenantId( tenantIds, eventContext );
+    private final TimingSource timingSource;
 
-		return new ElasticsearchIndexWorkspace(
-				link.getWorkFactory(), multiTenancyStrategy, generalPurposeOrchestrator,
-				indexManagerContext, tenantIds
-		);
-	}
+    private final ElasticsearchParallelWorkOrchestrator generalPurposeOrchestrator;
 
-	@Override
-	public SearchProjectionBackendContext getSearchProjectionBackendContext() {
-		return link.getSearchProjectionBackendContext();
-	}
+    private final ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider;
 
-	@Override
-	public <SR> ElasticsearchSearchQueryIndexScope<SR, ?> createSearchContext(BackendMappingContext mappingContext,
-			Class<SR> rootScopeType,
-			Set<ElasticsearchIndexModel> indexModels) {
-		return new ElasticsearchSearchIndexScopeImpl<>(
-				mappingContext,
-				rootScopeType,
-				this,
-				userFacingGson, link.getSearchSyntax(),
-				multiTenancyStrategy,
-				timingSource,
-				indexModels
-		);
-	}
+    public IndexManagerBackendContext(ElasticsearchBackend backendAPI, EventContext eventContext, BackendThreads threads, ElasticsearchLink link, Gson userFacingGson, MultiTenancyStrategy multiTenancyStrategy, FailureHandler failureHandler, TimingSource timingSource, ElasticsearchParallelWorkOrchestrator generalPurposeOrchestrator, ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider) {
+        this.backendAPI = backendAPI;
+        this.eventContext = eventContext;
+        this.threads = threads;
+        this.link = link;
+        this.userFacingGson = userFacingGson;
+        this.multiTenancyStrategy = multiTenancyStrategy;
+        this.failureHandler = failureHandler;
+        this.timingSource = timingSource;
+        this.generalPurposeOrchestrator = generalPurposeOrchestrator;
+        this.propertyMappingValidatorProvider = propertyMappingValidatorProvider;
+    }
 
-	@Override
-	public <H> ElasticsearchSearchQueryBuilder<H> createSearchQueryBuilder(
-			ElasticsearchSearchIndexScope<?> scope,
-			BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<?, ?> loadingContextBuilder,
-			ElasticsearchSearchProjection<H> rootProjection) {
-		multiTenancyStrategy.documentIdHelper().checkTenantId( sessionContext.tenantIdentifier(), eventContext );
-		return new ElasticsearchSearchQueryBuilder<>(
-				link.getWorkFactory(), link.getSearchResultExtractorFactory(),
-				generalPurposeOrchestrator,
-				scope, sessionContext, loadingContextBuilder, rootProjection,
-				link.getScrollTimeout()
-		);
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ElasticsearchBackend toAPI() {
-		return backendAPI;
-	}
+    @Override
+    public IndexIndexingPlan createIndexingPlan(ElasticsearchSerialWorkOrchestrator orchestrator, WorkExecutionIndexManagerContext indexManagerContext, BackendSessionContext sessionContext, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	EventContext getEventContext() {
-		return eventContext;
-	}
+    @Override
+    public IndexIndexer createIndexer(ElasticsearchSerialWorkOrchestrator orchestrator, WorkExecutionIndexManagerContext indexManagerContext, BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ElasticsearchIndexSchemaManager createSchemaManager(ElasticsearchIndexModel model,
-			ConfigurationPropertySource indexPropertySource) {
-		LowLevelIndexMetadataBuilder builder = new LowLevelIndexMetadataBuilder(
-				link.getGsonProvider(),
-				link.getIndexMetadataSyntax(),
-				model.names()
-		);
-		model.contributeLowLevelMetadata( builder );
-		IndexMetadata expectedMetadata = builder.build();
+    @Override
+    public IndexWorkspace createWorkspace(WorkExecutionIndexManagerContext indexManagerContext, Set<String> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		boolean isStatusCheckPossible = link.getWorkFactory().isWaitForIndexStatusSupported();
+    @Override
+    public SearchProjectionBackendContext getSearchProjectionBackendContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchIndexLifecycleExecutionOptions executionOptions = new ElasticsearchIndexLifecycleExecutionOptions(
-				LIFECYCLE_MINIMAL_REQUIRED_STATUS.getAndTransform( indexPropertySource, optional -> {
-					if ( optional.isPresent() && !isStatusCheckPossible ) {
-						// Forbid explicit requirement when the status check is impossible
-						throw ElasticsearchMiscLog.INSTANCE.cannotRequireIndexStatus();
-					}
-					else if ( !optional.isPresent() && isStatusCheckPossible ) {
-						// Default requirement when the status check is possible
-						return Optional.of( IndexStatus.YELLOW );
-					}
-					else {
-						return optional;
-					}
-				} ).orElse( null ),
-				LIFECYCLE_MINIMAL_REQUIRED_STATUS_WAIT_TIMEOUT.get( indexPropertySource )
-		);
+    @Override
+    public <SR> ElasticsearchSearchQueryIndexScope<SR, ?> createSearchContext(BackendMappingContext mappingContext, Class<SR> rootScopeType, Set<ElasticsearchIndexModel> indexModels) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new ElasticsearchIndexSchemaManager(
-				backendAPI.name(),
-				userFacingGson,
-				link.getWorkFactory(), generalPurposeOrchestrator,
-				link.getIndexLayoutStrategy(), model.names(), expectedMetadata,
-				executionOptions,
-				propertyMappingValidatorProvider
-		);
-	}
+    @Override
+    public <H> ElasticsearchSearchQueryBuilder<H> createSearchQueryBuilder(ElasticsearchSearchIndexScope<?> scope, BackendSessionContext sessionContext, SearchLoadingContextBuilder<?, ?> loadingContextBuilder, ElasticsearchSearchProjection<H> rootProjection) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ElasticsearchBatchingWorkOrchestrator createIndexingOrchestrator(String indexName) {
-		return new ElasticsearchBatchingWorkOrchestrator(
-				"Elasticsearch indexing orchestrator for index " + indexName,
-				threads, link,
-				failureHandler
-		);
-	}
+    ElasticsearchBackend toAPI() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	String toElasticsearchId(String tenantId, String id) {
-		return multiTenancyStrategy.documentIdHelper().toElasticsearchId( tenantId, id );
-	}
+    EventContext getEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ElasticsearchAnalysisPerformer createAnalysisPerformer(ElasticsearchIndexModel model) {
-		return new ElasticsearchAnalysisPerformer( model, link.getWorkFactory(), generalPurposeOrchestrator );
-	}
+    ElasticsearchIndexSchemaManager createSchemaManager(ElasticsearchIndexModel model, ConfigurationPropertySource indexPropertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public IndexNames createIndexNames(String hibernateSearchIndexName, String mappedTypeName) {
-		return link.createIndexNames( hibernateSearchIndexName, mappedTypeName );
-	}
+    ElasticsearchBatchingWorkOrchestrator createIndexingOrchestrator(String indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    String toElasticsearchId(String tenantId, String id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public ElasticsearchAnalysisPerformer createAnalysisPerformer(ElasticsearchIndexModel model) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public IndexNames createIndexNames(String hibernateSearchIndexName, String mappedTypeName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -11,28 +11,28 @@ import org.hibernate.search.mapper.pojo.model.dependency.impl.PojoPropertyIndexi
 import org.hibernate.search.mapper.pojo.model.impl.PojoModelPropertyRootElement;
 
 public final class BoundPropertyBridge<P> {
-	private final BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder;
-	private final PojoModelPropertyRootElement<P> pojoModelRootElement;
-	private final PojoPropertyIndexingDependencyConfigurationContextImpl<P> pojoDependencyContext;
 
-	BoundPropertyBridge(BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder,
-			PojoModelPropertyRootElement<P> pojoModelRootElement,
-			PojoPropertyIndexingDependencyConfigurationContextImpl<P> pojoDependencyContext) {
-		this.bridgeHolder = bridgeHolder;
-		this.pojoModelRootElement = pojoModelRootElement;
-		this.pojoDependencyContext = pojoDependencyContext;
-	}
+    private final BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder;
 
-	public BeanHolder<? extends PropertyBridge<? super P>> getBridgeHolder() {
-		return bridgeHolder;
-	}
+    private final PojoModelPropertyRootElement<P> pojoModelRootElement;
 
-	public PropertyBridge<? super P> getBridge() {
-		return bridgeHolder.get();
-	}
+    private final PojoPropertyIndexingDependencyConfigurationContextImpl<P> pojoDependencyContext;
 
-	public void contributeDependencies(PojoIndexingDependencyCollectorPropertyNode<?, P> dependencyCollector) {
-		pojoModelRootElement.contributeDependencies( dependencyCollector );
-		pojoDependencyContext.contributeDependencies( dependencyCollector );
-	}
+    BoundPropertyBridge(BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder, PojoModelPropertyRootElement<P> pojoModelRootElement, PojoPropertyIndexingDependencyConfigurationContextImpl<P> pojoDependencyContext) {
+        this.bridgeHolder = bridgeHolder;
+        this.pojoModelRootElement = pojoModelRootElement;
+        this.pojoDependencyContext = pojoDependencyContext;
+    }
+
+    public BeanHolder<? extends PropertyBridge<? super P>> getBridgeHolder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PropertyBridge<? super P> getBridge() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void contributeDependencies(PojoIndexingDependencyCollectorPropertyNode<?, P> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

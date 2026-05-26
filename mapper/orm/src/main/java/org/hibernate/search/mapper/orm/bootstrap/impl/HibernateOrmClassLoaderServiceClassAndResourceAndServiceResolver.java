@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.hibernate.boot.registry.classloading.spi.ClassLoadingException;
 import org.hibernate.search.engine.environment.classpath.spi.AggregatedClassLoader;
 import org.hibernate.search.engine.environment.classpath.spi.ClassResolver;
@@ -25,101 +24,61 @@ import org.hibernate.search.engine.environment.classpath.spi.ServiceResolver;
  *
  * @author Hardy Ferentschik
  */
-final class HibernateOrmClassLoaderServiceClassAndResourceAndServiceResolver
-		implements ClassResolver, ResourceResolver, ServiceResolver {
-	/**
-	 * {@code ClassResolver] as provided by Hibernate ORM. This is the class loader which we attempt to use first.
-	 */
-	private final org.hibernate.boot.registry.classloading.spi.ClassLoaderService hibernateClassLoaderService;
+final class HibernateOrmClassLoaderServiceClassAndResourceAndServiceResolver implements ClassResolver, ResourceResolver, ServiceResolver {
 
-	/*
+    /**
+     * {@code ClassResolver] as provided by Hibernate ORM. This is the class loader which we attempt to use first.
+     */
+    private final org.hibernate.boot.registry.classloading.spi.ClassLoaderService hibernateClassLoaderService;
+
+    /*
 	 * Search internal class loader and resource loader resolvers
 	 * which in particular try to use the current class loader.
 	 * These can be necessary in case the ORM class loader can due to modularity
 	 * not access the required resources.
 	 */
-	private final ClassResolver internalClassResolver;
-	private final ResourceResolver internalResourceResolver;
-	private final ServiceResolver internalServiceResolver;
+    private final ClassResolver internalClassResolver;
 
-	HibernateOrmClassLoaderServiceClassAndResourceAndServiceResolver(
-			org.hibernate.boot.registry.classloading.spi.ClassLoaderService hibernateClassLoaderService) {
-		this.hibernateClassLoaderService = hibernateClassLoaderService;
-		AggregatedClassLoader aggregatedClassLoader = AggregatedClassLoader.createDefault();
-		this.internalClassResolver = DefaultClassResolver.create( aggregatedClassLoader );
-		this.internalResourceResolver = DefaultResourceResolver.create( aggregatedClassLoader );
-		this.internalServiceResolver = DefaultServiceResolver.create( aggregatedClassLoader );
-	}
+    private final ResourceResolver internalResourceResolver;
 
-	@Override
-	public Class<?> classForName(String className) {
-		try {
-			return hibernateClassLoaderService.classForName( className );
-		}
-		catch (ClassLoadingException | LinkageError e) {
-			return internalClassResolver.classForName( className );
-		}
-	}
+    private final ServiceResolver internalServiceResolver;
 
-	@Override
-	public Package packageForName(String packageName) {
-		Package pakcage = null;
-		try {
-			pakcage = hibernateClassLoaderService.packageForNameOrNull( packageName );
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		if ( pakcage == null ) {
-			pakcage = internalClassResolver.packageForName( packageName );
-		}
-		return pakcage;
-	}
+    HibernateOrmClassLoaderServiceClassAndResourceAndServiceResolver(org.hibernate.boot.registry.classloading.spi.ClassLoaderService hibernateClassLoaderService) {
+        this.hibernateClassLoaderService = hibernateClassLoaderService;
+        AggregatedClassLoader aggregatedClassLoader = AggregatedClassLoader.createDefault();
+        this.internalClassResolver = DefaultClassResolver.create(aggregatedClassLoader);
+        this.internalResourceResolver = DefaultResourceResolver.create(aggregatedClassLoader);
+        this.internalServiceResolver = DefaultServiceResolver.create(aggregatedClassLoader);
+    }
 
-	@Override
-	public URL locateResource(String resourceName) {
-		URL url = null;
-		try {
-			url = hibernateClassLoaderService.locateResource( resourceName );
-		}
-		catch (Exception e) {
-			// ignore
-		}
-		if ( url == null ) {
-			url = internalResourceResolver.locateResource( resourceName );
-		}
-		return url;
-	}
+    @Override
+    public Class<?> classForName(String className) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public InputStream locateResourceStream(String name) {
-		InputStream in = hibernateClassLoaderService.locateResourceStream( name );
-		if ( in == null ) {
-			in = internalResourceResolver.locateResourceStream( name );
-		}
-		return in;
-	}
+    @Override
+    public Package packageForName(String packageName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> Collection<T> loadJavaServices(Class<T> serviceContract) {
-		// when it comes to services, we need to search in both services and the de-duplicate
-		// however, we cannot rely on 'equals' for comparison. Instead, compare class names
-		Iterable<T> servicesFromORMCLassLoader = hibernateClassLoaderService.loadJavaServices( serviceContract );
-		Iterable<T> servicesFromLocalClassLoader = internalServiceResolver.loadJavaServices( serviceContract );
+    @Override
+    public URL locateResource(String resourceName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		//LinkedHashMap to maintain order; elements from Hibernate ORM first.
-		Map<String, T> combined = new LinkedHashMap<>();
+    @Override
+    public InputStream locateResourceStream(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		addAllServices( servicesFromORMCLassLoader, combined );
-		addAllServices( servicesFromLocalClassLoader, combined );
+    @Override
+    public <T> Collection<T> loadJavaServices(Class<T> serviceContract) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return combined.values();
-	}
-
-	private <T> void addAllServices(Iterable<T> services, Map<String, T> combined) {
-		for ( T service : services ) {
-			combined.put( service.getClass().getName(), service );
-		}
-	}
-
+    private <T> void addAllServices(Iterable<T> services, Map<String, T> combined) {
+        for (T service : services) {
+            combined.put(service.getClass().getName(), service);
+        }
+    }
 }

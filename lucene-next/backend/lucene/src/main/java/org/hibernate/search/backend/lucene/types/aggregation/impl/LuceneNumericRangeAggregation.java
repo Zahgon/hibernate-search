@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.RangeCollector;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.RangeCollectorFactory;
@@ -29,7 +28,6 @@ import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.spi.RangeAggregationBuilder;
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.util.common.data.Range;
-
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.CollectorManager;
 
@@ -40,164 +38,129 @@ import org.apache.lucene.search.CollectorManager;
  * @param <V> The type of aggregated values.
  * or a different type if value converters are used.
  */
-public class LuceneNumericRangeAggregation<F, E extends Number, K, V>
-		extends AbstractLuceneBucketAggregation<Range<K>, V> {
+public class LuceneNumericRangeAggregation<F, E extends Number, K, V> extends AbstractLuceneBucketAggregation<Range<K>, V> {
 
-	private final LuceneSearchAggregation<V> aggregation;
-	private final AbstractLuceneNumericFieldCodec<?, E> codec;
+    private final LuceneSearchAggregation<V> aggregation;
 
-	private final List<Range<K>> rangesInOrder;
-	private final List<Range<E>> encodedRangesInOrder;
+    private final AbstractLuceneNumericFieldCodec<?, E> codec;
 
-	private CollectorKey<RangeCollector, RangeResults> collectorKey;
+    private final List<Range<K>> rangesInOrder;
 
-	private LuceneNumericRangeAggregation(Builder<F, E, K, V> builder) {
-		super( builder );
-		this.aggregation = builder.aggregation;
-		this.codec = builder.codec;
-		this.rangesInOrder = builder.rangesInOrder;
-		this.encodedRangesInOrder = builder.encodedRangesInOrder;
-	}
+    private final List<Range<E>> encodedRangesInOrder;
 
-	@Override
-	public Extractor<Map<Range<K>, V>> request(AggregationRequestContext context) {
-		NestedDocsProvider nestedDocsProvider = createNestedDocsProvider( context );
-		JoiningLongMultiValuesSource source = JoiningLongMultiValuesSource.fromLongField(
-				absoluteFieldPath, nestedDocsProvider
-		);
+    private CollectorKey<RangeCollector, RangeResults> collectorKey;
 
-		LocalAggregationRequestContext localAggregationContext = new LocalAggregationRequestContext( context );
-		Extractor<V> extractor = aggregation.request( localAggregationContext );
+    private LuceneNumericRangeAggregation(Builder<F, E, K, V> builder) {
+        super(builder);
+        this.aggregation = builder.aggregation;
+        this.codec = builder.codec;
+        this.rangesInOrder = builder.rangesInOrder;
+        this.encodedRangesInOrder = builder.encodedRangesInOrder;
+    }
 
-		var rangeFactory = RangeCollectorFactory.instance( source,
-				codec.getDomain().createEffectiveRanges( encodedRangesInOrder ),
-				localAggregationContext.localCollectorFactories() );
+    @Override
+    public Extractor<Map<Range<K>, V>> request(AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		collectorKey = rangeFactory.getCollectorKey();
-		context.requireCollector( rangeFactory );
+    public static class Factory<F> extends AbstractLuceneCodecAwareSearchQueryElementFactory<RangeAggregationBuilder.TypeSelector, F, AbstractLuceneNumericFieldCodec<F, ?>> {
 
-		return new LuceneNumericRangeAggregationExtractor( extractor );
-	}
+        public Factory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
+            super(codec);
+        }
 
-	public static class Factory<F>
-			extends
-			AbstractLuceneCodecAwareSearchQueryElementFactory<RangeAggregationBuilder.TypeSelector,
-					F,
-					AbstractLuceneNumericFieldCodec<F, ?>> {
-		public Factory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
-			super( codec );
-		}
+        @Override
+        public TypeSelector<?, ?> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public TypeSelector<?, ?> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new TypeSelector<>( codec, scope, field );
-		}
-	}
+    private class LuceneNumericRangeAggregationExtractor implements Extractor<Map<Range<K>, V>> {
 
-	private class LuceneNumericRangeAggregationExtractor implements Extractor<Map<Range<K>, V>> {
-		private final Extractor<V> extractor;
+        private final Extractor<V> extractor;
 
-		public LuceneNumericRangeAggregationExtractor(Extractor<V> extractor) {
-			this.extractor = extractor;
-		}
+        public LuceneNumericRangeAggregationExtractor(Extractor<V> extractor) {
+            this.extractor = extractor;
+        }
 
-		@Override
-		public Map<Range<K>, V> extract(AggregationExtractContext context) throws IOException {
-			RangeResults rangeResults = context.getCollectorResults( collectorKey );
+        @Override
+        public Map<Range<K>, V> extract(AggregationExtractContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			LocalAggregationExtractContext localContext = new LocalAggregationExtractContext( context );
+        private Map<CollectorKey<?, ?>, Object> prepareResults(int index, RangeResults rangeResults) throws IOException {
+            Map<CollectorKey<?, ?>, Object> result = new HashMap<>();
+            List<Collector>[][] collectors = rangeResults.buckets();
+            CollectorKey<?, ?>[] collectorKeys = rangeResults.collectorKeys();
+            CollectorManager<Collector, ?>[] managers = rangeResults.collectorManagers();
+            for (int i = 0; i < collectorKeys.length; i++) {
+                result.put(collectorKeys[i], managers[i].reduce(collectors[i][index]));
+            }
+            return result;
+        }
+    }
 
-			Map<Range<K>, V> result = new LinkedHashMap<>();
-			for ( int i = 0; i < rangesInOrder.size(); i++ ) {
-				localContext.setResults( prepareResults( i, rangeResults ) );
-				result.put( rangesInOrder.get( i ), extractor.extract( localContext ) );
-			}
+    public static class TypeSelector<F, E extends Number> implements RangeAggregationBuilder.TypeSelector {
 
-			return result;
-		}
+        private final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-		private Map<CollectorKey<?, ?>, Object> prepareResults(int index, RangeResults rangeResults) throws IOException {
-			Map<CollectorKey<?, ?>, Object> result = new HashMap<>();
-			List<Collector>[][] collectors = rangeResults.buckets();
-			CollectorKey<?, ?>[] collectorKeys = rangeResults.collectorKeys();
-			CollectorManager<Collector, ?>[] managers = rangeResults.collectorManagers();
-			for ( int i = 0; i < collectorKeys.length; i++ ) {
-				result.put( collectorKeys[i], managers[i].reduce( collectors[i][index] ) );
-			}
-			return result;
-		}
-	}
+        private final LuceneSearchIndexScope<?> scope;
 
-	public static class TypeSelector<F, E extends Number> implements RangeAggregationBuilder.TypeSelector {
-		private final AbstractLuceneNumericFieldCodec<F, E> codec;
-		private final LuceneSearchIndexScope<?> scope;
-		private final LuceneSearchIndexValueFieldContext<F> field;
+        private final LuceneSearchIndexValueFieldContext<F> field;
 
-		private TypeSelector(AbstractLuceneNumericFieldCodec<F, E> codec,
-				LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			this.codec = codec;
-			this.scope = scope;
-			this.field = field;
-		}
+        private TypeSelector(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            this.codec = codec;
+            this.scope = scope;
+            this.field = field;
+        }
 
-		@Override
-		public <K> Builder<F, ?, K, Long> type(Class<K> expectedType, ValueModel valueModel) {
-			return new CountBuilder<>(
-					codec, field.encodingContext().encoder( scope, field, codec, expectedType, valueModel ),
-					scope, field
-			);
-		}
-	}
+        @Override
+        public <K> Builder<F, ?, K, Long> type(Class<K> expectedType, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	public static class Builder<F, E extends Number, K, V>
-			extends AbstractBuilder<Range<K>, V>
-			implements RangeAggregationBuilder<K, V> {
+    public static class Builder<F, E extends Number, K, V> extends AbstractBuilder<Range<K>, V> implements RangeAggregationBuilder<K, V> {
 
-		private final AbstractLuceneNumericFieldCodec<F, E> codec;
-		private final Function<K, E> convertAndEncode;
+        private final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-		private final LuceneSearchAggregation<V> aggregation;
-		private final List<Range<K>> rangesInOrder;
-		private final List<Range<E>> encodedRangesInOrder;
+        private final Function<K, E> convertAndEncode;
 
-		protected Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field,
-				AbstractLuceneNumericFieldCodec<F, E> codec, Function<K, E> convertAndEncode,
-				LuceneSearchAggregation<V> aggregation, List<Range<K>> rangesInOrder, List<Range<E>> encodedRangesInOrder) {
-			super( scope, field );
-			this.codec = codec;
-			this.convertAndEncode = convertAndEncode;
-			this.aggregation = aggregation;
-			this.rangesInOrder = rangesInOrder;
-			this.encodedRangesInOrder = encodedRangesInOrder;
-		}
+        private final LuceneSearchAggregation<V> aggregation;
 
-		@Override
-		public void range(Range<? extends K> range) {
-			rangesInOrder.add( range.map( Function.identity() ) );
-			encodedRangesInOrder.add( range.map( convertAndEncode ) );
-		}
+        private final List<Range<K>> rangesInOrder;
 
-		@Override
-		public <T> RangeAggregationBuilder<K, T> withValue(SearchAggregation<T> aggregation) {
-			return new Builder<>( scope, field, codec, convertAndEncode, LuceneSearchAggregation.from( scope, aggregation ),
-					new ArrayList<>( rangesInOrder ), new ArrayList<>( encodedRangesInOrder ) );
-		}
+        private final List<Range<E>> encodedRangesInOrder;
 
-		@Override
-		public LuceneNumericRangeAggregation<F, E, K, V> build() {
-			return new LuceneNumericRangeAggregation<>( this );
-		}
-	}
+        protected Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field, AbstractLuceneNumericFieldCodec<F, E> codec, Function<K, E> convertAndEncode, LuceneSearchAggregation<V> aggregation, List<Range<K>> rangesInOrder, List<Range<E>> encodedRangesInOrder) {
+            super(scope, field);
+            this.codec = codec;
+            this.convertAndEncode = convertAndEncode;
+            this.aggregation = aggregation;
+            this.rangesInOrder = rangesInOrder;
+            this.encodedRangesInOrder = encodedRangesInOrder;
+        }
 
-	public static class CountBuilder<F, E extends Number, K> extends Builder<F, E, K, Long> {
+        @Override
+        public void range(Range<? extends K> range) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected CountBuilder(AbstractLuceneNumericFieldCodec<F, E> codec, Function<K, E> convertAndEncode,
-				LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field, codec, convertAndEncode,
-					LuceneSearchAggregation.from( scope,
-							LuceneCountDocumentAggregation.factory().create( scope, field ).builder().build() ),
-					new ArrayList<>(), new ArrayList<>() );
-		}
-	}
+        @Override
+        public <T> RangeAggregationBuilder<K, T> withValue(SearchAggregation<T> aggregation) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public LuceneNumericRangeAggregation<F, E, K, V> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    public static class CountBuilder<F, E extends Number, K> extends Builder<F, E, K, Long> {
+
+        protected CountBuilder(AbstractLuceneNumericFieldCodec<F, E> codec, Function<K, E> convertAndEncode, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field, codec, convertAndEncode, LuceneSearchAggregation.from(scope, LuceneCountDocumentAggregation.factory().create(scope, field).builder().build()), new ArrayList<>(), new ArrayList<>());
+        }
+    }
 }

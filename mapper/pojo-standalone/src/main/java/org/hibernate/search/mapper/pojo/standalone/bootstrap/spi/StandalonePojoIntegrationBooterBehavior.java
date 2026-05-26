@@ -9,16 +9,17 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public final class StandalonePojoIntegrationBooterBehavior {
 
-	private StandalonePojoIntegrationBooterBehavior() {
-	}
+    private StandalonePojoIntegrationBooterBehavior() {
+    }
 
-	// Exposed for override in native images, to make it extra-clear to SubstrateVM
-	// that the native executable will never perform the first phase of the boot.
-	public static <T> T bootFirstPhase(BootPhase<T> phase) {
-		return phase.execute();
-	}
+    // Exposed for override in native images, to make it extra-clear to SubstrateVM
+    // that the native executable will never perform the first phase of the boot.
+    public static <T> T bootFirstPhase(BootPhase<T> phase) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public interface BootPhase<T> {
-		T execute();
-	}
+    public interface BootPhase<T> {
+
+        T execute();
+    }
 }

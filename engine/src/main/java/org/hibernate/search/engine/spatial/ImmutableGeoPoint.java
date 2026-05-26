@@ -8,48 +8,37 @@ import java.util.Objects;
 
 final class ImmutableGeoPoint implements GeoPoint {
 
-	private final double latitude;
-	private final double longitude;
+    private final double latitude;
 
-	ImmutableGeoPoint(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-	}
+    private final double longitude;
 
-	@Override
-	public String toString() {
-		return "ImmutableGeoPoint["
-				+ "latitude=" + latitude
-				+ ", longitude=" + longitude
-				+ "]";
-	}
+    ImmutableGeoPoint(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		ImmutableGeoPoint that = (ImmutableGeoPoint) o;
-		return that.latitude == latitude
-				&& that.longitude == longitude;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( latitude, longitude );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public double latitude() {
-		return latitude;
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public double longitude() {
-		return longitude;
-	}
+    @Override
+    public double latitude() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public double longitude() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

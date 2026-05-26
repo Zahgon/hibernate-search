@@ -7,7 +7,6 @@ package org.hibernate.search.engine.search.predicate.dsl.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.engine.search.common.spi.SearchIndexScope;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
@@ -28,83 +27,51 @@ import org.hibernate.search.engine.search.predicate.spi.SearchPredicateBuilder;
  * @param <S> The "self" type returned by DSL methods.
  * @param <F> The type of field set states.
  */
-abstract class AbstractBooleanMultiFieldPredicateCommonState<
-		S extends AbstractBooleanMultiFieldPredicateCommonState<?, ?>,
-		F extends AbstractBooleanMultiFieldPredicateCommonState.FieldSetState>
-		extends AbstractPredicateFinalStep {
+abstract class AbstractBooleanMultiFieldPredicateCommonState<S extends AbstractBooleanMultiFieldPredicateCommonState<?, ?>, F extends AbstractBooleanMultiFieldPredicateCommonState.FieldSetState> extends AbstractPredicateFinalStep {
 
-	private final List<F> fieldSetStates = new ArrayList<>();
-	private Float predicateLevelBoost;
-	private boolean withConstantScore = false;
+    private final List<F> fieldSetStates = new ArrayList<>();
 
-	AbstractBooleanMultiFieldPredicateCommonState(SearchPredicateDslContext<?> dslContext) {
-		super( dslContext );
-	}
+    private Float predicateLevelBoost;
 
-	public SearchIndexScope<?> scope() {
-		return dslContext.scope();
-	}
+    private boolean withConstantScore = false;
 
-	public void add(F fieldSetState) {
-		fieldSetStates.add( fieldSetState );
-	}
+    AbstractBooleanMultiFieldPredicateCommonState(SearchPredicateDslContext<?> dslContext) {
+        super(dslContext);
+    }
 
-	List<F> getFieldSetStates() {
-		return fieldSetStates;
-	}
+    public SearchIndexScope<?> scope() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public S boost(float boost) {
-		this.predicateLevelBoost = boost;
-		return thisAsS();
-	}
+    public void add(F fieldSetState) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public S constantScore() {
-		withConstantScore = true;
-		return thisAsS();
-	}
+    List<F> getFieldSetStates() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		List<SearchPredicate> predicates = new ArrayList<>();
-		for ( F fieldSetState : fieldSetStates ) {
-			fieldSetState.contributePredicates( predicates::add );
-		}
-		if ( predicates.size() > 1 ) {
-			BooleanPredicateBuilder boolBuilder = dslContext.scope().predicateBuilders().bool();
-			for ( SearchPredicate predicate : predicates ) {
-				boolBuilder.should( predicate );
-			}
-			return boolBuilder.build();
-		}
-		else {
-			return predicates.get( 0 );
-		}
-	}
+    public S boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract S thisAsS();
+    public S constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final void applyBoostAndConstantScore(Float fieldSetBoost, SearchPredicateBuilder predicateBuilder) {
-		if ( fieldSetBoost != null && withConstantScore ) {
-			// another good option would be the one to simply ignore the fieldSetBoost
-			// when the option withConstantScore is defined
-			throw QueryLog.INSTANCE.perFieldBoostWithConstantScore();
-		}
-		if ( predicateLevelBoost != null && fieldSetBoost != null ) {
-			predicateBuilder.boost( predicateLevelBoost * fieldSetBoost );
-		}
-		else if ( predicateLevelBoost != null ) {
-			predicateBuilder.boost( predicateLevelBoost );
-		}
-		else if ( fieldSetBoost != null ) {
-			predicateBuilder.boost( fieldSetBoost );
-		}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( withConstantScore ) {
-			predicateBuilder.constantScore();
-		}
-	}
+    protected abstract S thisAsS();
 
-	public interface FieldSetState {
-		void contributePredicates(Consumer<SearchPredicate> collector);
-	}
+    final void applyBoostAndConstantScore(Float fieldSetBoost, SearchPredicateBuilder predicateBuilder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public interface FieldSetState {
+
+        void contributePredicates(Consumer<SearchPredicate> collector);
+    }
 }

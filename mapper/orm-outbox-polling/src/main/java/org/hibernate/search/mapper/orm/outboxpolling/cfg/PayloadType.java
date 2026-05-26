@@ -10,34 +10,29 @@ import org.hibernate.search.util.common.annotation.Incubating;
 
 @Incubating
 public enum PayloadType {
-	/**
-	 * Using {@link org.hibernate.type.SqlTypes#MATERIALIZED_BLOB} to store the payload.
-	 */
-	@Deprecated( since = "7.0")
-	MATERIALIZED_BLOB("materialized_blob" ),
 
-	/**
-	 * Using {@link org.hibernate.type.SqlTypes#LONG32VARBINARY} to store the payload.
-	 */
-	LONG32VARBINARY( "long32varbinary" );
+    /**
+     * Using {@link org.hibernate.type.SqlTypes#MATERIALIZED_BLOB} to store the payload.
+     */
+    @Deprecated(since = "7.0")
+    MATERIALIZED_BLOB("materialized_blob"),
+    /**
+     * Using {@link org.hibernate.type.SqlTypes#LONG32VARBINARY} to store the payload.
+     */
+    LONG32VARBINARY("long32varbinary");
 
-	private final String externalRepresentation;
+    private final String externalRepresentation;
 
-	PayloadType(String externalRepresentation) {
-		this.externalRepresentation = externalRepresentation;
-	}
+    PayloadType(String externalRepresentation) {
+        this.externalRepresentation = externalRepresentation;
+    }
 
-	public String externalRepresentation() {
-		return externalRepresentation;
-	}
+    public String externalRepresentation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static PayloadType of(String value) {
-		return ParseUtils.parseDiscreteValues(
-				PayloadType.values(),
-				PayloadType::externalRepresentation,
-				ConfigurationLog.INSTANCE::invalidPayloadTypeName,
-				value
-		);
-	}
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static PayloadType of(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

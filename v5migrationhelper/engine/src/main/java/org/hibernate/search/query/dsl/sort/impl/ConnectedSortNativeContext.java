@@ -6,7 +6,6 @@ package org.hibernate.search.query.dsl.sort.impl;
 
 import org.hibernate.search.query.dsl.impl.QueryBuildingContext;
 import org.hibernate.search.query.dsl.sort.SortNativeContext;
-
 import org.apache.lucene.search.Sort;
 
 /**
@@ -14,14 +13,12 @@ import org.apache.lucene.search.Sort;
  */
 public class ConnectedSortNativeContext extends ConnectedSortAdditionalSortFieldContext implements SortNativeContext {
 
-	public ConnectedSortNativeContext(QueryBuildingContext queryContext, SortFieldStates states) {
-		super( queryContext, states );
-	}
+    public ConnectedSortNativeContext(QueryBuildingContext queryContext, SortFieldStates states) {
+        super(queryContext, states);
+    }
 
-	@Override
-	public Sort createSort() {
-		getStates().closeSortField();
-		return getStates().createSort();
-	}
-
+    @Override
+    public Sort createSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

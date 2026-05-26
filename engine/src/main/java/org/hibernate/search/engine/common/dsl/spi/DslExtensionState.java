@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.logging.impl.EngineMiscLog;
 
 /**
@@ -20,60 +19,31 @@ import org.hibernate.search.engine.logging.impl.EngineMiscLog;
  */
 public final class DslExtensionState<R> {
 
-	public static <E> E returnIfSupported(Object extension, Optional<E> extendedContextOptional) {
-		DslExtensionState<E> state = new DslExtensionState<>();
-		state.ifSupported( extension, extendedContextOptional, context -> context );
-		return state.orElseFail();
-	}
+    public static <E> E returnIfSupported(Object extension, Optional<E> extendedContextOptional) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean appliedAtLeastOneExtension = false;
-	private boolean appliedOrElse = false;
+    private boolean appliedAtLeastOneExtension = false;
 
-	private R result = null;
+    private boolean appliedOrElse = false;
 
-	private List<Object> unsupportedExtensions;
+    private R result = null;
 
-	public <E> void ifSupported(Object extension, Optional<E> extendedContextOptional,
-			Function<E, ? extends R> extendedContextFunction) {
-		if ( appliedOrElse ) {
-			throw EngineMiscLog.INSTANCE.cannotCallDslExtensionIfSupportedAfterOrElse();
-		}
-		if ( !appliedAtLeastOneExtension ) {
-			if ( extendedContextOptional.isPresent() ) {
-				appliedAtLeastOneExtension = true;
-				result = extendedContextFunction.apply( extendedContextOptional.get() );
-			}
-			else {
-				if ( unsupportedExtensions == null ) {
-					unsupportedExtensions = new ArrayList<>();
-				}
-				unsupportedExtensions.add( extension );
-			}
-		}
-	}
+    private List<Object> unsupportedExtensions;
 
-	public <T> R orElse(T defaultContext, Consumer<T> defaultContextConsumer) {
-		return orElse( defaultContext, c -> {
-			defaultContextConsumer.accept( c );
-			return null;
-		} );
-	}
+    public <E> void ifSupported(Object extension, Optional<E> extendedContextOptional, Function<E, ? extends R> extendedContextFunction) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <T> R orElse(T defaultContext, Function<T, ? extends R> defaultContextFunction) {
-		if ( !appliedAtLeastOneExtension ) {
-			appliedOrElse = true;
-			result = defaultContextFunction.apply( defaultContext );
-		}
-		return result;
-	}
+    public <T> R orElse(T defaultContext, Consumer<T> defaultContextConsumer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public R orElseFail() {
-		if ( !appliedAtLeastOneExtension ) {
-			appliedOrElse = true;
-			throw EngineMiscLog.INSTANCE
-					.dslExtensionNoMatch( unsupportedExtensions == null ? Collections.emptyList() : unsupportedExtensions );
-		}
-		return result;
-	}
+    public <T> R orElse(T defaultContext, Function<T, ? extends R> defaultContextFunction) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public R orElseFail() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

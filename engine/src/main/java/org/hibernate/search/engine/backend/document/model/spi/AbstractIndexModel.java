@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.engine.backend.analysis.AnalyzerDescriptor;
 import org.hibernate.search.engine.backend.analysis.NormalizerDescriptor;
 import org.hibernate.search.engine.backend.analysis.spi.AnalysisDescriptorRegistry;
@@ -25,139 +24,129 @@ import org.hibernate.search.util.common.impl.CollectionHelper;
 import org.hibernate.search.util.common.reporting.EventContext;
 import org.hibernate.search.util.common.reporting.spi.EventContextProvider;
 
-public abstract class AbstractIndexModel<
-		S extends AbstractIndexModel<?, R, F>,
-		R extends IndexCompositeNode<?, ?, ?>,
-		F extends IndexField<?, ?>>
-		implements EventContextProvider, IndexDescriptor {
+public abstract class AbstractIndexModel<S extends AbstractIndexModel<?, R, F>, R extends IndexCompositeNode<?, ?, ?>, F extends IndexField<?, ?>> implements EventContextProvider, IndexDescriptor {
 
-	private final AnalysisDescriptorRegistry analysisDescriptorRegistry;
-	private final String hibernateSearchIndexName;
-	private final EventContext eventContext;
+    private final AnalysisDescriptorRegistry analysisDescriptorRegistry;
 
-	private final String mappedTypeName;
+    private final String hibernateSearchIndexName;
 
-	private final IndexIdentifier identifier;
-	private final R root;
-	private final Map<String, F> staticFields;
-	private final List<IndexFieldDescriptor> includedStaticFields;
-	private final List<? extends AbstractIndexFieldTemplate<? super S, ? extends F, ? super R, ?>> fieldTemplates;
-	private final ConcurrentMap<String, F> dynamicFieldsCache = new ConcurrentHashMap<>();
+    private final EventContext eventContext;
 
-	public AbstractIndexModel(AnalysisDescriptorRegistry analysisDescriptorRegistry, String hibernateSearchIndexName,
-			String mappedTypeName,
-			IndexIdentifier identifier,
-			R root, Map<String, F> staticFields,
-			List<? extends AbstractIndexFieldTemplate<? super S, ? extends F, ? super R, ?>> fieldTemplates) {
-		this.analysisDescriptorRegistry = analysisDescriptorRegistry;
-		this.hibernateSearchIndexName = hibernateSearchIndexName;
-		this.eventContext = EventContexts.fromIndexName( hibernateSearchIndexName );
-		this.mappedTypeName = mappedTypeName;
-		this.identifier = identifier;
-		this.root = root;
-		this.staticFields = CollectionHelper.toImmutableMap( staticFields );
-		this.includedStaticFields = CollectionHelper.toImmutableList( staticFields.values().stream()
-				.filter( field -> TreeNodeInclusion.INCLUDED.equals( field.inclusion() ) )
-				.collect( Collectors.toList() ) );
-		this.fieldTemplates = fieldTemplates;
-	}
+    private final String mappedTypeName;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[indexName=" + hibernateSearchIndexName + "]";
-	}
+    private final IndexIdentifier identifier;
 
-	protected abstract S self();
+    private final R root;
 
-	@Override
-	public final EventContext eventContext() {
-		return eventContext;
-	}
+    private final Map<String, F> staticFields;
 
-	@Override
-	public final String hibernateSearchName() {
-		return hibernateSearchIndexName;
-	}
+    private final List<IndexFieldDescriptor> includedStaticFields;
 
-	public IndexIdentifier identifier() {
-		return identifier;
-	}
+    private final List<? extends AbstractIndexFieldTemplate<? super S, ? extends F, ? super R, ?>> fieldTemplates;
 
-	@Override
-	public final R root() {
-		return root;
-	}
+    private final ConcurrentMap<String, F> dynamicFieldsCache = new ConcurrentHashMap<>();
 
-	@Override
-	public final Optional<IndexFieldDescriptor> field(String absolutePath) {
-		return Optional.ofNullable( fieldOrNull( absolutePath ) );
-	}
+    public AbstractIndexModel(AnalysisDescriptorRegistry analysisDescriptorRegistry, String hibernateSearchIndexName, String mappedTypeName, IndexIdentifier identifier, R root, Map<String, F> staticFields, List<? extends AbstractIndexFieldTemplate<? super S, ? extends F, ? super R, ?>> fieldTemplates) {
+        this.analysisDescriptorRegistry = analysisDescriptorRegistry;
+        this.hibernateSearchIndexName = hibernateSearchIndexName;
+        this.eventContext = EventContexts.fromIndexName(hibernateSearchIndexName);
+        this.mappedTypeName = mappedTypeName;
+        this.identifier = identifier;
+        this.root = root;
+        this.staticFields = CollectionHelper.toImmutableMap(staticFields);
+        this.includedStaticFields = CollectionHelper.toImmutableList(staticFields.values().stream().filter(field -> TreeNodeInclusion.INCLUDED.equals(field.inclusion())).collect(Collectors.toList()));
+        this.fieldTemplates = fieldTemplates;
+    }
 
-	public final F fieldOrNull(String absolutePath) {
-		return fieldOrNull( absolutePath, IndexFieldFilter.INCLUDED_ONLY );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public final F fieldOrNull(String absolutePath, IndexFieldFilter filter) {
-		try {
-			F field = fieldOrNullIgnoringInclusion( absolutePath );
-			return field == null ? null : filter.filter( field, field.inclusion() );
-		}
-		catch (SearchException e) {
-			throw MappingLog.INSTANCE.unableToResolveField( absolutePath, e.getMessage(), e, eventContext );
-		}
-	}
+    protected abstract S self();
 
-	@Override
-	public final Collection<IndexFieldDescriptor> staticFields() {
-		return includedStaticFields;
-	}
+    @Override
+    public final EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<? extends AnalyzerDescriptor> analyzer(String name) {
-		return analysisDescriptorRegistry.analyzerDescriptor( name );
-	}
+    @Override
+    public final String hibernateSearchName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<? extends AnalyzerDescriptor> analyzers() {
-		return analysisDescriptorRegistry.analyzerDescriptors();
-	}
+    public IndexIdentifier identifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<? extends NormalizerDescriptor> normalizer(String name) {
-		return analysisDescriptorRegistry.normalizerDescriptor( name );
-	}
+    @Override
+    public final R root() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<? extends NormalizerDescriptor> normalizers() {
-		return analysisDescriptorRegistry.normalizerDescriptors();
-	}
+    @Override
+    public final Optional<IndexFieldDescriptor> field(String absolutePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public final String mappedTypeName() {
-		return mappedTypeName;
-	}
+    public final F fieldOrNull(String absolutePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private F fieldOrNullIgnoringInclusion(String absolutePath) {
-		F field = staticFields.get( absolutePath );
-		if ( field != null ) {
-			return field;
-		}
-		field = dynamicFieldsCache.get( absolutePath );
-		if ( field != null ) {
-			return field;
-		}
-		for ( AbstractIndexFieldTemplate<? super S, ? extends F, ? super R, ?> template : fieldTemplates ) {
-			field = template.createNodeIfMatching( self(), root, absolutePath );
-			if ( field != null ) {
-				F previous = dynamicFieldsCache.putIfAbsent( absolutePath, field );
-				if ( previous != null ) {
-					// Some other thread created the node before us.
-					// Keep the first created node, discard ours: they are identical.
-					field = previous;
-				}
-				break;
-			}
-		}
-		return field;
-	}
+    public final F fieldOrNull(String absolutePath, IndexFieldFilter filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public final Collection<IndexFieldDescriptor> staticFields() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<? extends AnalyzerDescriptor> analyzer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Collection<? extends AnalyzerDescriptor> analyzers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<? extends NormalizerDescriptor> normalizer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Collection<? extends NormalizerDescriptor> normalizers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public final String mappedTypeName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private F fieldOrNullIgnoringInclusion(String absolutePath) {
+        F field = staticFields.get(absolutePath);
+        if (field != null) {
+            return field;
+        }
+        field = dynamicFieldsCache.get(absolutePath);
+        if (field != null) {
+            return field;
+        }
+        for (AbstractIndexFieldTemplate<? super S, ? extends F, ? super R, ?> template : fieldTemplates) {
+            field = template.createNodeIfMatching(self(), root, absolutePath);
+            if (field != null) {
+                F previous = dynamicFieldsCache.putIfAbsent(absolutePath, field);
+                if (previous != null) {
+                    // Some other thread created the node before us.
+                    // Keep the first created node, discard ours: they are identical.
+                    field = previous;
+                }
+                break;
+            }
+        }
+        return field;
+    }
 }

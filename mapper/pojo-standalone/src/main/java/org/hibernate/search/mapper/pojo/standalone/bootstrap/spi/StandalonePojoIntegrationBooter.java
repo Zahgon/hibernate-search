@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.standalone.bootstrap.spi;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.AnnotatedTypeSource;
 import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
 import org.hibernate.search.mapper.pojo.standalone.bootstrap.impl.StandalonePojoIntegrationBooterImpl;
@@ -18,27 +17,27 @@ import org.hibernate.search.util.common.reflect.spi.ValueHandleFactory;
 @Incubating
 public interface StandalonePojoIntegrationBooter {
 
-	static Builder builder() {
-		return new StandalonePojoIntegrationBooterImpl.BuilderImpl();
-	}
+    static Builder builder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	interface Builder {
-		Builder annotatedTypeSource(AnnotatedTypeSource source);
+    interface Builder {
 
-		Builder valueReadHandleFactory(ValueHandleFactory valueHandleFactory);
+        Builder annotatedTypeSource(AnnotatedTypeSource source);
 
-		@Incubating
-		Builder introspectorCustomizer(Function<PojoBootstrapIntrospector, PojoBootstrapIntrospector> customize);
+        Builder valueReadHandleFactory(ValueHandleFactory valueHandleFactory);
 
-		Builder property(String name, Object value);
+        @Incubating
+        Builder introspectorCustomizer(Function<PojoBootstrapIntrospector, PojoBootstrapIntrospector> customize);
 
-		Builder properties(Map<String, ?> map);
+        Builder property(String name, Object value);
 
-		StandalonePojoIntegrationBooter build();
-	}
+        Builder properties(Map<String, ?> map);
 
-	void preBoot(BiConsumer<String, Object> propertyCollector);
+        StandalonePojoIntegrationBooter build();
+    }
 
-	CloseableSearchMapping boot();
+    void preBoot(BiConsumer<String, Object> propertyCollector);
 
+    CloseableSearchMapping boot();
 }

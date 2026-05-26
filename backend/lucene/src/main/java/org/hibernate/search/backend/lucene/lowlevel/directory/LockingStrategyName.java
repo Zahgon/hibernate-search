@@ -9,31 +9,23 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public enum LockingStrategyName {
 
-	SIMPLE_FILESYSTEM( "simple-filesystem" ),
-	NATIVE_FILESYSTEM( "native-filesystem" ),
-	SINGLE_INSTANCE( "single-instance" ),
-	NONE( "none" );
+    SIMPLE_FILESYSTEM("simple-filesystem"), NATIVE_FILESYSTEM("native-filesystem"), SINGLE_INSTANCE("single-instance"), NONE("none");
 
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static LockingStrategyName of(String value) {
-		return ParseUtils.parseDiscreteValues(
-				LockingStrategyName.values(),
-				LockingStrategyName::externalRepresentation,
-				ConfigurationLog.INSTANCE::invalidLockingStrategyName,
-				value
-		);
-	}
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static LockingStrategyName of(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String externalRepresentation;
+    private final String externalRepresentation;
 
-	LockingStrategyName(String externalRepresentation) {
-		this.externalRepresentation = externalRepresentation;
-	}
+    LockingStrategyName(String externalRepresentation) {
+        this.externalRepresentation = externalRepresentation;
+    }
 
-	/**
-	 * @return The expected string representation in configuration properties.
-	 */
-	private String externalRepresentation() {
-		return externalRepresentation;
-	}
+    /**
+     * @return The expected string representation in configuration properties.
+     */
+    private String externalRepresentation() {
+        return externalRepresentation;
+    }
 }

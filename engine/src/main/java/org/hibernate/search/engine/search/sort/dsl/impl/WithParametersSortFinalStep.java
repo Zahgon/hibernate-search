@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.sort.dsl.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.engine.search.sort.SearchSort;
 import org.hibernate.search.engine.search.sort.dsl.SortFinalStep;
@@ -15,19 +14,16 @@ import org.hibernate.search.engine.search.sort.spi.WithParametersSortBuilder;
 
 public class WithParametersSortFinalStep<SR> extends AbstractSortThenStep<SR> {
 
-	private final WithParametersSortBuilder builder;
+    private final WithParametersSortBuilder builder;
 
-	public WithParametersSortFinalStep(SearchSortDslContext<SR, ?, ?> dslContext,
-			Function<? super NamedValues, ? extends SortFinalStep> sortCreator) {
-		super( dslContext );
-		builder = dslContext.scope().sortBuilders().withParameters();
-		builder.creator( sortCreator );
-	}
+    public WithParametersSortFinalStep(SearchSortDslContext<SR, ?, ?> dslContext, Function<? super NamedValues, ? extends SortFinalStep> sortCreator) {
+        super(dslContext);
+        builder = dslContext.scope().sortBuilders().withParameters();
+        builder.creator(sortCreator);
+    }
 
-
-	@Override
-	protected SearchSort build() {
-		return builder.build();
-	}
-
+    @Override
+    protected SearchSort build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

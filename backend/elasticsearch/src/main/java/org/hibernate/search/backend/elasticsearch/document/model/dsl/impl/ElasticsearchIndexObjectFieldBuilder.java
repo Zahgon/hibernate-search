@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.document.model.dsl.impl;
 
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.hibernate.search.backend.elasticsearch.document.impl.ElasticsearchIndexObjectFieldReference;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexCompositeNode;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexField;
@@ -24,88 +23,56 @@ import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-class ElasticsearchIndexObjectFieldBuilder extends AbstractElasticsearchIndexCompositeNodeBuilder
-		implements IndexObjectFieldBuilder, ElasticsearchIndexNodeContributor {
+class ElasticsearchIndexObjectFieldBuilder extends AbstractElasticsearchIndexCompositeNodeBuilder implements IndexObjectFieldBuilder, ElasticsearchIndexNodeContributor {
 
-	private final AbstractElasticsearchIndexCompositeNodeBuilder parent;
-	private final String absoluteFieldPath;
-	private final String relativeFieldName;
-	private final TreeNodeInclusion inclusion;
+    private final AbstractElasticsearchIndexCompositeNodeBuilder parent;
 
-	private boolean multiValued = false;
+    private final String absoluteFieldPath;
 
-	private ElasticsearchIndexObjectFieldReference reference;
+    private final String relativeFieldName;
 
-	ElasticsearchIndexObjectFieldBuilder(AbstractElasticsearchIndexCompositeNodeBuilder parent,
-			String relativeFieldName, TreeNodeInclusion inclusion, ObjectStructure structure) {
-		super( new ElasticsearchIndexCompositeNodeType.Builder( structure ) );
-		this.parent = parent;
-		String parentAbsolutePath = parent.getAbsolutePath();
-		this.absoluteFieldPath = parentAbsolutePath == null
-				? relativeFieldName
-				: FieldPaths.compose( parentAbsolutePath, relativeFieldName );
-		this.relativeFieldName = relativeFieldName;
-		this.inclusion = inclusion;
-	}
+    private final TreeNodeInclusion inclusion;
 
-	@Override
-	public EventContext eventContext() {
-		return getRootNodeBuilder().getIndexEventContext()
-				.append( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-	}
+    private boolean multiValued = false;
 
-	@Override
-	public void multiValued() {
-		this.multiValued = true;
-	}
+    private ElasticsearchIndexObjectFieldReference reference;
 
-	@Override
-	public IndexObjectFieldReference toReference() {
-		if ( reference != null ) {
-			throw MappingLog.INSTANCE.cannotCreateReferenceMultipleTimes( eventContext() );
-		}
-		this.reference = new ElasticsearchIndexObjectFieldReference();
-		return reference;
-	}
+    ElasticsearchIndexObjectFieldBuilder(AbstractElasticsearchIndexCompositeNodeBuilder parent, String relativeFieldName, TreeNodeInclusion inclusion, ObjectStructure structure) {
+        super(new ElasticsearchIndexCompositeNodeType.Builder(structure));
+        this.parent = parent;
+        String parentAbsolutePath = parent.getAbsolutePath();
+        this.absoluteFieldPath = parentAbsolutePath == null ? relativeFieldName : FieldPaths.compose(parentAbsolutePath, relativeFieldName);
+        this.relativeFieldName = relativeFieldName;
+        this.inclusion = inclusion;
+    }
 
-	@Override
-	public void contribute(ElasticsearchIndexNodeCollector collector,
-			ElasticsearchIndexCompositeNode parentNode,
-			Map<String, ElasticsearchIndexField> staticChildrenByNameForParent,
-			AbstractTypeMapping parentMapping) {
-		if ( reference == null ) {
-			throw MappingLog.INSTANCE.incompleteFieldDefinition( eventContext() );
-		}
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, ElasticsearchIndexField> staticChildrenByName = new TreeMap<>();
-		ElasticsearchIndexObjectField fieldNode = new ElasticsearchIndexObjectField(
-				parentNode, relativeFieldName, typeBuilder.build(), inclusion, multiValued,
-				staticChildrenByName );
+    @Override
+    public void multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		staticChildrenByNameForParent.put( relativeFieldName, fieldNode );
-		collector.collect( absoluteFieldPath, fieldNode );
+    @Override
+    public IndexObjectFieldReference toReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		reference.setSchemaNode( fieldNode );
+    @Override
+    public void contribute(ElasticsearchIndexNodeCollector collector, ElasticsearchIndexCompositeNode parentNode, Map<String, ElasticsearchIndexField> staticChildrenByNameForParent, AbstractTypeMapping parentMapping) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		DynamicType dynamicType = resolveSelfDynamicType( parentMapping.getDynamic() );
+    @Override
+    ElasticsearchIndexRootBuilder getRootNodeBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PropertyMapping mapping = fieldNode.type().createMapping( dynamicType );
-
-		if ( TreeNodeInclusion.INCLUDED.equals( fieldNode.inclusion() ) ) {
-			parentMapping.addProperty( relativeFieldName, mapping );
-		}
-
-		contributeChildren( mapping, fieldNode, collector, staticChildrenByName );
-	}
-
-	@Override
-	ElasticsearchIndexRootBuilder getRootNodeBuilder() {
-		return parent.getRootNodeBuilder();
-	}
-
-	@Override
-	String getAbsolutePath() {
-		return absoluteFieldPath;
-	}
-
+    @Override
+    String getAbsolutePath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

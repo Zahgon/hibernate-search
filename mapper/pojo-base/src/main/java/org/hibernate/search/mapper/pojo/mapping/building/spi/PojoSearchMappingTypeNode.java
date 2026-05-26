@@ -10,11 +10,10 @@ import java.util.Map;
 
 public interface PojoSearchMappingTypeNode {
 
-	/**
-	 * @return Search mapping relative to constructors.
-	 */
-	default Map<List<Class<?>>, ? extends PojoSearchMappingConstructorNode> constructors() {
-		return Collections.emptyMap();
-	}
-
+    /**
+     * @return Search mapping relative to constructors.
+     */
+    default Map<List<Class<?>>, ? extends PojoSearchMappingConstructorNode> constructors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

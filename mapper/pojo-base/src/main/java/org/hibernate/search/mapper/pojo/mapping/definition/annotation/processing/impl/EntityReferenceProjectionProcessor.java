@@ -10,13 +10,10 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep;
 import org.hibernate.search.mapper.pojo.search.definition.binding.builtin.EntityReferenceProjectionBinder;
 
-public final class EntityReferenceProjectionProcessor
-		implements MethodParameterMappingAnnotationProcessor<EntityReferenceProjection> {
+public final class EntityReferenceProjectionProcessor implements MethodParameterMappingAnnotationProcessor<EntityReferenceProjection> {
 
-	@Override
-	public void process(MethodParameterMappingStep mapping, EntityReferenceProjection annotation,
-			MethodParameterMappingAnnotationProcessorContext context) {
-		mapping.projection( EntityReferenceProjectionBinder.create() );
-	}
-
+    @Override
+    public void process(MethodParameterMappingStep mapping, EntityReferenceProjection annotation, MethodParameterMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

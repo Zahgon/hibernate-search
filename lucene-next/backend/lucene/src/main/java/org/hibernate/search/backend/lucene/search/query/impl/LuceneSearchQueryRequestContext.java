@@ -5,11 +5,9 @@
 package org.hibernate.search.backend.lucene.search.query.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.engine.backend.session.spi.BackendSessionContext;
 import org.hibernate.search.engine.search.loading.spi.SearchLoadingContext;
 import org.hibernate.search.engine.search.query.spi.QueryParameters;
-
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 
@@ -19,54 +17,55 @@ import org.apache.lucene.search.Sort;
  */
 class LuceneSearchQueryRequestContext {
 
-	private final LuceneSearchQueryIndexScope<?, ?> queryIndexScope;
-	private final BackendSessionContext sessionContext;
-	private final SearchLoadingContext<?> loadingContext;
-	private final Query luceneQuery;
-	private final Sort luceneSort;
-	private final Set<String> routingKeys;
-	private final QueryParameters parameters;
+    private final LuceneSearchQueryIndexScope<?, ?> queryIndexScope;
 
-	LuceneSearchQueryRequestContext(
-			LuceneSearchQueryIndexScope<?, ?> queryIndexScope, BackendSessionContext sessionContext,
-			SearchLoadingContext<?> loadingContext,
-			Query luceneQuery,
-			Sort luceneSort,
-			Set<String> routingKeys, QueryParameters parameters) {
-		this.queryIndexScope = queryIndexScope;
-		this.sessionContext = sessionContext;
-		this.loadingContext = loadingContext;
-		this.luceneQuery = luceneQuery;
-		this.luceneSort = luceneSort;
-		this.routingKeys = routingKeys;
-		this.parameters = parameters;
-	}
+    private final BackendSessionContext sessionContext;
 
-	public LuceneSearchQueryIndexScope<?, ?> getQueryIndexScope() {
-		return queryIndexScope;
-	}
+    private final SearchLoadingContext<?> loadingContext;
 
-	BackendSessionContext getSessionContext() {
-		return sessionContext;
-	}
+    private final Query luceneQuery;
 
-	SearchLoadingContext<?> getLoadingContext() {
-		return loadingContext;
-	}
+    private final Sort luceneSort;
 
-	Query getLuceneQuery() {
-		return luceneQuery;
-	}
+    private final Set<String> routingKeys;
 
-	Sort getLuceneSort() {
-		return luceneSort;
-	}
+    private final QueryParameters parameters;
 
-	public Set<String> getRoutingKeys() {
-		return routingKeys;
-	}
+    LuceneSearchQueryRequestContext(LuceneSearchQueryIndexScope<?, ?> queryIndexScope, BackendSessionContext sessionContext, SearchLoadingContext<?> loadingContext, Query luceneQuery, Sort luceneSort, Set<String> routingKeys, QueryParameters parameters) {
+        this.queryIndexScope = queryIndexScope;
+        this.sessionContext = sessionContext;
+        this.loadingContext = loadingContext;
+        this.luceneQuery = luceneQuery;
+        this.luceneSort = luceneSort;
+        this.routingKeys = routingKeys;
+        this.parameters = parameters;
+    }
 
-	public QueryParameters getQueryParameters() {
-		return parameters;
-	}
+    public LuceneSearchQueryIndexScope<?, ?> getQueryIndexScope() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    BackendSessionContext getSessionContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    SearchLoadingContext<?> getLoadingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    Query getLuceneQuery() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    Sort getLuceneSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Set<String> getRoutingKeys() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public QueryParameters getQueryParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,10 +5,8 @@
 package org.hibernate.search.backend.elasticsearch.types.codec.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.backend.elasticsearch.lowlevel.syntax.search.impl.ElasticsearchSearchSyntax;
 import org.hibernate.search.util.common.AssertionFailure;
-
 import com.google.gson.JsonElement;
 
 /**
@@ -20,67 +18,63 @@ import com.google.gson.JsonElement;
  */
 public interface ElasticsearchFieldCodec<F> {
 
-	JsonElement encode(F value);
+    JsonElement encode(F value);
 
-	default JsonElement encodeForMissing(F value) {
-		return encode( value );
-	}
+    default JsonElement encodeForMissing(F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Encodes a value for inclusion in an aggregation request.
-	 *
-	 *
-	 * @param searchSyntax The search syntax.
-	 * @param value The value to encode.
-	 * @return The encoded value.
-	 */
-	default JsonElement encodeForAggregation(ElasticsearchSearchSyntax searchSyntax, F value) {
-		return encode( value );
-	}
+    /**
+     * Encodes a value for inclusion in an aggregation request.
+     *
+     * @param searchSyntax The search syntax.
+     * @param value The value to encode.
+     * @return The encoded value.
+     */
+    default JsonElement encodeForAggregation(ElasticsearchSearchSyntax searchSyntax, F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	F decode(JsonElement element);
+    F decode(JsonElement element);
 
-	default F decode(Double element) {
-		throw new AssertionFailure( this + " codec is not expected to handle decoding metric aggregation values." );
-	}
+    default F decode(Double element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Decodes the key returned by a term aggregation.
-	 * @param key The "key" property  returned by the aggregation.
-	 * May be a number, a string, ... depending on the field type.
-	 * @param keyAsString The "key_as_string" property returned by the term aggregation.
-	 * Either null or a {@link com.google.gson.JsonPrimitive} containing a string.
-	 * @return The decoded term.
-	 */
-	default F decodeAggregationKey(JsonElement key, JsonElement keyAsString) {
-		return decode( key );
-	}
+    /**
+     * Decodes the key returned by a term aggregation.
+     * @param key The "key" property  returned by the aggregation.
+     * May be a number, a string, ... depending on the field type.
+     * @param keyAsString The "key_as_string" property returned by the term aggregation.
+     * Either null or a {@link com.google.gson.JsonPrimitive} containing a string.
+     * @return The decoded term.
+     */
+    default F decodeAggregationKey(JsonElement key, JsonElement keyAsString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default F decodeAggregationValue(Optional<Double> value, JsonElement valueAsString) {
-		if ( valueAsString != null ) {
-			return decode( valueAsString );
-		}
-		return value.map( this::decode ).orElse( null );
-	}
+    default F decodeAggregationValue(Optional<Double> value, JsonElement valueAsString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Determine whether another codec is compatible with this one, i.e. whether it will encode/decode the information
-	 * to/from the document in a compatible way.
-	 *
-	 * @param other Another {@link ElasticsearchFieldCodec}, never {@code null}.
-	 * @return {@code true} if the given codec is compatible. {@code false} otherwise, or when
-	 * in doubt.
-	 */
-	boolean isCompatibleWith(ElasticsearchFieldCodec<?> other);
+    /**
+     * Determine whether another codec is compatible with this one, i.e. whether it will encode/decode the information
+     * to/from the document in a compatible way.
+     *
+     * @param other Another {@link ElasticsearchFieldCodec}, never {@code null}.
+     * @return {@code true} if the given codec is compatible. {@code false} otherwise, or when
+     * in doubt.
+     */
+    boolean isCompatibleWith(ElasticsearchFieldCodec<?> other);
 
-	/**
-	 * Whether this codec can extract data from JsonArrays when decoding.
-	 */
-	default boolean canDecodeArrays() {
-		return false;
-	}
+    /**
+     * Whether this codec can extract data from JsonArrays when decoding.
+     */
+    default boolean canDecodeArrays() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	JsonElement fromJsonStringToElement(String value);
+    JsonElement fromJsonStringToElement(String value);
 
-	String fromJsonElementToString(JsonElement value);
+    String fromJsonElementToString(JsonElement value);
 }

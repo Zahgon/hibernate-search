@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.standalone.loading.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.search.engine.tenancy.spi.TenancyMode;
 import org.hibernate.search.mapper.pojo.loading.spi.PojoSelectionLoadingContext;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingDefaultCleanOperation;
@@ -18,109 +17,108 @@ import org.hibernate.search.mapper.pojo.standalone.loading.SelectionLoadingOptio
 import org.hibernate.search.mapper.pojo.standalone.loading.dsl.SelectionLoadingOptionsStep;
 import org.hibernate.search.mapper.pojo.standalone.massindexing.impl.StandalonePojoMassIndexingMappingContext;
 
-public final class StandalonePojoLoadingContext
-		implements PojoSelectionLoadingContext, PojoMassIndexingContext, MassLoadingOptions, SelectionLoadingOptions {
+public final class StandalonePojoLoadingContext implements PojoSelectionLoadingContext, PojoMassIndexingContext, MassLoadingOptions, SelectionLoadingOptions {
 
-	private final StandalonePojoMassIndexingMappingContext mappingContext;
-	private final Set<String> tenantIds;
-	private final TenancyMode tenancyMode;
+    private final StandalonePojoMassIndexingMappingContext mappingContext;
 
-	private int batchSize = 10;
-	private final Map<Class<?>, Object> contextData;
+    private final Set<String> tenantIds;
 
-	private StandalonePojoLoadingContext(Builder builder) {
-		this.mappingContext = builder.mappingContext;
-		this.contextData = builder.contextData;
-		this.tenantIds = builder.tenantIds == null ? Set.of() : builder.tenantIds;
-		this.tenancyMode = builder.tenancyMode;
-	}
+    private final TenancyMode tenancyMode;
 
-	public void batchSize(int batchSize) {
-		if ( batchSize < 1 ) {
-			throw new IllegalArgumentException( "batchSize must be at least 1" );
-		}
-		this.batchSize = batchSize;
-	}
+    private int batchSize = 10;
 
-	@Override
-	public int batchSize() {
-		return batchSize;
-	}
+    private final Map<Class<?>, Object> contextData;
 
-	public <T> void context(Class<T> contextType, T context) {
-		contextData.put( contextType, context );
-	}
+    private StandalonePojoLoadingContext(Builder builder) {
+        this.mappingContext = builder.mappingContext;
+        this.contextData = builder.contextData;
+        this.tenantIds = builder.tenantIds == null ? Set.of() : builder.tenantIds;
+        this.tenancyMode = builder.tenancyMode;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T context(Class<T> contextType) {
-		return (T) contextData.get( contextType );
-	}
+    public void batchSize(int batchSize) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public int batchSize() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void checkOpen() {
-		// Nothing to do: we're always "open"
-	}
+    public <T> void context(Class<T> contextType, T context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoRuntimeIntrospector runtimeIntrospector() {
-		return mappingContext.runtimeIntrospector();
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T context(Class<T> contextType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public StandalonePojoMassIndexingMappingContext mapping() {
-		return mappingContext;
-	}
+    @Override
+    public void checkOpen() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> tenantIds() {
-		return tenantIds;
-	}
+    @Override
+    public PojoRuntimeIntrospector runtimeIntrospector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TenancyMode tenancyMode() {
-		return tenancyMode;
-	}
+    public StandalonePojoMassIndexingMappingContext mapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
-		return mappingContext.massIndexingDefaultCleanOperation();
-	}
+    @Override
+    public Set<String> tenantIds() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static final class Builder implements StandalonePojoSelectionLoadingContextBuilder, SelectionLoadingOptionsStep {
-		private final StandalonePojoMassIndexingMappingContext mappingContext;
-		private final Map<Class<?>, Object> contextData = new HashMap<>();
-		private Set<String> tenantIds;
-		private TenancyMode tenancyMode;
+    @Override
+    public TenancyMode tenancyMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(StandalonePojoMassIndexingMappingContext mappingContext) {
-			this.mappingContext = mappingContext;
-		}
+    @Override
+    public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public SelectionLoadingOptionsStep toAPI() {
-			return this;
-		}
+    public static final class Builder implements StandalonePojoSelectionLoadingContextBuilder, SelectionLoadingOptionsStep {
 
-		@Override
-		public <T> void context(Class<T> contextType, T context) {
-			contextData.put( contextType, context );
-		}
+        private final StandalonePojoMassIndexingMappingContext mappingContext;
 
-		public Builder tenantIds(Set<String> tenantIds) {
-			this.tenantIds = tenantIds;
-			return this;
-		}
+        private final Map<Class<?>, Object> contextData = new HashMap<>();
 
-		public Builder tenancyMode(TenancyMode tenancyMode) {
-			this.tenancyMode = tenancyMode;
-			return this;
-		}
+        private Set<String> tenantIds;
 
-		@Override
-		public StandalonePojoLoadingContext build() {
-			return new StandalonePojoLoadingContext( this );
-		}
-	}
+        private TenancyMode tenancyMode;
 
+        public Builder(StandalonePojoMassIndexingMappingContext mappingContext) {
+            this.mappingContext = mappingContext;
+        }
+
+        @Override
+        public SelectionLoadingOptionsStep toAPI() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public <T> void context(Class<T> contextType, T context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder tenantIds(Set<String> tenantIds) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder tenancyMode(TenancyMode tenancyMode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public StandalonePojoLoadingContext build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

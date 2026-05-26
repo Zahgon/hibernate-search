@@ -10,220 +10,143 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.hibernate.search.backend.elasticsearch.logging.impl.VersionLog;
 
 public class ElasticsearchVersion {
 
-	private static final Pattern VERSION_PATTERN = Pattern.compile( "(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:-(\\w+))?)?)?" );
-	// This matches either no separator with an empty string before or after, or a separator with something left and right.
-	private static final String SEPARATOR_PATTERN_STRING = "(?<=^)|(?=$)|(?<=.):(?=.)";
-	private static final Pattern DISTRIBUTION_AND_VERSION_PATTERN =
-			Pattern.compile( "([^\\d]+)?(?:" + SEPARATOR_PATTERN_STRING + ")(" + VERSION_PATTERN.pattern() + ")?" );
+    private static final Pattern VERSION_PATTERN = Pattern.compile("(\\d+)(?:\\.(\\d+)(?:\\.(\\d+)(?:-(\\w+))?)?)?");
 
-	/**
-	 * @param distributionAndVersionString A version string following the format {@code x.y.z-qualifier} or {@code <distribution>:x.y.z-qualifier},
-	 * where {@code <distribution>} is a string accepted by {@link ElasticsearchDistributionName#of(String)},
-	 * {@code x}, {@code y} and {@code z} are integers and {@code qualifier} is a string of word characters (alphanumeric or '_').
-	 * Incomplete versions are allowed, for example 'elastic:7.0', {@code 7.0} or just {@code 7}.
-	 * @return An {@link ElasticsearchVersion} object representing the given version.
-	 * @throws org.hibernate.search.util.common.SearchException If the input string doesn't follow the required format.
-	 */
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static ElasticsearchVersion of(String distributionAndVersionString) {
-		final String normalizedDistributionAndVersionString = distributionAndVersionString.trim().toLowerCase( Locale.ROOT );
-		Matcher distributionAndVersionMatcher =
-				DISTRIBUTION_AND_VERSION_PATTERN.matcher( normalizedDistributionAndVersionString );
-		if ( !distributionAndVersionMatcher.matches() ) {
-			throw VersionLog.INSTANCE.invalidElasticsearchVersionWithOptionalDistribution(
-					normalizedDistributionAndVersionString, ElasticsearchDistributionName.allowedExternalRepresentations(),
-					ElasticsearchDistributionName.defaultValue().externalRepresentation(), null );
-		}
-		try {
-			String distributionString = distributionAndVersionMatcher.group( 1 );
-			return of( distributionString == null
-					? ElasticsearchDistributionName.defaultValue()
-					: ElasticsearchDistributionName.of( distributionString ),
-					distributionAndVersionMatcher.group( 2 ) );
-		}
-		catch (RuntimeException e) {
-			throw VersionLog.INSTANCE.invalidElasticsearchVersionWithOptionalDistribution(
-					normalizedDistributionAndVersionString, ElasticsearchDistributionName.allowedExternalRepresentations(),
-					ElasticsearchDistributionName.defaultValue().externalRepresentation(), e );
-		}
-	}
+    // This matches either no separator with an empty string before or after, or a separator with something left and right.
+    private static final String SEPARATOR_PATTERN_STRING = "(?<=^)|(?=$)|(?<=.):(?=.)";
 
-	/**
-	 * @param distribution A distribution name.
-	 * @param versionString A version string following the format {@code x.y.z-qualifier},
-	 * where {@code x}, {@code y} and {@code z} are integers and {@code qualifier} is a string of word characters (alphanumeric or '_').
-	 * Incomplete versions are allowed, for example {@code 7.0} or just {@code 7}.
-	 * Null is allowed.
-	 * @return An {@link ElasticsearchVersion} object representing the given version.
-	 * @throws org.hibernate.search.util.common.SearchException If the input string doesn't follow the required format.
-	 */
-	public static ElasticsearchVersion of(ElasticsearchDistributionName distribution, String versionString) {
-		if ( versionString == null ) {
-			return new ElasticsearchVersion( distribution, null, null, null, null );
-		}
-		final String normalizedVersion = versionString.trim().toLowerCase( Locale.ROOT );
-		Matcher matcher = VERSION_PATTERN.matcher( normalizedVersion );
-		if ( !matcher.matches() ) {
-			throw VersionLog.INSTANCE.invalidElasticsearchVersionWithoutDistribution( normalizedVersion, null );
-		}
-		try {
-			int major = parseVersionComponent( matcher.group( 1 ) );
-			Integer minor = parseVersionComponent( matcher.group( 2 ) );
-			Integer micro = parseVersionComponent( matcher.group( 3 ) );
-			String qualifier = matcher.group( 4 );
-			return new ElasticsearchVersion( distribution, major, minor, micro, qualifier );
-		}
-		catch (RuntimeException e) {
-			throw VersionLog.INSTANCE.invalidElasticsearchVersionWithoutDistribution( normalizedVersion, e );
-		}
-	}
+    private static final Pattern DISTRIBUTION_AND_VERSION_PATTERN = Pattern.compile("([^\\d]+)?(?:" + SEPARATOR_PATTERN_STRING + ")(" + VERSION_PATTERN.pattern() + ")?");
 
-	private static Integer parseVersionComponent(String string) {
-		return string == null ? null : Integer.parseInt( string );
-	}
+    /**
+     * @param distributionAndVersionString A version string following the format {@code x.y.z-qualifier} or {@code <distribution>:x.y.z-qualifier},
+     * where {@code <distribution>} is a string accepted by {@link ElasticsearchDistributionName#of(String)},
+     * {@code x}, {@code y} and {@code z} are integers and {@code qualifier} is a string of word characters (alphanumeric or '_').
+     * Incomplete versions are allowed, for example 'elastic:7.0', {@code 7.0} or just {@code 7}.
+     * @return An {@link ElasticsearchVersion} object representing the given version.
+     * @throws org.hibernate.search.util.common.SearchException If the input string doesn't follow the required format.
+     */
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static ElasticsearchVersion of(String distributionAndVersionString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final ElasticsearchDistributionName distribution;
-	private final Integer major;
-	private final Integer minor;
-	private final Integer micro;
-	private final String qualifier;
+    /**
+     * @param distribution A distribution name.
+     * @param versionString A version string following the format {@code x.y.z-qualifier},
+     * where {@code x}, {@code y} and {@code z} are integers and {@code qualifier} is a string of word characters (alphanumeric or '_').
+     * Incomplete versions are allowed, for example {@code 7.0} or just {@code 7}.
+     * Null is allowed.
+     * @return An {@link ElasticsearchVersion} object representing the given version.
+     * @throws org.hibernate.search.util.common.SearchException If the input string doesn't follow the required format.
+     */
+    public static ElasticsearchVersion of(ElasticsearchDistributionName distribution, String versionString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private ElasticsearchVersion(ElasticsearchDistributionName distribution, Integer major, Integer minor, Integer micro,
-			String qualifier) {
-		this.distribution = distribution;
-		this.major = major;
-		this.minor = minor;
-		this.micro = micro;
-		this.qualifier = qualifier;
-	}
+    private static Integer parseVersionComponent(String string) {
+        return string == null ? null : Integer.parseInt(string);
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		ElasticsearchVersion that = (ElasticsearchVersion) o;
-		return distribution == that.distribution
-				&& Objects.equals( major, that.major )
-				&& Objects.equals( minor, that.minor )
-				&& Objects.equals( micro, that.micro )
-				&& Objects.equals( qualifier, that.qualifier );
-	}
+    private final ElasticsearchDistributionName distribution;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( distribution, major, minor, micro, qualifier );
-	}
+    private final Integer major;
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append( distribution );
-		if ( major == null ) {
-			return builder.toString();
-		}
-		builder.append( ':' ).append( major );
-		if ( minor != null ) {
-			builder.append( '.' ).append( minor );
-		}
-		if ( micro != null ) {
-			builder.append( '.' ).append( micro );
-		}
-		if ( qualifier != null ) {
-			builder.append( '-' ).append( qualifier );
-		}
-		return builder.toString();
-	}
+    private final Integer minor;
 
-	/**
-	 * @return The version string, i.e. the version without the distribution prefix.
-	 */
-	public String versionString() {
-		if ( major == null ) {
-			return null;
-		}
-		StringBuilder builder = new StringBuilder();
-		builder.append( major );
-		if ( minor != null ) {
-			builder.append( '.' ).append( minor );
-		}
-		if ( micro != null ) {
-			builder.append( '.' ).append( micro );
-		}
-		if ( qualifier != null ) {
-			builder.append( '-' ).append( qualifier );
-		}
-		return builder.toString();
-	}
+    private final Integer micro;
 
-	/**
-	 * @return The distribution to which this version applies, e.g. {@link ElasticsearchDistributionName#ELASTIC}
-	 * or {@link ElasticsearchDistributionName#OPENSEARCH}.
-	 */
-	public ElasticsearchDistributionName distribution() {
-		return distribution;
-	}
+    private final String qualifier;
 
-	/**
-	 * @return The "major" number of this version, i.e. the {@code x} in {@code x.y.z-qualifier}.
-	 * @deprecated Use {@link #majorOptional()} instead.
-	 */
-	@Deprecated(since = "7.0")
-	public int major() {
-		if ( major == null ) {
-			return 0;
-		}
-		return major;
-	}
+    private ElasticsearchVersion(ElasticsearchDistributionName distribution, Integer major, Integer minor, Integer micro, String qualifier) {
+        this.distribution = distribution;
+        this.major = major;
+        this.minor = minor;
+        this.micro = micro;
+        this.qualifier = qualifier;
+    }
 
-	/**
-	 * @return The "major" number of this version, i.e. the {@code x} in {@code x.y.z-qualifier}. May be empty.
-	 */
-	public OptionalInt majorOptional() {
-		return major == null ? OptionalInt.empty() : OptionalInt.of( major );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The "minor" number of this version, i.e. the {@code y} in {@code x.y.z-qualifier}. May be empty.
-	 */
-	public OptionalInt minor() {
-		return minor == null ? OptionalInt.empty() : OptionalInt.of( minor );
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The "minor" number of this version, i.e. the {@code z} in {@code x.y.z-qualifier}. May be empty.
-	 */
-	public OptionalInt micro() {
-		return micro == null ? OptionalInt.empty() : OptionalInt.of( micro );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The qualifier in this version, i.e. the {@code qualifier} in {@code x.y.z-qualifier}. May be empty.
-	 */
-	public Optional<String> qualifier() {
-		return Optional.ofNullable( qualifier );
-	}
+    /**
+     * @return The version string, i.e. the version without the distribution prefix.
+     */
+    public String versionString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param other A version to be matched against this version.
-	 * @return {@code true} if the other version matches this version,
-	 * i.e. if all the components defined in this version are also defined in the other version with the same value.
-	 * {@code false} otherwise.
-	 * Components that are not defined in this version do not matter.
-	 */
-	public boolean matches(ElasticsearchVersion other) {
-		return distribution.equals( other.distribution )
-				&& ( major == null || major.equals( other.major ) )
-				&& ( minor == null || minor.equals( other.minor ) )
-				&& ( micro == null || micro.equals( other.micro ) )
-				&& ( qualifier == null || qualifier.equals( other.qualifier ) );
-	}
+    /**
+     * @return The distribution to which this version applies, e.g. {@link ElasticsearchDistributionName#ELASTIC}
+     * or {@link ElasticsearchDistributionName#OPENSEARCH}.
+     */
+    public ElasticsearchDistributionName distribution() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return The "major" number of this version, i.e. the {@code x} in {@code x.y.z-qualifier}.
+     * @deprecated Use {@link #majorOptional()} instead.
+     */
+    @Deprecated(since = "7.0")
+    public int major() {
+        if (major == null) {
+            return 0;
+        }
+        return major;
+    }
+
+    /**
+     * @return The "major" number of this version, i.e. the {@code x} in {@code x.y.z-qualifier}. May be empty.
+     */
+    public OptionalInt majorOptional() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return The "minor" number of this version, i.e. the {@code y} in {@code x.y.z-qualifier}. May be empty.
+     */
+    public OptionalInt minor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return The "minor" number of this version, i.e. the {@code z} in {@code x.y.z-qualifier}. May be empty.
+     */
+    public OptionalInt micro() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return The qualifier in this version, i.e. the {@code qualifier} in {@code x.y.z-qualifier}. May be empty.
+     */
+    public Optional<String> qualifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @param other A version to be matched against this version.
+     * @return {@code true} if the other version matches this version,
+     * i.e. if all the components defined in this version are also defined in the other version with the same value.
+     * {@code false} otherwise.
+     * Components that are not defined in this version do not matter.
+     */
+    public boolean matches(ElasticsearchVersion other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

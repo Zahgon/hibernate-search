@@ -5,30 +5,26 @@
 package org.hibernate.search.mapper.pojo.model.typepattern.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 class ConstantExtractingTypePatternMatcherAdapter implements ExtractingTypePatternMatcher {
-	private final TypePatternMatcher delegate;
-	private final PojoTypeModel<?> resultType;
 
-	ConstantExtractingTypePatternMatcherAdapter(TypePatternMatcher delegate, PojoTypeModel<?> resultType) {
-		this.delegate = delegate;
-		this.resultType = resultType;
-	}
+    private final TypePatternMatcher delegate;
 
-	@Override
-	public String toString() {
-		return delegate.toString() + " => " + resultType.name();
-	}
+    private final PojoTypeModel<?> resultType;
 
-	@Override
-	public Optional<? extends PojoTypeModel<?>> extract(PojoTypeModel<?> typeToInspect) {
-		if ( delegate.matches( typeToInspect ) ) {
-			return Optional.of( resultType );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    ConstantExtractingTypePatternMatcherAdapter(TypePatternMatcher delegate, PojoTypeModel<?> resultType) {
+        this.delegate = delegate;
+        this.resultType = resultType;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<? extends PojoTypeModel<?>> extract(PojoTypeModel<?> typeToInspect) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

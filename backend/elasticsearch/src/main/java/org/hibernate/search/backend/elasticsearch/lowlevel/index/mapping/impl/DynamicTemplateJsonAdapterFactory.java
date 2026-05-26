@@ -8,10 +8,8 @@ import org.hibernate.search.backend.elasticsearch.gson.impl.AbstractConfiguredEx
 
 public class DynamicTemplateJsonAdapterFactory extends AbstractConfiguredExtraPropertiesJsonAdapterFactory {
 
-	@Override
-	protected <T> void addFields(Builder<T> builder) {
-		builder.add( "matchMappingType", String.class );
-		builder.add( "pathMatch", String.class );
-		builder.add( "mapping", PropertyMapping.class );
-	}
+    @Override
+    protected <T> void addFields(Builder<T> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

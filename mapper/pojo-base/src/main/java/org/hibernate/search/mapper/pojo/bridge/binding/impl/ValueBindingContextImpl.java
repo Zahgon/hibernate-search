@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.bridge.binding.impl;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.document.IndexFieldReference;
 import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaElement;
 import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaFieldOptionsStep;
@@ -35,189 +34,129 @@ import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
 import org.hibernate.search.util.common.reflect.impl.GenericTypeContext;
 
-public class ValueBindingContextImpl<V> extends AbstractBindingContext
-		implements ValueBindingContext<V> {
+public class ValueBindingContextImpl<V> extends AbstractBindingContext implements ValueBindingContext<V> {
 
-	private final PojoBootstrapIntrospector introspector;
+    private final PojoBootstrapIntrospector introspector;
 
-	private final PojoTypeModel<V> valueTypeModel;
-	private final boolean multiValued;
-	private final PojoModelValue<V> bridgedElement;
+    private final PojoTypeModel<V> valueTypeModel;
 
-	private final IndexFieldTypeFactory indexFieldTypeFactory;
-	private final PojoTreeContributionListener listener;
-	private final IndexSchemaElement schemaElement;
-	private final String relativeFieldName;
-	private final FieldModelContributor contributor;
+    private final boolean multiValued;
 
-	private PartialBinding<V, ?> partialBinding;
+    private final PojoModelValue<V> bridgedElement;
 
-	public ValueBindingContextImpl(BeanResolver beanResolver,
-			PojoBootstrapIntrospector introspector,
-			PojoTypeModel<V> valueTypeModel, boolean multiValued,
-			IndexBindingContext indexBindingContext,
-			IndexFieldTypeDefaultsProvider defaultsProvider,
-			String relativeFieldName, FieldModelContributor contributor,
-			Map<String, Object> params) {
-		super( beanResolver, params );
-		this.introspector = introspector;
-		this.valueTypeModel = valueTypeModel;
-		this.multiValued = multiValued;
-		this.bridgedElement = new PojoModelValueElement<>( introspector, valueTypeModel );
+    private final IndexFieldTypeFactory indexFieldTypeFactory;
 
-		this.indexFieldTypeFactory = indexBindingContext.createTypeFactory( defaultsProvider );
-		this.listener = new PojoTreeContributionListener();
-		this.schemaElement = indexBindingContext.schemaElement( listener );
-		this.relativeFieldName = relativeFieldName;
-		this.contributor = contributor;
-	}
+    private final PojoTreeContributionListener listener;
 
-	@Override
-	public <V2, F> void bridge(Class<V2> expectedValueType, ValueBridge<V2, F> bridge) {
-		bridge( expectedValueType, bridge, null );
-	}
+    private final IndexSchemaElement schemaElement;
 
-	@Override
-	public <V2, F> void bridge(Class<V2> expectedValueType, ValueBridge<V2, F> bridge,
-			IndexFieldTypeOptionsStep<?, F> fieldTypeOptionsStep) {
-		bridge( expectedValueType, BeanHolder.of( bridge ), fieldTypeOptionsStep );
-	}
+    private final String relativeFieldName;
 
-	@Override
-	@SuppressWarnings("resource") // For the eclipse-compiler: complains on bridge not bing closed
-	public <V2, F> void bridge(Class<V2> expectedValueType, BeanHolder<? extends ValueBridge<V2, F>> bridgeHolder,
-			IndexFieldTypeOptionsStep<?, F> fieldTypeOptionsStep) {
-		try {
-			PojoRawTypeModel<V2> expectedValueTypeModel = introspector.typeModel( expectedValueType );
-			if ( !valueTypeModel.rawType().isSubTypeOf( expectedValueTypeModel ) ) {
-				throw MappingLog.INSTANCE.invalidInputTypeForBridge( bridgeHolder.get(), valueTypeModel,
-						expectedValueTypeModel );
-			}
+    private final FieldModelContributor contributor;
 
-			IndexFieldReference<F> indexFieldReference = createFieldReference(
-					expectedValueType, bridgeHolder.get(), fieldTypeOptionsStep
-			);
+    private PartialBinding<V, ?> partialBinding;
 
-			@SuppressWarnings("unchecked") // We check that V extends V2 explicitly using reflection (see above)
-			BeanHolder<? extends ValueBridge<? super V, F>> castedBridgeHolder =
-					(BeanHolder<? extends ValueBridge<? super V, F>>) bridgeHolder;
+    public ValueBindingContextImpl(BeanResolver beanResolver, PojoBootstrapIntrospector introspector, PojoTypeModel<V> valueTypeModel, boolean multiValued, IndexBindingContext indexBindingContext, IndexFieldTypeDefaultsProvider defaultsProvider, String relativeFieldName, FieldModelContributor contributor, Map<String, Object> params) {
+        super(beanResolver, params);
+        this.introspector = introspector;
+        this.valueTypeModel = valueTypeModel;
+        this.multiValued = multiValued;
+        this.bridgedElement = new PojoModelValueElement<>(introspector, valueTypeModel);
+        this.indexFieldTypeFactory = indexBindingContext.createTypeFactory(defaultsProvider);
+        this.listener = new PojoTreeContributionListener();
+        this.schemaElement = indexBindingContext.schemaElement(listener);
+        this.relativeFieldName = relativeFieldName;
+        this.contributor = contributor;
+    }
 
-			this.partialBinding = new PartialBinding<>( castedBridgeHolder, indexFieldReference );
-		}
-		catch (RuntimeException e) {
-			abortBridge( new SuppressingCloser( e ), bridgeHolder );
-			throw e;
-		}
-	}
+    @Override
+    public <V2, F> void bridge(Class<V2> expectedValueType, ValueBridge<V2, F> bridge) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoModelValue<V> bridgedElement() {
-		return bridgedElement;
-	}
+    @Override
+    public <V2, F> void bridge(Class<V2> expectedValueType, ValueBridge<V2, F> bridge, IndexFieldTypeOptionsStep<?, F> fieldTypeOptionsStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexFieldTypeFactory typeFactory() {
-		return indexFieldTypeFactory;
-	}
+    @Override
+    // For the eclipse-compiler: complains on bridge not bing closed
+    @SuppressWarnings("resource")
+    public <V2, F> void bridge(Class<V2> expectedValueType, BeanHolder<? extends ValueBridge<V2, F>> bridgeHolder, IndexFieldTypeOptionsStep<?, F> fieldTypeOptionsStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Optional<BoundValueBridge<V, ?>> applyBinder(ValueBinder binder) {
-		try {
-			// This call should set the partial binding
-			binder.bind( this );
-			if ( partialBinding == null ) {
-				throw MappingLog.INSTANCE.missingBridgeForBinder( binder );
-			}
+    @Override
+    public PojoModelValue<V> bridgedElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			// If all fields are filtered out, we should ignore the bridge
-			if ( !listener.isAnySchemaContributed() ) {
-				try ( Closer<RuntimeException> closer = new Closer<>() ) {
-					partialBinding.abort( closer );
-				}
-				return Optional.empty();
-			}
+    @Override
+    public IndexFieldTypeFactory typeFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			return Optional.of( partialBinding.complete() );
-		}
-		catch (RuntimeException e) {
-			if ( partialBinding != null ) {
-				partialBinding.abort( new SuppressingCloser( e ) );
-			}
-			throw e;
-		}
-		finally {
-			partialBinding = null;
-		}
-	}
+    public Optional<BoundValueBridge<V, ?>> applyBinder(ValueBinder binder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <V2, F> IndexFieldReference<F> createFieldReference(Class<V2> expectedValueType,
-			ValueBridge<V2, F> bridge, IndexFieldTypeOptionsStep<?, F> fieldTypeOptionsStep) {
-		// If the bridge did not contribute anything, infer the field type using reflection on the bridge
-		if ( fieldTypeOptionsStep == null ) {
-			fieldTypeOptionsStep = inferFieldType( bridge );
-		}
+    private <V2, F> IndexFieldReference<F> createFieldReference(Class<V2> expectedValueType, ValueBridge<V2, F> bridge, IndexFieldTypeOptionsStep<?, F> fieldTypeOptionsStep) {
+        // If the bridge did not contribute anything, infer the field type using reflection on the bridge
+        if (fieldTypeOptionsStep == null) {
+            fieldTypeOptionsStep = inferFieldType(bridge);
+        }
+        PojoValueBridgeDocumentValueConverter<V2, F> converter = new PojoValueBridgeDocumentValueConverter<>(bridge);
+        PojoValueBridgeStringConverter<F> stringConverter = new PojoValueBridgeStringConverter<>(bridge);
+        // Then register the bridge itself as a converter to use in the DSL
+        fieldTypeOptionsStep.dslConverter(expectedValueType, converter);
+        // Then register the bridge itself as a converter to use in projections
+        fieldTypeOptionsStep.projectionConverter(expectedValueType, converter);
+        fieldTypeOptionsStep.parser(stringConverter);
+        fieldTypeOptionsStep.formatter(stringConverter);
+        // Then give the mapping a chance to override some of the model (make projectable, ...)
+        contributor.contribute(new FieldModelContributorContextImpl<>(bridge, fieldTypeOptionsStep));
+        // Finally, create the field
+        IndexSchemaFieldOptionsStep<?, ? extends IndexFieldReference<F>> fieldContext = schemaElement.field(relativeFieldName, fieldTypeOptionsStep);
+        if (multiValued) {
+            fieldContext.multiValued();
+        }
+        return fieldContext.toReference();
+    }
 
-		PojoValueBridgeDocumentValueConverter<V2, F> converter = new PojoValueBridgeDocumentValueConverter<>( bridge );
-		PojoValueBridgeStringConverter<F> stringConverter = new PojoValueBridgeStringConverter<>( bridge );
+    // We ensure this cast is safe through reflection
+    @SuppressWarnings("unchecked")
+    private <F> IndexFieldTypeOptionsStep<?, F> inferFieldType(ValueBridge<?, F> bridge) {
+        GenericTypeContext bridgeTypeContext = new GenericTypeContext(bridge.getClass());
+        Type typeArgument = bridgeTypeContext.resolveTypeArgument(ValueBridge.class, 1).orElseThrow(() -> new AssertionFailure("Could not auto-detect the return type for value bridge '" + bridge + "'."));
+        if (typeArgument instanceof Class) {
+            return contributor.inferDefaultFieldType(indexFieldTypeFactory, (Class<F>) typeArgument);
+        } else {
+            throw MappingLog.INSTANCE.invalidGenericParameterToInferFieldType(bridge, typeArgument);
+        }
+    }
 
-		// Then register the bridge itself as a converter to use in the DSL
-		fieldTypeOptionsStep.dslConverter( expectedValueType, converter );
+    private static void abortBridge(AbstractCloser<?, ?> closer, BeanHolder<? extends ValueBridge<?, ?>> bridgeHolder) {
+        closer.push(ValueBridge::close, bridgeHolder, BeanHolder::get);
+        closer.push(BeanHolder::close, bridgeHolder);
+    }
 
-		// Then register the bridge itself as a converter to use in projections
-		fieldTypeOptionsStep.projectionConverter( expectedValueType, converter );
+    private static class PartialBinding<V, F> {
 
-		fieldTypeOptionsStep.parser( stringConverter );
-		fieldTypeOptionsStep.formatter( stringConverter );
+        private final BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder;
 
-		// Then give the mapping a chance to override some of the model (make projectable, ...)
-		contributor.contribute(
-				new FieldModelContributorContextImpl<>( bridge, fieldTypeOptionsStep )
-		);
+        private final IndexFieldReference<F> indexFieldReference;
 
-		// Finally, create the field
-		IndexSchemaFieldOptionsStep<?, ? extends IndexFieldReference<F>> fieldContext =
-				schemaElement.field( relativeFieldName, fieldTypeOptionsStep );
-		if ( multiValued ) {
-			fieldContext.multiValued();
-		}
-		return fieldContext.toReference();
-	}
+        private PartialBinding(BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder, IndexFieldReference<F> indexFieldReference) {
+            this.bridgeHolder = bridgeHolder;
+            this.indexFieldReference = indexFieldReference;
+        }
 
-	@SuppressWarnings("unchecked") // We ensure this cast is safe through reflection
-	private <F> IndexFieldTypeOptionsStep<?, F> inferFieldType(ValueBridge<?, F> bridge) {
-		GenericTypeContext bridgeTypeContext = new GenericTypeContext( bridge.getClass() );
-		Type typeArgument = bridgeTypeContext.resolveTypeArgument( ValueBridge.class, 1 )
-				.orElseThrow( () -> new AssertionFailure( "Could not auto-detect the return type for value bridge '"
-						+ bridge + "'." ) );
-		if ( typeArgument instanceof Class ) {
-			return contributor.inferDefaultFieldType( indexFieldTypeFactory, (Class<F>) typeArgument );
-		}
-		else {
-			throw MappingLog.INSTANCE.invalidGenericParameterToInferFieldType( bridge, typeArgument );
-		}
-	}
+        void abort(AbstractCloser<?, ?> closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static void abortBridge(AbstractCloser<?, ?> closer, BeanHolder<? extends ValueBridge<?, ?>> bridgeHolder) {
-		closer.push( ValueBridge::close, bridgeHolder, BeanHolder::get );
-		closer.push( BeanHolder::close, bridgeHolder );
-	}
-
-	private static class PartialBinding<V, F> {
-		private final BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder;
-		private final IndexFieldReference<F> indexFieldReference;
-
-		private PartialBinding(BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder,
-				IndexFieldReference<F> indexFieldReference) {
-			this.bridgeHolder = bridgeHolder;
-			this.indexFieldReference = indexFieldReference;
-		}
-
-		void abort(AbstractCloser<?, ?> closer) {
-			abortBridge( closer, bridgeHolder );
-		}
-
-		BoundValueBridge<V, F> complete() {
-			// Nothing specific to do in the case of value bridges
-			return new BoundValueBridge<>( bridgeHolder, indexFieldReference );
-		}
-	}
+        BoundValueBridge<V, F> complete() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

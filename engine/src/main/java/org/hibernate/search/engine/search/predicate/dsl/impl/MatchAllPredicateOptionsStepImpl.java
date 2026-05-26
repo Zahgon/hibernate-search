@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.predicate.dsl.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.MatchAllPredicateOptionsStep;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
@@ -16,94 +15,74 @@ import org.hibernate.search.engine.search.predicate.spi.BooleanPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.MatchAllPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.SearchPredicateBuilder;
 
-public final class MatchAllPredicateOptionsStepImpl<SR>
-		extends AbstractPredicateFinalStep
-		implements MatchAllPredicateOptionsStep<SR, MatchAllPredicateOptionsStep<SR, ?>> {
+public final class MatchAllPredicateOptionsStepImpl<SR> extends AbstractPredicateFinalStep implements MatchAllPredicateOptionsStep<SR, MatchAllPredicateOptionsStep<SR, ?>> {
 
-	private final TypedSearchPredicateFactory<SR> factory;
+    private final TypedSearchPredicateFactory<SR> factory;
 
-	private final MatchAllPredicateBuilder matchAllBuilder;
-	private MatchAllExceptState exceptState;
-	private Float boost;
-	private boolean constantScore = false;
+    private final MatchAllPredicateBuilder matchAllBuilder;
 
-	public MatchAllPredicateOptionsStepImpl(SearchPredicateDslContext<?> dslContext,
-			TypedSearchPredicateFactory<SR> factory) {
-		super( dslContext );
-		this.factory = factory;
-		this.matchAllBuilder = dslContext.scope().predicateBuilders().matchAll();
-	}
+    private MatchAllExceptState exceptState;
 
-	@Override
-	public MatchAllPredicateOptionsStep<SR, ?> boost(float boost) {
-		this.boost = boost;
-		return this;
-	}
+    private Float boost;
 
-	@Override
-	public MatchAllPredicateOptionsStep<SR, ?> constantScore() {
-		this.constantScore = true;
-		return this;
-	}
+    private boolean constantScore = false;
 
-	@Override
-	public MatchAllPredicateOptionsStep<SR, ?> except(SearchPredicate searchPredicate) {
-		getExceptState().addClause( searchPredicate );
-		return this;
-	}
+    public MatchAllPredicateOptionsStepImpl(SearchPredicateDslContext<?> dslContext, TypedSearchPredicateFactory<SR> factory) {
+        super(dslContext);
+        this.factory = factory;
+        this.matchAllBuilder = dslContext.scope().predicateBuilders().matchAll();
+    }
 
-	@Override
-	public MatchAllPredicateOptionsStep<SR, ?> except(
-			Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
-		getExceptState().addClause( clauseContributor );
-		return this;
-	}
+    @Override
+    public MatchAllPredicateOptionsStep<SR, ?> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		SearchPredicateBuilder builder;
-		if ( exceptState != null ) {
-			builder = exceptState.builder( matchAllBuilder.build() );
-		}
-		else {
-			builder = matchAllBuilder;
-		}
-		if ( constantScore ) {
-			builder.constantScore();
-		}
-		if ( boost != null ) {
-			builder.boost( boost );
-		}
-		return builder.build();
-	}
+    @Override
+    public MatchAllPredicateOptionsStep<SR, ?> constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private MatchAllExceptState getExceptState() {
-		if ( exceptState == null ) {
-			exceptState = new MatchAllExceptState();
-		}
-		return exceptState;
-	}
+    @Override
+    public MatchAllPredicateOptionsStep<SR, ?> except(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private class MatchAllExceptState {
+    @Override
+    public MatchAllPredicateOptionsStep<SR, ?> except(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final BooleanPredicateBuilder booleanBuilder;
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		MatchAllExceptState() {
-			this.booleanBuilder = dslContext.scope().predicateBuilders().bool();
-		}
+    private MatchAllExceptState getExceptState() {
+        if (exceptState == null) {
+            exceptState = new MatchAllExceptState();
+        }
+        return exceptState;
+    }
 
-		void addClause(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
-			addClause( clauseContributor.apply( factory ).toPredicate() );
-		}
+    private class MatchAllExceptState {
 
-		void addClause(SearchPredicate predicate) {
-			booleanBuilder.mustNot( predicate );
-		}
+        private final BooleanPredicateBuilder booleanBuilder;
 
-		SearchPredicateBuilder builder(SearchPredicate matchAll) {
-			booleanBuilder.must( matchAll );
-			return booleanBuilder;
-		}
+        MatchAllExceptState() {
+            this.booleanBuilder = dslContext.scope().predicateBuilders().bool();
+        }
 
-	}
+        void addClause(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        void addClause(SearchPredicate predicate) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        SearchPredicateBuilder builder(SearchPredicate matchAll) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

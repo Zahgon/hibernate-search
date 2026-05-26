@@ -9,118 +9,100 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeIdentifier;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 import org.hibernate.search.mapper.pojo.standalone.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.standalone.session.impl.StandalonePojoSearchSessionTypeContextProvider;
 import org.hibernate.search.util.common.data.spi.KeyValueProvider;
 
-public class StandalonePojoTypeContextContainer
-		implements StandalonePojoSearchSessionTypeContextProvider {
+public class StandalonePojoTypeContextContainer implements StandalonePojoSearchSessionTypeContextProvider {
 
-	private final KeyValueProvider<PojoRawTypeIdentifier<?>, AbstractStandalonePojoTypeContext<?>> byTypeIdentifier;
-	private final KeyValueProvider<PojoRawTypeIdentifier<?>, StandalonePojoIndexedTypeContext<?>> indexedByTypeIdentifier;
-	private final KeyValueProvider<Class<?>, AbstractStandalonePojoTypeContext<?>> byExactClass;
-	private final KeyValueProvider<Class<?>, StandalonePojoIndexedTypeContext<?>> indexedByExactClass;
-	private final KeyValueProvider<String, StandalonePojoIndexedTypeContext<?>> indexedByEntityName;
+    private final KeyValueProvider<PojoRawTypeIdentifier<?>, AbstractStandalonePojoTypeContext<?>> byTypeIdentifier;
 
-	private StandalonePojoTypeContextContainer(Builder builder) {
-		// Use a LinkedHashMap for deterministic iteration
-		Map<PojoRawTypeIdentifier<?>, AbstractStandalonePojoTypeContext<?>> byTypeIdentifierContent = new LinkedHashMap<>();
-		Map<PojoRawTypeIdentifier<?>, StandalonePojoIndexedTypeContext<?>> indexedByTypeIdentifierContent =
-				new LinkedHashMap<>();
-		Map<Class<?>, AbstractStandalonePojoTypeContext<?>> byExactClassContent = new LinkedHashMap<>();
-		Map<Class<?>, StandalonePojoIndexedTypeContext<?>> indexedByExactClassContent = new LinkedHashMap<>();
-		Map<String, StandalonePojoIndexedTypeContext<?>> indexedByEntityNameContent = new LinkedHashMap<>();
+    private final KeyValueProvider<PojoRawTypeIdentifier<?>, StandalonePojoIndexedTypeContext<?>> indexedByTypeIdentifier;
 
-		for ( StandalonePojoIndexedTypeContext.Builder<?> contextBuilder : builder.indexedTypeContextBuilders ) {
-			StandalonePojoIndexedTypeContext<?> typeContext = contextBuilder.build();
-			PojoRawTypeIdentifier<?> typeIdentifier = typeContext.typeIdentifier();
+    private final KeyValueProvider<Class<?>, AbstractStandalonePojoTypeContext<?>> byExactClass;
 
-			byTypeIdentifierContent.put( typeIdentifier, typeContext );
-			indexedByTypeIdentifierContent.put( typeIdentifier, typeContext );
+    private final KeyValueProvider<Class<?>, StandalonePojoIndexedTypeContext<?>> indexedByExactClass;
 
-			byExactClassContent.put( typeContext.javaClass(), typeContext );
-			indexedByExactClassContent.put( typeContext.javaClass(), typeContext );
+    private final KeyValueProvider<String, StandalonePojoIndexedTypeContext<?>> indexedByEntityName;
 
-			indexedByEntityNameContent.put( typeContext.name(), typeContext );
-		}
-		for ( StandalonePojoContainedTypeContext.Builder<?> contextBuilder : builder.containedTypeContextBuilders ) {
-			StandalonePojoContainedTypeContext<?> typeContext = contextBuilder.build();
-			PojoRawTypeIdentifier<?> typeIdentifier = typeContext.typeIdentifier();
+    private StandalonePojoTypeContextContainer(Builder builder) {
+        // Use a LinkedHashMap for deterministic iteration
+        Map<PojoRawTypeIdentifier<?>, AbstractStandalonePojoTypeContext<?>> byTypeIdentifierContent = new LinkedHashMap<>();
+        Map<PojoRawTypeIdentifier<?>, StandalonePojoIndexedTypeContext<?>> indexedByTypeIdentifierContent = new LinkedHashMap<>();
+        Map<Class<?>, AbstractStandalonePojoTypeContext<?>> byExactClassContent = new LinkedHashMap<>();
+        Map<Class<?>, StandalonePojoIndexedTypeContext<?>> indexedByExactClassContent = new LinkedHashMap<>();
+        Map<String, StandalonePojoIndexedTypeContext<?>> indexedByEntityNameContent = new LinkedHashMap<>();
+        for (StandalonePojoIndexedTypeContext.Builder<?> contextBuilder : builder.indexedTypeContextBuilders) {
+            StandalonePojoIndexedTypeContext<?> typeContext = contextBuilder.build();
+            PojoRawTypeIdentifier<?> typeIdentifier = typeContext.typeIdentifier();
+            byTypeIdentifierContent.put(typeIdentifier, typeContext);
+            indexedByTypeIdentifierContent.put(typeIdentifier, typeContext);
+            byExactClassContent.put(typeContext.javaClass(), typeContext);
+            indexedByExactClassContent.put(typeContext.javaClass(), typeContext);
+            indexedByEntityNameContent.put(typeContext.name(), typeContext);
+        }
+        for (StandalonePojoContainedTypeContext.Builder<?> contextBuilder : builder.containedTypeContextBuilders) {
+            StandalonePojoContainedTypeContext<?> typeContext = contextBuilder.build();
+            PojoRawTypeIdentifier<?> typeIdentifier = typeContext.typeIdentifier();
+            byTypeIdentifierContent.put(typeIdentifier, typeContext);
+            byExactClassContent.put(typeContext.javaClass(), typeContext);
+        }
+        this.byTypeIdentifier = new KeyValueProvider<>(byTypeIdentifierContent, MappingLog.INSTANCE::unknownTypeIdentifierForMappedEntityType);
+        this.indexedByTypeIdentifier = new KeyValueProvider<>(indexedByTypeIdentifierContent, MappingLog.INSTANCE::unknownTypeIdentifierForIndexedEntityType);
+        this.byExactClass = new KeyValueProvider<>(byExactClassContent, MappingLog.INSTANCE::unknownClassForMappedEntityType);
+        this.indexedByExactClass = new KeyValueProvider<>(indexedByExactClassContent, MappingLog.INSTANCE::unknownClassForIndexedEntityType);
+        this.indexedByEntityName = new KeyValueProvider<>(indexedByEntityNameContent, MappingLog.INSTANCE::unknownEntityNameForIndexedEntityType);
+    }
 
-			byTypeIdentifierContent.put( typeIdentifier, typeContext );
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> AbstractStandalonePojoTypeContext<E> forExactType(PojoRawTypeIdentifier<E> typeIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			byExactClassContent.put( typeContext.javaClass(), typeContext );
-		}
-		this.byTypeIdentifier =
-				new KeyValueProvider<>( byTypeIdentifierContent,
-						MappingLog.INSTANCE::unknownTypeIdentifierForMappedEntityType );
-		this.indexedByTypeIdentifier =
-				new KeyValueProvider<>( indexedByTypeIdentifierContent,
-						MappingLog.INSTANCE::unknownTypeIdentifierForIndexedEntityType );
-		this.byExactClass = new KeyValueProvider<>( byExactClassContent, MappingLog.INSTANCE::unknownClassForMappedEntityType );
-		this.indexedByExactClass =
-				new KeyValueProvider<>( indexedByExactClassContent, MappingLog.INSTANCE::unknownClassForIndexedEntityType );
-		this.indexedByEntityName =
-				new KeyValueProvider<>( indexedByEntityNameContent,
-						MappingLog.INSTANCE::unknownEntityNameForIndexedEntityType );
-	}
+    @SuppressWarnings("unchecked")
+    public <E> StandalonePojoIndexedTypeContext<E> indexedForExactType(PojoRawTypeIdentifier<E> typeIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <E> AbstractStandalonePojoTypeContext<E> forExactType(PojoRawTypeIdentifier<E> typeIdentifier) {
-		return (AbstractStandalonePojoTypeContext<E>) byTypeIdentifier.getOrFail( typeIdentifier );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> AbstractStandalonePojoTypeContext<E> forExactClass(Class<E> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	public <E> StandalonePojoIndexedTypeContext<E> indexedForExactType(PojoRawTypeIdentifier<E> typeIdentifier) {
-		return (StandalonePojoIndexedTypeContext<E>) indexedByTypeIdentifier.getOrFail( typeIdentifier );
-	}
+    @SuppressWarnings("unchecked")
+    public <E> StandalonePojoIndexedTypeContext<E> indexedForExactClass(Class<E> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <E> AbstractStandalonePojoTypeContext<E> forExactClass(Class<E> clazz) {
-		return (AbstractStandalonePojoTypeContext<E>) byExactClass.getOrFail( clazz );
-	}
+    @Override
+    public KeyValueProvider<String, StandalonePojoIndexedTypeContext<?>> indexedByEntityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	public <E> StandalonePojoIndexedTypeContext<E> indexedForExactClass(Class<E> clazz) {
-		return (StandalonePojoIndexedTypeContext<E>) indexedByExactClass.getOrFail( clazz );
-	}
+    public Collection<? extends StandalonePojoIndexedTypeContext<?>> allIndexed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KeyValueProvider<String, StandalonePojoIndexedTypeContext<?>> indexedByEntityName() {
-		return indexedByEntityName;
-	}
+    static class Builder {
 
-	public Collection<? extends StandalonePojoIndexedTypeContext<?>> allIndexed() {
-		return indexedByTypeIdentifier.values();
-	}
+        private final List<StandalonePojoIndexedTypeContext.Builder<?>> indexedTypeContextBuilders = new ArrayList<>();
 
-	static class Builder {
+        private final List<StandalonePojoContainedTypeContext.Builder<?>> containedTypeContextBuilders = new ArrayList<>();
 
-		private final List<StandalonePojoIndexedTypeContext.Builder<?>> indexedTypeContextBuilders = new ArrayList<>();
-		private final List<StandalonePojoContainedTypeContext.Builder<?>> containedTypeContextBuilders = new ArrayList<>();
+        <E> StandalonePojoIndexedTypeContext.Builder<E> addIndexed(PojoRawTypeModel<E> typeModel, String entityName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		<E> StandalonePojoIndexedTypeContext.Builder<E> addIndexed(PojoRawTypeModel<E> typeModel, String entityName) {
-			StandalonePojoIndexedTypeContext.Builder<E> builder =
-					new StandalonePojoIndexedTypeContext.Builder<>( typeModel.typeIdentifier(), entityName );
-			indexedTypeContextBuilders.add( builder );
-			return builder;
-		}
+        <E> StandalonePojoContainedTypeContext.Builder<E> addContained(PojoRawTypeModel<E> typeModel, String entityName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		<E> StandalonePojoContainedTypeContext.Builder<E> addContained(PojoRawTypeModel<E> typeModel, String entityName) {
-			StandalonePojoContainedTypeContext.Builder<E> builder =
-					new StandalonePojoContainedTypeContext.Builder<>( typeModel.typeIdentifier(), entityName );
-			containedTypeContextBuilders.add( builder );
-			return builder;
-		}
-
-		StandalonePojoTypeContextContainer build() {
-			return new StandalonePojoTypeContextContainer( this );
-		}
-	}
-
+        StandalonePojoTypeContextContainer build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

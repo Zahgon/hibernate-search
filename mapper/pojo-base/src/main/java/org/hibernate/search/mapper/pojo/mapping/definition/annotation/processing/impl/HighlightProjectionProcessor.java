@@ -10,15 +10,10 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep;
 import org.hibernate.search.mapper.pojo.search.definition.binding.builtin.HighlightProjectionBinder;
 
-public final class HighlightProjectionProcessor
-		implements MethodParameterMappingAnnotationProcessor<HighlightProjection> {
+public final class HighlightProjectionProcessor implements MethodParameterMappingAnnotationProcessor<HighlightProjection> {
 
-	@Override
-	public void process(MethodParameterMappingStep mapping, HighlightProjection annotation,
-			MethodParameterMappingAnnotationProcessorContext context) {
-		mapping.projection( HighlightProjectionBinder.create(
-				context.toNullIfDefault( annotation.path(), "" ) )
-				.highlighter( context.toNullIfDefault( annotation.highlighter(), "" ) ) );
-	}
-
+    @Override
+    public void process(MethodParameterMappingStep mapping, HighlightProjection annotation, MethodParameterMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

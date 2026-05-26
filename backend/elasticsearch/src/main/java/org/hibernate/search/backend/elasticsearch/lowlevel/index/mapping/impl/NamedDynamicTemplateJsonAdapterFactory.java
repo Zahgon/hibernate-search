@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl;
 
 import java.io.IOException;
-
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -16,55 +15,32 @@ import com.google.gson.stream.JsonWriter;
 
 public class NamedDynamicTemplateJsonAdapterFactory implements TypeAdapterFactory {
 
-	private static final TypeToken<NamedDynamicTemplate> NAMED_DYNAMIC_TEMPLATE_TYPE_TOKEN =
-			TypeToken.get( NamedDynamicTemplate.class );
-	private static final TypeToken<DynamicTemplate> DYNAMIC_TEMPLATE_TYPE_TOKEN = TypeToken.get( DynamicTemplate.class );
+    private static final TypeToken<NamedDynamicTemplate> NAMED_DYNAMIC_TEMPLATE_TYPE_TOKEN = TypeToken.get(NamedDynamicTemplate.class);
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
-		if ( !NAMED_DYNAMIC_TEMPLATE_TYPE_TOKEN.equals( typeToken ) ) {
-			return null;
-		}
+    private static final TypeToken<DynamicTemplate> DYNAMIC_TEMPLATE_TYPE_TOKEN = TypeToken.get(DynamicTemplate.class);
 
-		TypeAdapter<DynamicTemplate> templateAdapter = gson.getAdapter( DYNAMIC_TEMPLATE_TYPE_TOKEN );
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> typeToken) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return (TypeAdapter<T>) new Adapter( templateAdapter );
-	}
+    private static class Adapter extends TypeAdapter<NamedDynamicTemplate> {
 
-	private static class Adapter extends TypeAdapter<NamedDynamicTemplate> {
-		private final TypeAdapter<DynamicTemplate> templateAdapter;
+        private final TypeAdapter<DynamicTemplate> templateAdapter;
 
-		public Adapter(TypeAdapter<DynamicTemplate> templateAdapter) {
-			this.templateAdapter = templateAdapter;
-		}
+        public Adapter(TypeAdapter<DynamicTemplate> templateAdapter) {
+            this.templateAdapter = templateAdapter;
+        }
 
-		@Override
-		public void write(JsonWriter out, NamedDynamicTemplate value) throws IOException {
-			if ( value == null ) {
-				out.nullValue();
-				return;
-			}
+        @Override
+        public void write(JsonWriter out, NamedDynamicTemplate value) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			out.beginObject();
-			out.name( value.name );
-			templateAdapter.write( out, value.template );
-			out.endObject();
-		}
-
-		@Override
-		public NamedDynamicTemplate read(JsonReader in) throws IOException {
-			if ( in.peek() == JsonToken.NULL ) {
-				in.nextNull();
-				return null;
-			}
-
-			in.beginObject();
-			String name = in.nextName();
-			DynamicTemplate template = templateAdapter.read( in );
-			in.endObject();
-
-			return new NamedDynamicTemplate( name, template );
-		}
-	}
+        @Override
+        public NamedDynamicTemplate read(JsonReader in) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

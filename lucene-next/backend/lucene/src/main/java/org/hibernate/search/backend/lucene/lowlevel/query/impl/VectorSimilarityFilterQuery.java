@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.lowlevel.query.impl;
 
 import java.io.IOException;
 import java.util.Objects;
-
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.Explanation;
@@ -24,180 +23,137 @@ import org.apache.lucene.search.Weight;
 
 public class VectorSimilarityFilterQuery extends Query {
 
-	private final Query query;
-	private final float similarityAsScore;
+    private final Query query;
 
-	public static VectorSimilarityFilterQuery create(KnnByteVectorQuery query, float requiredMinimumScore) {
-		return new VectorSimilarityFilterQuery( query, requiredMinimumScore );
-	}
+    private final float similarityAsScore;
 
-	public static VectorSimilarityFilterQuery create(KnnFloatVectorQuery query, float requiredMinimumScore) {
-		return new VectorSimilarityFilterQuery( query, requiredMinimumScore );
-	}
+    public static VectorSimilarityFilterQuery create(KnnByteVectorQuery query, float requiredMinimumScore) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private VectorSimilarityFilterQuery(Query query, float similarityAsScore) {
-		this.query = query;
-		this.similarityAsScore = similarityAsScore;
-	}
+    public static VectorSimilarityFilterQuery create(KnnFloatVectorQuery query, float requiredMinimumScore) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Query rewrite(IndexSearcher indexSearcher) throws IOException {
-		Query rewritten = query.rewrite( indexSearcher );
-		if ( rewritten == query ) {
-			return this;
-		}
-		// Knn queries are rewritten and we need to use a rewritten one to get the weights and scores:
-		return new VectorSimilarityFilterQuery( rewritten, this.similarityAsScore );
-	}
+    private VectorSimilarityFilterQuery(Query query, float similarityAsScore) {
+        this.query = query;
+        this.similarityAsScore = similarityAsScore;
+    }
 
-	@Override
-	public Weight createWeight(IndexSearcher searcher, ScoreMode scoreMode, float boost) throws IOException {
-		// we've already converted distance/similarity to a score, but now if the underlying query is boosting the score,
-		// we'd want to boost our converted one as well to get the expected matches:
-		return new SimilarityWeight( query.createWeight( searcher, scoreMode, boost ), similarityAsScore * boost );
-	}
+    @Override
+    public Query rewrite(IndexSearcher indexSearcher) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void visit(QueryVisitor visitor) {
-		visitor.visitLeaf( this );
-	}
+    @Override
+    public Weight createWeight(IndexSearcher searcher, ScoreMode scoreMode, float boost) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString(String field) {
-		return getClass().getName() + "{" +
-				"query=" + query +
-				", similarityLimit=" + similarityAsScore +
-				'}';
-	}
+    @Override
+    public void visit(QueryVisitor visitor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		VectorSimilarityFilterQuery that = (VectorSimilarityFilterQuery) o;
-		return Float.compare( similarityAsScore, that.similarityAsScore ) == 0 && Objects.equals( query, that.query );
-	}
+    @Override
+    public String toString(String field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( query, similarityAsScore );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class SimilarityWeight extends FilterWeight {
-		private final float similarityAsScore;
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		protected SimilarityWeight(Weight weight, float similarityAsScore) {
-			super( weight );
-			this.similarityAsScore = similarityAsScore;
-		}
+    private static class SimilarityWeight extends FilterWeight {
 
-		@Override
-		public Explanation explain(LeafReaderContext context, int doc) throws IOException {
-			Explanation explanation = super.explain( context, doc );
-			if ( explanation.isMatch() && similarityAsScore > explanation.getValue().floatValue() ) {
-				return Explanation.noMatch( "Similarity limit is greater than the vector similarity.", explanation );
-			}
-			return explanation;
-		}
+        private final float similarityAsScore;
 
-		@Override
-		public ScorerSupplier scorerSupplier(LeafReaderContext context) throws IOException {
-			ScorerSupplier scorerSupplier = super.scorerSupplier( context );
-			if ( scorerSupplier == null ) {
-				return null;
-			}
-			return new MinScoreScorerSupplier( scorerSupplier, similarityAsScore );
-		}
-	}
+        protected SimilarityWeight(Weight weight, float similarityAsScore) {
+            super(weight);
+            this.similarityAsScore = similarityAsScore;
+        }
 
-	private static class MinScoreScorerSupplier extends ScorerSupplier {
+        @Override
+        public Explanation explain(LeafReaderContext context, int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final ScorerSupplier delegate;
-		private final float similarityAsScore;
+        @Override
+        public ScorerSupplier scorerSupplier(LeafReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private MinScoreScorerSupplier(ScorerSupplier delegate, float similarityAsScore) {
-			this.delegate = delegate;
-			this.similarityAsScore = similarityAsScore;
-		}
+    private static class MinScoreScorerSupplier extends ScorerSupplier {
 
-		@Override
-		public Scorer get(long leadCost) throws IOException {
-			Scorer scorer = delegate.get( leadCost );
-			if ( scorer == null ) {
-				return null;
-			}
-			return new MinScoreScorer( scorer, similarityAsScore );
-		}
+        private final ScorerSupplier delegate;
 
-		@Override
-		public long cost() {
-			return delegate.cost();
-		}
-	}
+        private final float similarityAsScore;
 
-	// An adapted version of `org.opensearch.common.lucene.search.function.MinScoreScorer`:
-	private static class MinScoreScorer extends Scorer {
-		private final Scorer in;
-		private final float minScore;
-		private float curScore;
+        private MinScoreScorerSupplier(ScorerSupplier delegate, float similarityAsScore) {
+            this.delegate = delegate;
+            this.similarityAsScore = similarityAsScore;
+        }
 
-		MinScoreScorer(Scorer scorer, float minScore) {
-			this.in = scorer;
-			this.minScore = minScore;
-		}
+        @Override
+        public Scorer get(long leadCost) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public int docID() {
-			return in.docID();
-		}
+        @Override
+        public long cost() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public float score() {
-			return curScore;
-		}
+    // An adapted version of `org.opensearch.common.lucene.search.function.MinScoreScorer`:
+    private static class MinScoreScorer extends Scorer {
 
-		@Override
-		public int advanceShallow(int target) throws IOException {
-			return in.advanceShallow( target );
-		}
+        private final Scorer in;
 
-		@Override
-		public float getMaxScore(int upTo) throws IOException {
-			return in.getMaxScore( upTo );
-		}
+        private final float minScore;
 
-		@Override
-		public DocIdSetIterator iterator() {
-			return TwoPhaseIterator.asDocIdSetIterator( twoPhaseIterator() );
-		}
+        private float curScore;
 
-		@Override
-		public TwoPhaseIterator twoPhaseIterator() {
-			final TwoPhaseIterator inTwoPhase = this.in.twoPhaseIterator();
-			final DocIdSetIterator approximation = inTwoPhase == null ? in.iterator() : inTwoPhase.approximation();
-			return new TwoPhaseIterator( approximation ) {
+        MinScoreScorer(Scorer scorer, float minScore) {
+            this.in = scorer;
+            this.minScore = minScore;
+        }
 
-				@Override
-				public boolean matches() throws IOException {
-					// we need to check the two-phase iterator first
-					// otherwise calling score() is illegal
-					if ( inTwoPhase != null && !inTwoPhase.matches() ) {
-						return false;
-					}
-					curScore = in.score();
-					return curScore >= minScore;
-				}
+        @Override
+        public int docID() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-				@Override
-				public float matchCost() {
-					return 1000f // random constant for the score computation
-							+ ( inTwoPhase == null ? 0 : inTwoPhase.matchCost() );
-				}
-			};
-		}
-	}
+        @Override
+        public float score() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public int advanceShallow(int target) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public float getMaxScore(int upTo) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public DocIdSetIterator iterator() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public TwoPhaseIterator twoPhaseIterator() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

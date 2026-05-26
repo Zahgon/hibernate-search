@@ -5,9 +5,7 @@
 package org.hibernate.search.backend.lucene.lowlevel.reader.impl;
 
 import java.io.IOException;
-
 import org.hibernate.search.backend.lucene.lowlevel.directory.spi.DirectoryHolder;
-
 import org.apache.lucene.index.DirectoryReader;
 
 /**
@@ -16,20 +14,19 @@ import org.apache.lucene.index.DirectoryReader;
  */
 public class NotSharedIndexReaderProvider implements IndexReaderProvider {
 
-	private final DirectoryHolder directoryHolder;
+    private final DirectoryHolder directoryHolder;
 
-	public NotSharedIndexReaderProvider(DirectoryHolder directoryHolder) {
-		this.directoryHolder = directoryHolder;
-	}
+    public NotSharedIndexReaderProvider(DirectoryHolder directoryHolder) {
+        this.directoryHolder = directoryHolder;
+    }
 
-	@Override
-	public void clear() {
-		// Nothing to do
-	}
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DirectoryReader getOrCreate() throws IOException {
-		return DirectoryReader.open( directoryHolder.get() );
-	}
-
+    @Override
+    public DirectoryReader getOrCreate() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

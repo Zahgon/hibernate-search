@@ -9,42 +9,37 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 
 class ArrayElementJsonAccessor extends AbstractCrawlingJsonAccessor<JsonArray> {
-	private final int index;
 
-	public ArrayElementJsonAccessor(JsonCompositeAccessor<JsonArray> parentAccessor, int index) {
-		super( parentAccessor );
-		this.index = index;
-	}
+    private final int index;
 
-	@Override
-	protected JsonElement doGet(JsonArray parent) {
-		if ( parent != null && index < parent.size() ) {
-			return parent.get( index );
-		}
-		else {
-			return null;
-		}
-	}
+    public ArrayElementJsonAccessor(JsonCompositeAccessor<JsonArray> parentAccessor, int index) {
+        super(parentAccessor);
+        this.index = index;
+    }
 
-	@Override
-	protected void doSet(JsonArray parent, JsonElement newValue) {
-		fillTo( parent, index );
-		parent.set( index, newValue );
-	}
+    @Override
+    protected JsonElement doGet(JsonArray parent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static void fillTo(JsonArray array, int index) {
-		for ( int i = array.size(); i <= index; ++i ) {
-			array.add( JsonNull.INSTANCE );
-		}
-	}
+    @Override
+    protected void doSet(JsonArray parent, JsonElement newValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected void appendRuntimeRelativePath(StringBuilder path) {
-		path.append( "[" ).append( index ).append( "]" );
-	}
+    private static void fillTo(JsonArray array, int index) {
+        for (int i = array.size(); i <= index; ++i) {
+            array.add(JsonNull.INSTANCE);
+        }
+    }
 
-	@Override
-	protected void appendStaticRelativePath(StringBuilder path, boolean first) {
-		// Nothing to do
-	}
+    @Override
+    protected void appendRuntimeRelativePath(StringBuilder path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected void appendStaticRelativePath(StringBuilder path, boolean first) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,49 +8,36 @@ import java.util.Objects;
 
 final class ValidationContextElement {
 
-	private final ValidationContextType type;
-	private final String name;
+    private final ValidationContextType type;
 
-	public ValidationContextElement(ValidationContextType type, String name) {
-		super();
-		this.type = type;
-		this.name = name;
-	}
+    private final String name;
 
-	public ValidationContextType getType() {
-		return type;
-	}
+    public ValidationContextElement(ValidationContextType type, String name) {
+        super();
+        this.type = type;
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public ValidationContextType getType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return new StringBuilder()
-				.append( type )
-				.append( "[" )
-				.append( name )
-				.append( "]" )
-				.toString();
-	}
+    public String getName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( obj != null && getClass().equals( obj.getClass() ) ) {
-			ValidationContextElement other = (ValidationContextElement) obj;
-			return Objects.equals( type, other.type )
-					&& Objects.equals( name, other.name );
-		}
-		return false;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Objects.hashCode( type );
-		result = prime * result + Objects.hashCode( name );
-		return result;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

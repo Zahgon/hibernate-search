@@ -9,24 +9,25 @@ import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 
 public final class BoundValueBridge<V, F> {
-	private final BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder;
-	private final IndexFieldReference<F> indexFieldReference;
 
-	BoundValueBridge(BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder,
-			IndexFieldReference<F> indexFieldReference) {
-		this.bridgeHolder = bridgeHolder;
-		this.indexFieldReference = indexFieldReference;
-	}
+    private final BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder;
 
-	public BeanHolder<? extends ValueBridge<? super V, F>> getBridgeHolder() {
-		return bridgeHolder;
-	}
+    private final IndexFieldReference<F> indexFieldReference;
 
-	public ValueBridge<? super V, F> getBridge() {
-		return bridgeHolder.get();
-	}
+    BoundValueBridge(BeanHolder<? extends ValueBridge<? super V, F>> bridgeHolder, IndexFieldReference<F> indexFieldReference) {
+        this.bridgeHolder = bridgeHolder;
+        this.indexFieldReference = indexFieldReference;
+    }
 
-	public IndexFieldReference<F> getIndexFieldReference() {
-		return indexFieldReference;
-	}
+    public BeanHolder<? extends ValueBridge<? super V, F>> getBridgeHolder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public ValueBridge<? super V, F> getBridge() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public IndexFieldReference<F> getIndexFieldReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

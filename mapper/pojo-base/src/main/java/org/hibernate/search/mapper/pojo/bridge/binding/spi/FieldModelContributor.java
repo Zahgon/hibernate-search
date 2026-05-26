@@ -9,10 +9,9 @@ import org.hibernate.search.engine.backend.types.dsl.IndexFieldTypeOptionsStep;
 
 public interface FieldModelContributor {
 
-	default <F> IndexFieldTypeOptionsStep<?, F> inferDefaultFieldType(IndexFieldTypeFactory factory, Class<F> clazz) {
-		return factory.as( clazz );
-	}
+    default <F> IndexFieldTypeOptionsStep<?, F> inferDefaultFieldType(IndexFieldTypeFactory factory, Class<F> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void contribute(FieldModelContributorContext context);
-
+    void contribute(FieldModelContributorContext context);
 }

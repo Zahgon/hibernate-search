@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.bootstrap.impl;
 
 import java.util.Optional;
-
 import org.hibernate.boot.ResourceStreamLocator;
 import org.hibernate.boot.spi.AdditionalMappingContributions;
 import org.hibernate.boot.spi.AdditionalMappingContributor;
@@ -18,29 +17,13 @@ import org.hibernate.search.mapper.orm.common.impl.HibernateOrmUtils;
 
 public class HibernateSearchCompositeMappingProducer implements AdditionalMappingContributor {
 
-	@Override
-	public String getContributorName() {
-		return "hibernate-search";
-	}
+    @Override
+    public String getContributorName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void contribute(AdditionalMappingContributions contributions, InFlightMetadataCollector metadata,
-			ResourceStreamLocator resourceStreamLocator, MetadataBuildingContext buildingContext) {
-		Optional<HibernateSearchPreIntegrationService> preIntegrationServiceOptional =
-				HibernateOrmUtils.getServiceOrEmpty( buildingContext.getBootstrapContext().getServiceRegistry(),
-						HibernateSearchPreIntegrationService.class );
-		if ( !preIntegrationServiceOptional.isPresent() ) {
-			return;
-		}
-		HibernateSearchPreIntegrationService preIntegrationService = preIntegrationServiceOptional.get();
-
-		ConfigurationPropertySource propertySource = preIntegrationService.propertySource()
-				.withMask( HibernateOrmMapperSettings.Radicals.COORDINATION );
-
-		for ( HibernateSearchOrmMappingProducer mappingProducer : preIntegrationService
-				.coordinationStrategyConfiguration().mappingProducers() ) {
-
-			mappingProducer.produceMappingContributor( propertySource, buildingContext ).accept( contributions );
-		}
-	}
+    @Override
+    public void contribute(AdditionalMappingContributions contributions, InFlightMetadataCollector metadata, ResourceStreamLocator resourceStreamLocator, MetadataBuildingContext buildingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

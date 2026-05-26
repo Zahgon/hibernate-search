@@ -5,13 +5,11 @@
 package org.hibernate.search.engine.common.impl;
 
 import static org.hibernate.search.engine.common.impl.SearchIntegrationImpl.INDEX_MANAGERS_KEY;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.engine.backend.index.spi.IndexManagerImplementor;
 import org.hibernate.search.engine.backend.spi.BackendImplementor;
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
@@ -43,209 +41,86 @@ import org.hibernate.search.util.common.impl.Futures;
 
 class SearchIntegrationPartialBuildStateImpl implements SearchIntegrationPartialBuildState {
 
-	private final BeanProvider beanProvider;
-	private final BeanResolver beanResolver;
-	private final BeanHolder<? extends FailureHandler> failureHandlerHolder;
-	private final ThreadPoolProviderImpl threadPoolProvider;
+    private final BeanProvider beanProvider;
 
-	private final Map<MappingKey<?, ?>, MappingPartialBuildState> partiallyBuiltMappings;
-	private final Map<String, BackendNonStartedState> nonStartedBackends;
-	private final Map<String, IndexManagerNonStartedState> nonStartedIndexManagers;
+    private final BeanResolver beanResolver;
 
-	private final ConfigurationPropertyChecker partialConfigurationPropertyChecker;
+    private final BeanHolder<? extends FailureHandler> failureHandlerHolder;
 
-	private final Map<MappingKey<?, ?>, MappingNonStartedState> fullyBuiltNonStartedMappings = new LinkedHashMap<>();
+    private final ThreadPoolProviderImpl threadPoolProvider;
 
-	private final Map<String, BackendImplementor> startedBackends = new LinkedHashMap<>();
-	private final Map<String, IndexManagerImplementor> startedIndexManagers = new LinkedHashMap<>();
-	private final Map<MappingKey<?, ?>, MappingImplementor<?>> fullyBuiltStartedMappings = new LinkedHashMap<>();
+    private final Map<MappingKey<?, ?>, MappingPartialBuildState> partiallyBuiltMappings;
 
-	private final EngineThreads engineThreads;
-	private final TimingSource timingSource;
-	private final Optional<SearchIntegrationImpl> previousIntegration;
+    private final Map<String, BackendNonStartedState> nonStartedBackends;
 
-	SearchIntegrationPartialBuildStateImpl(
-			BeanProvider beanProvider, BeanResolver beanResolver,
-			BeanHolder<? extends FailureHandler> failureHandlerHolder,
-			ThreadPoolProviderImpl threadPoolProvider,
-			Map<MappingKey<?, ?>, MappingPartialBuildState> partiallyBuiltMappings,
-			Map<String, BackendNonStartedState> nonStartedBackends,
-			Map<String, IndexManagerNonStartedState> nonStartedIndexManagers,
-			ConfigurationPropertyChecker partialConfigurationPropertyChecker,
-			EngineThreads engineThreads, TimingSource timingSource,
-			Optional<SearchIntegrationImpl> previousIntegration) {
-		this.beanProvider = beanProvider;
-		this.beanResolver = beanResolver;
-		this.failureHandlerHolder = failureHandlerHolder;
-		this.threadPoolProvider = threadPoolProvider;
-		this.partiallyBuiltMappings = partiallyBuiltMappings;
-		this.nonStartedBackends = nonStartedBackends;
-		this.nonStartedIndexManagers = nonStartedIndexManagers;
-		this.partialConfigurationPropertyChecker = partialConfigurationPropertyChecker;
-		this.engineThreads = engineThreads;
-		this.timingSource = timingSource;
-		this.previousIntegration = previousIntegration;
-	}
+    private final Map<String, IndexManagerNonStartedState> nonStartedIndexManagers;
 
-	@Override
-	public void closeOnFailure() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.pushAll( MappingPartialBuildState::closeOnFailure, partiallyBuiltMappings.values() );
-			closer.pushAll( MappingNonStartedState::closeOnFailure, fullyBuiltNonStartedMappings.values() );
-			closer.pushAll( MappingImplementor::stop, fullyBuiltStartedMappings.values() );
-			closer.pushAll( IndexManagerNonStartedState::closeOnFailure, nonStartedIndexManagers.values() );
-			closer.pushAll( IndexManagerImplementor::stop, startedIndexManagers.values() );
-			closer.pushAll( BackendNonStartedState::closeOnFailure, nonStartedBackends.values() );
-			closer.pushAll( BackendImplementor::stop, startedBackends.values() );
-			closer.pushAll( ThreadPoolProviderImpl::close, threadPoolProvider );
-			closer.pushAll( BeanHolder::close, failureHandlerHolder );
-			closer.pushAll( BeanProvider::close, beanProvider );
-			closer.pushAll( EngineThreads::onStop, engineThreads );
-			closer.pushAll( TimingSource::stop, timingSource );
+    private final ConfigurationPropertyChecker partialConfigurationPropertyChecker;
 
-			if ( previousIntegration.isPresent() ) {
-				closer.pushAll( SearchIntegration::close, previousIntegration.get() );
-			}
-		}
-	}
+    private final Map<MappingKey<?, ?>, MappingNonStartedState> fullyBuiltNonStartedMappings = new LinkedHashMap<>();
 
-	@Override
-	public BeanResolver beanResolver() {
-		return beanResolver;
-	}
+    private final Map<String, BackendImplementor> startedBackends = new LinkedHashMap<>();
 
-	@Override
-	public SearchIntegrationFinalizer finalizer(ConfigurationPropertySource propertySource,
-			ConfigurationPropertyChecker configurationPropertyChecker) {
-		return new SearchIntegrationFinalizerImpl(
-				SearchIntegrationEnvironment.rootPropertySource( propertySource, beanResolver ),
-				configurationPropertyChecker
-		);
-	}
+    private final Map<String, IndexManagerImplementor> startedIndexManagers = new LinkedHashMap<>();
 
-	private class SearchIntegrationFinalizerImpl implements SearchIntegrationFinalizer {
+    private final Map<MappingKey<?, ?>, MappingImplementor<?>> fullyBuiltStartedMappings = new LinkedHashMap<>();
 
-		private final RootFailureCollector failureCollector =
-				new RootFailureCollector( EngineEventContextMessages.INSTANCE.bootstrap() );
-		private final ConfigurationPropertySource propertySource;
-		private final ConfigurationPropertyChecker propertyChecker;
+    private final EngineThreads engineThreads;
 
-		private SearchIntegrationFinalizerImpl(ConfigurationPropertySource propertySource,
-				ConfigurationPropertyChecker propertyChecker) {
-			this.propertySource = propertySource;
-			this.propertyChecker = propertyChecker;
-		}
+    private final TimingSource timingSource;
 
-		@Override
-		public <PBM, M> M finalizeMapping(MappingKey<PBM, M> mappingKey,
-				MappingFinalizer<PBM, M> finalizer) {
-			// We know this cast will work because of how
-			@SuppressWarnings("unchecked")
-			PBM partiallyBuiltMapping = (PBM) partiallyBuiltMappings.get( mappingKey );
-			if ( partiallyBuiltMapping == null ) {
-				throw new AssertionFailure(
-						"Some partially built mapping could not be found during bootstrap. Key: " + mappingKey
-				);
-			}
+    private final Optional<SearchIntegrationImpl> previousIntegration;
 
-			ContextualFailureCollector mappingFailureCollector = failureCollector.withContext( mappingKey );
-			MappingFinalizationContext mappingFinalizationContext =
-					new MappingFinalizationContextImpl( mappingFailureCollector, propertySource, beanResolver );
+    SearchIntegrationPartialBuildStateImpl(BeanProvider beanProvider, BeanResolver beanResolver, BeanHolder<? extends FailureHandler> failureHandlerHolder, ThreadPoolProviderImpl threadPoolProvider, Map<MappingKey<?, ?>, MappingPartialBuildState> partiallyBuiltMappings, Map<String, BackendNonStartedState> nonStartedBackends, Map<String, IndexManagerNonStartedState> nonStartedIndexManagers, ConfigurationPropertyChecker partialConfigurationPropertyChecker, EngineThreads engineThreads, TimingSource timingSource, Optional<SearchIntegrationImpl> previousIntegration) {
+        this.beanProvider = beanProvider;
+        this.beanResolver = beanResolver;
+        this.failureHandlerHolder = failureHandlerHolder;
+        this.threadPoolProvider = threadPoolProvider;
+        this.partiallyBuiltMappings = partiallyBuiltMappings;
+        this.nonStartedBackends = nonStartedBackends;
+        this.nonStartedIndexManagers = nonStartedIndexManagers;
+        this.partialConfigurationPropertyChecker = partialConfigurationPropertyChecker;
+        this.engineThreads = engineThreads;
+        this.timingSource = timingSource;
+        this.previousIntegration = previousIntegration;
+    }
 
-			MappingImplementor<M> mapping = null;
-			try {
-				mapping = finalizer.finalizeMapping( mappingFinalizationContext, partiallyBuiltMapping );
-			}
-			catch (RuntimeException e) {
-				mappingFailureCollector.add( e );
-			}
-			catch (MappingAbortedException e) {
-				e.collectSilentlyAndCheck( mappingFailureCollector );
-			}
-			failureCollector.checkNoFailure();
+    @Override
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			fullyBuiltNonStartedMappings.put( mappingKey, new MappingNonStartedState( mappingKey, mapping ) );
-			partiallyBuiltMappings.remove( mappingKey );
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			return mapping.toConcreteType();
-		}
+    @Override
+    public SearchIntegrationFinalizer finalizer(ConfigurationPropertySource propertySource, ConfigurationPropertyChecker configurationPropertyChecker) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public SearchIntegration finalizeIntegration() {
-			failureCollector.checkNoFailure();
+    private class SearchIntegrationFinalizerImpl implements SearchIntegrationFinalizer {
 
-			if ( !partiallyBuiltMappings.isEmpty() ) {
-				throw new AssertionFailure(
-						"Some mappings were not fully built. Partially built mappings: " + partiallyBuiltMappings
-				);
-			}
+        private final RootFailureCollector failureCollector = new RootFailureCollector(EngineEventContextMessages.INSTANCE.bootstrap());
 
-			// Start backends
-			for ( Map.Entry<String, BackendNonStartedState> entry : nonStartedBackends.entrySet() ) {
-				startedBackends.put(
-						entry.getKey(),
-						entry.getValue().start( failureCollector, beanResolver, propertySource, threadPoolProvider )
-				);
-			}
-			failureCollector.checkNoFailure();
+        private final ConfigurationPropertySource propertySource;
 
-			// Pre-Start indexes
-			try ( SavedState previousIntegrationSavedState =
-					previousIntegration.map( SearchIntegrationImpl::saveForRestart ).orElse( SavedState.empty() ) ) {
-				for ( Map.Entry<String, IndexManagerNonStartedState> entry : nonStartedIndexManagers.entrySet() ) {
-					SavedState savedState = previousIntegrationSavedState.get( INDEX_MANAGERS_KEY )
-							.orElse( Collections.emptyMap() ).getOrDefault( entry.getKey(), SavedState.empty() );
-					entry.getValue().preStart( failureCollector, beanResolver, propertySource, savedState );
-				}
-			}
-			failureCollector.checkNoFailure();
+        private final ConfigurationPropertyChecker propertyChecker;
 
-			if ( previousIntegration.isPresent() ) {
-				previousIntegration.get().close();
-			}
+        private SearchIntegrationFinalizerImpl(ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
+            this.propertySource = propertySource;
+            this.propertyChecker = propertyChecker;
+        }
 
-			// Start indexes
-			for ( Map.Entry<String, IndexManagerNonStartedState> entry : nonStartedIndexManagers.entrySet() ) {
-				startedIndexManagers.put(
-						entry.getKey(),
-						entry.getValue().start()
-				);
-			}
-			failureCollector.checkNoFailure();
+        @Override
+        public <PBM, M> M finalizeMapping(MappingKey<PBM, M> mappingKey, MappingFinalizer<PBM, M> finalizer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Start mappings
-			SearchIntegrationHandle integrationHandle = new SearchIntegrationHandle();
-			CompletableFuture<?>[] mappingFutures = new CompletableFuture<?>[fullyBuiltNonStartedMappings.size()];
-			int mappingIndex = 0;
-			// Start
-			for ( MappingNonStartedState state : fullyBuiltNonStartedMappings.values() ) {
-				mappingFutures[mappingIndex] = state.start( failureCollector, beanResolver, propertySource,
-						threadPoolProvider, integrationHandle );
-				++mappingIndex;
-			}
-			// Wait for the starting operation to finish
-			Futures.unwrappedExceptionJoin( CompletableFuture.allOf( mappingFutures ) );
-			failureCollector.checkNoFailure();
-			// Everything went well: register the mappings
-			for ( Map.Entry<MappingKey<?, ?>, MappingNonStartedState> entry : fullyBuiltNonStartedMappings.entrySet() ) {
-				fullyBuiltStartedMappings.put( entry.getKey(), entry.getValue().getMapping() );
-			}
-
-			propertyChecker.afterBoot( partialConfigurationPropertyChecker );
-
-			SearchIntegrationImpl integration = new SearchIntegrationImpl(
-					beanProvider,
-					failureHandlerHolder,
-					threadPoolProvider,
-					fullyBuiltStartedMappings,
-					startedBackends,
-					startedIndexManagers,
-					engineThreads, timingSource
-			);
-			integrationHandle.initialize( integration );
-
-			return integration;
-		}
-	}
-
+        @Override
+        public SearchIntegration finalizeIntegration() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

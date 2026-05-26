@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.backend.elasticsearch.analysis.impl.ElasticsearchAnalysisDescriptor;
 import org.hibernate.search.backend.elasticsearch.logging.impl.AnalysisLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.AnalyzerDefinition;
@@ -29,123 +28,100 @@ import org.hibernate.search.engine.backend.analysis.spi.AnalysisDescriptorRegist
  * <p>
  * This class provides access to the full mapping from names to definitions
  * (see {@link #getAnalyzerDefinitions} for instance).
- *
  */
 public final class ElasticsearchAnalysisDefinitionRegistry implements AnalysisDescriptorRegistry {
 
-	private final Map<String, AnalyzerDefinition> analyzerDefinitions;
-	private final Map<String, NormalizerDefinition> normalizerDefinitions;
-	private final Map<String, TokenizerDefinition> tokenizerDefinitions;
-	private final Map<String, TokenFilterDefinition> tokenFilterDefinitions;
-	private final Map<String, CharFilterDefinition> charFilterDefinitions;
+    private final Map<String, AnalyzerDefinition> analyzerDefinitions;
 
-	public ElasticsearchAnalysisDefinitionRegistry() {
-		// Nothing to do: we're creating an empty registry
-		analyzerDefinitions = Collections.emptyMap();
-		normalizerDefinitions = Collections.emptyMap();
-		tokenizerDefinitions = Collections.emptyMap();
-		tokenFilterDefinitions = Collections.emptyMap();
-		charFilterDefinitions = Collections.emptyMap();
-	}
+    private final Map<String, NormalizerDefinition> normalizerDefinitions;
 
-	public ElasticsearchAnalysisDefinitionRegistry(ElasticsearchAnalysisDefinitionContributor contributor) {
-		analyzerDefinitions = new TreeMap<>();
-		normalizerDefinitions = new TreeMap<>();
-		tokenizerDefinitions = new TreeMap<>();
-		tokenFilterDefinitions = new TreeMap<>();
-		charFilterDefinitions = new TreeMap<>();
-		contributor.contribute( new ElasticsearchAnalysisDefinitionCollector() {
-			@Override
-			public void collect(String name, AnalyzerDefinition definition) {
-				// Override if existing
-				analyzerDefinitions.put( name, definition );
-			}
+    private final Map<String, TokenizerDefinition> tokenizerDefinitions;
 
-			@Override
-			public void collect(String name, NormalizerDefinition definition) {
-				// Override if existing
-				normalizerDefinitions.put( name, definition );
-			}
+    private final Map<String, TokenFilterDefinition> tokenFilterDefinitions;
 
-			@Override
-			public void collect(String name, TokenizerDefinition definition) {
-				TokenizerDefinition previous = tokenizerDefinitions.putIfAbsent( name, definition );
-				if ( previous != null && previous != definition ) {
-					throw AnalysisLog.INSTANCE.tokenizerNamingConflict( name );
-				}
-			}
+    private final Map<String, CharFilterDefinition> charFilterDefinitions;
 
-			@Override
-			public void collect(String name, TokenFilterDefinition definition) {
-				TokenFilterDefinition previous = tokenFilterDefinitions.putIfAbsent( name, definition );
-				if ( previous != null && previous != definition ) {
-					throw AnalysisLog.INSTANCE.tokenFilterNamingConflict( name );
-				}
-			}
+    public ElasticsearchAnalysisDefinitionRegistry() {
+        // Nothing to do: we're creating an empty registry
+        analyzerDefinitions = Collections.emptyMap();
+        normalizerDefinitions = Collections.emptyMap();
+        tokenizerDefinitions = Collections.emptyMap();
+        tokenFilterDefinitions = Collections.emptyMap();
+        charFilterDefinitions = Collections.emptyMap();
+    }
 
-			@Override
-			public void collect(String name, CharFilterDefinition definition) {
-				CharFilterDefinition previous = charFilterDefinitions.putIfAbsent( name, definition );
-				if ( previous != null && previous != definition ) {
-					throw AnalysisLog.INSTANCE.charFilterNamingConflict( name );
-				}
-			}
-		} );
-	}
+    public ElasticsearchAnalysisDefinitionRegistry(ElasticsearchAnalysisDefinitionContributor contributor) {
+        analyzerDefinitions = new TreeMap<>();
+        normalizerDefinitions = new TreeMap<>();
+        tokenizerDefinitions = new TreeMap<>();
+        tokenFilterDefinitions = new TreeMap<>();
+        charFilterDefinitions = new TreeMap<>();
+        contributor.contribute(new ElasticsearchAnalysisDefinitionCollector() {
 
-	public Map<String, AnalyzerDefinition> getAnalyzerDefinitions() {
-		return Collections.unmodifiableMap( analyzerDefinitions );
-	}
+            @Override
+            public void collect(String name, AnalyzerDefinition definition) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-	public Map<String, NormalizerDefinition> getNormalizerDefinitions() {
-		return Collections.unmodifiableMap( normalizerDefinitions );
-	}
+            @Override
+            public void collect(String name, NormalizerDefinition definition) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-	public Map<String, TokenizerDefinition> getTokenizerDefinitions() {
-		return Collections.unmodifiableMap( tokenizerDefinitions );
-	}
+            @Override
+            public void collect(String name, TokenizerDefinition definition) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-	public Map<String, TokenFilterDefinition> getTokenFilterDefinitions() {
-		return Collections.unmodifiableMap( tokenFilterDefinitions );
-	}
+            @Override
+            public void collect(String name, TokenFilterDefinition definition) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-	public Map<String, CharFilterDefinition> getCharFilterDefinitions() {
-		return Collections.unmodifiableMap( charFilterDefinitions );
-	}
+            @Override
+            public void collect(String name, CharFilterDefinition definition) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        });
+    }
 
-	@Override
-	public Optional<? extends AnalyzerDescriptor> analyzerDescriptor(String name) {
-		if ( analyzerDefinitions.containsKey( name ) ) {
-			return Optional.of( new ElasticsearchAnalysisDescriptor( name ) );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    public Map<String, AnalyzerDefinition> getAnalyzerDefinitions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<? extends AnalyzerDescriptor> analyzerDescriptors() {
-		Set<AnalyzerDescriptor> descriptors = new HashSet<>();
-		for ( String name : analyzerDefinitions.keySet() ) {
-			descriptors.add( new ElasticsearchAnalysisDescriptor( name ) );
-		}
-		return Collections.unmodifiableSet( descriptors );
-	}
+    public Map<String, NormalizerDefinition> getNormalizerDefinitions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<? extends NormalizerDescriptor> normalizerDescriptor(String name) {
-		if ( normalizerDefinitions.containsKey( name ) ) {
-			return Optional.of( new ElasticsearchAnalysisDescriptor( name ) );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    public Map<String, TokenizerDefinition> getTokenizerDefinitions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<? extends NormalizerDescriptor> normalizerDescriptors() {
-		return normalizerDefinitions.keySet().stream()
-				.map( ElasticsearchAnalysisDescriptor::new )
-				.collect( Collectors.toUnmodifiableSet() );
-	}
+    public Map<String, TokenFilterDefinition> getTokenFilterDefinitions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Map<String, CharFilterDefinition> getCharFilterDefinitions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<? extends AnalyzerDescriptor> analyzerDescriptor(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Collection<? extends AnalyzerDescriptor> analyzerDescriptors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<? extends NormalizerDescriptor> normalizerDescriptor(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Collection<? extends NormalizerDescriptor> normalizerDescriptors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

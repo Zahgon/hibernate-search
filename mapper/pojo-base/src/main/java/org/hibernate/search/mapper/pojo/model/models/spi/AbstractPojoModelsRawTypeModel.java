@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.hibernate.models.spi.ClassDetails;
 import org.hibernate.models.spi.MemberDetails;
 import org.hibernate.search.engine.mapper.model.spi.MappableTypeModel;
@@ -23,101 +22,75 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoConstructorModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeIdentifier;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
-public abstract class AbstractPojoModelsRawTypeModel<T, I extends AbstractPojoModelsBootstrapIntrospector>
-		extends AbstractPojoRawTypeModel<T, I> {
+public abstract class AbstractPojoModelsRawTypeModel<T, I extends AbstractPojoModelsBootstrapIntrospector> extends AbstractPojoRawTypeModel<T, I> {
 
-	protected final ClassDetails classDetails;
-	final RawTypeDeclaringContext<T> rawTypeDeclaringContext;
+    protected final ClassDetails classDetails;
 
-	private Map<String, MemberDetails> declaredFieldAccessPropertiesByName;
-	private Map<String, List<MemberDetails>> declaredMethodAccessPropertiesByName;
+    final RawTypeDeclaringContext<T> rawTypeDeclaringContext;
 
-	public AbstractPojoModelsRawTypeModel(I introspector, PojoRawTypeIdentifier<T> typeIdentifier,
-			RawTypeDeclaringContext<T> rawTypeDeclaringContext) {
-		super( introspector, typeIdentifier );
-		this.classDetails = introspector.toModelsClass( typeIdentifier.javaClass() );
-		this.rawTypeDeclaringContext = rawTypeDeclaringContext;
-	}
+    private Map<String, MemberDetails> declaredFieldAccessPropertiesByName;
 
-	@Override
-	public boolean isAbstract() {
-		return classDetails.isAbstract();
-	}
+    private Map<String, List<MemberDetails>> declaredMethodAccessPropertiesByName;
 
-	@Override
-	public final boolean isSubTypeOf(MappableTypeModel other) {
-		return other instanceof AbstractPojoModelsRawTypeModel
-				&& ( (AbstractPojoModelsRawTypeModel<?, ?>) other ).classDetails.toJavaClass()
-						.isAssignableFrom( classDetails.toJavaClass() );
-	}
+    public AbstractPojoModelsRawTypeModel(I introspector, PojoRawTypeIdentifier<T> typeIdentifier, RawTypeDeclaringContext<T> rawTypeDeclaringContext) {
+        super(introspector, typeIdentifier);
+        this.classDetails = introspector.toModelsClass(typeIdentifier.javaClass());
+        this.rawTypeDeclaringContext = rawTypeDeclaringContext;
+    }
 
-	@Override
-	public Optional<PojoTypeModel<?>> typeArgument(Class<?> rawSuperType, int typeParameterIndex) {
-		return rawTypeDeclaringContext.typeArgument( rawSuperType, typeParameterIndex );
-	}
+    @Override
+    public boolean isAbstract() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<PojoTypeModel<?>> arrayElementType() {
-		return rawTypeDeclaringContext.arrayElementType();
-	}
+    @Override
+    public final boolean isSubTypeOf(MappableTypeModel other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Stream<? extends Annotation> annotations() {
-		return introspector.annotations( classDetails );
-	}
+    @Override
+    public Optional<PojoTypeModel<?>> typeArgument(Class<?> rawSuperType, int typeParameterIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	protected List<PojoConstructorModel<T>> createDeclaredConstructors() {
-		return Arrays.stream( javaClass().getDeclaredConstructors() )
-				.<PojoConstructorModel<T>>map( constructor -> new PojoModelsConstructorModel<>(
-						introspector, this, (Constructor<T>) constructor ) )
-				.collect( Collectors.toList() );
-	}
+    @Override
+    public Optional<PojoTypeModel<?>> arrayElementType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	Class<T> javaClass() {
-		return typeIdentifier.javaClass();
-	}
+    @Override
+    public Stream<? extends Annotation> annotations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected final Stream<String> declaredPropertyNames() {
-		return Stream.concat(
-				declaredFieldAccessPropertiesByName().keySet().stream(),
-				declaredMethodAccessPropertiesByName().keySet().stream()
-		).distinct();
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    protected List<PojoConstructorModel<T>> createDeclaredConstructors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected final Map<String, MemberDetails> declaredFieldAccessPropertiesByName() {
-		if ( declaredFieldAccessPropertiesByName == null ) {
-			declaredFieldAccessPropertiesByName =
-					introspector.declaredFieldAccessPropertiesByName( classDetails );
-		}
-		return declaredFieldAccessPropertiesByName;
-	}
+    Class<T> javaClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected final Map<String, List<MemberDetails>> declaredMethodAccessPropertiesByName() {
-		if ( declaredMethodAccessPropertiesByName == null ) {
-			declaredMethodAccessPropertiesByName =
-					introspector.declaredMethodAccessPropertiesByName( classDetails );
-		}
-		return declaredMethodAccessPropertiesByName;
-	}
+    @Override
+    protected final Stream<String> declaredPropertyNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected final List<Member> declaredPropertyGetters(String propertyName) {
-		List<MemberDetails> methodAccessProperties = declaredMethodAccessPropertiesByName().get( propertyName );
-		if ( methodAccessProperties != null ) {
-			return methodAccessProperties.stream().map( MemberDetails::toJavaMember )
-					.collect( Collectors.toList() );
-		}
-		return null;
-	}
+    protected final Map<String, MemberDetails> declaredFieldAccessPropertiesByName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected final Member declaredPropertyField(String propertyName) {
-		MemberDetails fieldAccessProperty = classDetails.findFieldByName( propertyName );
-		if ( fieldAccessProperty != null ) {
-			return fieldAccessProperty.toJavaMember();
-		}
-		return null;
-	}
+    protected final Map<String, List<MemberDetails>> declaredMethodAccessPropertiesByName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    protected final List<Member> declaredPropertyGetters(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected final Member declaredPropertyField(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

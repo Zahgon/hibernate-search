@@ -4,7 +4,6 @@
  */
 package org.hibernate.search.mapper.pojo.work.impl;
 
-
 import org.hibernate.search.engine.backend.work.execution.DocumentCommitStrategy;
 import org.hibernate.search.engine.backend.work.execution.DocumentRefreshStrategy;
 import org.hibernate.search.engine.common.EntityReference;
@@ -19,39 +18,18 @@ import org.hibernate.search.util.common.impl.Futures;
 @Incubating
 public final class AsyncIndexingPlanSynchronizationStrategy implements IndexingPlanSynchronizationStrategy {
 
-	public static final IndexingPlanSynchronizationStrategy INSTANCE = new AsyncIndexingPlanSynchronizationStrategy();
+    public static final IndexingPlanSynchronizationStrategy INSTANCE = new AsyncIndexingPlanSynchronizationStrategy();
 
-	private AsyncIndexingPlanSynchronizationStrategy() {
-	}
+    private AsyncIndexingPlanSynchronizationStrategy() {
+    }
 
-	@Override
-	public String toString() {
-		return IndexingPlanSynchronizationStrategy.class.getSimpleName() + ".async()";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void apply(IndexingPlanSynchronizationStrategyConfigurationContext context) {
-		context.documentCommitStrategy( DocumentCommitStrategy.NONE );
-		context.documentRefreshStrategy( DocumentRefreshStrategy.NONE );
-		FailureHandler failureHandler = context.failureHandler();
-		context.indexingFutureHandler( future -> future.whenComplete( Futures.handler( (result, throwable) -> {
-			if ( throwable != null ) {
-				EntityIndexingFailureContext.Builder contextBuilder = EntityIndexingFailureContext.builder();
-				contextBuilder.throwable( throwable );
-				contextBuilder.failingOperation( PojoMassIndexerMessages.INSTANCE.backgroundIndexing() );
-				failureHandler.handle( contextBuilder.build() );
-			}
-			else if ( result != null && result.throwable().isPresent() ) {
-				EntityIndexingFailureContext.Builder contextBuilder = EntityIndexingFailureContext.builder();
-				contextBuilder.throwable( result.throwable().get() );
-				contextBuilder.failingOperation( PojoMassIndexerMessages.INSTANCE.backgroundIndexing() );
-				for ( EntityReference entityReference : result.failingEntities() ) {
-					contextBuilder.failingEntityReference( entityReference );
-				}
-				failureHandler.handle( contextBuilder.build() );
-			}
-		} )
-		)
-		);
-	}
+    @Override
+    public void apply(IndexingPlanSynchronizationStrategyConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

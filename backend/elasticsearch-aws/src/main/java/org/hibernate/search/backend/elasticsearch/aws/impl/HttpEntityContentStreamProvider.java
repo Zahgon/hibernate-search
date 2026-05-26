@@ -8,45 +8,30 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequestInterceptorContext;
-
 import software.amazon.awssdk.http.ContentStreamProvider;
 
 public class HttpEntityContentStreamProvider implements ContentStreamProvider, Closeable {
-	private final ElasticsearchRequestInterceptorContext requestContext;
-	private InputStream previousStream;
 
-	public HttpEntityContentStreamProvider(ElasticsearchRequestInterceptorContext requestContext) {
-		this.requestContext = requestContext;
-	}
+    private final ElasticsearchRequestInterceptorContext requestContext;
 
-	public static HttpEntityContentStreamProvider create(ElasticsearchRequestInterceptorContext requestContext) {
-		if ( requestContext.hasContent() ) {
-			return new HttpEntityContentStreamProvider( requestContext );
-		}
-		return null;
-	}
+    private InputStream previousStream;
 
-	@Override
-	public InputStream newStream() {
-		try {
-			// Believe it or not, the AWS SDK expects us to close previous streams ourselves...
-			close();
-			InputStream newStream = requestContext.content();
-			previousStream = newStream;
-			return newStream;
-		}
-		catch (IOException e) {
-			throw new UncheckedIOException( e );
-		}
-	}
+    public HttpEntityContentStreamProvider(ElasticsearchRequestInterceptorContext requestContext) {
+        this.requestContext = requestContext;
+    }
 
-	@Override
-	public void close() throws IOException {
-		if ( previousStream != null ) {
-			previousStream.close();
-			previousStream = null;
-		}
-	}
+    public static HttpEntityContentStreamProvider create(ElasticsearchRequestInterceptorContext requestContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public InputStream newStream() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void close() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

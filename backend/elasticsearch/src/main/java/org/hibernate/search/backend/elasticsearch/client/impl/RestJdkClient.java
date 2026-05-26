@@ -10,47 +10,31 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 import org.hibernate.search.util.common.impl.Closer;
 
 @Incubating
 public class RestJdkClient implements AutoCloseable {
 
-	private final NodeProvider nodeProvider;
+    private final NodeProvider nodeProvider;
 
-	private HttpClient httpClient;
+    private HttpClient httpClient;
 
-	public RestJdkClient(NodeProvider nodeProvider, HttpClient httpClient) {
-		this.nodeProvider = nodeProvider;
-		this.httpClient = httpClient;
-	}
+    public RestJdkClient(NodeProvider nodeProvider, HttpClient httpClient) {
+        this.nodeProvider = nodeProvider;
+        this.httpClient = httpClient;
+    }
 
-	public NodeProvider.ServerNode nextNode() {
-		return nodeProvider.nextNode();
-	}
+    public NodeProvider.ServerNode nextNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request,
-			HttpResponse.BodyHandler<T> responseBodyHandler) {
-		return httpClient.sendAsync( request, responseBodyHandler );
-	}
+    public <T> CompletableFuture<HttpResponse<T>> sendAsync(HttpRequest request, HttpResponse.BodyHandler<T> responseBodyHandler) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() throws Exception {
-		if ( httpClient != null ) {
-			try ( Closer<Exception> closer = new Closer<>() ) {
-				Optional<Executor> executor = httpClient.executor();
-				// May look a bit silly ... but close was only added in JDK 21:
-				if ( ( (Object) httpClient ) instanceof AutoCloseable closeable ) {
-					closer.push( AutoCloseable::close, closeable );
-				}
-				if ( executor.isPresent() && executor.get() instanceof AutoCloseable closeable ) {
-					closer.push( AutoCloseable::close, closeable );
-				}
-			}
-			finally {
-				httpClient = null;
-			}
-		}
-	}
+    @Override
+    public void close() throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

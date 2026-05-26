@@ -6,16 +6,15 @@ package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 public interface AggregationFunction<R extends AggregationFunction<?>> {
 
-	void apply(long value);
+    void apply(long value);
 
-	void merge(AggregationFunction<R> sibling);
+    void merge(AggregationFunction<R> sibling);
 
-	Long result();
+    Long result();
 
-	R implementation();
+    R implementation();
 
-	default boolean acceptMultipleValues() {
-		return true;
-	}
-
+    default boolean acceptMultipleValues() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

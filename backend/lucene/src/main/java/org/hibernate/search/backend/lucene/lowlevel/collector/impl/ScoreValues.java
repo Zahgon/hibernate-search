@@ -5,30 +5,30 @@
 package org.hibernate.search.backend.lucene.lowlevel.collector.impl;
 
 import java.io.IOException;
-
 import com.carrotsearch.hppc.IntIntMap;
-
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.ScoreDoc;
 
 public class ScoreValues implements Values<Float> {
 
-	private final IntIntMap docIdToScoreDocIndex;
-	private final ScoreDoc[] scoreDocs;
-	private int currentLeafDocBase;
+    private final IntIntMap docIdToScoreDocIndex;
 
-	public ScoreValues(TopDocsDataCollectorExecutionContext context) {
-		this.docIdToScoreDocIndex = context.docIdToScoreDocIndex();
-		this.scoreDocs = context.topDocs().scoreDocs;
-	}
+    private final ScoreDoc[] scoreDocs;
 
-	@Override
-	public void context(LeafReaderContext context) throws IOException {
-		this.currentLeafDocBase = context.docBase;
-	}
+    private int currentLeafDocBase;
 
-	@Override
-	public Float get(int doc) throws IOException {
-		return scoreDocs[docIdToScoreDocIndex.get( currentLeafDocBase + doc )].score;
-	}
+    public ScoreValues(TopDocsDataCollectorExecutionContext context) {
+        this.docIdToScoreDocIndex = context.docIdToScoreDocIndex();
+        this.scoreDocs = context.topDocs().scoreDocs;
+    }
+
+    @Override
+    public void context(LeafReaderContext context) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Float get(int doc) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

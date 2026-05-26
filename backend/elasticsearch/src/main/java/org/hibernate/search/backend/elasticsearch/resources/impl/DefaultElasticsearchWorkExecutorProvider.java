@@ -13,24 +13,12 @@ import org.hibernate.search.engine.common.execution.spi.SimpleScheduledExecutor;
 
 public class DefaultElasticsearchWorkExecutorProvider implements ElasticsearchWorkExecutorProvider {
 
-	public static final String DEFAULT_BEAN_NAME = "es-built-in";
+    public static final String DEFAULT_BEAN_NAME = "es-built-in";
 
-	private static final OptionalConfigurationProperty<Integer> THREAD_POOL_SIZE =
-			ConfigurationProperty.forKey( ElasticsearchBackendSettings.THREAD_POOL_SIZE )
-					.asIntegerStrictlyPositive()
-					.build();
+    private static final OptionalConfigurationProperty<Integer> THREAD_POOL_SIZE = ConfigurationProperty.forKey(ElasticsearchBackendSettings.THREAD_POOL_SIZE).asIntegerStrictlyPositive().build();
 
-	@Override
-	public SimpleScheduledExecutor workExecutor(ElasticsearchWorkExecutorProvider.Context context) {
-		int threadPoolSize = THREAD_POOL_SIZE.get( context.propertySource() )
-				.orElse( Runtime.getRuntime().availableProcessors() );
-		// We use a scheduled executor so that we can also schedule client timeouts in the same thread pool.
-		return new DelegatingSimpleScheduledExecutor(
-				context.threadPoolProvider().newScheduledExecutor(
-						threadPoolSize,
-						context.recommendedThreadNamePrefix()
-				),
-				context.threadPoolProvider().isScheduledExecutorBlocking()
-		);
-	}
+    @Override
+    public SimpleScheduledExecutor workExecutor(ElasticsearchWorkExecutorProvider.Context context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

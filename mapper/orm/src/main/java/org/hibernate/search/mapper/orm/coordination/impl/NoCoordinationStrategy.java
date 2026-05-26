@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.coordination.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.mapper.orm.coordination.common.spi.CoordinationConfigurationContext;
 import org.hibernate.search.mapper.orm.coordination.common.spi.CoordinationStrategy;
 import org.hibernate.search.mapper.orm.coordination.common.spi.CoordinationStrategyPreStopContext;
@@ -15,40 +14,35 @@ import org.hibernate.search.mapper.pojo.massindexing.spi.PojoMassIndexerAgentCre
 
 public class NoCoordinationStrategy implements CoordinationStrategy {
 
-	public static final String NAME = "none";
+    public static final String NAME = "none";
 
-	@Override
-	public CompletableFuture<?> start(CoordinationStrategyStartContext context) {
-		// Nothing to do
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    public CompletableFuture<?> start(CoordinationStrategyStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void configure(CoordinationConfigurationContext context) {
-		context.reindexInSession();
-	}
+    @Override
+    public void configure(CoordinationConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoMassIndexerAgent createMassIndexerAgent(PojoMassIndexerAgentCreateContext context) {
-		// No coordination: we don't prevent background indexing from continuing while mass indexing.
-		return PojoMassIndexerAgent.noOp();
-	}
+    @Override
+    public PojoMassIndexerAgent createMassIndexerAgent(PojoMassIndexerAgentCreateContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> completion() {
-		// Nothing operation in progress
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    public CompletableFuture<?> completion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> preStop(CoordinationStrategyPreStopContext context) {
-		// Nothing to do
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    public CompletableFuture<?> preStop(CoordinationStrategyPreStopContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void stop() {
-		// Nothing to do
-	}
-
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

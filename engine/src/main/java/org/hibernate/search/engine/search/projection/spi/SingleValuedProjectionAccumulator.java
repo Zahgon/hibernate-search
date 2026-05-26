@@ -4,7 +4,6 @@
  */
 package org.hibernate.search.engine.search.projection.spi;
 
-
 import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentValueConvertContext;
 import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConverter;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
@@ -16,37 +15,36 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  * @param <V> The type of values to accumulate obtained by transforming extracted values ({@code E}).
  */
 @SuppressWarnings("deprecation")
-final class SingleValuedProjectionAccumulator<E, V> extends BaseSingleValuedProjectionCollector<E, V, V>
-		implements ProjectionAccumulator<E, V, Object, V> {
+final class SingleValuedProjectionAccumulator<E, V> extends BaseSingleValuedProjectionCollector<E, V, V> implements ProjectionAccumulator<E, V, Object, V> {
 
-	@SuppressWarnings("rawtypes")
-	static final ProjectionAccumulator.Provider PROVIDER = new ProjectionAccumulator.Provider() {
-		private final SingleValuedProjectionAccumulator instance = new SingleValuedProjectionAccumulator();
+    @SuppressWarnings("rawtypes")
+    static final ProjectionAccumulator.Provider PROVIDER = new ProjectionAccumulator.Provider() {
 
-		@Override
-		public ProjectionAccumulator get() {
-			return instance;
-		}
+        private final SingleValuedProjectionAccumulator instance = new SingleValuedProjectionAccumulator();
 
-		@Override
-		public boolean isSingleValued() {
-			return true;
-		}
-	};
+        @Override
+        public ProjectionAccumulator get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private SingleValuedProjectionAccumulator() {
-	}
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Object transformAll(Object accumulated, ProjectionConverter<? super E, ? extends V> converter,
-			FromDocumentValueConvertContext context) {
-		return converter.fromDocumentValue( (E) accumulated, context );
-	}
+    private SingleValuedProjectionAccumulator() {
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public V finish(Object accumulated) {
-		return (V) accumulated;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object transformAll(Object accumulated, ProjectionConverter<? super E, ? extends V> converter, FromDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public V finish(Object accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

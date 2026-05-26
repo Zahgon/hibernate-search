@@ -13,29 +13,28 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class NonStandardFieldProcessor extends AbstractFieldAnnotationProcessor<NonStandardField> {
 
-	@Override
-	PropertyMappingFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext,
-			NonStandardField annotation, String fieldName) {
-		return mappingContext.nonStandardField( fieldName );
-	}
+    @Override
+    PropertyMappingFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext, NonStandardField annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getName(NonStandardField annotation) {
-		return annotation.name();
-	}
+    @Override
+    String getName(NonStandardField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ValueBridgeRef getValueBridge(NonStandardField annotation) {
-		return null;
-	}
+    @Override
+    ValueBridgeRef getValueBridge(NonStandardField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ValueBinderRef getValueBinder(NonStandardField annotation) {
-		return annotation.valueBinder();
-	}
+    @Override
+    ValueBinderRef getValueBinder(NonStandardField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ContainerExtraction getExtraction(NonStandardField annotation) {
-		return annotation.extraction();
-	}
+    @Override
+    ContainerExtraction getExtraction(NonStandardField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

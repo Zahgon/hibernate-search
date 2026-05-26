@@ -5,48 +5,36 @@
 package org.hibernate.search.util.common.reflect.impl;
 
 import java.lang.reflect.Field;
-
 import org.hibernate.search.util.common.impl.Throwables;
 import org.hibernate.search.util.common.logging.impl.CommonMiscLog;
 import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
 
 public final class FieldValueReadHandle<T> implements ValueReadHandle<T> {
 
-	private final Field field;
+    private final Field field;
 
-	public FieldValueReadHandle(Field field) {
-		this.field = field;
-	}
+    public FieldValueReadHandle(Field field) {
+        this.field = field;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + field + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public T get(Object thiz) {
-		try {
-			return (T) field.get( thiz );
-		}
-		catch (RuntimeException | IllegalAccessException e) {
-			throw CommonMiscLog.INSTANCE.errorInvokingMember( field, Throwables.safeToString( e, thiz ), e,
-					e.getMessage() );
-		}
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public T get(Object thiz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return field.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( obj == null || !obj.getClass().equals( getClass() ) ) {
-			return false;
-		}
-		FieldValueReadHandle<?> other = (FieldValueReadHandle<?>) obj;
-		return field.equals( other.field );
-	}
-
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

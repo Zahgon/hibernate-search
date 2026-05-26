@@ -18,32 +18,31 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoPropertyModel;
  */
 public interface PojoTypeExtendedMappingCollector {
 
-	default void documentIdSourceProperty(PojoPropertyModel<?> documentIdSourceProperty) {
-		// Default implementation: ignore this information.
-	}
+    default void documentIdSourceProperty(PojoPropertyModel<?> documentIdSourceProperty) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default void identifierMapping(IdentifierMapping identifierMapping) {
-		// Default implementation: ignore this information.
-	}
+    default void identifierMapping(IdentifierMapping identifierMapping) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default void dirtyFilter(PojoPathFilter dirtyFilter) {
-		// Default implementation: ignore this information.
-	}
+    default void dirtyFilter(PojoPathFilter dirtyFilter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default void dirtyContainingAssociationFilter(PojoPathFilter filter) {
-		// Default implementation: ignore this information.
-	}
+    default void dirtyContainingAssociationFilter(PojoPathFilter filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Apply a mapper-specific loading binder.
-	 * <p>
-	 * This is guaranteed to be called very late,
-	 * and in particular after {@link #documentIdSourceProperty(PojoPropertyModel)}.
-	 *
-	 * @param binder The binder passed to
-	 * {@link org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorEntityTypeNode#loadingBinder(ParameterizedBeanReference)}.
-	 * @param context A context to get information and bind loading, e.g. set loading strategies.
-	 */
-	void applyLoadingBinder(Object binder, PojoEntityLoadingBindingContext context);
-
+    /**
+     * Apply a mapper-specific loading binder.
+     * <p>
+     * This is guaranteed to be called very late,
+     * and in particular after {@link #documentIdSourceProperty(PojoPropertyModel)}.
+     *
+     * @param binder The binder passed to
+     * {@link org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorEntityTypeNode#loadingBinder(ParameterizedBeanReference)}.
+     * @param context A context to get information and bind loading, e.g. set loading strategies.
+     */
+    void applyLoadingBinder(Object binder, PojoEntityLoadingBindingContext context);
 }

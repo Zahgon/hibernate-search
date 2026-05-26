@@ -5,41 +5,25 @@
 package org.hibernate.search.processor.annotation.processing.impl;
 
 import javax.lang.model.element.AnnotationMirror;
-
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.engine.backend.types.Searchable;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStandardFieldOptionsStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStep;
 
 abstract class AbstractProcessorStandardFieldAnnotationProcessor extends AbstractProcessorFieldAnnotationProcessor {
-	@Override
-	PropertyMappingStandardFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext,
-			AnnotationMirror annotation,
-			String fieldName) {
-		PropertyMappingStandardFieldOptionsStep<?> fieldContext = initStandardFieldMappingContext(
-				mappingContext, annotation, fieldName );
 
-		Projectable projectable = getProjectable( annotation );
-		if ( !Projectable.DEFAULT.equals( projectable ) ) {
-			fieldContext.projectable( projectable );
-		}
+    @Override
+    PropertyMappingStandardFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext, AnnotationMirror annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Searchable searchable = getSearchable( annotation );
-		if ( !Searchable.DEFAULT.equals( searchable ) ) {
-			fieldContext.searchable( searchable );
-		}
+    protected Searchable getSearchable(AnnotationMirror annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return fieldContext;
-	}
+    protected Projectable getProjectable(AnnotationMirror annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected Searchable getSearchable(AnnotationMirror annotation) {
-		return Searchable.valueOf( getAnnotationValueAsString( annotation, "searchable", Searchable.DEFAULT.name() ) );
-	}
-
-	protected Projectable getProjectable(AnnotationMirror annotation) {
-		return Projectable.valueOf( getAnnotationValueAsString( annotation, "projectable", Projectable.DEFAULT.name() ) );
-	}
-
-	abstract PropertyMappingStandardFieldOptionsStep<?> initStandardFieldMappingContext(
-			PropertyMappingStep mappingContext, AnnotationMirror annotation, String fieldName);
+    abstract PropertyMappingStandardFieldOptionsStep<?> initStandardFieldMappingContext(PropertyMappingStep mappingContext, AnnotationMirror annotation, String fieldName);
 }

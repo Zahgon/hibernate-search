@@ -5,83 +5,65 @@
 package org.hibernate.search.backend.lucene.types.codec.impl;
 
 import java.util.Objects;
-
 import org.hibernate.search.backend.lucene.logging.impl.IndexingLog;
 import org.hibernate.search.backend.lucene.types.converter.LuceneFieldContributor;
 import org.hibernate.search.backend.lucene.types.converter.LuceneFieldValueExtractor;
 import org.hibernate.search.util.common.AssertionFailure;
-
 import org.apache.lucene.index.IndexableField;
 
 public final class LuceneFieldFieldCodec<F> implements LuceneFieldCodec<F, F> {
 
-	private final LuceneFieldContributor<F> fieldContributor;
-	private final LuceneFieldValueExtractor<F> fieldValueExtractor;
-	private final Class<F> valueClass;
+    private final LuceneFieldContributor<F> fieldContributor;
 
-	public LuceneFieldFieldCodec(Class<F> valueClass, LuceneFieldContributor<F> fieldContributor,
-			LuceneFieldValueExtractor<F> fieldValueExtractor) {
-		this.valueClass = valueClass;
-		this.fieldContributor = fieldContributor;
-		this.fieldValueExtractor = fieldValueExtractor;
-	}
+    private final LuceneFieldValueExtractor<F> fieldValueExtractor;
 
-	@Override
-	public void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value) {
-		if ( value == null ) {
-			return;
-		}
+    private final Class<F> valueClass;
 
-		fieldContributor.contribute( absoluteFieldPath, value, f -> contributeField( documentBuilder, absoluteFieldPath, f ) );
-	}
+    public LuceneFieldFieldCodec(Class<F> valueClass, LuceneFieldContributor<F> fieldContributor, LuceneFieldValueExtractor<F> fieldValueExtractor) {
+        this.valueClass = valueClass;
+        this.fieldContributor = fieldContributor;
+        this.fieldValueExtractor = fieldValueExtractor;
+    }
 
-	@Override
-	public F decode(IndexableField field) {
-		if ( fieldValueExtractor == null ) {
-			// This should not happen as we disable projections when fieldValueExtractor is null
-			throw new AssertionFailure( "Native field '" + field.name() + "' lacks a field value extractor" );
-		}
-		return fieldValueExtractor.extract( field );
-	}
+    @Override
+    public void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public F raw(IndexableField field) {
-		return encode( decode( field ) );
-	}
+    @Override
+    public F decode(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public F decode(F field) {
-		return field;
-	}
+    @Override
+    public F raw(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public F encode(F value) {
-		return value;
-	}
+    @Override
+    public F decode(F field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Class<F> encodedType() {
-		return valueClass;
-	}
+    @Override
+    public F encode(F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		if ( LuceneFieldFieldCodec.class != obj.getClass() ) {
-			return false;
-		}
+    @Override
+    public Class<F> encodedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		LuceneFieldFieldCodec<?> other = (LuceneFieldFieldCodec<?>) obj;
+    @Override
+    public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return Objects.equals( fieldValueExtractor, other.fieldValueExtractor );
-	}
-
-	private static void contributeField(LuceneDocumentContent documentBuilder, String absoluteFieldPath, IndexableField field) {
-		if ( !absoluteFieldPath.equals( field.name() ) ) {
-			throw IndexingLog.INSTANCE.invalidFieldPath( absoluteFieldPath, field.name() );
-		}
-		documentBuilder.addField( field );
-	}
+    private static void contributeField(LuceneDocumentContent documentBuilder, String absoluteFieldPath, IndexableField field) {
+        if (!absoluteFieldPath.equals(field.name())) {
+            throw IndexingLog.INSTANCE.invalidFieldPath(absoluteFieldPath, field.name());
+        }
+        documentBuilder.addField(field);
+    }
 }

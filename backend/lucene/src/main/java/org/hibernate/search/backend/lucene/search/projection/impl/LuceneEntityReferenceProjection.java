@@ -12,36 +12,30 @@ import org.hibernate.search.engine.backend.common.DocumentReference;
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public class LuceneEntityReferenceProjection<R> extends AbstractLuceneProjection<R>
-		implements LuceneSearchProjection.Extractor<DocumentReference, R> {
+public class LuceneEntityReferenceProjection<R> extends AbstractLuceneProjection<R> implements LuceneSearchProjection.Extractor<DocumentReference, R> {
 
-	LuceneEntityReferenceProjection(LuceneSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    LuceneEntityReferenceProjection(LuceneSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, R> request(ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.ENTITY_REFERENCE,
-				LuceneSearchHints.INSTANCE.entityReferenceProjectionNestingNotSupportedHint()
-		);
-		return this;
-	}
+    @Override
+    public Extractor<?, R> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Values<DocumentReference> values(ProjectionExtractContext context) {
-		return DocumentReferenceValues.simple( context.collectorExecutionContext() );
-	}
+    @Override
+    public Values<DocumentReference> values(ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public R transform(LoadingResult<?> loadingResult, DocumentReference extractedData,
-			ProjectionTransformContext context) {
-		return (R) loadingResult.convertReference( extractedData );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public R transform(LoadingResult<?> loadingResult, DocumentReference extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

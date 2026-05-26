@@ -6,7 +6,6 @@ package org.hibernate.search.engine.backend.index.spi;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.engine.backend.index.IndexManager;
 import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
 import org.hibernate.search.engine.backend.schema.management.spi.IndexSchemaManager;
@@ -27,67 +26,65 @@ import org.hibernate.search.engine.common.resources.spi.SavedState;
  */
 public interface IndexManagerImplementor {
 
-	default SavedState saveForRestart() {
-		return SavedState.empty();
-	}
+    default SavedState saveForRestart() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Starts a subset of resources that are necessary to operate the index manager at runtime, and are expected to be reused upon restarts.
-	 * The resources may be retrieved them from the saved state,
-	 * or created if they are not present in the saved state.
-	 * <p>
-	 * Called by the engine once after bootstrap, after
-	 * {@link org.hibernate.search.engine.backend.spi.BackendImplementor#start(BackendStartContext)}
-	 * was called on the corresponding backend.
-	 *
-	 * @param context The start context.
-	 * @param savedState The saved state returned by the corresponding index manager in the Hibernate Search integration
-	 * being restarted, or {@link SavedState#empty()} on the first start.
-	 */
-	default void preStart(IndexManagerStartContext context, SavedState savedState) {
-		// do nothing by default
-	}
+    /**
+     * Starts a subset of resources that are necessary to operate the index manager at runtime, and are expected to be reused upon restarts.
+     * The resources may be retrieved them from the saved state,
+     * or created if they are not present in the saved state.
+     * <p>
+     * Called by the engine once after bootstrap, after
+     * {@link org.hibernate.search.engine.backend.spi.BackendImplementor#start(BackendStartContext)}
+     * was called on the corresponding backend.
+     *
+     * @param context The start context.
+     * @param savedState The saved state returned by the corresponding index manager in the Hibernate Search integration
+     * being restarted, or {@link SavedState#empty()} on the first start.
+     */
+    default void preStart(IndexManagerStartContext context, SavedState savedState) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Start any resource necessary to operate the index manager at runtime.
-	 * <p>
-	 * Called by the engine once just after
-	 * {@link #preStart(IndexManagerStartContext, SavedState)}.
-	 *
-	 * @param context The start context.
-	 */
-	void start(IndexManagerStartContext context);
+    /**
+     * Start any resource necessary to operate the index manager at runtime.
+     * <p>
+     * Called by the engine once just after
+     * {@link #preStart(IndexManagerStartContext, SavedState)}.
+     *
+     * @param context The start context.
+     */
+    void start(IndexManagerStartContext context);
 
-	/**
-	 * Prepare for {@link #stop()}.
-	 *
-	 * @return A future that completes when ongoing works complete.
-	 */
-	CompletableFuture<?> preStop();
+    /**
+     * Prepare for {@link #stop()}.
+     *
+     * @return A future that completes when ongoing works complete.
+     */
+    CompletableFuture<?> preStop();
 
-	/**
-	 * Stop and release any resource necessary to operate the backend at runtime.
-	 * <p>
-	 * Called by the engine once before shutdown.
-	 */
-	void stop();
+    /**
+     * Stop and release any resource necessary to operate the backend at runtime.
+     * <p>
+     * Called by the engine once before shutdown.
+     */
+    void stop();
 
-	/**
-	 * @return The object that should be exposed as API to users.
-	 */
-	IndexManager toAPI();
+    /**
+     * @return The object that should be exposed as API to users.
+     */
+    IndexManager toAPI();
 
-	IndexSchemaManager schemaManager();
+    IndexSchemaManager schemaManager();
 
-	IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy);
+    IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy);
 
-	IndexIndexer createIndexer(BackendSessionContext sessionContext);
+    IndexIndexer createIndexer(BackendSessionContext sessionContext);
 
-	IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantId);
+    IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantId);
 
-	<SR> IndexScopeBuilder<SR> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScopeType);
+    <SR> IndexScopeBuilder<SR> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScopeType);
 
-	void addTo(IndexScopeBuilder<?> builder);
-
+    void addTo(IndexScopeBuilder<?> builder);
 }

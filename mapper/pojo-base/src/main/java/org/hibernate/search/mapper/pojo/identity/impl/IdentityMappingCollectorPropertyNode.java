@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.identity.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.IdentifierBinder;
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.PropertyBinder;
 import org.hibernate.search.mapper.pojo.extractor.impl.BoundContainerExtractorPath;
@@ -16,44 +15,35 @@ import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoIndexMappingCol
 import org.hibernate.search.mapper.pojo.model.path.impl.BoundPojoModelPath;
 import org.hibernate.search.mapper.pojo.model.path.impl.BoundPojoModelPathPropertyNode;
 
-class IdentityMappingCollectorPropertyNode<P> extends AbstractIdentityMappingCollectorNode
-		implements PojoIndexMappingCollectorPropertyNode {
+class IdentityMappingCollectorPropertyNode<P> extends AbstractIdentityMappingCollectorNode implements PojoIndexMappingCollectorPropertyNode {
 
-	private final BoundPojoModelPathPropertyNode<?, P> modelPath;
-	private final PojoIdentityMappingCollector identityMappingCollector;
+    private final BoundPojoModelPathPropertyNode<?, P> modelPath;
 
-	IdentityMappingCollectorPropertyNode(BoundPojoModelPathPropertyNode<?, P> modelPath,
-			PojoMappingHelper mappingHelper,
-			PojoIdentityMappingCollector identityMappingCollector) {
-		super( mappingHelper );
+    private final PojoIdentityMappingCollector identityMappingCollector;
 
-		this.modelPath = modelPath;
+    IdentityMappingCollectorPropertyNode(BoundPojoModelPathPropertyNode<?, P> modelPath, PojoMappingHelper mappingHelper, PojoIdentityMappingCollector identityMappingCollector) {
+        super(mappingHelper);
+        this.modelPath = modelPath;
+        this.identityMappingCollector = identityMappingCollector;
+    }
 
-		this.identityMappingCollector = identityMappingCollector;
-	}
+    @Override
+    BoundPojoModelPath getModelPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	BoundPojoModelPath getModelPath() {
-		return modelPath;
-	}
+    @Override
+    public void propertyBinder(PropertyBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void propertyBinder(PropertyBinder binder, Map<String, Object> params) {
-		// No-op, we're just collecting the identity mapping.
-	}
+    @Override
+    public void identifierBinder(IdentifierBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void identifierBinder(IdentifierBinder binder, Map<String, Object> params) {
-		identityMappingCollector.identifierBridge( modelPath, binder, params );
-	}
-
-	@Override
-	public PojoIndexMappingCollectorValueNode value(ContainerExtractorPath extractorPath) {
-		BoundContainerExtractorPath<P, ?> boundExtractorPath =
-				mappingHelper.indexModelBinder().bindExtractorPath(
-						modelPath.getPropertyModel().typeModel(),
-						extractorPath
-				);
-		return new IdentityMappingCollectorValueNode( modelPath.value( boundExtractorPath ), mappingHelper );
-	}
+    @Override
+    public PojoIndexMappingCollectorValueNode value(ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

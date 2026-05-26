@@ -6,14 +6,14 @@ package org.hibernate.search.util.common.logging.impl;
 
 public final class SimpleNameClassFormatter {
 
-	private final Class<?> clazz;
+    private final Class<?> clazz;
 
-	public SimpleNameClassFormatter(Class<?> clazz) {
-		this.clazz = clazz;
-	}
+    public SimpleNameClassFormatter(Class<?> clazz) {
+        this.clazz = clazz;
+    }
 
-	@Override
-	public String toString() {
-		return clazz != null ? clazz.getSimpleName() : "null";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

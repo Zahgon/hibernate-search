@@ -17,37 +17,36 @@ import org.hibernate.search.mapper.orm.loading.spi.HibernateOrmLoadingTypeContex
  */
 public class SingularIdOrder<E> implements IdOrder {
 
-	private final String idPropertyName;
+    private final String idPropertyName;
 
-	public SingularIdOrder(HibernateOrmLoadingTypeContext<E> type) {
-		this.idPropertyName = type.entityMappingType().getIdentifierMapping().getAttributeName();
-	}
+    public SingularIdOrder(HibernateOrmLoadingTypeContext<E> type) {
+        this.idPropertyName = type.entityMappingType().getIdentifierMapping().getAttributeName();
+    }
 
-	@Override
-	public ConditionalExpression idGreater(String paramNamePrefix, Object idObj) {
-		return restrict( paramNamePrefix, ">", idObj );
-	}
+    @Override
+    public ConditionalExpression idGreater(String paramNamePrefix, Object idObj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConditionalExpression idGreaterOrEqual(String paramNamePrefix, Object idObj) {
-		return restrict( paramNamePrefix, ">=", idObj );
-	}
+    @Override
+    public ConditionalExpression idGreaterOrEqual(String paramNamePrefix, Object idObj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConditionalExpression idLesser(String paramNamePrefix, Object idObj) {
-		return restrict( paramNamePrefix, "<", idObj );
-	}
+    @Override
+    public ConditionalExpression idLesser(String paramNamePrefix, Object idObj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String ascOrder() {
-		return idPropertyName + " asc";
-	}
+    @Override
+    public String ascOrder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private ConditionalExpression restrict(String paramNamePrefix, String operator, Object idObj) {
-		String paramName = paramNamePrefix + "REF";
-		var expression = new ConditionalExpression( idPropertyName + " " + operator + " :" + paramName );
-		expression.param( paramName, idObj );
-		return expression;
-	}
-
+    private ConditionalExpression restrict(String paramNamePrefix, String operator, Object idObj) {
+        String paramName = paramNamePrefix + "REF";
+        var expression = new ConditionalExpression(idPropertyName + " " + operator + " :" + paramName);
+        expression.param(paramName, idObj);
+        return expression;
+    }
 }

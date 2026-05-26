@@ -6,30 +6,24 @@ package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 import java.io.IOException;
 import java.util.Collection;
-
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningTextMultiValuesSource;
-
 import org.apache.lucene.search.CollectorManager;
 
 public class CountTextValuesCollectorManager implements CollectorManager<CountTextValuesCollector, Long> {
 
-	private final JoiningTextMultiValuesSource source;
+    private final JoiningTextMultiValuesSource source;
 
-	public CountTextValuesCollectorManager(JoiningTextMultiValuesSource source) {
-		this.source = source;
-	}
+    public CountTextValuesCollectorManager(JoiningTextMultiValuesSource source) {
+        this.source = source;
+    }
 
-	@Override
-	public CountTextValuesCollector newCollector() throws IOException {
-		return new CountTextValuesCollector( source );
-	}
+    @Override
+    public CountTextValuesCollector newCollector() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long reduce(Collection<CountTextValuesCollector> collectors) throws IOException {
-		long count = 0;
-		for ( CountTextValuesCollector collector : collectors ) {
-			count += collector.count();
-		}
-		return count;
-	}
+    @Override
+    public Long reduce(Collection<CountTextValuesCollector> collectors) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

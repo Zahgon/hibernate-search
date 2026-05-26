@@ -5,24 +5,23 @@
 package org.hibernate.search.mapper.pojo.mapping.definition.programmatic.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.MarkerBinder;
 import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoPropertyMetadataContributor;
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorPropertyNode;
 
 class MarkerMappingContributor implements PojoPropertyMetadataContributor {
 
-	private final MarkerBinder binder;
-	private final Map<String, Object> params;
+    private final MarkerBinder binder;
 
-	MarkerMappingContributor(MarkerBinder binder, Map<String, Object> params) {
-		this.binder = binder;
-		this.params = params;
-	}
+    private final Map<String, Object> params;
 
-	@Override
-	public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorPropertyNode collector) {
-		collector.markerBinder( binder, params );
-	}
+    MarkerMappingContributor(MarkerBinder binder, Map<String, Object> params) {
+        this.binder = binder;
+        this.params = params;
+    }
 
+    @Override
+    public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorPropertyNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

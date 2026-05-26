@@ -11,19 +11,19 @@ import org.hibernate.search.engine.mapper.scope.spi.MappedIndexScope;
 import org.hibernate.search.engine.mapper.scope.spi.MappedIndexScopeBuilder;
 
 public class MappedIndexScopeBuilderImpl<SR, R, E> implements MappedIndexScopeBuilder<SR, R, E> {
-	private final IndexScopeBuilder<SR> delegate;
 
-	public MappedIndexScopeBuilderImpl(IndexManagerImplementor firstIndexManager,
-			BackendMappingContext mappingContext, Class<SR> rootScope) {
-		this.delegate = firstIndexManager.createScopeBuilder( mappingContext, rootScope );
-	}
+    private final IndexScopeBuilder<SR> delegate;
 
-	public void add(IndexManagerImplementor indexManager) {
-		indexManager.addTo( delegate );
-	}
+    public MappedIndexScopeBuilderImpl(IndexManagerImplementor firstIndexManager, BackendMappingContext mappingContext, Class<SR> rootScope) {
+        this.delegate = firstIndexManager.createScopeBuilder(mappingContext, rootScope);
+    }
 
-	@Override
-	public MappedIndexScope<SR, R, E> build() {
-		return new MappedIndexScopeImpl<>( delegate.build() );
-	}
+    public void add(IndexManagerImplementor indexManager) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public MappedIndexScope<SR, R, E> build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.projection.definition.spi;
 
 import java.util.List;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.definition.ProjectionDefinitionContext;
@@ -13,97 +12,90 @@ import org.hibernate.search.util.common.annotation.Incubating;
 import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
 @Incubating
-public abstract class ObjectProjectionDefinition<P, T>
-		extends AbstractProjectionDefinition<P>
-		implements AutoCloseable {
+public abstract class ObjectProjectionDefinition<P, T> extends AbstractProjectionDefinition<P> implements AutoCloseable {
 
-	protected final String fieldPath;
-	protected final CompositeProjectionDefinition<T> delegate;
+    protected final String fieldPath;
 
-	private ObjectProjectionDefinition(String fieldPath, CompositeProjectionDefinition<T> delegate) {
-		this.fieldPath = fieldPath;
-		this.delegate = delegate;
-	}
+    protected final CompositeProjectionDefinition<T> delegate;
 
-	@Override
-	protected String type() {
-		return "object";
-	}
+    private ObjectProjectionDefinition(String fieldPath, CompositeProjectionDefinition<T> delegate) {
+        this.fieldPath = fieldPath;
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		super.appendTo( appender );
-		appender.attribute( "fieldPath", fieldPath )
-				.attribute( "multi", multi() )
-				.attribute( "composite", delegate );
-	}
+    @Override
+    protected String type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract boolean multi();
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() throws Exception {
-		delegate.close();
-	}
+    protected abstract boolean multi();
 
-	@Deprecated(since = "8.0")
-	@Incubating
-	public static final class SingleValued<T> extends ObjectProjectionDefinition<T, T> {
-		public SingleValued(String fieldPath, CompositeProjectionDefinition<T> delegate) {
-			super( fieldPath, delegate );
-		}
+    @Override
+    public void close() throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected boolean multi() {
-			return false;
-		}
+    @Deprecated(since = "8.0")
+    @Incubating
+    public static final class SingleValued<T> extends ObjectProjectionDefinition<T, T> {
 
-		@Override
-		public SearchProjection<T> create(ProjectionDefinitionContext context) {
-			var projection = context.projection();
-			return delegate.apply( projection.object( fieldPath ), context.withRoot( fieldPath ) )
-					.toProjection();
-		}
-	}
+        public SingleValued(String fieldPath, CompositeProjectionDefinition<T> delegate) {
+            super(fieldPath, delegate);
+        }
 
-	@Deprecated(since = "8.0")
-	@Incubating
-	public static final class MultiValued<T> extends ObjectProjectionDefinition<List<T>, T> {
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public MultiValued(String fieldPath, CompositeProjectionDefinition<T> delegate) {
-			super( fieldPath, delegate );
-		}
+        @Override
+        public SearchProjection<T> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		protected boolean multi() {
-			return true;
-		}
+    @Deprecated(since = "8.0")
+    @Incubating
+    public static final class MultiValued<T> extends ObjectProjectionDefinition<List<T>, T> {
 
-		@Override
-		public SearchProjection<List<T>> create(ProjectionDefinitionContext context) {
-			return delegate.apply( context.projection().object( fieldPath ), context.withRoot( fieldPath ) )
-					.collector( ProjectionCollector.list() ).toProjection();
-		}
-	}
+        public MultiValued(String fieldPath, CompositeProjectionDefinition<T> delegate) {
+            super(fieldPath, delegate);
+        }
 
-	@Incubating
-	public static final class WrappedValued<C, T> extends ObjectProjectionDefinition<C, T> {
-		private final ProjectionCollector.Provider<T, C> collector;
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public WrappedValued(String fieldPath, CompositeProjectionDefinition<T> delegate,
-				ProjectionCollector.Provider<T, C> collector) {
-			super( fieldPath, delegate );
-			this.collector = collector;
-		}
+        @Override
+        public SearchProjection<List<T>> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		protected boolean multi() {
-			return !collector.isSingleValued();
-		}
+    @Incubating
+    public static final class WrappedValued<C, T> extends ObjectProjectionDefinition<C, T> {
 
-		@Override
-		public SearchProjection<C> create(ProjectionDefinitionContext context) {
-			return delegate.apply( context.projection().object( fieldPath ), context.withRoot( fieldPath ) )
-					.collector( collector ).toProjection();
-		}
-	}
+        private final ProjectionCollector.Provider<T, C> collector;
+
+        public WrappedValued(String fieldPath, CompositeProjectionDefinition<T> delegate, ProjectionCollector.Provider<T, C> collector) {
+            super(fieldPath, delegate);
+            this.collector = collector;
+        }
+
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<C> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -4,21 +4,20 @@
  */
 package org.hibernate.search.backend.lucene.work.impl;
 
-
 public class MergeSegmentsWork implements IndexManagementWork<Void> {
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
 
-	@Override
-	public Void execute(IndexManagementWorkExecutionContext context) {
-		context.getIndexAccessor().mergeSegments();
-		return null;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object getInfo() {
-		return this;
-	}
+    @Override
+    public Void execute(IndexManagementWorkExecutionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Object getInfo() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

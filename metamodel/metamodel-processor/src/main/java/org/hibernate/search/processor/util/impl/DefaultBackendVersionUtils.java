@@ -7,26 +7,15 @@ package org.hibernate.search.processor.util.impl;
 import java.lang.reflect.Field;
 
 public final class DefaultBackendVersionUtils {
-	private DefaultBackendVersionUtils() {
-	}
 
-	public static String latestElasticsearchVersion() {
-		// This implementation is replaced during the build with another one that returns the correct value:
-		return "UNKNOWN";
-	}
+    private DefaultBackendVersionUtils() {
+    }
 
-	public static String latestLuceneVersion() {
-		// since this one depends on which backend we pass to the processor ...
-		try {
-			Class<?> luceneVersionClass = Class.forName( "org.apache.lucene.util.Version" );
-			Field latestField = luceneVersionClass.getField( "LATEST" );
+    public static String latestElasticsearchVersion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			Object latestVersion = latestField.get( null );
-
-			return latestVersion.toString();
-		}
-		catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-			return null;
-		}
-	}
+    public static String latestLuceneVersion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

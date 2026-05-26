@@ -23,55 +23,16 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 
-abstract class AbstractElasticsearchNumericFieldTypeOptionsStep<
-		S extends AbstractElasticsearchNumericFieldTypeOptionsStep<?, F>,
-		F>
-		extends AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<S, F> {
+abstract class AbstractElasticsearchNumericFieldTypeOptionsStep<S extends AbstractElasticsearchNumericFieldTypeOptionsStep<?, F>, F> extends AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<S, F> {
 
-	AbstractElasticsearchNumericFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext,
-			Class<F> fieldType, String dataType, DefaultStringConverters.Converter<F> defaultConverter) {
-		super( buildContext, fieldType, dataType, defaultConverter );
-	}
+    AbstractElasticsearchNumericFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext, Class<F> fieldType, String dataType, DefaultStringConverters.Converter<F> defaultConverter) {
+        super(buildContext, fieldType, dataType, defaultConverter);
+    }
 
-	@Override
-	protected final void complete() {
-		ElasticsearchFieldCodec<F> codec = completeCodec( buildContext );
-		builder.codec( codec );
+    @Override
+    protected final void complete() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.MATCH,
-					new ElasticsearchStandardMatchPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.RANGE, new ElasticsearchRangePredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.Factory<>() );
-			builder.queryElementFactory( PredicateTypeKeys.TERMS, new ElasticsearchTermsPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( ElasticsearchPredicateTypeKeys.SIMPLE_QUERY_STRING,
-					new ElasticsearchCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-			builder.queryElementFactory( ElasticsearchPredicateTypeKeys.QUERY_STRING,
-					new ElasticsearchCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.FIELD, new ElasticsearchStandardFieldSort.Factory<>( codec ) );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new ElasticsearchFieldProjection.Factory<>( codec ) );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			builder.queryElementFactory( AggregationTypeKeys.TERMS, new ElasticsearchTermsAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.RANGE, new ElasticsearchRangeAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.SUM, ElasticsearchMetricFieldAggregation.sum( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.MIN, ElasticsearchMetricFieldAggregation.min( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.MAX, ElasticsearchMetricFieldAggregation.max( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.AVG, ElasticsearchMetricFieldAggregation.avg( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.COUNT, ElasticsearchCountValuesAggregation.factory() );
-		}
-	}
-
-	protected abstract ElasticsearchFieldCodec<F> completeCodec(ElasticsearchIndexFieldTypeBuildContext buildContext);
+    protected abstract ElasticsearchFieldCodec<F> completeCodec(ElasticsearchIndexFieldTypeBuildContext buildContext);
 }

@@ -8,9 +8,8 @@ import org.hibernate.search.backend.elasticsearch.gson.impl.AbstractConfiguredEx
 
 public class IndexAliasDefinitionJsonAdapterFactory extends AbstractConfiguredExtraPropertiesJsonAdapterFactory {
 
-	@Override
-	protected <T> void addFields(Builder<T> builder) {
-		builder.add( "isWriteIndex", Boolean.class );
-	}
-
+    @Override
+    protected <T> void addFields(Builder<T> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

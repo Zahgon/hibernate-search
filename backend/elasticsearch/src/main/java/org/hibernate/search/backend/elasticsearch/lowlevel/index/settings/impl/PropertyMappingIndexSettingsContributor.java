@@ -5,20 +5,14 @@
 package org.hibernate.search.backend.elasticsearch.lowlevel.index.settings.impl;
 
 public class PropertyMappingIndexSettingsContributor {
-	private Boolean knn;
 
-	public void contribute(IndexSettings settings) {
-		if ( Boolean.TRUE.equals( knn ) ) {
-			settings.setKnn( true );
-		}
-	}
+    private Boolean knn;
 
-	public void addKnn(boolean knn) {
-		if ( this.knn == null ) {
-			this.knn = knn;
-		}
-		else {
-			this.knn = this.knn || Boolean.TRUE.equals( knn );
-		}
-	}
+    public void contribute(IndexSettings settings) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void addKnn(boolean knn) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

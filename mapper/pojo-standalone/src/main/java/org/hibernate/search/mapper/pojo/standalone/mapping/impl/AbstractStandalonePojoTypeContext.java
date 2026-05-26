@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.standalone.mapping.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.mapper.pojo.loading.definition.spi.PojoEntityLoadingBindingContext;
 import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoTypeExtendedMappingCollector;
@@ -20,102 +19,64 @@ import org.hibernate.search.mapper.pojo.standalone.loading.impl.StandalonePojoMa
 import org.hibernate.search.mapper.pojo.standalone.loading.impl.StandalonePojoSelectionLoadingStrategy;
 import org.hibernate.search.mapper.pojo.standalone.work.impl.SearchIndexingPlanTypeContext;
 
-abstract class AbstractStandalonePojoTypeContext<E>
-		implements SearchIndexingPlanTypeContext<E> {
+abstract class AbstractStandalonePojoTypeContext<E> implements SearchIndexingPlanTypeContext<E> {
 
-	private final PojoRawTypeIdentifier<E> typeIdentifier;
-	private final String entityName;
-	private final PojoPathFilter dirtyFilter;
+    private final PojoRawTypeIdentifier<E> typeIdentifier;
 
-	AbstractStandalonePojoTypeContext(AbstractBuilder<E> builder) {
-		this.typeIdentifier = builder.typeIdentifier;
-		this.entityName = builder.entityName;
-		this.dirtyFilter = builder.dirtyFilter;
-	}
+    private final String entityName;
 
-	@Override
-	public String toString() {
-		return typeIdentifier().toString();
-	}
+    private final PojoPathFilter dirtyFilter;
 
-	@Override
-	public PojoRawTypeIdentifier<E> typeIdentifier() {
-		return typeIdentifier;
-	}
+    AbstractStandalonePojoTypeContext(AbstractBuilder<E> builder) {
+        this.typeIdentifier = builder.typeIdentifier;
+        this.entityName = builder.entityName;
+        this.dirtyFilter = builder.dirtyFilter;
+    }
 
-	public String name() {
-		return entityName;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Class<E> javaClass() {
-		return typeIdentifier.javaClass();
-	}
+    @Override
+    public PojoRawTypeIdentifier<E> typeIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathFilter dirtyFilter() {
-		return dirtyFilter;
-	}
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract static class AbstractBuilder<E> implements PojoTypeExtendedMappingCollector {
-		private final PojoRawTypeIdentifier<E> typeIdentifier;
-		private final String entityName;
-		private PojoPathFilter dirtyFilter;
+    public Class<E> javaClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		AbstractBuilder(PojoRawTypeIdentifier<E> typeIdentifier, String entityName) {
-			this.typeIdentifier = typeIdentifier;
-			this.entityName = entityName;
-		}
+    @Override
+    public PojoPathFilter dirtyFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public void dirtyFilter(PojoPathFilter dirtyFilter) {
-			this.dirtyFilter = dirtyFilter;
-		}
+    abstract static class AbstractBuilder<E> implements PojoTypeExtendedMappingCollector {
 
-		@Override
-		public void applyLoadingBinder(Object binder, PojoEntityLoadingBindingContext context) {
-			var castConfigurer = (EntityLoadingBinder) binder;
-			castConfigurer.bind( new EntityLoadingBindingContext() {
-				@Override
-				public PojoModelElement entityType() {
-					return context.entityType();
-				}
+        private final PojoRawTypeIdentifier<E> typeIdentifier;
 
-				@Override
-				public PojoModelElement identifierType() {
-					return context.identifierType();
-				}
+        private final String entityName;
 
-				@Override
-				public <E2> void selectionLoadingStrategy(Class<E2> expectedEntitySuperType,
-						SelectionLoadingStrategy<? super E2> strategy) {
-					context.selectionLoadingStrategy( expectedEntitySuperType, strategy == null
-							? null
-							: new StandalonePojoSelectionLoadingStrategy<>( strategy ) );
-				}
+        private PojoPathFilter dirtyFilter;
 
-				@Override
-				public <E2> void massLoadingStrategy(Class<E2> expectedEntitySuperType,
-						MassLoadingStrategy<? super E2, ?> strategy) {
-					context.massLoadingStrategy( expectedEntitySuperType, strategy == null
-							? null
-							: new StandalonePojoMassLoadingStrategy<>( strategy ) );
-				}
+        AbstractBuilder(PojoRawTypeIdentifier<E> typeIdentifier, String entityName) {
+            this.typeIdentifier = typeIdentifier;
+            this.entityName = entityName;
+        }
 
-				@Override
-				public BeanResolver beanResolver() {
-					return context.beanResolver();
-				}
+        @Override
+        public void dirtyFilter(PojoPathFilter dirtyFilter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-				@Override
-				public <T> T param(String name, Class<T> paramType) {
-					return context.param( name, paramType );
-				}
-
-				@Override
-				public <T> Optional<T> paramOptional(String name, Class<T> paramType) {
-					return context.paramOptional( name, paramType );
-				}
-			} );
-		}
-	}
+        @Override
+        public void applyLoadingBinder(Object binder, PojoEntityLoadingBindingContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.CacheMode;
 import org.hibernate.search.engine.tenancy.spi.TenancyMode;
 import org.hibernate.search.mapper.orm.loading.impl.HibernateOrmMassLoadingContext;
@@ -19,113 +18,107 @@ import org.hibernate.search.mapper.pojo.loading.spi.PojoLoadingTypeContext;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingDefaultCleanOperation;
 import org.hibernate.search.mapper.pojo.massindexing.spi.PojoMassIndexingContext;
 
-public final class HibernateOrmMassIndexingContext
-		implements PojoMassIndexingContext, HibernateOrmMassLoadingContext {
+public final class HibernateOrmMassIndexingContext implements PojoMassIndexingContext, HibernateOrmMassLoadingContext {
 
-	private final HibernateOrmMassIndexingMappingContext mapping;
-	private final Map<Class<?>, ConditionalExpression> conditionalExpressions = new HashMap<>();
-	private final Set<String> actualTenantIds;
-	private CacheMode cacheMode = CacheMode.IGNORE;
-	private Integer idLoadingTransactionTimeout;
-	private int idFetchSize = 100; //reasonable default as we only load IDs
-	private int objectLoadingBatchSize = 10;
-	private long objectsLimit = 0; //means no limit at all
+    private final HibernateOrmMassIndexingMappingContext mapping;
 
-	public HibernateOrmMassIndexingContext(HibernateOrmMassIndexingMappingContext mapping, Set<String> actualTenantIds) {
-		this.mapping = mapping;
-		this.actualTenantIds = actualTenantIds;
-	}
+    private final Map<Class<?>, ConditionalExpression> conditionalExpressions = new HashMap<>();
 
-	@Override
-	public HibernateOrmMassIndexingMappingContext mapping() {
-		return mapping;
-	}
+    private final Set<String> actualTenantIds;
 
-	public void idLoadingTransactionTimeout(int timeoutInSeconds) {
-		this.idLoadingTransactionTimeout = timeoutInSeconds;
-	}
+    private CacheMode cacheMode = CacheMode.IGNORE;
 
-	@Override
-	public Integer idLoadingTransactionTimeout() {
-		return idLoadingTransactionTimeout;
-	}
+    private Integer idLoadingTransactionTimeout;
 
-	public void cacheMode(CacheMode cacheMode) {
-		this.cacheMode = cacheMode;
-	}
+    //reasonable default as we only load IDs
+    private int idFetchSize = 100;
 
-	@Override
-	public CacheMode cacheMode() {
-		return cacheMode;
-	}
+    private int objectLoadingBatchSize = 10;
 
-	public void objectLoadingBatchSize(int batchSize) {
-		if ( batchSize < 1 ) {
-			throw new IllegalArgumentException( "batchSize must be at least 1" );
-		}
-		this.objectLoadingBatchSize = batchSize;
-	}
+    //means no limit at all
+    private long objectsLimit = 0;
 
-	@Override
-	public int objectLoadingBatchSize() {
-		return objectLoadingBatchSize;
-	}
+    public HibernateOrmMassIndexingContext(HibernateOrmMassIndexingMappingContext mapping, Set<String> actualTenantIds) {
+        this.mapping = mapping;
+        this.actualTenantIds = actualTenantIds;
+    }
 
-	public void objectsLimit(long maximum) {
-		this.objectsLimit = maximum;
-	}
+    @Override
+    public HibernateOrmMassIndexingMappingContext mapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long objectsLimit() {
-		return objectsLimit;
-	}
+    public void idLoadingTransactionTimeout(int timeoutInSeconds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void idFetchSize(int idFetchSize) {
-		// don't check for positive/zero values as it's actually used by some databases
-		// as special values which might be useful.
-		this.idFetchSize = idFetchSize;
-	}
+    @Override
+    public Integer idLoadingTransactionTimeout() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int idFetchSize() {
-		return idFetchSize;
-	}
+    public void cacheMode(CacheMode cacheMode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ConditionalExpression reindexOnly(Class<?> type, String conditionalExpression) {
-		ConditionalExpression expression = new ConditionalExpression( conditionalExpression );
-		conditionalExpressions.put( type, expression );
-		return expression;
-	}
+    @Override
+    public CacheMode cacheMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<ConditionalExpression> conditionalExpression(PojoLoadingTypeContext<?> typeContext) {
-		if ( conditionalExpressions.isEmpty() ) {
-			return Optional.empty();
-		}
+    public void objectLoadingBatchSize(int batchSize) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return typeContext.ascendingSuperTypes().stream()
-				.map( typeId -> conditionalExpressions.get( typeId.javaClass() ) )
-				.filter( Objects::nonNull )
-				.findFirst();
-	}
+    @Override
+    public int objectLoadingBatchSize() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TenancyConfiguration tenancyConfiguration() {
-		return mapping.tenancyConfiguration();
-	}
+    public void objectsLimit(long maximum) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> tenantIds() {
-		return actualTenantIds;
-	}
+    @Override
+    public long objectsLimit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TenancyMode tenancyMode() {
-		return mapping.tenancyConfiguration().tenancyMode();
-	}
+    public void idFetchSize(int idFetchSize) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
-		return mapping.massIndexingDefaultCleanOperation();
-	}
+    @Override
+    public int idFetchSize() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    ConditionalExpression reindexOnly(Class<?> type, String conditionalExpression) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<ConditionalExpression> conditionalExpression(PojoLoadingTypeContext<?> typeContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public TenancyConfiguration tenancyConfiguration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Set<String> tenantIds() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public TenancyMode tenancyMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

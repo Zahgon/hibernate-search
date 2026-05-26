@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.common.execution.spi.SimpleScheduledExecutor;
 import org.hibernate.search.engine.logging.impl.ExecutorLog;
@@ -28,195 +27,139 @@ import org.hibernate.search.util.common.AssertionFailure;
  */
 public final class BatchingExecutor<P extends BatchedWorkProcessor, W extends BatchedWork<? super P>> {
 
-	private static final BiConsumer<? super BatchedWork<?>, Throwable> ASYNC_FAILURE_REPORTER = BatchedWork::markAsFailed;
+    private static final BiConsumer<? super BatchedWork<?>, Throwable> ASYNC_FAILURE_REPORTER = BatchedWork::markAsFailed;
 
-	private final String name;
+    private final String name;
 
-	private final FailureHandler failureHandler;
+    private final FailureHandler failureHandler;
 
-	private final BlockingQueue<W> workQueue;
-	private final BatchWorker<P, ? super W> worker;
-	private final Consumer<? super W> blockingRetryProducer;
+    private final BlockingQueue<W> workQueue;
 
-	private SingletonTask processingTask;
+    private final BatchWorker<P, ? super W> worker;
 
-	/**
-	 * @param name The name of the executor thread (and of this executor when reporting errors)
-	 * @param processor A task processor. May not be thread-safe.
-	 * @param maxTasksPerBatch The maximum number of tasks to process in a single batch.
-	 * Higher values mean more opportunity for the processor to optimize execution, but higher heap consumption.
-	 * @param fair if {@code true} tasks are always submitted to the
-	 * processor in FIFO order, if {@code false} tasks submitted
-	 * when the internal queue is full may be submitted out of order.
-	 * @param failureHandler A failure handler to report failures of the background thread.
-	 * @param blockingRetryProducer A retry work producer that would be called in case of offloading operation submitter and full queue.
-	 */
-	public BatchingExecutor(String name,
-			P processor, int maxTasksPerBatch, boolean fair,
-			FailureHandler failureHandler, Consumer<? super W> blockingRetryProducer) {
-		this.name = name;
-		this.failureHandler = failureHandler;
-		this.blockingRetryProducer = blockingRetryProducer;
-		this.workQueue = new ArrayBlockingQueue<>( maxTasksPerBatch, fair );
-		this.worker = new BatchWorker<>( name, processor, workQueue, maxTasksPerBatch );
-	}
+    private final Consumer<? super W> blockingRetryProducer;
 
-	@Override
-	public String toString() {
-		return "BatchingExecutor["
-				+ "name=" + name
-				+ ", queue size=" + workQueue.size()
-				+ ", processing=" + processingTask
-				+ "]";
-	}
+    private SingletonTask processingTask;
 
-	/**
-	 * Start the executor, allowing works to be submitted
-	 * through {@link #submit(BatchedWork, OperationSubmitter)}.
-	 *
-	 * @param executorService An executor service with at least one thread.
-	 */
-	public synchronized void start(SimpleScheduledExecutor executorService) {
-		ExecutorLog.INSTANCE.startingExecutor( name );
-		processingTask = new SingletonTask(
-				name, worker,
-				new BatchScheduler( executorService ),
-				failureHandler
-		);
-	}
+    /**
+     * @param name The name of the executor thread (and of this executor when reporting errors)
+     * @param processor A task processor. May not be thread-safe.
+     * @param maxTasksPerBatch The maximum number of tasks to process in a single batch.
+     * Higher values mean more opportunity for the processor to optimize execution, but higher heap consumption.
+     * @param fair if {@code true} tasks are always submitted to the
+     * processor in FIFO order, if {@code false} tasks submitted
+     * when the internal queue is full may be submitted out of order.
+     * @param failureHandler A failure handler to report failures of the background thread.
+     * @param blockingRetryProducer A retry work producer that would be called in case of offloading operation submitter and full queue.
+     */
+    public BatchingExecutor(String name, P processor, int maxTasksPerBatch, boolean fair, FailureHandler failureHandler, Consumer<? super W> blockingRetryProducer) {
+        this.name = name;
+        this.failureHandler = failureHandler;
+        this.blockingRetryProducer = blockingRetryProducer;
+        this.workQueue = new ArrayBlockingQueue<>(maxTasksPerBatch, fair);
+        this.worker = new BatchWorker<>(name, processor, workQueue, maxTasksPerBatch);
+    }
 
-	/**
-	 * Stop the executor, no longer allowing works to be submitted
-	 * through {@link #submit(BatchedWork, OperationSubmitter)}.
-	 * <p>
-	 * This will remove pending works from the queue.
-	 */
-	public synchronized void stop() {
-		ExecutorLog.INSTANCE.stoppingExecutor( name );
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		workQueue.clear();
+    /**
+     * Start the executor, allowing works to be submitted
+     * through {@link #submit(BatchedWork, OperationSubmitter)}.
+     *
+     * @param executorService An executor service with at least one thread.
+     */
+    public synchronized void start(SimpleScheduledExecutor executorService) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// It's possible that processing was successfully scheduled in the executor service but had no chance to run,
-		// so we need to release waiting threads:
-		processingTask.stop();
-		processingTask = null;
-	}
+    /**
+     * Stop the executor, no longer allowing works to be submitted
+     * through {@link #submit(BatchedWork, OperationSubmitter)}.
+     * <p>
+     * This will remove pending works from the queue.
+     */
+    public synchronized void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @deprecated Use {@link #submit(BatchedWork, OperationSubmitter)} instead.
-	 */
-	@Deprecated(since = "6.2")
-	public void submit(W work) throws InterruptedException {
-		submit( work, OperationSubmitter.blocking() );
-	}
+    /**
+     * @deprecated Use {@link #submit(BatchedWork, OperationSubmitter)} instead.
+     */
+    @Deprecated(since = "6.2")
+    public void submit(W work) throws InterruptedException {
+        submit(work, OperationSubmitter.blocking());
+    }
 
-	/**
-	 * Submit a work for execution.
-	 * <p>
-	 * Must not be called when the executor is stopped.
-	 * @param work A work to execute.
-	 * @param operationSubmitter How to handle request to submit operation when the queue is full.
-	 * @throws InterruptedException If the current thread is interrupted while enqueuing the work.
-	 */
-	public void submit(W work, OperationSubmitter operationSubmitter) throws InterruptedException {
-		if ( processingTask == null ) {
-			throw new AssertionFailure(
-					"Attempt to submit a work to executor '" + name + "', which is stopped."
-			);
-		}
-		operationSubmitter.submitToQueue( workQueue, work, blockingRetryProducer, ASYNC_FAILURE_REPORTER );
-		processingTask.ensureScheduled();
-	}
+    /**
+     * Submit a work for execution.
+     * <p>
+     * Must not be called when the executor is stopped.
+     * @param work A work to execute.
+     * @param operationSubmitter How to handle request to submit operation when the queue is full.
+     * @throws InterruptedException If the current thread is interrupted while enqueuing the work.
+     */
+    public void submit(W work, OperationSubmitter operationSubmitter) throws InterruptedException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A future that completes when all works submitted to the executor so far are completely executed.
-	 * Works submitted to the executor after entering this method may delay the wait.
-	 */
-	public CompletableFuture<?> completion() {
-		if ( processingTask == null ) {
-			// Not started
-			return CompletableFuture.completedFuture( null );
-		}
-		return processingTask.completion();
-	}
+    /**
+     * @return A future that completes when all works submitted to the executor so far are completely executed.
+     * Works submitted to the executor after entering this method may delay the wait.
+     */
+    public CompletableFuture<?> completion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Takes a batch of works from the queue and submits them to the processor.
-	 */
-	private static final class BatchWorker<P extends BatchedWorkProcessor, W extends BatchedWork<? super P>>
-			implements SingletonTask.Worker {
-		private final CompletableFuture<?> completedFuture = CompletableFuture.completedFuture( null );
+    /**
+     * Takes a batch of works from the queue and submits them to the processor.
+     */
+    private static final class BatchWorker<P extends BatchedWorkProcessor, W extends BatchedWork<? super P>> implements SingletonTask.Worker {
 
-		private final String name;
-		private final P processor;
-		private final BlockingQueue<W> workQueue;
-		private final int maxTasksPerBatch;
-		private final List<W> workBuffer;
+        private final CompletableFuture<?> completedFuture = CompletableFuture.completedFuture(null);
 
-		private BatchWorker(String name, P processor, BlockingQueue<W> workQueue,
-				int maxTasksPerBatch) {
-			this.name = name;
-			this.processor = processor;
-			this.workQueue = workQueue;
-			this.maxTasksPerBatch = maxTasksPerBatch;
-			this.workBuffer = new ArrayList<>( maxTasksPerBatch );
-		}
+        private final String name;
 
-		@Override
-		public CompletableFuture<?> work() {
-			workBuffer.clear();
-			workQueue.drainTo( workBuffer, maxTasksPerBatch );
+        private final P processor;
 
-			if ( workBuffer.isEmpty() ) {
-				// Nothing to do
-				return completedFuture;
-			}
+        private final BlockingQueue<W> workQueue;
 
-			int workCount = workBuffer.size();
-			boolean traceEnabled = ExecutorLog.INSTANCE.isTraceEnabled();
-			if ( traceEnabled ) {
-				ExecutorLog.INSTANCE.numberOfWorksInExecutor( workCount, name );
-			}
+        private final int maxTasksPerBatch;
 
-			processor.beginBatch();
-			for ( W work : workBuffer ) {
-				try {
-					work.submitTo( processor );
-				}
-				catch (Throwable e) {
-					work.markAsFailed( e );
-				}
-			}
+        private final List<W> workBuffer;
 
-			// Nothing more to do, end the batch and terminate
-			CompletableFuture<?> future = processor.endBatch();
-			if ( traceEnabled ) {
-				future.whenComplete( (result, throwable) -> {
-					ExecutorLog.INSTANCE.numberOfProcessedWorksInExecutor( workCount, name );
-				} );
-			}
+        private BatchWorker(String name, P processor, BlockingQueue<W> workQueue, int maxTasksPerBatch) {
+            this.name = name;
+            this.processor = processor;
+            this.workQueue = workQueue;
+            this.maxTasksPerBatch = maxTasksPerBatch;
+            this.workBuffer = new ArrayList<>(maxTasksPerBatch);
+        }
 
-			return future;
-		}
+        @Override
+        public CompletableFuture<?> work() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void complete() {
-			processor.complete();
-		}
-	}
+        @Override
+        public void complete() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private static final class BatchScheduler implements SingletonTask.Scheduler {
-		private final SimpleScheduledExecutor delegate;
+    private static final class BatchScheduler implements SingletonTask.Scheduler {
 
-		public BatchScheduler(SimpleScheduledExecutor delegate) {
-			this.delegate = delegate;
-		}
+        private final SimpleScheduledExecutor delegate;
 
-		@Override
-		public Future<?> schedule(Runnable runnable) {
-			// Schedule the task for execution as soon as possible.
-			return delegate.submit( runnable );
-		}
-	}
+        public BatchScheduler(SimpleScheduledExecutor delegate) {
+            this.delegate = delegate;
+        }
 
+        @Override
+        public Future<?> schedule(Runnable runnable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

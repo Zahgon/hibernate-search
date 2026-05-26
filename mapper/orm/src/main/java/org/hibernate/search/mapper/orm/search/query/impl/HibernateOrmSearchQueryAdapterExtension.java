@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.search.query.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.search.loading.spi.SearchLoadingContext;
 import org.hibernate.search.engine.search.query.SearchQuery;
 import org.hibernate.search.engine.search.query.SearchQueryExtension;
@@ -14,32 +13,18 @@ import org.hibernate.search.mapper.orm.loading.impl.HibernateOrmSelectionLoading
 
 @SuppressWarnings("removal")
 @Deprecated(since = "8.1", forRemoval = true)
-final class HibernateOrmSearchQueryAdapterExtension<H>
-		implements
-		SearchQueryExtension<HibernateOrmSearchQueryAdapter<H>, H> {
-	private static final HibernateOrmSearchQueryAdapterExtension<Object> INSTANCE =
-			new HibernateOrmSearchQueryAdapterExtension<>();
+final class HibernateOrmSearchQueryAdapterExtension<H> implements SearchQueryExtension<HibernateOrmSearchQueryAdapter<H>, H> {
 
-	@SuppressWarnings("unchecked") // The instance works for any H
-	static <H> HibernateOrmSearchQueryAdapterExtension<H> get() {
-		return (HibernateOrmSearchQueryAdapterExtension<H>) INSTANCE;
-	}
+    private static final HibernateOrmSearchQueryAdapterExtension<Object> INSTANCE = new HibernateOrmSearchQueryAdapterExtension<>();
 
-	@Override
-	public Optional<HibernateOrmSearchQueryAdapter<H>> extendOptional(SearchQuery<H> original,
-			SearchLoadingContext<?> loadingContext) {
-		Object unwrapped = loadingContext.unwrap();
-		if ( unwrapped instanceof HibernateOrmSelectionLoadingContext ) {
-			HibernateOrmSelectionLoadingContext castedLoadingContext = (HibernateOrmSelectionLoadingContext) unwrapped;
-			return Optional.of( new HibernateOrmSearchQueryAdapter<>(
-					// All SearchQuery implementations should implement SearchQueryImplementor
-					(SearchQueryImplementor<H>) original,
-					castedLoadingContext.sessionImplementor(),
-					castedLoadingContext.loadingOptions()
-			) );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    // The instance works for any H
+    @SuppressWarnings("unchecked")
+    static <H> HibernateOrmSearchQueryAdapterExtension<H> get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<HibernateOrmSearchQueryAdapter<H>> extendOptional(SearchQuery<H> original, SearchLoadingContext<?> loadingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

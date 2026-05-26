@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.dsl.impl;
 
 import java.math.BigDecimal;
-
 import org.hibernate.search.backend.lucene.logging.impl.MappingLog;
 import org.hibernate.search.backend.lucene.types.codec.impl.AbstractLuceneNumericFieldCodec;
 import org.hibernate.search.backend.lucene.types.codec.impl.DocValues;
@@ -16,50 +15,39 @@ import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConv
 import org.hibernate.search.engine.backend.types.dsl.ScaledNumberIndexFieldTypeOptionsStep;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexFieldTypeDefaultsProvider;
 
-class LuceneBigDecimalIndexFieldTypeOptionsStep
-		extends AbstractLuceneNumericIndexFieldTypeOptionsStep<LuceneBigDecimalIndexFieldTypeOptionsStep, BigDecimal>
-		implements ScaledNumberIndexFieldTypeOptionsStep<LuceneBigDecimalIndexFieldTypeOptionsStep, BigDecimal> {
+class LuceneBigDecimalIndexFieldTypeOptionsStep extends AbstractLuceneNumericIndexFieldTypeOptionsStep<LuceneBigDecimalIndexFieldTypeOptionsStep, BigDecimal> implements ScaledNumberIndexFieldTypeOptionsStep<LuceneBigDecimalIndexFieldTypeOptionsStep, BigDecimal> {
 
-	private final IndexFieldTypeDefaultsProvider defaultsProvider;
+    private final IndexFieldTypeDefaultsProvider defaultsProvider;
 
-	private Integer decimalScale = null;
+    private Integer decimalScale = null;
 
-	LuceneBigDecimalIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext,
-			IndexFieldTypeDefaultsProvider defaultsProvider) {
-		super( buildContext, BigDecimal.class, DefaultStringConverters.BIG_DECIMAL );
-		this.defaultsProvider = defaultsProvider;
-	}
+    LuceneBigDecimalIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, IndexFieldTypeDefaultsProvider defaultsProvider) {
+        super(buildContext, BigDecimal.class, DefaultStringConverters.BIG_DECIMAL);
+        this.defaultsProvider = defaultsProvider;
+    }
 
-	@Override
-	public LuceneBigDecimalIndexFieldTypeOptionsStep decimalScale(int decimalScale) {
-		this.decimalScale = decimalScale;
-		return this;
-	}
+    @Override
+    public LuceneBigDecimalIndexFieldTypeOptionsStep decimalScale(int decimalScale) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LuceneBigDecimalIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneBigDecimalIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneNumericFieldCodec<BigDecimal, ?> createCodec(
-			Indexing indexing,
-			DocValues docValues,
-			Storage storage,
-			BigDecimal indexNullAsValue) {
-		int resolvedDecimalScale = resolveDecimalScale();
-		return new LuceneBigDecimalFieldCodec( indexing, docValues, storage, indexNullAsValue, resolvedDecimalScale );
-	}
+    @Override
+    protected AbstractLuceneNumericFieldCodec<BigDecimal, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, BigDecimal indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private int resolveDecimalScale() {
-		if ( decimalScale != null ) {
-			return decimalScale;
-		}
-		if ( defaultsProvider.decimalScale() != null ) {
-			return defaultsProvider.decimalScale();
-		}
-
-		throw MappingLog.INSTANCE.nullDecimalScale( buildContext.hints().missingDecimalScale(),
-				buildContext.getEventContext() );
-	}
+    private int resolveDecimalScale() {
+        if (decimalScale != null) {
+            return decimalScale;
+        }
+        if (defaultsProvider.decimalScale() != null) {
+            return defaultsProvider.decimalScale();
+        }
+        throw MappingLog.INSTANCE.nullDecimalScale(buildContext.hints().missingDecimalScale(), buildContext.getEventContext());
+    }
 }

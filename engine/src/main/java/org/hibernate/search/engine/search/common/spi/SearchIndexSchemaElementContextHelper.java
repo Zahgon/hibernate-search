@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.common.spi;
 
 import java.util.Objects;
-
 import org.hibernate.search.engine.logging.impl.MappingLog;
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.engine.reporting.impl.EngineHints;
@@ -15,83 +14,64 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 public abstract class SearchIndexSchemaElementContextHelper {
 
-	public static <T extends SearchIndexCompositeNodeContext<?>> T throwingToComposite(SearchIndexNodeContext<?> element) {
-		throw MappingLog.INSTANCE.invalidIndexNodeTypeNotComposite( element.relativeEventContext() );
-	}
+    public static <T extends SearchIndexCompositeNodeContext<?>> T throwingToComposite(SearchIndexNodeContext<?> element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <T extends SearchIndexCompositeNodeContext<?>> T throwingToObjectField(SearchIndexNodeContext<?> element) {
-		throw MappingLog.INSTANCE.invalidIndexNodeTypeNotObjectField( element.relativeEventContext() );
-	}
+    public static <T extends SearchIndexCompositeNodeContext<?>> T throwingToObjectField(SearchIndexNodeContext<?> element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <T extends SearchIndexValueFieldContext<?>> T throwingToValueField(SearchIndexNodeContext<?> element) {
-		throw MappingLog.INSTANCE.invalidIndexNodeTypeNotValueField( element.relativeEventContext() );
-	}
+    public static <T extends SearchIndexValueFieldContext<?>> T throwingToValueField(SearchIndexNodeContext<?> element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static void checkNestedDocumentPathCompatibility(SearchIndexNodeContext<?> left, SearchIndexNodeContext<?> right) {
-		String leftNestedDocumentPathHierarchy = left.nestedDocumentPath();
-		String rightNestedDocumentPathHierarchy = right.nestedDocumentPath();
+    public static void checkNestedDocumentPathCompatibility(SearchIndexNodeContext<?> left, SearchIndexNodeContext<?> right) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( !Objects.equals( leftNestedDocumentPathHierarchy, rightNestedDocumentPathHierarchy ) ) {
-			throw QueryLog.INSTANCE.targetFieldsSpanningMultipleNestedPaths(
-					left.absolutePath(), pathEventContext( leftNestedDocumentPathHierarchy ),
-					right.absolutePath(), pathEventContext( rightNestedDocumentPathHierarchy ) );
-		}
-	}
+    private static EventContext pathEventContext(String path) {
+        return path == null ? EventContexts.indexSchemaRoot() : EventContexts.fromIndexFieldAbsolutePath(path);
+    }
 
-	private static EventContext pathEventContext(String path) {
-		return path == null ? EventContexts.indexSchemaRoot() : EventContexts.fromIndexFieldAbsolutePath( path );
-	}
+    private SearchIndexSchemaElementContextHelper() {
+    }
 
-	private SearchIndexSchemaElementContextHelper() {
-	}
+    public static final SearchIndexSchemaElementContextHelper VALUE_FIELD = new SearchIndexSchemaElementContextHelper() {
 
-	public static final SearchIndexSchemaElementContextHelper VALUE_FIELD = new SearchIndexSchemaElementContextHelper() {
-		@Override
-		protected String missingSupportHint(SearchQueryElementTypeKey<?> key) {
-			return EngineHints.INSTANCE.missingSupportHintForValueField( key );
-		}
+        @Override
+        protected String missingSupportHint(SearchQueryElementTypeKey<?> key) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String partialSupportHint() {
-			return EngineHints.INSTANCE.partialSupportHintForValueField();
-		}
+        @Override
+        public String partialSupportHint() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	};
+    public static final SearchIndexSchemaElementContextHelper COMPOSITE = new SearchIndexSchemaElementContextHelper() {
 
-	public static final SearchIndexSchemaElementContextHelper COMPOSITE = new SearchIndexSchemaElementContextHelper() {
-		@Override
-		protected String missingSupportHint(SearchQueryElementTypeKey<?> key) {
-			return EngineHints.INSTANCE.missingSupportHintForCompositeNode();
-		}
+        @Override
+        protected String missingSupportHint(SearchQueryElementTypeKey<?> key) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String partialSupportHint() {
-			return EngineHints.INSTANCE.partialSupportHintForCompositeNode();
-		}
-	};
+        @Override
+        public String partialSupportHint() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	public <T, SC extends SearchIndexScope<?>, N extends SearchIndexNodeContext<SC>> T queryElement(
-			SearchQueryElementTypeKey<T> key,
-			SearchQueryElementFactory<? extends T, ? super SC, ? super N> factory, SC scope, N node) {
-		if ( factory == null ) {
-			throw cannotUseQueryElement( key, node, missingSupportHint( key ), null );
-		}
-		try {
-			return factory.create( scope, node );
-		}
-		catch (SearchException e) {
-			throw cannotUseQueryElement( key, node, e.getMessage(), e );
-		}
-	}
+    public <T, SC extends SearchIndexScope<?>, N extends SearchIndexNodeContext<SC>> T queryElement(SearchQueryElementTypeKey<T> key, SearchQueryElementFactory<? extends T, ? super SC, ? super N> factory, SC scope, N node) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <T, SC extends SearchIndexScope<?>, N extends SearchIndexNodeContext<SC>> SearchException cannotUseQueryElement(
-			SearchQueryElementTypeKey<T> key, N node, String hint,
-			Exception causeOrNull) {
-		throw QueryLog.INSTANCE.cannotUseQueryElementForIndexNode( node.relativeEventContext(), key,
-				hint, node.eventContext(), causeOrNull );
-	}
+    public <T, SC extends SearchIndexScope<?>, N extends SearchIndexNodeContext<SC>> SearchException cannotUseQueryElement(SearchQueryElementTypeKey<T> key, N node, String hint, Exception causeOrNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract String missingSupportHint(SearchQueryElementTypeKey<?> key);
+    protected abstract String missingSupportHint(SearchQueryElementTypeKey<?> key);
 
-	public abstract String partialSupportHint();
+    public abstract String partialSupportHint();
 }

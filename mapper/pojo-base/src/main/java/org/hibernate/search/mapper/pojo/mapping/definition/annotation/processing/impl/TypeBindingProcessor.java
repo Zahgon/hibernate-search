@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processin
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.TypeBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.impl.BeanDelegatingBinder;
@@ -20,28 +19,16 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMapp
 
 public final class TypeBindingProcessor implements TypeMappingAnnotationProcessor<TypeBinding> {
 
-	@Override
-	public void process(TypeMappingStep mapping, TypeBinding annotation,
-			TypeMappingAnnotationProcessorContext context) {
-		TypeBinderRef typeBinder = annotation.binder();
-		TypeBinder binder = createBinder( typeBinder, context );
+    @Override
+    public void process(TypeMappingStep mapping, TypeBinding annotation, TypeMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, Object> params = context.toMap( typeBinder.params() );
-		mapping.binder( binder, params );
-	}
-
-	private TypeBinder createBinder(TypeBinderRef binderReferenceAnnotation, MappingAnnotationProcessorContext context) {
-		Optional<BeanReference<? extends TypeBinder>> binderReference = context.toBeanReference(
-				TypeBinder.class,
-				TypeBinderRef.UndefinedBinderImplementationType.class,
-				binderReferenceAnnotation.type(), binderReferenceAnnotation.name(),
-				binderReferenceAnnotation.retrieval()
-		);
-
-		if ( !binderReference.isPresent() ) {
-			throw MappingLog.INSTANCE.missingBinderReferenceInBinding();
-		}
-
-		return new BeanDelegatingBinder( binderReference.get() );
-	}
+    private TypeBinder createBinder(TypeBinderRef binderReferenceAnnotation, MappingAnnotationProcessorContext context) {
+        Optional<BeanReference<? extends TypeBinder>> binderReference = context.toBeanReference(TypeBinder.class, TypeBinderRef.UndefinedBinderImplementationType.class, binderReferenceAnnotation.type(), binderReferenceAnnotation.name(), binderReferenceAnnotation.retrieval());
+        if (!binderReference.isPresent()) {
+            throw MappingLog.INSTANCE.missingBinderReferenceInBinding();
+        }
+        return new BeanDelegatingBinder(binderReference.get());
+    }
 }

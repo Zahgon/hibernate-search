@@ -5,38 +5,28 @@
 package org.hibernate.search.backend.elasticsearch.search.projection.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 
 public final class SearchProjectionBackendContext {
 
-	private final ProjectionExtractionHelper<String> complexMappedTypeNameProjectionExtractionHelper;
-	private final ProjectionExtractionHelper<String> idProjectionExtractionHelper;
+    private final ProjectionExtractionHelper<String> complexMappedTypeNameProjectionExtractionHelper;
 
-	public SearchProjectionBackendContext(
-			ProjectionExtractionHelper<String> complexMappedTypeNameProjectionExtractionHelper,
-			ProjectionExtractionHelper<String> idProjectionExtractionHelper) {
-		this.complexMappedTypeNameProjectionExtractionHelper = complexMappedTypeNameProjectionExtractionHelper;
-		this.idProjectionExtractionHelper = idProjectionExtractionHelper;
-	}
+    private final ProjectionExtractionHelper<String> idProjectionExtractionHelper;
 
-	ProjectionExtractionHelper<String> createMappedTypeNameExtractionHelper(ElasticsearchSearchIndexScope<?> scope) {
-		Set<String> mappedTypeNames = scope.mappedTypeNameToIndex().keySet();
-		if ( mappedTypeNames.size() == 1 ) {
-			// Only one type targeted by the search: use a simpler implementation that will always work.
-			return new SingleTypeNameExtractionHelper( mappedTypeNames.iterator().next() );
-		}
-		else {
-			return complexMappedTypeNameProjectionExtractionHelper;
-		}
-	}
+    public SearchProjectionBackendContext(ProjectionExtractionHelper<String> complexMappedTypeNameProjectionExtractionHelper, ProjectionExtractionHelper<String> idProjectionExtractionHelper) {
+        this.complexMappedTypeNameProjectionExtractionHelper = complexMappedTypeNameProjectionExtractionHelper;
+        this.idProjectionExtractionHelper = idProjectionExtractionHelper;
+    }
 
-	DocumentReferenceExtractionHelper createDocumentReferenceExtractionHelper(
-			ProjectionExtractionHelper<String> mappedTypeNameExtractionHelper) {
-		return new DocumentReferenceExtractionHelper( mappedTypeNameExtractionHelper, idProjectionExtractionHelper );
-	}
+    ProjectionExtractionHelper<String> createMappedTypeNameExtractionHelper(ElasticsearchSearchIndexScope<?> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ProjectionExtractionHelper<String> idProjectionExtractionHelper() {
-		return idProjectionExtractionHelper;
-	}
+    DocumentReferenceExtractionHelper createDocumentReferenceExtractionHelper(ProjectionExtractionHelper<String> mappedTypeNameExtractionHelper) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public ProjectionExtractionHelper<String> idProjectionExtractionHelper() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

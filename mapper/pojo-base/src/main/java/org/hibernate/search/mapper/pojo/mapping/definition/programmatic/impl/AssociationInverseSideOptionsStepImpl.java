@@ -11,26 +11,24 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorPropertyNode;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 
-class AssociationInverseSideOptionsStepImpl
-		extends DelegatingPropertyMappingStep
-		implements AssociationInverseSideOptionsStep, PojoPropertyMetadataContributor {
+class AssociationInverseSideOptionsStepImpl extends DelegatingPropertyMappingStep implements AssociationInverseSideOptionsStep, PojoPropertyMetadataContributor {
 
-	private final PojoModelPathValueNode inversePath;
-	private ContainerExtractorPath extractorPath = ContainerExtractorPath.defaultExtractors();
+    private final PojoModelPathValueNode inversePath;
 
-	AssociationInverseSideOptionsStepImpl(PropertyMappingStep delegate, PojoModelPathValueNode inversePath) {
-		super( delegate );
-		this.inversePath = inversePath;
-	}
+    private ContainerExtractorPath extractorPath = ContainerExtractorPath.defaultExtractors();
 
-	@Override
-	public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorPropertyNode collector) {
-		collector.value( extractorPath ).associationInverseSide( inversePath );
-	}
+    AssociationInverseSideOptionsStepImpl(PropertyMappingStep delegate, PojoModelPathValueNode inversePath) {
+        super(delegate);
+        this.inversePath = inversePath;
+    }
 
-	@Override
-	public AssociationInverseSideOptionsStep extractors(ContainerExtractorPath extractorPath) {
-		this.extractorPath = extractorPath;
-		return this;
-	}
+    @Override
+    public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorPropertyNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public AssociationInverseSideOptionsStep extractors(ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

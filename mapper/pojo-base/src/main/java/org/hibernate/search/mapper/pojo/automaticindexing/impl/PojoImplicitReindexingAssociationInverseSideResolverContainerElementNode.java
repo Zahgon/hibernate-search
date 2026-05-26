@@ -16,46 +16,36 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  * @param <C> The container type received as input, for instance {@code Map<String, Collection<MyEntityType>>}.
  * @param <V> The extracted value type, for instance {@code MyEntityType}.
  */
-class PojoImplicitReindexingAssociationInverseSideResolverContainerElementNode<C, V>
-		extends PojoImplicitReindexingAssociationInverseSideResolverNode<C> {
+class PojoImplicitReindexingAssociationInverseSideResolverContainerElementNode<C, V> extends PojoImplicitReindexingAssociationInverseSideResolverNode<C> {
 
-	private final ContainerExtractorHolder<C, V> extractorHolder;
-	private final PojoImplicitReindexingAssociationInverseSideResolverNode<? super V> nested;
-	private final ValueProcessor<PojoReindexingAssociationInverseSideCollector,
-			? super C,
-			PojoImplicitReindexingAssociationInverseSideResolverRootContext> extractingDelegate;
+    private final ContainerExtractorHolder<C, V> extractorHolder;
 
-	public PojoImplicitReindexingAssociationInverseSideResolverContainerElementNode(
-			ContainerExtractorHolder<C, V> extractorHolder,
-			PojoImplicitReindexingAssociationInverseSideResolverNode<? super V> nested) {
-		this.extractorHolder = extractorHolder;
-		this.nested = nested;
-		this.extractingDelegate = extractorHolder.wrap( (collector, value, context, extractionContext) -> {
-			if ( value != null ) {
-				nested.resolveEntitiesToReindex( collector, value, context );
-			}
-		} );
-	}
+    private final PojoImplicitReindexingAssociationInverseSideResolverNode<? super V> nested;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ContainerExtractorHolder::close, extractorHolder );
-			closer.pushAll( PojoImplicitReindexingAssociationInverseSideResolverNode::close, nested );
-		}
-	}
+    private final ValueProcessor<PojoReindexingAssociationInverseSideCollector, ? super C, PojoImplicitReindexingAssociationInverseSideResolverRootContext> extractingDelegate;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process container element" );
-		appender.attribute( "extractor", extractorHolder );
-		appender.attribute( "nested", nested );
-	}
+    public PojoImplicitReindexingAssociationInverseSideResolverContainerElementNode(ContainerExtractorHolder<C, V> extractorHolder, PojoImplicitReindexingAssociationInverseSideResolverNode<? super V> nested) {
+        this.extractorHolder = extractorHolder;
+        this.nested = nested;
+        this.extractingDelegate = extractorHolder.wrap((collector, value, context, extractionContext) -> {
+            if (value != null) {
+                nested.resolveEntitiesToReindex(collector, value, context);
+            }
+        });
+    }
 
-	@Override
-	void resolveEntitiesToReindex(PojoReindexingAssociationInverseSideCollector collector, C container,
-			PojoImplicitReindexingAssociationInverseSideResolverRootContext context) {
-		extractingDelegate.process( collector, container, context, context );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    void resolveEntitiesToReindex(PojoReindexingAssociationInverseSideCollector collector, C container, PojoImplicitReindexingAssociationInverseSideResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

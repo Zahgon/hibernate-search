@@ -7,90 +7,77 @@ package org.hibernate.search.backend.elasticsearch;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.backend.elasticsearch.logging.spi.ConfigurationLog;
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 import org.hibernate.search.util.common.annotation.Incubating;
 
 public enum ElasticsearchDistributionName {
 
-	/**
-	 * The Elasticsearch distribution from Elastic.
-	 * <p>
-	 * See: <a href="https://www.elastic.co/elasticsearch/">https://www.elastic.co/elasticsearch/</a>.
-	 */
-	ELASTIC( "elastic", "elastic" ),
-	/**
-	 * The OpenSearch distribution from the OpenSearch organization.
-	 * <p>
-	 * When used through Amazon OpenSearch Service, requires extra dependencies for authentication;
-	 * refer to the reference documentation.
-	 * <p>
-	 * See: <a href="https://www.opensearch.org/">https://www.opensearch.org/</a>.
-	 */
-	OPENSEARCH( "opensearch", "opensearch" ),
-	/**
-	 * Amazon OpenSearch Serverless.
-	 * <p>
-	 * Requires extra dependencies for authentication;
-	 * refer to the reference documentation.
-	 * <p>
-	 * See: <a href="https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html">https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html</a>.
-	 */
-	@Incubating
-	AMAZON_OPENSEARCH_SERVERLESS( "amazon-opensearch-serverless", null );
+    /**
+     * The Elasticsearch distribution from Elastic.
+     * <p>
+     * See: <a href="https://www.elastic.co/elasticsearch/">https://www.elastic.co/elasticsearch/</a>.
+     */
+    ELASTIC("elastic", "elastic"),
+    /**
+     * The OpenSearch distribution from the OpenSearch organization.
+     * <p>
+     * When used through Amazon OpenSearch Service, requires extra dependencies for authentication;
+     * refer to the reference documentation.
+     * <p>
+     * See: <a href="https://www.opensearch.org/">https://www.opensearch.org/</a>.
+     */
+    OPENSEARCH("opensearch", "opensearch"),
+    /**
+     * Amazon OpenSearch Serverless.
+     * <p>
+     * Requires extra dependencies for authentication;
+     * refer to the reference documentation.
+     * <p>
+     * See: <a href="https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html">https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-overview.html</a>.
+     */
+    @Incubating
+    AMAZON_OPENSEARCH_SERVERLESS("amazon-opensearch-serverless", null);
 
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static ElasticsearchDistributionName of(String value) {
-		return ParseUtils.parseDiscreteValues(
-				ElasticsearchDistributionName.values(),
-				ElasticsearchDistributionName::externalRepresentation,
-				ConfigurationLog.INSTANCE::invalidElasticsearchDistributionName,
-				value
-		);
-	}
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static ElasticsearchDistributionName of(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static List<String> allowedExternalRepresentations() {
-		return Arrays.stream( ElasticsearchDistributionName.values() )
-				.map( ElasticsearchDistributionName::externalRepresentation )
-				.collect( Collectors.toList() );
-	}
+    static List<String> allowedExternalRepresentations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static ElasticsearchDistributionName fromServerResponseRepresentation(String value) {
-		return ParseUtils.parseDiscreteValues(
-				ElasticsearchDistributionName.values(),
-				ElasticsearchDistributionName::serverResponseRepresentation,
-				ConfigurationLog.INSTANCE::invalidElasticsearchDistributionName,
-				value
-		);
-	}
+    public static ElasticsearchDistributionName fromServerResponseRepresentation(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static ElasticsearchDistributionName defaultValue() {
-		return ElasticsearchDistributionName.ELASTIC;
-	}
+    static ElasticsearchDistributionName defaultValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String externalRepresentation;
-	private final String serverResponseRepresentation;
+    private final String externalRepresentation;
 
-	ElasticsearchDistributionName(String externalRepresentation, String serverResponseRepresentation) {
-		this.externalRepresentation = externalRepresentation;
-		this.serverResponseRepresentation = serverResponseRepresentation;
-	}
+    private final String serverResponseRepresentation;
 
-	@Override
-	public String toString() {
-		return externalRepresentation;
-	}
+    ElasticsearchDistributionName(String externalRepresentation, String serverResponseRepresentation) {
+        this.externalRepresentation = externalRepresentation;
+        this.serverResponseRepresentation = serverResponseRepresentation;
+    }
 
-	/**
-	 * @return The expected string representation in configuration properties.
-	 */
-	public String externalRepresentation() {
-		return externalRepresentation;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	String serverResponseRepresentation() {
-		return serverResponseRepresentation;
-	}
+    /**
+     * @return The expected string representation in configuration properties.
+     */
+    public String externalRepresentation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    String serverResponseRepresentation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

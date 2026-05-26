@@ -10,45 +10,35 @@ import org.hibernate.search.engine.backend.common.DocumentReference;
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
-
 import com.google.gson.JsonObject;
 
-public class ElasticsearchEntityReferenceProjection<R> extends AbstractElasticsearchProjection<R>
-		implements ElasticsearchSearchProjection.Extractor<DocumentReference, R> {
+public class ElasticsearchEntityReferenceProjection<R> extends AbstractElasticsearchProjection<R> implements ElasticsearchSearchProjection.Extractor<DocumentReference, R> {
 
-	private final DocumentReferenceExtractionHelper helper;
+    private final DocumentReferenceExtractionHelper helper;
 
-	ElasticsearchEntityReferenceProjection(ElasticsearchSearchIndexScope<?> scope, DocumentReferenceExtractionHelper helper) {
-		super( scope );
-		this.helper = helper;
-	}
+    ElasticsearchEntityReferenceProjection(ElasticsearchSearchIndexScope<?> scope, DocumentReferenceExtractionHelper helper) {
+        super(scope);
+        this.helper = helper;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, R> request(JsonObject requestBody, ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.ENTITY_REFERENCE,
-				ElasticsearchSearchHints.INSTANCE.entityReferenceProjectionNestingNotSupportedHint()
-		);
-		helper.request( requestBody, context );
-		return this;
-	}
+    @Override
+    public Extractor<?, R> request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DocumentReference extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit,
-			JsonObject source, ProjectionExtractContext context) {
-		return helper.extract( hit, context );
-	}
+    @Override
+    public DocumentReference extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonObject source, ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public R transform(LoadingResult<?> loadingResult, DocumentReference extractedData,
-			ProjectionTransformContext context) {
-		return (R) loadingResult.convertReference( extractedData );
-	}
-
+    @Override
+    @SuppressWarnings("unchecked")
+    public R transform(LoadingResult<?> loadingResult, DocumentReference extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.sort.dsl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.engine.search.reference.sort.DistanceSortFieldReference;
 import org.hibernate.search.engine.spatial.GeoPoint;
@@ -21,35 +20,29 @@ import org.hibernate.search.engine.spatial.GeoPoint;
  * @param <S> The self type, i.e. the exposed type of this factory.
  * @param <PDF> The type of factory used to create predicates in {@link FieldSortOptionsStep#filter(Function)}.
  */
-public interface ExtendedSearchSortFactory<
-		SR,
-		S extends ExtendedSearchSortFactory<SR, ?, PDF>,
-		PDF extends TypedSearchPredicateFactory<SR>>
-		extends TypedSearchSortFactory<SR> {
+public interface ExtendedSearchSortFactory<SR, S extends ExtendedSearchSortFactory<SR, ?, PDF>, PDF extends TypedSearchPredicateFactory<SR>> extends TypedSearchSortFactory<SR> {
 
-	@Override
-	S withRoot(String objectFieldPath);
+    @Override
+    S withRoot(String objectFieldPath);
 
-	@Override
-	FieldSortOptionsStep<SR, ?, PDF> field(String fieldPath);
+    @Override
+    FieldSortOptionsStep<SR, ?, PDF> field(String fieldPath);
 
-	@Override
-	DistanceSortOptionsStep<SR, ?, PDF> distance(String fieldPath, GeoPoint location);
+    @Override
+    DistanceSortOptionsStep<SR, ?, PDF> distance(String fieldPath, GeoPoint location);
 
-	@Override
-	default DistanceSortOptionsStep<SR, ?, PDF> distance(String fieldPath, double latitude, double longitude) {
-		return distance( fieldPath, GeoPoint.of( latitude, longitude ) );
-	}
+    @Override
+    default DistanceSortOptionsStep<SR, ?, PDF> distance(String fieldPath, double latitude, double longitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default DistanceSortOptionsStep<SR, ?, PDF> distance(DistanceSortFieldReference<? super SR> fieldReference,
-			GeoPoint location) {
-		return distance( fieldReference.absolutePath(), location );
-	}
+    @Override
+    default DistanceSortOptionsStep<SR, ?, PDF> distance(DistanceSortFieldReference<? super SR> fieldReference, GeoPoint location) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default DistanceSortOptionsStep<SR, ?, PDF> distance(DistanceSortFieldReference<? super SR> fieldReference, double latitude,
-			double longitude) {
-		return distance( fieldReference, GeoPoint.of( latitude, longitude ) );
-	}
+    @Override
+    default DistanceSortOptionsStep<SR, ?, PDF> distance(DistanceSortFieldReference<? super SR> fieldReference, double latitude, double longitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

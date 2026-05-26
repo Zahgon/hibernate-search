@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.bootstrap.impl;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.spi.ConfigurationProperty;
@@ -23,62 +22,38 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 final class HibernateOrmIntegrationPartialBuildState {
 
-	private static final OptionalConfigurationProperty<
-			HibernateOrmIntegrationPartialBuildState> INTEGRATION_PARTIAL_BUILD_STATE =
-					ConfigurationProperty.forKey( HibernateOrmMapperSpiSettings.INTEGRATION_PARTIAL_BUILD_STATE )
-							.as( HibernateOrmIntegrationPartialBuildState.class,
-									HibernateOrmIntegrationPartialBuildState::parse )
-							.build();
+    private static final OptionalConfigurationProperty<HibernateOrmIntegrationPartialBuildState> INTEGRATION_PARTIAL_BUILD_STATE = ConfigurationProperty.forKey(HibernateOrmMapperSpiSettings.INTEGRATION_PARTIAL_BUILD_STATE).as(HibernateOrmIntegrationPartialBuildState.class, HibernateOrmIntegrationPartialBuildState::parse).build();
 
-	public static Optional<HibernateOrmIntegrationPartialBuildState> get(ConfigurationPropertySource propertySource) {
-		return INTEGRATION_PARTIAL_BUILD_STATE.get( propertySource );
-	}
+    public static Optional<HibernateOrmIntegrationPartialBuildState> get(ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static HibernateOrmIntegrationPartialBuildState parse(String stringToParse) {
-		throw new AssertionFailure(
-				"The partial build state cannot be parsed from a String;"
-						+ " it must be null or an instance of " + HibernateOrmIntegrationPartialBuildState.class
-		);
-	}
+    private static HibernateOrmIntegrationPartialBuildState parse(String stringToParse) {
+        throw new AssertionFailure("The partial build state cannot be parsed from a String;" + " it must be null or an instance of " + HibernateOrmIntegrationPartialBuildState.class);
+    }
 
-	private final SearchIntegrationPartialBuildState integrationBuildState;
-	private final HibernateOrmMappingKey mappingKey;
+    private final SearchIntegrationPartialBuildState integrationBuildState;
 
-	HibernateOrmIntegrationPartialBuildState(SearchIntegrationPartialBuildState integrationBuildState,
-			HibernateOrmMappingKey mappingKey) {
-		this.integrationBuildState = integrationBuildState;
-		this.mappingKey = mappingKey;
-	}
+    private final HibernateOrmMappingKey mappingKey;
 
-	public void closeOnFailure() {
-		this.integrationBuildState.closeOnFailure();
-	}
+    HibernateOrmIntegrationPartialBuildState(SearchIntegrationPartialBuildState integrationBuildState, HibernateOrmMappingKey mappingKey) {
+        this.integrationBuildState = integrationBuildState;
+        this.mappingKey = mappingKey;
+    }
 
-	void set(BiConsumer<String, Object> propertyCollector) {
-		propertyCollector.accept( HibernateOrmMapperSpiSettings.INTEGRATION_PARTIAL_BUILD_STATE, this );
-	}
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	BeanResolver beanResolver() {
-		return integrationBuildState.beanResolver();
-	}
+    void set(BiConsumer<String, Object> propertyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	HibernateSearchContextProviderService doBootSecondPhase(SessionFactoryImplementor sessionFactoryImplementor,
-			ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
-		SearchIntegrationFinalizer finalizer = integrationBuildState.finalizer( propertySource, propertyChecker );
+    BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		HibernateOrmMapping mapping = finalizer.finalizeMapping(
-				mappingKey,
-				(context, partialMapping) -> partialMapping.bindToSessionFactory( context, sessionFactoryImplementor )
-		);
-		finalizer.finalizeIntegration();
-
-		/*
-		 * Make the mapping available to the user through Search.mapping(emf)/Search.session(em).
-		 */
-		HibernateSearchContextProviderService contextService =
-				HibernateSearchContextProviderService.get( sessionFactoryImplementor );
-		contextService.initialize( mapping );
-
-		return contextService;
-	}
+    HibernateSearchContextProviderService doBootSecondPhase(SessionFactoryImplementor sessionFactoryImplementor, ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,13 +10,10 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep;
 import org.hibernate.search.mapper.pojo.search.definition.binding.builtin.IdProjectionBinder;
 
-public final class IdProjectionProcessor
-		implements MethodParameterMappingAnnotationProcessor<IdProjection> {
+public final class IdProjectionProcessor implements MethodParameterMappingAnnotationProcessor<IdProjection> {
 
-	@Override
-	public void process(MethodParameterMappingStep mapping, IdProjection annotation,
-			MethodParameterMappingAnnotationProcessorContext context) {
-		mapping.projection( IdProjectionBinder.create() );
-	}
-
+    @Override
+    public void process(MethodParameterMappingStep mapping, IdProjection annotation, MethodParameterMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

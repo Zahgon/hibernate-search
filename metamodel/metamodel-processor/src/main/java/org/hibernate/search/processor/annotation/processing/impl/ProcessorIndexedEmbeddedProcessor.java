@@ -5,15 +5,12 @@
 package org.hibernate.search.processor.annotation.processing.impl;
 
 import static org.hibernate.search.processor.impl.ProcessorElementUtils.collectExtraTypes;
-
 import java.util.Optional;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-
 import org.hibernate.search.engine.backend.types.ObjectStructure;
 import org.hibernate.search.engine.backend.types.dsl.IndexFieldTypeFinalStep;
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
@@ -24,55 +21,18 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 class ProcessorIndexedEmbeddedProcessor extends AbstractProcessorAnnotationProcessor {
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void process(PropertyMappingStep mapping, AnnotationMirror annotation, Element element,
-			ProcessorAnnotationProcessorContext context) {
-		String cleanedUpPrefix = getAnnotationValueAsString( annotation, "prefix", null );
+    @SuppressWarnings("deprecation")
+    @Override
+    public void process(PropertyMappingStep mapping, AnnotationMirror annotation, Element element, ProcessorAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		String cleanedUpName = getAnnotationValueAsString( annotation, "name", null );
+    @Override
+    protected Optional<IndexFieldTypeFinalStep<?>> configureField(PropertyBindingContext bindingContext, AnnotationMirror annotation, ProcessorAnnotationProcessorContext context, Element element, TypeMirror fieldType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		String[] includePathsArray = toStringArray( getAnnotationValue( annotation, "includePaths" ) );
-		String[] excludePathsArray = toStringArray( getAnnotationValue( annotation, "excludePaths" ) );
-
-		ContainerExtractorPath extractorPath = toContainerExtractorPath( getExtraction( annotation ), context );
-
-		if ( getAnnotationValue( annotation, "targetType" ) != null ) {
-			context.messager().printMessage( Diagnostic.Kind.WARNING,
-					annotation + " defines a targetType, which cannot be processed and will be ignored" );
-		}
-
-		ObjectStructure structure = ObjectStructure.valueOf( getAnnotationValueAsString( annotation, "structure", "DEFAULT" ) );
-
-		AnnotationValue value = getAnnotationValue( annotation, "includeDepth" );
-		Integer includeDepth = value == null ? null : (int) value.getValue();
-
-		value = getAnnotationValue( annotation, "includeEmbeddedObjectId" );
-		boolean includeEmbeddedObjectId = value != null && (boolean) value.getValue();
-
-		mapping.indexedEmbedded( cleanedUpName )
-				.extractors( extractorPath )
-				.prefix( cleanedUpPrefix )
-				.structure( structure )
-				.includeDepth( includeDepth )
-				.includePaths( MappingAnnotationProcessorUtils.cleanUpPaths( includePathsArray ) )
-				.excludePaths( MappingAnnotationProcessorUtils.cleanUpPaths( excludePathsArray ) )
-				.includeEmbeddedObjectId( includeEmbeddedObjectId );
-
-		// so we won't need to care about inverse side and other stuff:
-		mapping.indexingDependency().reindexOnUpdate( ReindexOnUpdate.NO );
-
-		collectExtraTypes( element.asType(), context );
-	}
-
-	@Override
-	protected Optional<IndexFieldTypeFinalStep<?>> configureField(PropertyBindingContext bindingContext,
-			AnnotationMirror annotation, ProcessorAnnotationProcessorContext context, Element element, TypeMirror fieldType) {
-		context.messager().printMessage( Diagnostic.Kind.ERROR, "IndexedEmbedded are not allowed within binders.", element );
-		return Optional.empty();
-	}
-
-	private AnnotationMirror getExtraction(AnnotationMirror annotation) {
-		return getAnnotationProperty( annotation, "extraction" );
-	}
+    private AnnotationMirror getExtraction(AnnotationMirror annotation) {
+        return getAnnotationProperty(annotation, "extraction");
+    }
 }

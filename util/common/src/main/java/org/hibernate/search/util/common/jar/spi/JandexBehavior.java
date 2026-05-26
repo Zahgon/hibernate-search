@@ -6,16 +6,17 @@ package org.hibernate.search.util.common.jar.spi;
 
 public final class JandexBehavior {
 
-	private JandexBehavior() {
-	}
+    private JandexBehavior() {
+    }
 
-	// Exposed for override in native images, to make it extra-clear to SubstrateVM
-	// that the native executable will never use Jandex.
-	public static void doWithJandex(JandexOperation operation) {
-		operation.execute();
-	}
+    // Exposed for override in native images, to make it extra-clear to SubstrateVM
+    // that the native executable will never use Jandex.
+    public static void doWithJandex(JandexOperation operation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public interface JandexOperation {
-		void execute();
-	}
+    public interface JandexOperation {
+
+        void execute();
+    }
 }

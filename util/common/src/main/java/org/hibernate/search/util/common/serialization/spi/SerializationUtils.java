@@ -17,28 +17,14 @@ import java.io.ObjectOutputStream;
 @Deprecated(since = "8.1", forRemoval = true)
 public final class SerializationUtils {
 
-	private SerializationUtils() {
-	}
+    private SerializationUtils() {
+    }
 
-	public static byte[] serialize(Object object) {
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		try ( ObjectOutputStream objects = new ObjectOutputStream( bytes ) ) {
-			objects.writeObject( object );
-		}
-		catch (IOException e) {
-			throw new IllegalStateException( "Unexpected exception serializing " + object, e );
-		}
-		return bytes.toByteArray();
-	}
+    public static byte[] serialize(Object object) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <T> T deserialize(Class<T> type, byte[] bytes) {
-		ByteArrayInputStream bytesIn = new ByteArrayInputStream( bytes );
-		try ( ObjectInputStream objects = new ObjectInputStream( bytesIn ) ) {
-			return type.cast( objects.readObject() );
-		}
-		catch (IOException | ClassNotFoundException e) {
-			throw new IllegalStateException( "Unexpected exception deserializing an object of type " + type, e );
-		}
-	}
-
+    public static <T> T deserialize(Class<T> type, byte[] bytes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

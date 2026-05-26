@@ -8,20 +8,20 @@ import java.util.Optional;
 
 public final class PojoPathEntityStateRepresentation {
 
-	private final int ordinalInStateArray;
-	private final Optional<BindablePojoModelPath> pathFromStateArrayElement;
+    private final int ordinalInStateArray;
 
-	public PojoPathEntityStateRepresentation(int ordinalInStateArray,
-			Optional<BindablePojoModelPath> pathFromStateArrayElement) {
-		this.ordinalInStateArray = ordinalInStateArray;
-		this.pathFromStateArrayElement = pathFromStateArrayElement;
-	}
+    private final Optional<BindablePojoModelPath> pathFromStateArrayElement;
 
-	public int ordinalInStateArray() {
-		return ordinalInStateArray;
-	}
+    public PojoPathEntityStateRepresentation(int ordinalInStateArray, Optional<BindablePojoModelPath> pathFromStateArrayElement) {
+        this.ordinalInStateArray = ordinalInStateArray;
+        this.pathFromStateArrayElement = pathFromStateArrayElement;
+    }
 
-	public Optional<BindablePojoModelPath> pathFromStateArrayElement() {
-		return pathFromStateArrayElement;
-	}
+    public int ordinalInStateArray() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Optional<BindablePojoModelPath> pathFromStateArrayElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

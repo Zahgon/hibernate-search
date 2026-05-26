@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.projection.spi;
 
 import java.lang.reflect.Array;
 import java.util.List;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -17,43 +16,39 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 final class ArrayProjectionCollector<E, V> extends ListBasedProjectionCollector<E, V, V[]> {
 
-	static <U, R> Provider<U, R> provider(Class<? super U> elementType) {
-		return new ArrayProvider<>( elementType );
-	}
+    static <U, R> Provider<U, R> provider(Class<? super U> elementType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private ArrayProjectionCollector(Class<? super V> elementType) {
-		this.elementType = elementType;
-	}
+    private ArrayProjectionCollector(Class<? super V> elementType) {
+        this.elementType = elementType;
+    }
 
-	private final Class<? super V> elementType;
+    private final Class<? super V> elementType;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public V[] doFinish(List<V> accumulated) {
-		V[] array = (V[]) Array.newInstance( elementType, accumulated.size() );
-		int i = 0;
-		for ( V v : accumulated ) {
-			array[i++] = v;
-		}
-		return array;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public V[] doFinish(List<V> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	private static class ArrayProvider<U, R> implements Provider<U, R> {
-		private final ArrayProjectionCollector<?, U> instance;
+    @SuppressWarnings("unchecked")
+    private static class ArrayProvider<U, R> implements Provider<U, R> {
 
-		private ArrayProvider(Class<? super U> elementType) {
-			instance = new ArrayProjectionCollector<>( elementType );
-		}
+        private final ArrayProjectionCollector<?, U> instance;
 
-		@Override
-		public <T> ProjectionCollector<T, U, ?, R> get() {
-			return (ProjectionCollector<T, U, ?, R>) instance;
-		}
+        private ArrayProvider(Class<? super U> elementType) {
+            instance = new ArrayProjectionCollector<>(elementType);
+        }
 
-		@Override
-		public boolean isSingleValued() {
-			return false;
-		}
-	}
+        @Override
+        public <T> ProjectionCollector<T, U, ?, R> get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

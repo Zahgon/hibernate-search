@@ -9,21 +9,24 @@ import java.time.Instant;
 import java.util.Optional;
 
 final class OutboxPollingEventProcessingInstructions {
-	private final Clock clock;
-	final Instant expiration;
-	final Optional<OutboxEventFinder> eventFinder;
 
-	public OutboxPollingEventProcessingInstructions(Clock clock, Instant expiration, Optional<OutboxEventFinder> eventFinder) {
-		this.clock = clock;
-		this.expiration = expiration;
-		this.eventFinder = eventFinder;
-	}
+    private final Clock clock;
 
-	boolean isStillValid() {
-		return timeInMillisecondsToExpiration() > 0;
-	}
+    final Instant expiration;
 
-	long timeInMillisecondsToExpiration() {
-		return Math.max( 0L, expiration.toEpochMilli() - clock.millis() );
-	}
+    final Optional<OutboxEventFinder> eventFinder;
+
+    public OutboxPollingEventProcessingInstructions(Clock clock, Instant expiration, Optional<OutboxEventFinder> eventFinder) {
+        this.clock = clock;
+        this.expiration = expiration;
+        this.eventFinder = eventFinder;
+    }
+
+    boolean isStillValid() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    long timeInMillisecondsToExpiration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

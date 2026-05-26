@@ -13,19 +13,19 @@ import org.hibernate.search.engine.search.aggregation.spi.WithParametersAggregat
 
 public class LuceneSearchAggregationBuilderFactory implements SearchAggregationBuilderFactory {
 
-	private final LuceneSearchIndexScope<?> scope;
+    private final LuceneSearchIndexScope<?> scope;
 
-	public LuceneSearchAggregationBuilderFactory(LuceneSearchIndexScope<?> scope) {
-		this.scope = scope;
-	}
+    public LuceneSearchAggregationBuilderFactory(LuceneSearchIndexScope<?> scope) {
+        this.scope = scope;
+    }
 
-	@Override
-	public <T> WithParametersAggregationBuilder<T> withParameters() {
-		return new LuceneWithParametersAggregation.Builder<>( scope );
-	}
+    @Override
+    public <T> WithParametersAggregationBuilder<T> withParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> CompositeAggregationBuilder<T> compositeAggregation() {
-		return new LuceneCompositeAggregation.Builder<>( scope );
-	}
+    @Override
+    public <T> CompositeAggregationBuilder<T> compositeAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

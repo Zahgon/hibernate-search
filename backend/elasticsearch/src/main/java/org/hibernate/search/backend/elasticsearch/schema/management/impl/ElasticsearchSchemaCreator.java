@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.schema.management.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.index.layout.IndexLayoutStrategy;
 import org.hibernate.search.backend.elasticsearch.index.layout.impl.IndexNames;
@@ -20,69 +19,42 @@ import org.hibernate.search.util.common.SearchException;
  */
 final class ElasticsearchSchemaCreator {
 
-	private final ElasticsearchSchemaAccessor schemaAccessor;
+    private final ElasticsearchSchemaAccessor schemaAccessor;
 
-	private final IndexLayoutStrategy indexLayoutStrategy;
+    private final IndexLayoutStrategy indexLayoutStrategy;
 
-	public ElasticsearchSchemaCreator(ElasticsearchSchemaAccessor schemaAccessor,
-			IndexLayoutStrategy indexLayoutStrategy) {
-		this.schemaAccessor = schemaAccessor;
-		this.indexLayoutStrategy = indexLayoutStrategy;
-	}
+    public ElasticsearchSchemaCreator(ElasticsearchSchemaAccessor schemaAccessor, IndexLayoutStrategy indexLayoutStrategy) {
+        this.schemaAccessor = schemaAccessor;
+        this.indexLayoutStrategy = indexLayoutStrategy;
+    }
 
-	/**
-	 * Create an index and its mapping.
-	 *
-	 * @param indexNames The index names.
-	 * @param indexMetadata The expected index metadata.
-	 * @param operationSubmitter How to handle request to submit operation when the queue is full.
-	 * @return A future.
-	 * @throws SearchException If an error occurs.
-	 */
-	public CompletableFuture<?> createIndexAssumeNonExisting(IndexNames indexNames, IndexMetadata indexMetadata,
-			OperationSubmitter operationSubmitter) {
-		return schemaAccessor.createIndexAssumeNonExisting(
-				createPrimaryIndexName( indexNames ),
-				indexMetadata.getAliases(),
-				indexMetadata.getSettings(),
-				indexMetadata.getMapping(),
-				operationSubmitter
-		);
-	}
+    /**
+     * Create an index and its mapping.
+     *
+     * @param indexNames The index names.
+     * @param indexMetadata The expected index metadata.
+     * @param operationSubmitter How to handle request to submit operation when the queue is full.
+     * @return A future.
+     * @throws SearchException If an error occurs.
+     */
+    public CompletableFuture<?> createIndexAssumeNonExisting(IndexNames indexNames, IndexMetadata indexMetadata, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Create an index and its mapping, but only if the index doesn't already exist.
-	 *
-	 * @param indexNames The index names.
-	 * @param indexMetadata The expected index metadata.
-	 * @param operationSubmitter How to handle request to submit operation when the queue is full.
-	 * @return A future holding the metadata of the pre-existing index, or null if the index had to be created.
-	 * @throws SearchException If an error occurs.
-	 */
-	public CompletableFuture<ExistingIndexMetadata> createIndexIfAbsent(IndexNames indexNames, IndexMetadata indexMetadata,
-			OperationSubmitter operationSubmitter) {
-		return schemaAccessor.getCurrentIndexMetadataOrNull( indexNames, operationSubmitter )
-				.thenCompose( existingIndexMetadata -> {
-					if ( existingIndexMetadata != null ) {
-						return CompletableFuture.completedFuture( existingIndexMetadata );
-					}
-					else {
-						return schemaAccessor.createIndexIgnoreExisting(
-								createPrimaryIndexName( indexNames ),
-								indexMetadata.getAliases(),
-								indexMetadata.getSettings(),
-								indexMetadata.getMapping(),
-								operationSubmitter
-						)
-								.thenApply( ignored -> null );
-					}
-				} );
-	}
+    /**
+     * Create an index and its mapping, but only if the index doesn't already exist.
+     *
+     * @param indexNames The index names.
+     * @param indexMetadata The expected index metadata.
+     * @param operationSubmitter How to handle request to submit operation when the queue is full.
+     * @return A future holding the metadata of the pre-existing index, or null if the index had to be created.
+     * @throws SearchException If an error occurs.
+     */
+    public CompletableFuture<ExistingIndexMetadata> createIndexIfAbsent(IndexNames indexNames, IndexMetadata indexMetadata, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private URLEncodedString createPrimaryIndexName(IndexNames indexNames) {
-		return IndexNames.encodeName(
-				indexLayoutStrategy.createInitialElasticsearchIndexName( indexNames.hibernateSearchIndex() )
-		);
-	}
-
+    private URLEncodedString createPrimaryIndexName(IndexNames indexNames) {
+        return IndexNames.encodeName(indexLayoutStrategy.createInitialElasticsearchIndexName(indexNames.hibernateSearchIndex()));
+    }
 }

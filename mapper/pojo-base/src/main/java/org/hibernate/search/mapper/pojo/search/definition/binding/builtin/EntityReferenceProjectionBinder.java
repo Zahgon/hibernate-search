@@ -21,41 +21,42 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBind
  * @see org.hibernate.search.mapper.pojo.mapping.definition.annotation.EntityReferenceProjection
  */
 public final class EntityReferenceProjectionBinder implements ProjectionBinder {
-	private static final EntityReferenceProjectionBinder INSTANCE = new EntityReferenceProjectionBinder();
 
-	/**
-	 * Creates an {@link EntityReferenceProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @return The binder.
-	 */
-	public static EntityReferenceProjectionBinder create() {
-		return INSTANCE;
-	}
+    private static final EntityReferenceProjectionBinder INSTANCE = new EntityReferenceProjectionBinder();
 
-	private EntityReferenceProjectionBinder() {
-	}
+    /**
+     * Creates an {@link EntityReferenceProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @return The binder.
+     */
+    public static EntityReferenceProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		context.definition( EntityReference.class, Definition.INSTANCE );
-	}
+    private EntityReferenceProjectionBinder() {
+    }
 
-	private static final class Definition extends AbstractProjectionDefinition<EntityReference> {
-		public static final Definition INSTANCE = new Definition();
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected String type() {
-			return "entity-reference";
-		}
+    private static final class Definition extends AbstractProjectionDefinition<EntityReference> {
 
-		@Override
-		// Mappers are required to have their entity reference type extend EntityReference.
-		// The generic parameter R in SearchProjectionFactory is only there for backwards compatibility.
-		@SuppressWarnings("unchecked")
-		public SearchProjection<? extends EntityReference> create(ProjectionDefinitionContext context) {
-			return (SearchProjection<? extends EntityReference>) context.projection().entityReference().toProjection();
-		}
-	}
+        public static final Definition INSTANCE = new Definition();
 
+        @Override
+        protected String type() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        // Mappers are required to have their entity reference type extend EntityReference.
+        // The generic parameter R in SearchProjectionFactory is only there for backwards compatibility.
+        @SuppressWarnings("unchecked")
+        public SearchProjection<? extends EntityReference> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

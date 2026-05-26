@@ -10,45 +10,35 @@ import org.hibernate.search.backend.elasticsearch.reporting.impl.ElasticsearchSe
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
-
 import com.google.gson.JsonObject;
 
-class ElasticsearchExplanationProjection extends AbstractElasticsearchProjection<JsonObject>
-		implements ElasticsearchSearchProjection.Extractor<JsonObject, JsonObject> {
+class ElasticsearchExplanationProjection extends AbstractElasticsearchProjection<JsonObject> implements ElasticsearchSearchProjection.Extractor<JsonObject, JsonObject> {
 
-	private static final JsonAccessor<Boolean> REQUEST_EXPLAIN_ACCESSOR = JsonAccessor.root().property( "explain" ).asBoolean();
-	private static final JsonObjectAccessor HIT_EXPLANATION_ACCESSOR =
-			JsonAccessor.root().property( "_explanation" ).asObject();
+    private static final JsonAccessor<Boolean> REQUEST_EXPLAIN_ACCESSOR = JsonAccessor.root().property("explain").asBoolean();
 
-	ElasticsearchExplanationProjection(ElasticsearchSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    private static final JsonObjectAccessor HIT_EXPLANATION_ACCESSOR = JsonAccessor.root().property("_explanation").asObject();
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    ElasticsearchExplanationProjection(ElasticsearchSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	public Extractor<?, JsonObject> request(JsonObject requestBody, ProjectionRequestContext context) {
-		context.checkNotNested(
-				ElasticsearchProjectionTypeKeys.EXPLANATION,
-				ElasticsearchSearchHints.INSTANCE.explanationProjectionNestingNotSupportedHint()
-		);
-		REQUEST_EXPLAIN_ACCESSOR.set( requestBody, true );
-		return this;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonObject extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit,
-			JsonObject source, ProjectionExtractContext context) {
-		// We expect the optional to always be non-empty.
-		return HIT_EXPLANATION_ACCESSOR.get( hit ).get();
-	}
+    @Override
+    public Extractor<?, JsonObject> request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonObject transform(LoadingResult<?> loadingResult, JsonObject extractedData,
-			ProjectionTransformContext context) {
-		return extractedData;
-	}
+    @Override
+    public JsonObject extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonObject source, ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public JsonObject transform(LoadingResult<?> loadingResult, JsonObject extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

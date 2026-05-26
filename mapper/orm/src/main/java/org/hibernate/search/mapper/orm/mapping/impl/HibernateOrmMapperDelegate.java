@@ -17,50 +17,42 @@ import org.hibernate.search.mapper.pojo.mapping.spi.PojoMappingDelegate;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 import org.hibernate.search.util.common.impl.Closer;
 
-public final class HibernateOrmMapperDelegate
-		implements PojoMapperDelegate<HibernateOrmMappingPartialBuildState> {
+public final class HibernateOrmMapperDelegate implements PojoMapperDelegate<HibernateOrmMappingPartialBuildState> {
 
-	private final HibernateOrmTypeContextContainer.Builder typeContextContainerBuilder;
-	private final BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder;
-	private final ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy;
+    private final HibernateOrmTypeContextContainer.Builder typeContextContainerBuilder;
 
-	HibernateOrmMapperDelegate(HibernateOrmBasicTypeMetadataProvider basicTypeMetadataProvider,
-			BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder,
-			ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy) {
-		typeContextContainerBuilder = new HibernateOrmTypeContextContainer.Builder( basicTypeMetadataProvider );
-		this.coordinationStrategyHolder = coordinationStrategyHolder;
-		this.configuredAutomaticIndexingStrategy = configuredAutomaticIndexingStrategy;
-	}
+    private final BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder;
 
-	@Override
-	public void closeOnFailure() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ConfiguredAutomaticIndexingStrategy::stop, configuredAutomaticIndexingStrategy );
-			closer.push( CoordinationStrategy::stop, coordinationStrategyHolder, BeanHolder::get );
-			closer.push( BeanHolder::close, coordinationStrategyHolder );
-		}
-	}
+    private final ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy;
 
-	@Override
-	public <E> PojoIndexedTypeExtendedMappingCollector createIndexedTypeExtendedMappingCollector(
-			PojoRawTypeModel<E> rawTypeModel, String entityName) {
-		return typeContextContainerBuilder.addIndexed( rawTypeModel, entityName );
-	}
+    HibernateOrmMapperDelegate(HibernateOrmBasicTypeMetadataProvider basicTypeMetadataProvider, BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder, ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy) {
+        typeContextContainerBuilder = new HibernateOrmTypeContextContainer.Builder(basicTypeMetadataProvider);
+        this.coordinationStrategyHolder = coordinationStrategyHolder;
+        this.configuredAutomaticIndexingStrategy = configuredAutomaticIndexingStrategy;
+    }
 
-	@Override
-	public <E> PojoContainedTypeExtendedMappingCollector createContainedTypeExtendedMappingCollector(
-			PojoRawTypeModel<E> rawTypeModel, String entityName) {
-		return typeContextContainerBuilder.addContained( rawTypeModel, entityName );
-	}
+    @Override
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public HibernateOrmMappingPartialBuildState prepareBuild(PojoMappingDelegate mappingDelegate) {
-		return new HibernateOrmMappingPartialBuildState( mappingDelegate, typeContextContainerBuilder,
-				coordinationStrategyHolder, configuredAutomaticIndexingStrategy );
-	}
+    @Override
+    public <E> PojoIndexedTypeExtendedMappingCollector createIndexedTypeExtendedMappingCollector(PojoRawTypeModel<E> rawTypeModel, String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BackendMappingHints hints() {
-		return HibernateOrmMappingHints.INSTANCE;
-	}
+    @Override
+    public <E> PojoContainedTypeExtendedMappingCollector createContainedTypeExtendedMappingCollector(PojoRawTypeModel<E> rawTypeModel, String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public HibernateOrmMappingPartialBuildState prepareBuild(PojoMappingDelegate mappingDelegate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BackendMappingHints hints() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

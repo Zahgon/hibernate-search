@@ -6,64 +6,39 @@ package org.hibernate.search.backend.lucene.document.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.logging.impl.IndexingLog;
 import org.hibernate.search.backend.lucene.lowlevel.common.impl.MetadataFields;
 import org.hibernate.search.backend.lucene.multitenancy.impl.MultiTenancyStrategy;
 import org.hibernate.search.backend.lucene.types.codec.impl.LuceneDocumentContent;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexableField;
 
 public class LuceneDocumentContentImpl implements LuceneDocumentContent {
 
-	private final Document document = new Document();
-	private final Map<String, EncounteredFieldStatus> fieldStatus = new HashMap<>();
+    private final Document document = new Document();
 
-	@Override
-	public void addField(IndexableField field) {
-		document.add( field );
-	}
+    private final Map<String, EncounteredFieldStatus> fieldStatus = new HashMap<>();
 
-	@Override
-	public void addFieldName(String absoluteFieldPath) {
-		// If the status was already ENCOUNTERED, just replace it.
-		fieldStatus.put( absoluteFieldPath, EncounteredFieldStatus.ENCOUNTERED_AND_NAME_INDEXED );
-	}
+    @Override
+    public void addField(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void checkNoValueYetForSingleValued(String absoluteFieldPath) {
-		EncounteredFieldStatus previousValue = fieldStatus.putIfAbsent( absoluteFieldPath, EncounteredFieldStatus.ENCOUNTERED );
-		if ( previousValue != null ) {
-			throw IndexingLog.INSTANCE.multipleValuesForSingleValuedField( absoluteFieldPath );
-		}
-	}
+    @Override
+    public void addFieldName(String absoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	Document finalizeDocument(MultiTenancyStrategy multiTenancyStrategy, String tenantId, String routingKey) {
-		for ( Map.Entry<String, EncounteredFieldStatus> entry : fieldStatus.entrySet() ) {
-			EncounteredFieldStatus status = entry.getValue();
-			if ( EncounteredFieldStatus.ENCOUNTERED_AND_NAME_INDEXED.equals( status ) ) {
-				String fieldName = entry.getKey();
-				document.add( MetadataFields.searchableMetadataField( MetadataFields.fieldNamesFieldName(), fieldName ) );
-			}
-		}
+    void checkNoValueYetForSingleValued(String absoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// The following must be added to both the root document and nested documents,
-		// so that delete operations delete nested documents, too.
+    Document finalizeDocument(MultiTenancyStrategy multiTenancyStrategy, String tenantId, String routingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( routingKey != null ) {
-			document.add( MetadataFields.searchableMetadataField(
-					MetadataFields.routingKeyFieldName(), routingKey
-			) );
-		}
+    private enum EncounteredFieldStatus {
 
-		multiTenancyStrategy.contributeToIndexedDocument( document, tenantId );
-
-		return document;
-	}
-
-	private enum EncounteredFieldStatus {
-		ENCOUNTERED,
-		ENCOUNTERED_AND_NAME_INDEXED;
-	}
-
+        ENCOUNTERED, ENCOUNTERED_AND_NAME_INDEXED
+    }
 }

@@ -11,83 +11,80 @@ import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.common.spi.SearchIndexScope;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-public abstract class AbstractIndexField<
-		S extends AbstractIndexField<S, SC, ?, C>,
-		SC extends SearchIndexScope<?>,
-		NT extends AbstractIndexNodeType<SC, ? super S>,
-		C extends IndexCompositeNode<SC, ?, ?>>
-		extends AbstractIndexNode<S, SC, NT>
-		implements IndexField<SC, C> {
-	protected final C parent;
-	protected final String absolutePath;
-	protected final String[] absolutePathComponents;
-	protected final String relativeName;
-	protected final TreeNodeInclusion inclusion;
-	protected final boolean multiValued;
-	private final String closestMultiValuedParentAbsolutePath;
+public abstract class AbstractIndexField<S extends AbstractIndexField<S, SC, ?, C>, SC extends SearchIndexScope<?>, NT extends AbstractIndexNodeType<SC, ? super S>, C extends IndexCompositeNode<SC, ?, ?>> extends AbstractIndexNode<S, SC, NT> implements IndexField<SC, C> {
 
-	public AbstractIndexField(C parent, String relativeFieldName, NT type, TreeNodeInclusion inclusion,
-			boolean multiValued) {
-		super( type );
-		this.parent = parent;
-		this.absolutePath = parent.absolutePath( relativeFieldName );
-		this.absolutePathComponents = FieldPaths.split( absolutePath );
-		this.relativeName = relativeFieldName;
-		this.inclusion = inclusion;
-		this.multiValued = multiValued;
-		this.closestMultiValuedParentAbsolutePath = parent.multiValued()
-				? parent.absolutePath()
-				: parent.closestMultiValuedParentAbsolutePath();
-	}
+    protected final C parent;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[absolutePath=" + absolutePath + ", type=" + type + "]";
-	}
+    protected final String absolutePath;
 
-	@Override
-	public final EventContext relativeEventContext() {
-		return EventContexts.fromIndexFieldAbsolutePath( absolutePath );
-	}
+    protected final String[] absolutePathComponents;
 
-	@Override
-	public final C parent() {
-		return parent;
-	}
+    protected final String relativeName;
 
-	@Override
-	public final String absolutePath() {
-		return absolutePath;
-	}
+    protected final TreeNodeInclusion inclusion;
 
-	@Override
-	public final String[] absolutePathComponents() {
-		return absolutePathComponents;
-	}
+    protected final boolean multiValued;
 
-	@Override
-	public final String relativeName() {
-		return relativeName;
-	}
+    private final String closestMultiValuedParentAbsolutePath;
 
-	@Override
-	public final TreeNodeInclusion inclusion() {
-		return inclusion;
-	}
+    public AbstractIndexField(C parent, String relativeFieldName, NT type, TreeNodeInclusion inclusion, boolean multiValued) {
+        super(type);
+        this.parent = parent;
+        this.absolutePath = parent.absolutePath(relativeFieldName);
+        this.absolutePathComponents = FieldPaths.split(absolutePath);
+        this.relativeName = relativeFieldName;
+        this.inclusion = inclusion;
+        this.multiValued = multiValued;
+        this.closestMultiValuedParentAbsolutePath = parent.multiValued() ? parent.absolutePath() : parent.closestMultiValuedParentAbsolutePath();
+    }
 
-	@Override
-	public final boolean multiValued() {
-		return multiValued;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean multiValuedInRoot() {
-		return multiValued || closestMultiValuedParentAbsolutePath != null;
-	}
+    @Override
+    public final EventContext relativeEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String closestMultiValuedParentAbsolutePath() {
-		return closestMultiValuedParentAbsolutePath;
-	}
+    @Override
+    public final C parent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public final String absolutePath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final String[] absolutePathComponents() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final String relativeName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final TreeNodeInclusion inclusion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final boolean multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean multiValuedInRoot() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String closestMultiValuedParentAbsolutePath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

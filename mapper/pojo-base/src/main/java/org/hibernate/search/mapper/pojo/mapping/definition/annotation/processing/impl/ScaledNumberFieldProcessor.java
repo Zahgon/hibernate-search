@@ -19,59 +19,53 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class ScaledNumberFieldProcessor extends AbstractNonFullTextFieldAnnotationProcessor<ScaledNumberField> {
 
-	@Override
-	PropertyMappingNonFullTextFieldOptionsStep<?> initSortableFieldMappingContext(PropertyMappingStep mappingContext,
-			ScaledNumberField annotation, String fieldName) {
-		PropertyMappingScaledNumberFieldOptionsStep fieldContext = mappingContext.scaledNumberField( fieldName );
-		int decimalScale = annotation.decimalScale();
-		if ( decimalScale != AnnotationDefaultValues.DEFAULT_DECIMAL_SCALE ) {
-			fieldContext.decimalScale( decimalScale );
-		}
-		return fieldContext;
-	}
+    @Override
+    PropertyMappingNonFullTextFieldOptionsStep<?> initSortableFieldMappingContext(PropertyMappingStep mappingContext, ScaledNumberField annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getName(ScaledNumberField annotation) {
-		return annotation.name();
-	}
+    @Override
+    String getName(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Projectable getProjectable(ScaledNumberField annotation) {
-		return annotation.projectable();
-	}
+    @Override
+    Projectable getProjectable(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Searchable getSearchable(ScaledNumberField annotation) {
-		return annotation.searchable();
-	}
+    @Override
+    Searchable getSearchable(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Sortable getSortable(ScaledNumberField annotation) {
-		return annotation.sortable();
-	}
+    @Override
+    Sortable getSortable(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Aggregable getAggregable(ScaledNumberField annotation) {
-		return annotation.aggregable();
-	}
+    @Override
+    Aggregable getAggregable(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getIndexNullAs(ScaledNumberField annotation) {
-		return annotation.indexNullAs();
-	}
+    @Override
+    String getIndexNullAs(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ValueBridgeRef getValueBridge(ScaledNumberField annotation) {
-		return annotation.valueBridge();
-	}
+    @Override
+    ValueBridgeRef getValueBridge(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ValueBinderRef getValueBinder(ScaledNumberField annotation) {
-		return annotation.valueBinder();
-	}
+    @Override
+    ValueBinderRef getValueBinder(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ContainerExtraction getExtraction(ScaledNumberField annotation) {
-		return annotation.extraction();
-	}
+    @Override
+    ContainerExtraction getExtraction(ScaledNumberField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

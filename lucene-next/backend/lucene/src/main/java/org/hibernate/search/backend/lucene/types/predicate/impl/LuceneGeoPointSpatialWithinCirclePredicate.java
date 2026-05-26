@@ -13,46 +13,46 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.SpatialWithinCirclePredicateBuilder;
 import org.hibernate.search.engine.spatial.DistanceUnit;
 import org.hibernate.search.engine.spatial.GeoPoint;
-
 import org.apache.lucene.document.LatLonPoint;
 import org.apache.lucene.search.Query;
 
 public class LuceneGeoPointSpatialWithinCirclePredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneGeoPointSpatialWithinCirclePredicate(Builder builder) {
-		super( builder );
-	}
+    private LuceneGeoPointSpatialWithinCirclePredicate(Builder builder) {
+        super(builder);
+    }
 
-	public static class Factory
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<SpatialWithinCirclePredicateBuilder, GeoPoint> {
-		@Override
-		public Builder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			return new Builder( scope, field );
-		}
-	}
+    public static class Factory extends AbstractLuceneValueFieldSearchQueryElementFactory<SpatialWithinCirclePredicateBuilder, GeoPoint> {
 
-	private static class Builder extends AbstractBuilder<GeoPoint> implements SpatialWithinCirclePredicateBuilder {
-		protected GeoPoint center;
-		protected double radiusInMeters;
+        @Override
+        public Builder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			super( scope, field );
-		}
+    private static class Builder extends AbstractBuilder<GeoPoint> implements SpatialWithinCirclePredicateBuilder {
 
-		@Override
-		public void circle(GeoPoint center, double radius, DistanceUnit unit) {
-			this.center = center;
-			this.radiusInMeters = unit.toMeters( radius );
-		}
+        protected GeoPoint center;
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneGeoPointSpatialWithinCirclePredicate( this );
-		}
+        protected double radiusInMeters;
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			return LatLonPoint.newDistanceQuery( absoluteFieldPath, center.latitude(), center.longitude(), radiusInMeters );
-		}
-	}
+        private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            super(scope, field);
+        }
+
+        @Override
+        public void circle(GeoPoint center, double radius, DistanceUnit unit) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

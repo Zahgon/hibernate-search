@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.aggregation.dsl.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.engine.search.aggregation.dsl.TermsAggregationFieldStep;
 import org.hibernate.search.engine.search.aggregation.dsl.TermsAggregationValueStep;
 import org.hibernate.search.engine.search.aggregation.dsl.spi.SearchAggregationDslContext;
@@ -15,21 +14,16 @@ import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.util.common.impl.Contracts;
 
-public class TermsAggregationFieldStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>>
-		implements TermsAggregationFieldStep<SR, PDF> {
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+public class TermsAggregationFieldStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>> implements TermsAggregationFieldStep<SR, PDF> {
 
-	public TermsAggregationFieldStepImpl(SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.dslContext = dslContext;
-	}
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-	@Override
-	public <F> TermsAggregationValueStep<SR, ?, PDF, F, Map<F, Long>> field(String fieldPath, Class<F> type,
-			ValueModel valueModel) {
-		Contracts.assertNotNull( fieldPath, "fieldPath" );
-		Contracts.assertNotNull( type, "type" );
-		TermsAggregationBuilder<F, Long> builder = dslContext.scope()
-				.fieldQueryElement( fieldPath, AggregationTypeKeys.TERMS ).type( type, valueModel );
-		return new TermsAggregationOptionsStepImpl<>( builder, dslContext );
-	}
+    public TermsAggregationFieldStepImpl(SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.dslContext = dslContext;
+    }
+
+    @Override
+    public <F> TermsAggregationValueStep<SR, ?, PDF, F, Map<F, Long>> field(String fieldPath, Class<F> type, ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,24 +10,19 @@ import org.hibernate.search.engine.backend.document.model.dsl.spi.IndexObjectFie
 import org.hibernate.search.engine.backend.types.dsl.IndexFieldTypeFactory;
 import org.hibernate.search.engine.common.tree.spi.TreeNestingContext;
 
-class IndexSchemaObjectFieldImpl extends IndexSchemaElementImpl<IndexObjectFieldBuilder>
-		implements IndexSchemaObjectField {
+class IndexSchemaObjectFieldImpl extends IndexSchemaElementImpl<IndexObjectFieldBuilder> implements IndexSchemaObjectField {
 
-	IndexSchemaObjectFieldImpl(IndexFieldTypeFactory typeFactory,
-			IndexObjectFieldBuilder objectFieldBuilder,
-			TreeNestingContext nestingContext,
-			boolean directChildrenAreMultiValuedByDefault) {
-		super( typeFactory, objectFieldBuilder, nestingContext, directChildrenAreMultiValuedByDefault );
-	}
+    IndexSchemaObjectFieldImpl(IndexFieldTypeFactory typeFactory, IndexObjectFieldBuilder objectFieldBuilder, TreeNestingContext nestingContext, boolean directChildrenAreMultiValuedByDefault) {
+        super(typeFactory, objectFieldBuilder, nestingContext, directChildrenAreMultiValuedByDefault);
+    }
 
-	@Override
-	public IndexSchemaObjectField multiValued() {
-		objectNodeBuilder.multiValued();
-		return this;
-	}
+    @Override
+    public IndexSchemaObjectField multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexObjectFieldReference toReference() {
-		return objectNodeBuilder.toReference();
-	}
+    @Override
+    public IndexObjectFieldReference toReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

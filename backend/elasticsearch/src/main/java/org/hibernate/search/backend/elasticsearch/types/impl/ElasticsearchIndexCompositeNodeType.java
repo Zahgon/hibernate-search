@@ -18,39 +18,30 @@ import org.hibernate.search.engine.backend.types.spi.AbstractIndexCompositeNodeT
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public class ElasticsearchIndexCompositeNodeType
-		extends AbstractIndexCompositeNodeType<
-				ElasticsearchSearchIndexScope<?>,
-				ElasticsearchSearchIndexCompositeNodeContext>
-		implements ElasticsearchSearchIndexCompositeNodeTypeContext {
+public class ElasticsearchIndexCompositeNodeType extends AbstractIndexCompositeNodeType<ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexCompositeNodeContext> implements ElasticsearchSearchIndexCompositeNodeTypeContext {
 
-	private ElasticsearchIndexCompositeNodeType(Builder builder) {
-		super( builder );
-	}
+    private ElasticsearchIndexCompositeNodeType(Builder builder) {
+        super(builder);
+    }
 
-	public PropertyMapping createMapping(DynamicType dynamicType) {
-		PropertyMapping mapping = new PropertyMapping();
-		mapping.setType( nested() ? DataTypes.NESTED : DataTypes.OBJECT );
-		mapping.setDynamic( dynamicType );
-		return mapping;
-	}
+    public PropertyMapping createMapping(DynamicType dynamicType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder
-			extends AbstractIndexCompositeNodeType.Builder<
-					ElasticsearchSearchIndexScope<?>,
-					ElasticsearchSearchIndexCompositeNodeContext> {
-		public Builder(ObjectStructure objectStructure) {
-			super( objectStructure );
-			queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.ObjectFieldFactory() );
-			queryElementFactory( ProjectionTypeKeys.OBJECT, new ElasticsearchObjectProjection.Factory() );
-			if ( ObjectStructure.NESTED.equals( objectStructure ) ) {
-				queryElementFactory( PredicateTypeKeys.NESTED, new ElasticsearchNestedPredicate.Factory() );
-			}
-		}
+    public static class Builder extends AbstractIndexCompositeNodeType.Builder<ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexCompositeNodeContext> {
 
-		@Override
-		public ElasticsearchIndexCompositeNodeType build() {
-			return new ElasticsearchIndexCompositeNodeType( this );
-		}
-	}
+        public Builder(ObjectStructure objectStructure) {
+            super(objectStructure);
+            queryElementFactory(PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.ObjectFieldFactory());
+            queryElementFactory(ProjectionTypeKeys.OBJECT, new ElasticsearchObjectProjection.Factory());
+            if (ObjectStructure.NESTED.equals(objectStructure)) {
+                queryElementFactory(PredicateTypeKeys.NESTED, new ElasticsearchNestedPredicate.Factory());
+            }
+        }
+
+        @Override
+        public ElasticsearchIndexCompositeNodeType build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

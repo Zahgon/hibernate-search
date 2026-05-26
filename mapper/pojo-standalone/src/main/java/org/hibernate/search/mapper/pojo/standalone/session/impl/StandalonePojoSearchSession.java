@@ -5,10 +5,8 @@
 package org.hibernate.search.mapper.pojo.standalone.session.impl;
 
 import static org.hibernate.search.util.common.impl.CollectionHelper.asSetIgnoreNull;
-
 import java.util.Collection;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.common.EntityReference;
 import org.hibernate.search.engine.search.common.NonStaticMetamodelScope;
 import org.hibernate.search.engine.search.query.dsl.SearchQuerySelectStep;
@@ -41,244 +39,214 @@ import org.hibernate.search.mapper.pojo.work.spi.ConfiguredIndexingPlanSynchroni
 import org.hibernate.search.mapper.pojo.work.spi.ConfiguredSearchIndexingPlanFilter;
 import org.hibernate.search.mapper.pojo.work.spi.PojoIndexer;
 
-public class StandalonePojoSearchSession extends AbstractPojoSearchSession
-		implements SearchSession, StandalonePojoMassIndexingSessionContext, StandalonePojoLoadingSessionContext {
+public class StandalonePojoSearchSession extends AbstractPojoSearchSession implements SearchSession, StandalonePojoMassIndexingSessionContext, StandalonePojoLoadingSessionContext {
 
-	private static final ConfiguredSearchIndexingPlanFilter ACCEPT_ALL = typeIdentifier -> true;
+    private static final ConfiguredSearchIndexingPlanFilter ACCEPT_ALL = typeIdentifier -> true;
 
-	private final StandalonePojoSearchSessionMappingContext mappingContext;
-	private final StandalonePojoSearchSessionTypeContextProvider typeContextProvider;
+    private final StandalonePojoSearchSessionMappingContext mappingContext;
 
-	private final String tenantId;
+    private final StandalonePojoSearchSessionTypeContextProvider typeContextProvider;
 
-	private final Consumer<SelectionLoadingOptionsStep> loadingOptionsContributor;
-	private final ConfiguredIndexingPlanSynchronizationStrategyHolder synchronizationStrategyHolder;
-	private final ConfiguredSearchIndexingPlanFilter configuredIndexingPlanFilter;
+    private final String tenantId;
 
-	private SearchIndexingPlanImpl indexingPlan;
-	private SearchIndexer indexer;
-	private boolean open = true;
-	private ConfiguredIndexingPlanSynchronizationStrategy indexingPlanSynchronizationStrategy;
+    private final Consumer<SelectionLoadingOptionsStep> loadingOptionsContributor;
 
-	private StandalonePojoSearchSession(Builder builder) {
-		super( builder.mappingContext );
-		this.mappingContext = builder.mappingContext;
-		this.typeContextProvider = builder.typeContextProvider;
-		this.tenantId = builder.tenantId;
-		this.loadingOptionsContributor = builder.loadingOptionsContributor;
-		this.synchronizationStrategyHolder = builder.synchronizationStrategyHolder;
+    private final ConfiguredIndexingPlanSynchronizationStrategyHolder synchronizationStrategyHolder;
 
-		this.indexingPlanSynchronizationStrategy =
-				this.synchronizationStrategyHolder.configureOverriddenSynchronizationStrategy(
-						builder.synchronizationStrategy );
-		this.configuredIndexingPlanFilter = ACCEPT_ALL;
-	}
+    private final ConfiguredSearchIndexingPlanFilter configuredIndexingPlanFilter;
 
-	private void checkOpenAndThrow() {
-		if ( !open ) {
-			throw SessionLog.INSTANCE.hibernateSessionAccessError( StandalonePojoMapperHints.INSTANCE.closedSession() );
-		}
-	}
+    private SearchIndexingPlanImpl indexingPlan;
 
-	@Override
-	public void close() {
-		if ( !open ) {
-			return;
-		}
-		open = false;
-		if ( indexingPlan != null ) {
-			indexingPlan.execute();
-		}
-	}
+    private SearchIndexer indexer;
 
-	@Override
-	public boolean isOpen() {
-		return open;
-	}
+    private boolean open = true;
 
-	@Override
-	public MassIndexer massIndexer(Collection<? extends Class<?>> classes) {
-		checkOpenAndThrow();
-		return scope( classes ).massIndexer( asSetIgnoreNull( this.tenantIdentifierValue() ) );
-	}
+    private ConfiguredIndexingPlanSynchronizationStrategy indexingPlanSynchronizationStrategy;
 
-	@Override
-	@SuppressWarnings("removal")
-	public String tenantIdentifier() {
-		return tenantId;
-	}
+    private StandalonePojoSearchSession(Builder builder) {
+        super(builder.mappingContext);
+        this.mappingContext = builder.mappingContext;
+        this.typeContextProvider = builder.typeContextProvider;
+        this.tenantId = builder.tenantId;
+        this.loadingOptionsContributor = builder.loadingOptionsContributor;
+        this.synchronizationStrategyHolder = builder.synchronizationStrategyHolder;
+        this.indexingPlanSynchronizationStrategy = this.synchronizationStrategyHolder.configureOverriddenSynchronizationStrategy(builder.synchronizationStrategy);
+        this.configuredIndexingPlanFilter = ACCEPT_ALL;
+    }
 
-	@Override
-	public Object tenantIdentifierValue() {
-		return mappingContext.tenancyConfiguration().convert( tenantId );
-	}
+    private void checkOpenAndThrow() {
+        if (!open) {
+            throw SessionLog.INSTANCE.hibernateSessionAccessError(StandalonePojoMapperHints.INSTANCE.closedSession());
+        }
+    }
 
-	@Override
-	public void indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
-		this.indexingPlanSynchronizationStrategy =
-				synchronizationStrategyHolder.configureOverriddenSynchronizationStrategy( synchronizationStrategy );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoIndexer createIndexer() {
-		return mappingContext.createIndexer( this );
-	}
+    @Override
+    public boolean isOpen() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoRuntimeIntrospector runtimeIntrospector() {
-		return mappingContext.runtimeIntrospector();
-	}
+    @Override
+    public MassIndexer massIndexer(Collection<? extends Class<?>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, EntityReference, T, ?, ?, ?> search(
-			Collection<? extends Class<? extends T>> classes) {
-		return search( scope( classes ) );
-	}
+    @Override
+    @SuppressWarnings("removal")
+    public String tenantIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchQuerySelectStep<?, ?, EntityReference, T, ?, ?, ?> search(SearchScope<T> scope) {
-		return search( (SearchScopeImpl<?, T>) scope );
-	}
+    @Override
+    public Object tenantIdentifierValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(TypedSearchScope<SR, T> scope) {
-		return search( (SearchScopeImpl<SR, T>) scope );
-	}
+    @Override
+    public void indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(
-			StandalonePojoRootReferenceScope<SR, T> referenceScope) {
-		TypedSearchScope<SR, T> scope = referenceScope.scope( this );
-		return search( scope );
-	}
+    @Override
+    public PojoIndexer createIndexer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSchemaManager schemaManager(Collection<? extends Class<?>> classes) {
-		return scope( classes ).schemaManager();
-	}
+    @Override
+    public PojoRuntimeIntrospector runtimeIntrospector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchWorkspace workspace(Collection<? extends Class<?>> classes) {
-		return scope( classes ).workspace( tenantIdentifierValue() );
-	}
+    @Override
+    public <T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, EntityReference, T, ?, ?, ?> search(Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchScopeImpl<NonStaticMetamodelScope, T> scope(Collection<? extends Class<? extends T>> types) {
-		return mappingContext.createScope( NonStaticMetamodelScope.class, types );
-	}
+    @Override
+    public <T> SearchQuerySelectStep<?, ?, EntityReference, T, ?, ?, ?> search(SearchScope<T> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchScopeImpl<NonStaticMetamodelScope, T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
-		return mappingContext.createScope( NonStaticMetamodelScope.class, expectedSuperType, entityNames );
-	}
+    @Override
+    public <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(TypedSearchScope<SR, T> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> SearchScopeImpl<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
-		return mappingContext().createScope( rootScope, classes );
-	}
+    @Override
+    public <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(StandalonePojoRootReferenceScope<SR, T> referenceScope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexingPlan indexingPlan() {
-		if ( indexingPlan == null ) {
-			indexingPlan = new SearchIndexingPlanImpl(
-					typeContextProvider, runtimeIntrospector(),
-					mappingContext().createIndexingPlan(
-							this,
-							indexingPlanSynchronizationStrategy.documentCommitStrategy(),
-							indexingPlanSynchronizationStrategy.documentRefreshStrategy()
-					),
-					indexingPlanSynchronizationStrategy
-			);
-		}
-		return indexingPlan;
-	}
+    @Override
+    public SearchSchemaManager schemaManager(Collection<? extends Class<?>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexer indexer() {
-		if ( indexer == null ) {
-			indexer = new SearchIndexerImpl(
-					runtimeIntrospector(),
-					mappingContext().createIndexer( this ),
-					indexingPlanSynchronizationStrategy.documentCommitStrategy(),
-					indexingPlanSynchronizationStrategy.documentRefreshStrategy()
-			);
-		}
-		return indexer;
-	}
+    @Override
+    public SearchWorkspace workspace(Collection<? extends Class<?>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoSelectionLoadingContext defaultLoadingContext() {
-		return loadingContextBuilder().build();
-	}
+    @Override
+    public <T> SearchScopeImpl<NonStaticMetamodelScope, T> scope(Collection<? extends Class<? extends T>> types) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConfiguredSearchIndexingPlanFilter configuredIndexingPlanFilter() {
-		return configuredIndexingPlanFilter;
-	}
+    @Override
+    public <T> SearchScopeImpl<NonStaticMetamodelScope, T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandalonePojoSearchSessionMappingContext mappingContext() {
-		return mappingContext;
-	}
+    @Override
+    public <SR, T> SearchScopeImpl<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(SearchScopeImpl<SR, T> scope) {
-		return scope.search( this, loadingContextBuilder() );
-	}
+    @Override
+    public SearchIndexingPlan indexingPlan() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private StandalonePojoSelectionLoadingContextBuilder loadingContextBuilder() {
-		StandalonePojoLoadingContext.Builder builder = mappingContext.loadingContextBuilder();
-		if ( loadingOptionsContributor != null ) {
-			loadingOptionsContributor.accept( builder );
-		}
-		return builder;
-	}
+    @Override
+    public SearchIndexer indexer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder implements SearchSessionBuilder {
-		private final StandalonePojoSearchSessionMappingContext mappingContext;
-		private final StandalonePojoSearchSessionTypeContextProvider typeContextProvider;
-		private final ConfiguredIndexingPlanSynchronizationStrategyHolder synchronizationStrategyHolder;
-		private IndexingPlanSynchronizationStrategy synchronizationStrategy;
+    @Override
+    public PojoSelectionLoadingContext defaultLoadingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private String tenantId;
-		private Consumer<SelectionLoadingOptionsStep> loadingOptionsContributor;
+    @Override
+    public ConfiguredSearchIndexingPlanFilter configuredIndexingPlanFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(StandalonePojoSearchSessionMappingContext mappingContext,
-				ConfiguredIndexingPlanSynchronizationStrategyHolder synchronizationStrategyHolder,
-				StandalonePojoSearchSessionTypeContextProvider typeContextProvider) {
-			this.synchronizationStrategyHolder = synchronizationStrategyHolder;
-			this.mappingContext = mappingContext;
-			this.typeContextProvider = typeContextProvider;
-		}
+    @Override
+    public StandalonePojoSearchSessionMappingContext mappingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		@SuppressWarnings("removal")
-		public Builder tenantId(String tenantId) {
-			this.tenantId = tenantId;
-			return this;
-		}
+    private <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(SearchScopeImpl<SR, T> scope) {
+        return scope.search(this, loadingContextBuilder());
+    }
 
-		@Override
-		public SearchSessionBuilder tenantId(Object tenantId) {
-			this.tenantId = mappingContext.tenancyConfiguration().convert( tenantId );
-			return this;
-		}
+    private StandalonePojoSelectionLoadingContextBuilder loadingContextBuilder() {
+        StandalonePojoLoadingContext.Builder builder = mappingContext.loadingContextBuilder();
+        if (loadingOptionsContributor != null) {
+            loadingOptionsContributor.accept(builder);
+        }
+        return builder;
+    }
 
-		@Override
-		public SearchSessionBuilder indexingPlanSynchronizationStrategy(
-				IndexingPlanSynchronizationStrategy synchronizationStrategy) {
-			this.synchronizationStrategy = synchronizationStrategy;
-			return this;
-		}
+    public static class Builder implements SearchSessionBuilder {
 
-		@Override
-		public SearchSessionBuilder loading(Consumer<SelectionLoadingOptionsStep> loadingOptionsContributor) {
-			this.loadingOptionsContributor = loadingOptionsContributor;
-			return this;
-		}
+        private final StandalonePojoSearchSessionMappingContext mappingContext;
 
-		@Override
-		public StandalonePojoSearchSession build() {
-			return new StandalonePojoSearchSession( this );
-		}
-	}
+        private final StandalonePojoSearchSessionTypeContextProvider typeContextProvider;
+
+        private final ConfiguredIndexingPlanSynchronizationStrategyHolder synchronizationStrategyHolder;
+
+        private IndexingPlanSynchronizationStrategy synchronizationStrategy;
+
+        private String tenantId;
+
+        private Consumer<SelectionLoadingOptionsStep> loadingOptionsContributor;
+
+        public Builder(StandalonePojoSearchSessionMappingContext mappingContext, ConfiguredIndexingPlanSynchronizationStrategyHolder synchronizationStrategyHolder, StandalonePojoSearchSessionTypeContextProvider typeContextProvider) {
+            this.synchronizationStrategyHolder = synchronizationStrategyHolder;
+            this.mappingContext = mappingContext;
+            this.typeContextProvider = typeContextProvider;
+        }
+
+        @Override
+        @SuppressWarnings("removal")
+        public Builder tenantId(String tenantId) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchSessionBuilder tenantId(Object tenantId) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchSessionBuilder indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchSessionBuilder loading(Consumer<SelectionLoadingOptionsStep> loadingOptionsContributor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public StandalonePojoSearchSession build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

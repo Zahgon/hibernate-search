@@ -12,43 +12,22 @@ import org.hibernate.search.backend.elasticsearch.types.impl.ElasticsearchIndexV
 import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.util.common.pattern.spi.SimpleGlobPattern;
 
-class ElasticsearchIndexValueFieldTemplateBuilder
-		extends AbstractElasticsearchIndexFieldTemplateBuilder<
-				ElasticsearchIndexValueFieldTemplateBuilder,
-				ElasticsearchIndexValueFieldTemplate> {
+class ElasticsearchIndexValueFieldTemplateBuilder extends AbstractElasticsearchIndexFieldTemplateBuilder<ElasticsearchIndexValueFieldTemplateBuilder, ElasticsearchIndexValueFieldTemplate> {
 
-	private final ElasticsearchIndexValueFieldType<?> type;
+    private final ElasticsearchIndexValueFieldType<?> type;
 
-	ElasticsearchIndexValueFieldTemplateBuilder(AbstractElasticsearchIndexCompositeNodeBuilder parent,
-			String templateName, TreeNodeInclusion inclusion, ElasticsearchIndexValueFieldType<?> type, String prefix) {
-		super( parent, templateName, inclusion, prefix );
-		this.type = type;
-	}
+    ElasticsearchIndexValueFieldTemplateBuilder(AbstractElasticsearchIndexCompositeNodeBuilder parent, String templateName, TreeNodeInclusion inclusion, ElasticsearchIndexValueFieldType<?> type, String prefix) {
+        super(parent, templateName, inclusion, prefix);
+        this.type = type;
+    }
 
-	@Override
-	protected ElasticsearchIndexValueFieldTemplateBuilder thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchIndexValueFieldTemplateBuilder thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected void doContribute(ElasticsearchIndexNodeCollector collector,
-			ElasticsearchIndexCompositeNode parentNode, TreeNodeInclusion inclusion,
-			SimpleGlobPattern absolutePathGlob, boolean multiValued) {
-		ElasticsearchIndexValueFieldTemplate fieldTemplate = new ElasticsearchIndexValueFieldTemplate(
-				parentNode, absolutePathGlob, inclusion, multiValued, type
-		);
-
-		collector.collect( fieldTemplate );
-
-		if ( TreeNodeInclusion.INCLUDED.equals( fieldTemplate.inclusion() ) ) {
-			DynamicTemplate dynamicTemplate = new DynamicTemplate();
-			dynamicTemplate.setPathMatch( absolutePathGlob.toPatternString() );
-			dynamicTemplate.setMapping( type.mapping() );
-			NamedDynamicTemplate namedDynamicTemplate = new NamedDynamicTemplate( absolutePath, dynamicTemplate );
-
-			collector.collect( namedDynamicTemplate );
-			type.additionalIndexSettings().ifPresent( c -> c.accept( collector.propertyMappingIndexSettingsContributor() ) );
-		}
-	}
-
+    @Override
+    protected void doContribute(ElasticsearchIndexNodeCollector collector, ElasticsearchIndexCompositeNode parentNode, TreeNodeInclusion inclusion, SimpleGlobPattern absolutePathGlob, boolean multiValued) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

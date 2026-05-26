@@ -16,90 +16,82 @@ import org.hibernate.search.util.common.annotation.Incubating;
  * @param <S> The "self" type (the actual exposed type of this step).
  * @param <N> The type of the next step.
  */
-public interface PrefixPredicateFieldMoreStep<
-		SR,
-		S extends PrefixPredicateFieldMoreStep<SR, ?, N>,
-		N extends PrefixPredicateOptionsStep<?>>
-		extends PrefixPredicateMatchingStep<N>, MultiFieldPredicateFieldBoostStep<S> {
+public interface PrefixPredicateFieldMoreStep<SR, S extends PrefixPredicateFieldMoreStep<SR, ?, N>, N extends PrefixPredicateOptionsStep<?>> extends PrefixPredicateMatchingStep<N>, MultiFieldPredicateFieldBoostStep<S> {
 
-	/**
-	 * Target the given field in the prefix predicate,
-	 * as an alternative to the already-targeted fields.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * See {@link PrefixPredicateFieldStep#field(String)} for more information on targeted fields.
-	 *
-	 * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the index field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see PrefixPredicateFieldStep#field(String)
-	 */
-	default S field(String fieldPath) {
-		return fields( fieldPath );
-	}
+    /**
+     * Target the given field in the prefix predicate,
+     * as an alternative to the already-targeted fields.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * See {@link PrefixPredicateFieldStep#field(String)} for more information on targeted fields.
+     *
+     * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the index field
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see PrefixPredicateFieldStep#field(String)
+     */
+    default S field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Target the given fields in the prefix predicate,
-	 * as an alternative to the already-targeted fields.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * See {@link PrefixPredicateFieldStep#fields(String...)} for more information on targeted fields.
-	 *
-	 * @param fieldPaths The <a href="SearchPredicateFactory.html#field-paths">paths</a> to the index fields
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see PrefixPredicateFieldStep#fields(String...)
-	 */
-	S fields(String... fieldPaths);
+    /**
+     * Target the given fields in the prefix predicate,
+     * as an alternative to the already-targeted fields.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * See {@link PrefixPredicateFieldStep#fields(String...)} for more information on targeted fields.
+     *
+     * @param fieldPaths The <a href="SearchPredicateFactory.html#field-paths">paths</a> to the index fields
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see PrefixPredicateFieldStep#fields(String...)
+     */
+    S fields(String... fieldPaths);
 
-	/**
-	 * Target the given field in the prefix predicate.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * Multiple fields may be targeted by the same predicate:
-	 * the predicate will match if <em>any</em> targeted field matches.
-	 * <p>
-	 * When targeting multiple fields, those fields must have compatible types.
-	 * Please refer to the reference documentation for more information.
-	 *
-	 * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the index field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 */
-	@Incubating
-	default S field(PrefixPredicateFieldReference<SR> fieldReference) {
-		return fields( fieldReference.absolutePath() );
-	}
+    /**
+     * Target the given field in the prefix predicate.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * Multiple fields may be targeted by the same predicate:
+     * the predicate will match if <em>any</em> targeted field matches.
+     * <p>
+     * When targeting multiple fields, those fields must have compatible types.
+     * Please refer to the reference documentation for more information.
+     *
+     * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the index field
+     * to apply the predicate on.
+     * @return The next step.
+     */
+    @Incubating
+    default S field(PrefixPredicateFieldReference<SR> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Target the given fields in the prefix predicate.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * Equivalent to {@link #field(String)} followed by multiple calls to
-	 * {@link PrefixPredicateFieldMoreStep#field(String)},
-	 * the only difference being that calls to {@link PrefixPredicateFieldMoreStep#boost(float)}
-	 * and other field-specific settings on the returned step will only need to be done once
-	 * and will apply to all the fields passed to this method.
-	 *
-	 * @param fields The field references representing <a href="SearchPredicateFactory.html#field-paths">paths</a> to the index fields
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see #field(String)
-	 */
-	@Incubating
-	@SuppressWarnings("unchecked")
-	default S fields(PrefixPredicateFieldReference<SR>... fields) {
-		String[] paths = new String[fields.length];
-		for ( int i = 0; i < fields.length; i++ ) {
-			paths[i] = fields[i].absolutePath();
-		}
-		return fields( paths );
-	}
+    /**
+     * Target the given fields in the prefix predicate.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * Equivalent to {@link #field(String)} followed by multiple calls to
+     * {@link PrefixPredicateFieldMoreStep#field(String)},
+     * the only difference being that calls to {@link PrefixPredicateFieldMoreStep#boost(float)}
+     * and other field-specific settings on the returned step will only need to be done once
+     * and will apply to all the fields passed to this method.
+     *
+     * @param fields The field references representing <a href="SearchPredicateFactory.html#field-paths">paths</a> to the index fields
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see #field(String)
+     */
+    @Incubating
+    @SuppressWarnings("unchecked")
+    default S fields(PrefixPredicateFieldReference<SR>... fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

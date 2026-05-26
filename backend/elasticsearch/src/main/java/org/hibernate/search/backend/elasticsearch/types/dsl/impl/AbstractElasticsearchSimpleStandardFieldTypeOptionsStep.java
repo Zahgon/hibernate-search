@@ -12,85 +12,62 @@ import org.hibernate.search.engine.backend.types.Searchable;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 
-abstract class AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<
-		S extends AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<?, F>,
-		F>
-		extends AbstractElasticsearchStandardIndexFieldTypeOptionsStep<S, F> {
+abstract class AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<S extends AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<?, F>, F> extends AbstractElasticsearchStandardIndexFieldTypeOptionsStep<S, F> {
 
-	private Sortable sortable = Sortable.DEFAULT;
-	protected boolean resolvedSortable;
+    private Sortable sortable = Sortable.DEFAULT;
 
-	private Projectable projectable = Projectable.DEFAULT;
-	protected boolean resolvedProjectable;
+    protected boolean resolvedSortable;
 
-	private Searchable searchable = Searchable.DEFAULT;
-	protected boolean resolvedSearchable;
+    private Projectable projectable = Projectable.DEFAULT;
 
-	private Aggregable aggregable = Aggregable.DEFAULT;
-	protected boolean resolvedAggregable;
+    protected boolean resolvedProjectable;
 
-	private F indexNullAs;
+    private Searchable searchable = Searchable.DEFAULT;
 
-	AbstractElasticsearchSimpleStandardFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext,
-			Class<F> fieldType, String dataType,
-			DefaultStringConverters.Converter<F> defaultConverter) {
-		super( buildContext, fieldType );
-		builder.mapping().setType( dataType );
-		builder.parser( defaultConverter );
-		builder.formatter( defaultConverter );
-	}
+    protected boolean resolvedSearchable;
 
-	@Override
-	public S projectable(Projectable projectable) {
-		this.projectable = projectable;
-		return thisAsS();
-	}
+    private Aggregable aggregable = Aggregable.DEFAULT;
 
-	@Override
-	public S sortable(Sortable sortable) {
-		this.sortable = sortable;
-		return thisAsS();
-	}
+    protected boolean resolvedAggregable;
 
-	@Override
-	public S indexNullAs(F indexNullAs) {
-		this.indexNullAs = indexNullAs;
-		return thisAsS();
-	}
+    private F indexNullAs;
 
-	@Override
-	public S searchable(Searchable searchable) {
-		this.searchable = searchable;
-		return thisAsS();
-	}
+    AbstractElasticsearchSimpleStandardFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext, Class<F> fieldType, String dataType, DefaultStringConverters.Converter<F> defaultConverter) {
+        super(buildContext, fieldType);
+        builder.mapping().setType(dataType);
+        builder.parser(defaultConverter);
+        builder.formatter(defaultConverter);
+    }
 
-	@Override
-	public S aggregable(Aggregable aggregable) {
-		this.aggregable = aggregable;
-		return thisAsS();
-	}
+    @Override
+    public S projectable(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final IndexFieldType<F> toIndexFieldType() {
-		PropertyMapping mapping = builder.mapping();
+    @Override
+    public S sortable(Sortable sortable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		resolvedSortable = resolveDefault( sortable );
-		resolvedProjectable = resolveDefault( projectable );
-		resolvedSearchable = resolveDefault( searchable );
-		resolvedAggregable = resolveDefault( aggregable );
+    @Override
+    public S indexNullAs(F indexNullAs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		mapping.setIndex( resolvedSearchable );
-		mapping.setDocValues( resolvedSortable || resolvedAggregable );
+    @Override
+    public S searchable(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		complete();
+    @Override
+    public S aggregable(Aggregable aggregable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( indexNullAs != null ) {
-			builder.mapping().setNullValue( builder.codec().encode( indexNullAs ) );
-		}
+    @Override
+    public final IndexFieldType<F> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return builder.build();
-	}
-
-	protected abstract void complete();
-
+    protected abstract void complete();
 }

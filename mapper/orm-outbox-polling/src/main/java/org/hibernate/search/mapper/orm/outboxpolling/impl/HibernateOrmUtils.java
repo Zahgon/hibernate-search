@@ -9,10 +9,10 @@ import org.hibernate.boot.spi.MetadataBuildingContext;
 
 public final class HibernateOrmUtils {
 
-	private HibernateOrmUtils() {
-	}
+    private HibernateOrmUtils() {
+    }
 
-	public static boolean isDiscriminatorMultiTenancyEnabled(MetadataBuildingContext buildingContext) {
-		return buildingContext.getMetadataCollector().getFilterDefinition( TenantIdBinder.FILTER_NAME ) != null;
-	}
+    public static boolean isDiscriminatorMultiTenancyEnabled(MetadataBuildingContext buildingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

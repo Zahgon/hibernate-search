@@ -12,14 +12,14 @@ package org.hibernate.search.util.common.logging.impl;
  */
 public final class ClassFormatter {
 
-	private final Class<?> clazz;
+    private final Class<?> clazz;
 
-	public ClassFormatter(Class<?> clazz) {
-		this.clazz = clazz;
-	}
+    public ClassFormatter(Class<?> clazz) {
+        this.clazz = clazz;
+    }
 
-	@Override
-	public String toString() {
-		return clazz != null ? clazz.getName() : "null";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,10 +6,8 @@ package org.hibernate.search.engine.search.predicate.dsl.spi;
 
 import static org.hibernate.search.engine.search.predicate.dsl.impl.AbstractSimpleBooleanPredicateClausesStep.SimpleBooleanPredicateOperator.AND;
 import static org.hibernate.search.engine.search.predicate.dsl.impl.AbstractSimpleBooleanPredicateClausesStep.SimpleBooleanPredicateOperator.OR;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.backend.common.spi.FieldPaths;
 import org.hibernate.search.engine.common.dsl.spi.DslExtensionState;
 import org.hibernate.search.engine.search.common.NamedValues;
@@ -64,203 +62,177 @@ import org.hibernate.search.engine.search.predicate.dsl.impl.WithParametersPredi
 import org.hibernate.search.engine.search.predicate.spi.SearchPredicateIndexScope;
 import org.hibernate.search.util.common.impl.Contracts;
 
-public abstract class AbstractSearchPredicateFactory<
-		SR,
-		S extends ExtendedSearchPredicateFactory<SR, S>,
-		SC extends SearchPredicateIndexScope<?>>
-		implements ExtendedSearchPredicateFactory<SR, S> {
+public abstract class AbstractSearchPredicateFactory<SR, S extends ExtendedSearchPredicateFactory<SR, S>, SC extends SearchPredicateIndexScope<?>> implements ExtendedSearchPredicateFactory<SR, S> {
 
-	protected final Class<SR> scopeRootType;
-	protected final SearchPredicateDslContext<SC> dslContext;
+    protected final Class<SR> scopeRootType;
 
-	public AbstractSearchPredicateFactory(Class<SR> scopeRootType, SearchPredicateDslContext<SC> dslContext) {
-		this.scopeRootType = scopeRootType;
-		this.dslContext = dslContext;
-	}
+    protected final SearchPredicateDslContext<SC> dslContext;
 
-	@Override
-	public MatchAllPredicateOptionsStep<SR, ?> matchAll() {
-		return new MatchAllPredicateOptionsStepImpl<>( dslContext, this );
-	}
+    public AbstractSearchPredicateFactory(Class<SR> scopeRootType, SearchPredicateDslContext<SC> dslContext) {
+        this.scopeRootType = scopeRootType;
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public MatchNonePredicateFinalStep matchNone() {
-		return new MatchNonePredicateFinalStepImpl( dslContext );
-	}
+    @Override
+    public MatchAllPredicateOptionsStep<SR, ?> matchAll() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MatchIdPredicateMatchingStep<?> id() {
-		return new MatchIdPredicateMatchingStepImpl( dslContext );
-	}
+    @Override
+    public MatchNonePredicateFinalStep matchNone() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BooleanPredicateClausesStep<SR, ?> bool() {
-		return new BooleanPredicateClausesStepImpl<>( dslContext, this );
-	}
+    @Override
+    public MatchIdPredicateMatchingStep<?> id() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleBooleanPredicateClausesStep<SR, ?> and() {
-		return new SimpleBooleanPredicateClausesStepImpl<>( AND, dslContext, this );
-	}
+    @Override
+    public BooleanPredicateClausesStep<SR, ?> bool() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleBooleanPredicateOptionsStep<?> and(
-			SearchPredicate firstSearchPredicate,
-			SearchPredicate... otherSearchPredicates) {
-		return new SimpleBooleanPredicateClausesStepImpl<>( AND, dslContext, this, firstSearchPredicate,
-				otherSearchPredicates );
-	}
+    @Override
+    public SimpleBooleanPredicateClausesStep<SR, ?> and() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleBooleanPredicateOptionsStep<?> and(PredicateFinalStep firstSearchPredicate,
-			PredicateFinalStep... otherSearchPredicate) {
-		return new SimpleBooleanPredicateClausesStepImpl<>( AND, dslContext, this, firstSearchPredicate,
-				otherSearchPredicate );
-	}
+    @Override
+    public SimpleBooleanPredicateOptionsStep<?> and(SearchPredicate firstSearchPredicate, SearchPredicate... otherSearchPredicates) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleBooleanPredicateClausesStep<SR, ?> or() {
-		return new SimpleBooleanPredicateClausesStepImpl<>( OR, dslContext, this );
-	}
+    @Override
+    public SimpleBooleanPredicateOptionsStep<?> and(PredicateFinalStep firstSearchPredicate, PredicateFinalStep... otherSearchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleBooleanPredicateOptionsStep<?> or(SearchPredicate firstSearchPredicate,
-			SearchPredicate... otherSearchPredicate) {
-		return new SimpleBooleanPredicateClausesStepImpl<>( OR, dslContext, this, firstSearchPredicate,
-				otherSearchPredicate );
-	}
+    @Override
+    public SimpleBooleanPredicateClausesStep<SR, ?> or() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleBooleanPredicateOptionsStep<?> or(PredicateFinalStep firstSearchPredicate,
-			PredicateFinalStep... otherSearchPredicate) {
-		return new SimpleBooleanPredicateClausesStepImpl<>( OR, dslContext, this, firstSearchPredicate,
-				otherSearchPredicate );
-	}
+    @Override
+    public SimpleBooleanPredicateOptionsStep<?> or(SearchPredicate firstSearchPredicate, SearchPredicate... otherSearchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NotPredicateFinalStep not(SearchPredicate searchPredicate) {
-		return new NotPredicateFinalStepImpl( dslContext, searchPredicate );
-	}
+    @Override
+    public SimpleBooleanPredicateOptionsStep<?> or(PredicateFinalStep firstSearchPredicate, PredicateFinalStep... otherSearchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NotPredicateFinalStep not(PredicateFinalStep searchPredicate) {
-		return new NotPredicateFinalStepImpl( dslContext, searchPredicate );
-	}
+    @Override
+    public NotPredicateFinalStep not(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("deprecation") // javac warns about this method being deprecated, but we have to implement it
-	public PredicateFinalStep bool(Consumer<? super BooleanPredicateClausesStep<?, ?>> clauseContributor) {
-		BooleanPredicateClausesStep<SR, ?> next = bool();
-		clauseContributor.accept( next );
-		return next;
-	}
+    @Override
+    public NotPredicateFinalStep not(PredicateFinalStep searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MatchPredicateFieldStep<SR, ?> match() {
-		return new MatchPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    // javac warns about this method being deprecated, but we have to implement it
+    @SuppressWarnings("deprecation")
+    public PredicateFinalStep bool(Consumer<? super BooleanPredicateClausesStep<?, ?>> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public RangePredicateFieldStep<SR, ?> range() {
-		return new RangePredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public MatchPredicateFieldStep<SR, ?> match() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PhrasePredicateFieldStep<SR, ?> phrase() {
-		return new PhrasePredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public RangePredicateFieldStep<SR, ?> range() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WildcardPredicateFieldStep<SR, ?> wildcard() {
-		return new WildcardPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public PhrasePredicateFieldStep<SR, ?> phrase() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PrefixPredicateFieldStep<SR, ?> prefix() {
-		return new PrefixPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public WildcardPredicateFieldStep<SR, ?> wildcard() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public RegexpPredicateFieldStep<SR, ?> regexp() {
-		return new RegexpPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public PrefixPredicateFieldStep<SR, ?> prefix() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TermsPredicateFieldStep<SR, ?> terms() {
-		return new TermsPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public RegexpPredicateFieldStep<SR, ?> regexp() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@Deprecated(since = "6.2")
-	public org.hibernate.search.engine.search.predicate.dsl.NestedPredicateFieldStep<SR, ?> nested() {
-		return new org.hibernate.search.engine.search.predicate.dsl.impl.NestedPredicateFieldStepImpl<>( dslContext, this );
-	}
+    @Override
+    public TermsPredicateFieldStep<SR, ?> terms() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NestedPredicateClausesStep<SR, ?> nested(String objectFieldPath) {
-		return new NestedPredicateClausesStepImpl<>( dslContext, objectFieldPath, this );
-	}
+    @Override
+    @Deprecated(since = "6.2")
+    public org.hibernate.search.engine.search.predicate.dsl.NestedPredicateFieldStep<SR, ?> nested() {
+        return new org.hibernate.search.engine.search.predicate.dsl.impl.NestedPredicateFieldStepImpl<>(dslContext, this);
+    }
 
-	@Override
-	public SimpleQueryStringPredicateFieldStep<SR, ?> simpleQueryString() {
-		return new SimpleQueryStringPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public NestedPredicateClausesStep<SR, ?> nested(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public QueryStringPredicateFieldStep<SR, ?> queryString() {
-		return new QueryStringPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public SimpleQueryStringPredicateFieldStep<SR, ?> simpleQueryString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ExistsPredicateFieldStep<SR, ?> exists() {
-		return new ExistsPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public QueryStringPredicateFieldStep<SR, ?> queryString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialPredicateInitialStep<SR> spatial() {
-		return new SpatialPredicateInitialStepImpl<>( dslContext );
-	}
+    @Override
+    public ExistsPredicateFieldStep<SR, ?> exists() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NamedPredicateOptionsStep named(String path) {
-		Contracts.assertNotNull( path, "path" );
-		String fieldPath;
-		String predicateName;
-		int dotIndex = path.lastIndexOf( FieldPaths.PATH_SEPARATOR );
-		if ( dotIndex >= 0 ) {
-			fieldPath = path.substring( 0, dotIndex );
-			predicateName = path.substring( dotIndex + 1 );
-		}
-		else {
-			fieldPath = null;
-			predicateName = path;
-		}
-		return new NamedPredicateOptionsStepImpl( this, dslContext, fieldPath, predicateName );
-	}
+    @Override
+    public SpatialPredicateInitialStep<SR> spatial() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateFieldStep<SR> knn(int k) {
-		Contracts.assertStrictlyPositive( k, "k" );
-		return new KnnPredicateFieldStepImpl<>( this, dslContext, k );
-	}
+    @Override
+    public NamedPredicateOptionsStep named(String path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PredicateFinalStep withParameters(Function<? super NamedValues, ? extends PredicateFinalStep> predicateCreator) {
-		return new WithParametersPredicateFinalStep( dslContext, predicateCreator );
-	}
+    @Override
+    public KnnPredicateFieldStep<SR> knn(int k) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(SearchPredicateFactoryExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this ) );
-	}
+    @Override
+    public PredicateFinalStep withParameters(Function<? super NamedValues, ? extends PredicateFinalStep> predicateCreator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchPredicateFactoryExtensionIfSupportedStep<SR> extension() {
-		return new SearchPredicateFactoryExtensionStep<>( this );
-	}
+    @Override
+    public <T> T extension(SearchPredicateFactoryExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final String toAbsolutePath(String relativeFieldPath) {
-		return dslContext.scope().toAbsolutePath( relativeFieldPath );
-	}
+    @Override
+    public SearchPredicateFactoryExtensionIfSupportedStep<SR> extension() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final String toAbsolutePath(String relativeFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

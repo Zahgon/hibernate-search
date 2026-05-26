@@ -13,19 +13,18 @@ import org.hibernate.search.backend.elasticsearch.dialect.impl.ElasticsearchDial
  */
 public final class ElasticsearchDialects {
 
-	private ElasticsearchDialects() {
-	}
+    private ElasticsearchDialects() {
+    }
 
-	public static boolean isPreciseEnoughForBootstrap(ElasticsearchVersion version) {
-		return ElasticsearchDialectFactory.isPreciseEnoughForModelDialect( version );
-	}
+    public static boolean isPreciseEnoughForBootstrap(ElasticsearchVersion version) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static boolean isPreciseEnoughForStart(ElasticsearchVersion version) {
-		return ElasticsearchDialectFactory.isPreciseEnoughForProtocolDialect( version );
-	}
+    public static boolean isPreciseEnoughForStart(ElasticsearchVersion version) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static boolean isVersionCheckImpossible(ElasticsearchVersion version) {
-		return ElasticsearchDialectFactory.isVersionCheckImpossible( version );
-	}
-
+    public static boolean isVersionCheckImpossible(ElasticsearchVersion version) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

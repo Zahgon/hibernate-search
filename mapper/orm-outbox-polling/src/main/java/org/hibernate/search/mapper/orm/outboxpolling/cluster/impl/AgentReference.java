@@ -7,20 +7,22 @@ package org.hibernate.search.mapper.orm.outboxpolling.cluster.impl;
 import java.util.UUID;
 
 public class AgentReference {
-	public static AgentReference of(UUID id, String name) {
-		return new AgentReference( id, name );
-	}
 
-	public final UUID id;
-	public final String name;
+    public static AgentReference of(UUID id, String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private AgentReference(UUID id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+    public final UUID id;
 
-	@Override
-	public String toString() {
-		return id + " - " + name;
-	}
+    public final String name;
+
+    private AgentReference(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

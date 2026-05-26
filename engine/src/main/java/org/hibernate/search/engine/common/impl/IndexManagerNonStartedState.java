@@ -15,48 +15,32 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 class IndexManagerNonStartedState {
 
-	private final EventContext eventContext;
-	private final ConfigurationPropertySourceExtractor propertySourceExtractor;
-	private final IndexManagerImplementor indexManager;
+    private final EventContext eventContext;
 
-	// created on pre-start
-	private IndexManagerStartContextImpl startContext;
-	private ContextualFailureCollector indexFailureCollector;
+    private final ConfigurationPropertySourceExtractor propertySourceExtractor;
 
-	IndexManagerNonStartedState(EventContext eventContext,
-			ConfigurationPropertySourceExtractor propertySourceExtractor,
-			IndexManagerImplementor indexManager) {
-		this.eventContext = eventContext;
-		this.propertySourceExtractor = propertySourceExtractor;
-		this.indexManager = indexManager;
-	}
+    private final IndexManagerImplementor indexManager;
 
-	void closeOnFailure() {
-		indexManager.stop();
-	}
+    // created on pre-start
+    private IndexManagerStartContextImpl startContext;
 
-	void preStart(RootFailureCollector rootFailureCollector, BeanResolver beanResolver,
-			ConfigurationPropertySource rootPropertySource, SavedState savedState) {
-		indexFailureCollector = rootFailureCollector.withContext( eventContext );
-		ConfigurationPropertySource indexPropertySource = propertySourceExtractor.extract( beanResolver, rootPropertySource );
-		startContext = new IndexManagerStartContextImpl(
-				indexFailureCollector, beanResolver, indexPropertySource
-		);
-		try {
-			indexManager.preStart( startContext, savedState );
-		}
-		catch (RuntimeException e) {
-			indexFailureCollector.add( e );
-		}
-	}
+    private ContextualFailureCollector indexFailureCollector;
 
-	IndexManagerImplementor start() {
-		try {
-			indexManager.start( startContext );
-		}
-		catch (RuntimeException e) {
-			indexFailureCollector.add( e );
-		}
-		return indexManager; // The index is now started
-	}
+    IndexManagerNonStartedState(EventContext eventContext, ConfigurationPropertySourceExtractor propertySourceExtractor, IndexManagerImplementor indexManager) {
+        this.eventContext = eventContext;
+        this.propertySourceExtractor = propertySourceExtractor;
+        this.indexManager = indexManager;
+    }
+
+    void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    void preStart(RootFailureCollector rootFailureCollector, BeanResolver beanResolver, ConfigurationPropertySource rootPropertySource, SavedState savedState) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    IndexManagerImplementor start() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

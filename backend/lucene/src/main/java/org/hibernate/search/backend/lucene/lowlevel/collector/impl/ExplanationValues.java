@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.lowlevel.collector.impl;
 
 import java.io.IOException;
-
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.IndexSearcher;
@@ -13,23 +12,24 @@ import org.apache.lucene.search.Query;
 
 public final class ExplanationValues implements Values<Explanation> {
 
-	private final IndexSearcher indexSearcher;
-	private final Query luceneQuery;
+    private final IndexSearcher indexSearcher;
 
-	private int currentLeafDocBase;
+    private final Query luceneQuery;
 
-	public ExplanationValues(TopDocsDataCollectorExecutionContext context) {
-		this.indexSearcher = context.getIndexSearcher();
-		this.luceneQuery = context.executedQuery();
-	}
+    private int currentLeafDocBase;
 
-	@Override
-	public void context(LeafReaderContext context) throws IOException {
-		this.currentLeafDocBase = context.docBase;
-	}
+    public ExplanationValues(TopDocsDataCollectorExecutionContext context) {
+        this.indexSearcher = context.getIndexSearcher();
+        this.luceneQuery = context.executedQuery();
+    }
 
-	@Override
-	public Explanation get(int doc) throws IOException {
-		return indexSearcher.explain( luceneQuery, currentLeafDocBase + doc );
-	}
+    @Override
+    public void context(LeafReaderContext context) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Explanation get(int doc) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

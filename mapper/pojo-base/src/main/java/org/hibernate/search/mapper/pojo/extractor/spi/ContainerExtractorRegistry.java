@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.engine.environment.bean.BeanRetrieval;
 import org.hibernate.search.mapper.pojo.extractor.ContainerExtractor;
@@ -34,86 +33,80 @@ import org.hibernate.search.mapper.pojo.extractor.builtin.impl.OptionalValueExtr
 import org.hibernate.search.mapper.pojo.extractor.builtin.impl.ShortArrayElementExtractor;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 
-@SuppressWarnings("rawtypes") // We need to allow raw container types, e.g. MapValueExtractor.class
+// We need to allow raw container types, e.g. MapValueExtractor.class
+@SuppressWarnings("rawtypes")
 public final class ContainerExtractorRegistry {
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public static Builder builder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final Map<String, ContainerExtractorDefinition<? extends ContainerExtractor>> extractorsByName = new HashMap<>();
-	private final List<String> defaultExtractors = new ArrayList<>();
+    private final Map<String, ContainerExtractorDefinition<? extends ContainerExtractor>> extractorsByName = new HashMap<>();
 
-	private ContainerExtractorRegistry(
-			Map<String, ContainerExtractorDefinition<? extends ContainerExtractor>> customExtractorsByName) {
-		extractorsByName.putAll( customExtractorsByName );
+    private final List<String> defaultExtractors = new ArrayList<>();
 
-		// Caution: the order of calls below is meaningful
-		addDefaultExtractor( BuiltinContainerExtractors.MAP_VALUE, MapValueExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.COLLECTION, CollectionElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ITERABLE, IterableElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.OPTIONAL, OptionalValueExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.OPTIONAL_INT, OptionalIntValueExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.OPTIONAL_LONG, OptionalLongValueExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.OPTIONAL_DOUBLE, OptionalDoubleValueExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_CHAR, CharArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_BOOLEAN, BooleanArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_BYTE, ByteArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_SHORT, ShortArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_INT, IntArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_LONG, LongArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_FLOAT, FloatArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_DOUBLE, DoubleArrayElementExtractor.class );
-		addDefaultExtractor( BuiltinContainerExtractors.ARRAY_OBJECT, ObjectArrayElementExtractor.class );
+    private ContainerExtractorRegistry(Map<String, ContainerExtractorDefinition<? extends ContainerExtractor>> customExtractorsByName) {
+        extractorsByName.putAll(customExtractorsByName);
+        // Caution: the order of calls below is meaningful
+        addDefaultExtractor(BuiltinContainerExtractors.MAP_VALUE, MapValueExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.COLLECTION, CollectionElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ITERABLE, IterableElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.OPTIONAL, OptionalValueExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.OPTIONAL_INT, OptionalIntValueExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.OPTIONAL_LONG, OptionalLongValueExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.OPTIONAL_DOUBLE, OptionalDoubleValueExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_CHAR, CharArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_BOOLEAN, BooleanArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_BYTE, ByteArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_SHORT, ShortArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_INT, IntArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_LONG, LongArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_FLOAT, FloatArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_DOUBLE, DoubleArrayElementExtractor.class);
+        addDefaultExtractor(BuiltinContainerExtractors.ARRAY_OBJECT, ObjectArrayElementExtractor.class);
+        addNonDefaultExtractor(BuiltinContainerExtractors.MAP_KEY, MapKeyExtractor.class);
+    }
 
-		addNonDefaultExtractor( BuiltinContainerExtractors.MAP_KEY, MapKeyExtractor.class );
-	}
+    public List<String> defaults() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public List<String> defaults() {
-		return Collections.unmodifiableList( defaultExtractors );
-	}
+    public ContainerExtractorDefinition<?> forName(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ContainerExtractorDefinition<?> forName(String name) {
-		ContainerExtractorDefinition<?> result = extractorsByName.get( name );
-		if ( result == null ) {
-			throw MappingLog.INSTANCE.cannotResolveContainerExtractorName( name, BuiltinContainerExtractors.class );
-		}
-		return result;
-	}
+    private <C extends ContainerExtractor> void addDefaultExtractor(String name, Class<C> extractorClass) {
+        addNonDefaultExtractor(name, extractorClass);
+        defaultExtractors.add(name);
+    }
 
-	private <C extends ContainerExtractor> void addDefaultExtractor(String name, Class<C> extractorClass) {
-		addNonDefaultExtractor( name, extractorClass );
-		defaultExtractors.add( name );
-	}
+    private <C extends ContainerExtractor> void addNonDefaultExtractor(String name, Class<C> extractorClass) {
+        extractorsByName.put(name, new ContainerExtractorDefinition<>(extractorClass, BeanReference.of(extractorClass, BeanRetrieval.CONSTRUCTOR)));
+    }
 
-	private <C extends ContainerExtractor> void addNonDefaultExtractor(String name, Class<C> extractorClass) {
-		extractorsByName.put( name, new ContainerExtractorDefinition<>( extractorClass,
-				BeanReference.of( extractorClass, BeanRetrieval.CONSTRUCTOR ) ) );
-	}
+    public static final class Builder implements ContainerExtractorConfigurationContext {
 
-	public static final class Builder implements ContainerExtractorConfigurationContext {
-		private final Map<String, ContainerExtractorDefinition<?>> extractorsByName = new HashMap<>();
+        private final Map<String, ContainerExtractorDefinition<?>> extractorsByName = new HashMap<>();
 
-		private Builder() {
-		}
+        private Builder() {
+        }
 
-		@Override
-		public void define(String extractorName, Class<? extends ContainerExtractor> extractorClass) {
-			doDefine( extractorName, extractorClass );
-		}
+        @Override
+        public void define(String extractorName, Class<? extends ContainerExtractor> extractorClass) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private <C extends ContainerExtractor> void doDefine(String extractorName, Class<C> extractorClass) {
-			define( extractorName, extractorClass, BeanReference.of( extractorClass, BeanRetrieval.CONSTRUCTOR ) );
-		}
+        private <C extends ContainerExtractor> void doDefine(String extractorName, Class<C> extractorClass) {
+            define(extractorName, extractorClass, BeanReference.of(extractorClass, BeanRetrieval.CONSTRUCTOR));
+        }
 
-		@Override
-		public <C extends ContainerExtractor> void define(String extractorName, Class<C> extractorClass,
-				BeanReference<? extends C> reference) {
-			extractorsByName.put( extractorName, new ContainerExtractorDefinition<>( extractorClass, reference ) );
-		}
+        @Override
+        public <C extends ContainerExtractor> void define(String extractorName, Class<C> extractorClass, BeanReference<? extends C> reference) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public ContainerExtractorRegistry build() {
-			return new ContainerExtractorRegistry( extractorsByName );
-		}
-	}
+        public ContainerExtractorRegistry build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

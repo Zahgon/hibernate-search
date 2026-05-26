@@ -11,77 +11,62 @@ import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.model.spi.PojoMethodParameterModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 public final class PojoModelsMethodParameterModel<T> implements PojoMethodParameterModel<T> {
 
-	private final PojoModelsConstructorModel<?> constructorModel;
-	private final int index;
-	private final Parameter parameter;
-	private final AnnotatedType annotatedType;
+    private final PojoModelsConstructorModel<?> constructorModel;
 
-	private Annotation[] annotations;
-	private PojoTypeModel<T> typeModelCache;
+    private final int index;
 
-	public PojoModelsMethodParameterModel(PojoModelsConstructorModel<?> constructorModel, int index,
-			Parameter parameter, AnnotatedType annotatedType,
-			// If non-null, we're working around https://bugs.openjdk.org/browse/JDK-8303112;
-			// normally we wouldn't need eager initialization here.
-			Annotation[] annotationsForJDK8303112) {
-		this.constructorModel = constructorModel;
-		this.index = index;
-		this.parameter = parameter;
-		this.annotatedType = annotatedType;
-		this.annotations = annotationsForJDK8303112;
-	}
+    private final Parameter parameter;
 
-	@Override
-	public String toString() {
-		return "parameter #" + index + "(" + name().orElse( "<unknown name>" ) + ")";
-	}
+    private final AnnotatedType annotatedType;
 
-	@Override
-	public int index() {
-		return index;
-	}
+    private Annotation[] annotations;
 
-	@Override
-	public Optional<String> name() {
-		return parameter.isNamePresent() ? Optional.of( parameter.getName() ) : Optional.empty();
-	}
+    private PojoTypeModel<T> typeModelCache;
 
-	@Override
-	public Stream<Annotation> annotations() {
-		if ( annotations == null ) {
-			annotations = parameter.getAnnotations();
-		}
-		return Arrays.stream( annotations );
-	}
+    public PojoModelsMethodParameterModel(PojoModelsConstructorModel<?> constructorModel, int index, Parameter parameter, AnnotatedType annotatedType, // If non-null, we're working around https://bugs.openjdk.org/browse/JDK-8303112;
+    // normally we wouldn't need eager initialization here.
+    Annotation[] annotationsForJDK8303112) {
+        this.constructorModel = constructorModel;
+        this.index = index;
+        this.parameter = parameter;
+        this.annotatedType = annotatedType;
+        this.annotations = annotationsForJDK8303112;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public PojoTypeModel<T> typeModel() {
-		if ( typeModelCache == null ) {
-			try {
-				typeModelCache = (PojoTypeModel<T>) constructorModel.declaringTypeModel.rawTypeDeclaringContext
-						.memberTypeReference( annotatedType.getType() );
-			}
-			catch (RuntimeException e) {
-				throw MappingLog.INSTANCE.errorRetrievingConstructorParameterTypeModel( index, constructorModel, e );
-			}
-		}
-		return typeModelCache;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isEnclosingInstance() {
-		// HSEARCH-4853: we can't simply use `Parameter#isImplicit()` because, starting with JDK 21-ea+21,
-		// this returns `true` for parameters of canonical constructors of record types.
-		return index == 0
-				&& constructorModel.declaringTypeModel.javaClass().getEnclosingClass() != null
-				&& !Modifier.isStatic( constructorModel.declaringTypeModel.javaClass().getModifiers() );
-	}
+    @Override
+    public int index() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<String> name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Stream<Annotation> annotations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PojoTypeModel<T> typeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean isEnclosingInstance() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

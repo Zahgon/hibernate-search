@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.projection.dsl.impl;
 
 import java.util.List;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.HighlightProjectionFinalStep;
@@ -16,56 +15,53 @@ import org.hibernate.search.engine.search.projection.dsl.spi.HighlightProjection
 import org.hibernate.search.engine.search.projection.dsl.spi.SearchProjectionDslContext;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public class HighlightProjectionOptionsStepImpl
-		implements HighlightProjectionOptionsStep,
-		HighlightProjectionFinalStep {
+public class HighlightProjectionOptionsStepImpl implements HighlightProjectionOptionsStep, HighlightProjectionFinalStep {
 
-	private final HighlightProjectionBuilder highlight;
+    private final HighlightProjectionBuilder highlight;
 
-	public HighlightProjectionOptionsStepImpl(SearchProjectionDslContext<?> dslContext, String fieldPath) {
-		this.highlight = dslContext.scope().fieldQueryElement( fieldPath, ProjectionTypeKeys.HIGHLIGHT );
-	}
+    public HighlightProjectionOptionsStepImpl(SearchProjectionDslContext<?> dslContext, String fieldPath) {
+        this.highlight = dslContext.scope().fieldQueryElement(fieldPath, ProjectionTypeKeys.HIGHLIGHT);
+    }
 
-	@Override
-	public HighlightProjectionOptionsStep highlighter(String highlighterName) {
-		highlight.highlighter( highlighterName );
-		return this;
-	}
+    @Override
+    public HighlightProjectionOptionsStep highlighter(String highlighterName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Deprecated(since = "8.0")
-	@Override
-	public SingleHighlightProjectionFinalStep single() {
-		return new SingleHighlightProjectionFinalStepImpl();
-	}
+    @Deprecated(since = "8.0")
+    @Override
+    public SingleHighlightProjectionFinalStep single() {
+        return new SingleHighlightProjectionFinalStepImpl();
+    }
 
-	@Override
-	public <R> ProjectionFinalStep<R> collector(
-			ProjectionCollector.Provider<String, R> collector) {
-		return new CollectorHighlightProjectionFinalStepImpl<>( collector );
-	}
+    @Override
+    public <R> ProjectionFinalStep<R> collector(ProjectionCollector.Provider<String, R> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjection<List<String>> toProjection() {
-		return highlight.build( ProjectionCollector.list() );
-	}
+    @Override
+    public SearchProjection<List<String>> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private class SingleHighlightProjectionFinalStepImpl extends CollectorHighlightProjectionFinalStepImpl<String>
-			implements SingleHighlightProjectionFinalStep {
-		public SingleHighlightProjectionFinalStepImpl() {
-			super( ProjectionCollector.nullable() );
-		}
-	}
+    private class SingleHighlightProjectionFinalStepImpl extends CollectorHighlightProjectionFinalStepImpl<String> implements SingleHighlightProjectionFinalStep {
 
-	private class CollectorHighlightProjectionFinalStepImpl<V> implements ProjectionFinalStep<V> {
-		private final ProjectionCollector.Provider<String, V> collectorProvider;
+        public SingleHighlightProjectionFinalStepImpl() {
+            super(ProjectionCollector.nullable());
+        }
+    }
 
-		private CollectorHighlightProjectionFinalStepImpl(ProjectionCollector.Provider<String, V> collectorProvider) {
-			this.collectorProvider = collectorProvider;
-		}
+    private class CollectorHighlightProjectionFinalStepImpl<V> implements ProjectionFinalStep<V> {
 
-		@Override
-		public SearchProjection<V> toProjection() {
-			return highlight.build( collectorProvider );
-		}
-	}
+        private final ProjectionCollector.Provider<String, V> collectorProvider;
+
+        private CollectorHighlightProjectionFinalStepImpl(ProjectionCollector.Provider<String, V> collectorProvider) {
+            this.collectorProvider = collectorProvider;
+        }
+
+        @Override
+        public SearchProjection<V> toProjection() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

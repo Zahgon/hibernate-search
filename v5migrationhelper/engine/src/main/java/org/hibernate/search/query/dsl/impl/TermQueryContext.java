@@ -2,58 +2,53 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import java.lang.invoke.MethodHandles;
-
 import org.hibernate.search.util.logging.impl.LoggerFactory;
 import org.hibernate.search.util.logging.impl.MigrationHelperLog;
-
 import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.util.automaton.LevenshteinAutomata;
 
 /**
-* @author Emmanuel Bernard
-*/
+ * @author Emmanuel Bernard
+ */
 class TermQueryContext {
-	private static final MigrationHelperLog log = LoggerFactory.make( MethodHandles.lookup() );
 
-	private final Approximation approximation;
+    private static final MigrationHelperLog log = LoggerFactory.make(MethodHandles.lookup());
 
-	private int maxEditDistance = FuzzyQuery.defaultMaxEdits;
-	private int prefixLength = 0;
+    private final Approximation approximation;
 
-	public TermQueryContext(Approximation approximation) {
-		this.approximation = approximation;
-	}
+    private int maxEditDistance = FuzzyQuery.defaultMaxEdits;
 
-	public void setPrefixLength(int prefixLength) {
-		this.prefixLength = prefixLength;
-	}
+    private int prefixLength = 0;
 
-	public Approximation getApproximation() {
-		return approximation;
-	}
+    public TermQueryContext(Approximation approximation) {
+        this.approximation = approximation;
+    }
 
-	public int getMaxEditDistance() {
-		return maxEditDistance;
-	}
+    public void setPrefixLength(int prefixLength) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setMaxEditDistance(int maxEditDistance) {
-		if ( maxEditDistance < 1 || maxEditDistance > LevenshteinAutomata.MAXIMUM_SUPPORTED_DISTANCE ) {
-			throw log.incorrectEditDistance();
-		}
-		this.maxEditDistance = maxEditDistance;
-	}
+    public Approximation getApproximation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public int getPrefixLength() {
-		return prefixLength;
-	}
+    public int getMaxEditDistance() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public enum Approximation {
-		EXACT,
-		WILDCARD,
-		FUZZY
-	}
+    public void setMaxEditDistance(int maxEditDistance) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public int getPrefixLength() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public enum Approximation {
+
+        EXACT, WILDCARD, FUZZY
+    }
 }

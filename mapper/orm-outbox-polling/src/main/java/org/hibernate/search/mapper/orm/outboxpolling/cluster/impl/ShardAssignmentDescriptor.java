@@ -10,43 +10,32 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ShardAssignmentDescriptor {
-	public static Optional<ShardAssignmentDescriptor> fromClusterMemberList(List<UUID> clusterMembersInShardOrder,
-			UUID selfId) {
-		int totalShardCount = clusterMembersInShardOrder.size();
-		int assignedShard = clusterMembersInShardOrder.indexOf( selfId );
-		if ( assignedShard < 0 ) {
-			return Optional.empty();
-		}
-		return Optional.of( new ShardAssignmentDescriptor( totalShardCount, assignedShard ) );
-	}
 
-	public final int totalShardCount;
-	public final int assignedShardIndex;
+    public static Optional<ShardAssignmentDescriptor> fromClusterMemberList(List<UUID> clusterMembersInShardOrder, UUID selfId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ShardAssignmentDescriptor(int totalShardCount, int assignedShardIndex) {
-		this.totalShardCount = totalShardCount;
-		this.assignedShardIndex = assignedShardIndex;
-	}
+    public final int totalShardCount;
 
-	@Override
-	public String toString() {
-		return "shard " + assignedShardIndex + " (total " + totalShardCount + ")";
-	}
+    public final int assignedShardIndex;
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		ShardAssignmentDescriptor that = (ShardAssignmentDescriptor) o;
-		return totalShardCount == that.totalShardCount && assignedShardIndex == that.assignedShardIndex;
-	}
+    public ShardAssignmentDescriptor(int totalShardCount, int assignedShardIndex) {
+        this.totalShardCount = totalShardCount;
+        this.assignedShardIndex = assignedShardIndex;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( totalShardCount, assignedShardIndex );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

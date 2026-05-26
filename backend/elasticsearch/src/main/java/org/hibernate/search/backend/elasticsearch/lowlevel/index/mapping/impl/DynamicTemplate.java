@@ -5,9 +5,7 @@
 package org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.SerializeExtraProperties;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
@@ -22,51 +20,51 @@ import com.google.gson.annotations.SerializedName;
 @JsonAdapter(DynamicTemplateJsonAdapterFactory.class)
 public class DynamicTemplate {
 
-	@SerializedName("match_mapping_type")
-	private String matchMappingType;
+    @SerializedName("match_mapping_type")
+    private String matchMappingType;
 
-	@SerializedName("path_match")
-	private String pathMatch;
+    @SerializedName("path_match")
+    private String pathMatch;
 
-	private PropertyMapping mapping;
+    private PropertyMapping mapping;
 
-	@SerializeExtraProperties
-	private Map<String, JsonElement> extraAttributes;
+    @SerializeExtraProperties
+    private Map<String, JsonElement> extraAttributes;
 
-	@Override
-	public String toString() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson( this );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String getMatchMappingType() {
-		return matchMappingType;
-	}
+    public String getMatchMappingType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setMatchMappingType(String matchMappingType) {
-		this.matchMappingType = matchMappingType;
-	}
+    public void setMatchMappingType(String matchMappingType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String getPathMatch() {
-		return pathMatch;
-	}
+    public String getPathMatch() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setPathMatch(String pathMatch) {
-		this.pathMatch = pathMatch;
-	}
+    public void setPathMatch(String pathMatch) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PropertyMapping getMapping() {
-		return mapping;
-	}
+    public PropertyMapping getMapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setMapping(PropertyMapping mapping) {
-		this.mapping = mapping;
-	}
+    public void setMapping(PropertyMapping mapping) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, JsonElement> getExtraAttributes() {
-		return extraAttributes;
-	}
+    public Map<String, JsonElement> getExtraAttributes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setExtraAttributes(Map<String, JsonElement> extraAttributes) {
-		this.extraAttributes = extraAttributes;
-	}
+    public void setExtraAttributes(Map<String, JsonElement> extraAttributes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

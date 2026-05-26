@@ -10,14 +10,14 @@ import org.hibernate.search.engine.search.projection.dsl.spi.SearchProjectionDsl
 
 public final class IdProjectionOptionsStepImpl<I> implements IdProjectionOptionsStep<IdProjectionOptionsStepImpl<I>, I> {
 
-	private final SearchProjection<I> idProjection;
+    private final SearchProjection<I> idProjection;
 
-	public IdProjectionOptionsStepImpl(SearchProjectionDslContext<?> dslContext, Class<I> identifierType) {
-		idProjection = dslContext.scope().projectionBuilders().id( identifierType );
-	}
+    public IdProjectionOptionsStepImpl(SearchProjectionDslContext<?> dslContext, Class<I> identifierType) {
+        idProjection = dslContext.scope().projectionBuilders().id(identifierType);
+    }
 
-	@Override
-	public SearchProjection<I> toProjection() {
-		return idProjection;
-	}
+    @Override
+    public SearchProjection<I> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

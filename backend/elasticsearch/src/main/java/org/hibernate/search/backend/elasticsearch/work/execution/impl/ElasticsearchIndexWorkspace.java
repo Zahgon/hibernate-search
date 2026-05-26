@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.work.execution.impl;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.lowlevel.query.impl.Queries;
 import org.hibernate.search.backend.elasticsearch.multitenancy.impl.MultiTenancyStrategy;
@@ -15,87 +14,46 @@ import org.hibernate.search.backend.elasticsearch.work.factory.impl.Elasticsearc
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.backend.work.execution.spi.IndexWorkspace;
 import org.hibernate.search.engine.backend.work.execution.spi.UnsupportedOperationBehavior;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class ElasticsearchIndexWorkspace implements IndexWorkspace {
 
-	private final ElasticsearchWorkFactory workFactory;
-	private final MultiTenancyStrategy multiTenancyStrategy;
-	private final ElasticsearchParallelWorkOrchestrator orchestrator;
-	private final URLEncodedString indexName;
-	private final Set<String> tenantIds;
+    private final ElasticsearchWorkFactory workFactory;
 
-	public ElasticsearchIndexWorkspace(ElasticsearchWorkFactory workFactory,
-			MultiTenancyStrategy multiTenancyStrategy, ElasticsearchParallelWorkOrchestrator orchestrator,
-			WorkExecutionIndexManagerContext indexManagerContext,
-			Set<String> tenantIds) {
-		this.workFactory = workFactory;
-		this.multiTenancyStrategy = multiTenancyStrategy;
-		this.orchestrator = orchestrator;
-		this.indexName = indexManagerContext.getElasticsearchIndexWriteName();
-		this.tenantIds = tenantIds;
-	}
+    private final MultiTenancyStrategy multiTenancyStrategy;
 
-	@Override
-	public CompletableFuture<?> mergeSegments(OperationSubmitter operationSubmitter,
-			UnsupportedOperationBehavior unsupportedOperationBehavior) {
-		if ( !workFactory.isMergeSegmentsSupported()
-				&& UnsupportedOperationBehavior.IGNORE.equals( unsupportedOperationBehavior ) ) {
-			return CompletableFuture.completedFuture( null );
-		}
-		return orchestrator.submit( workFactory.mergeSegments().index( indexName ).build(), operationSubmitter );
-	}
+    private final ElasticsearchParallelWorkOrchestrator orchestrator;
 
-	@Override
-	public CompletableFuture<?> purge(Set<String> routingKeys, OperationSubmitter operationSubmitter,
-			UnsupportedOperationBehavior unsupportedOperationBehavior) {
-		if ( !workFactory.isDeleteByQuerySupported()
-				&& UnsupportedOperationBehavior.IGNORE.equals( unsupportedOperationBehavior ) ) {
-			return CompletableFuture.completedFuture( null );
-		}
+    private final URLEncodedString indexName;
 
-		JsonArray filters = new JsonArray();
-		JsonObject filter = multiTenancyStrategy.filterOrNull( tenantIds );
-		if ( filter != null ) {
-			filters.add( filter );
-		}
-		if ( !routingKeys.isEmpty() ) {
-			filters.add( Queries.anyTerm( "_routing", routingKeys ) );
-		}
+    private final Set<String> tenantIds;
 
-		JsonObject payload = new JsonObject();
-		payload.add(
-				"query",
-				Queries.boolFilter( Queries.matchAll(), filters )
-		);
+    public ElasticsearchIndexWorkspace(ElasticsearchWorkFactory workFactory, MultiTenancyStrategy multiTenancyStrategy, ElasticsearchParallelWorkOrchestrator orchestrator, WorkExecutionIndexManagerContext indexManagerContext, Set<String> tenantIds) {
+        this.workFactory = workFactory;
+        this.multiTenancyStrategy = multiTenancyStrategy;
+        this.orchestrator = orchestrator;
+        this.indexName = indexManagerContext.getElasticsearchIndexWriteName();
+        this.tenantIds = tenantIds;
+    }
 
-		return orchestrator.submit(
-				workFactory.deleteByQuery( indexName, payload )
-						.routingKeys( routingKeys )
-						.build(),
-				operationSubmitter
-		);
-	}
+    @Override
+    public CompletableFuture<?> mergeSegments(OperationSubmitter operationSubmitter, UnsupportedOperationBehavior unsupportedOperationBehavior) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> flush(OperationSubmitter operationSubmitter,
-			UnsupportedOperationBehavior unsupportedOperationBehavior) {
-		if ( !workFactory.isFlushSupported()
-				&& UnsupportedOperationBehavior.IGNORE.equals( unsupportedOperationBehavior ) ) {
-			return CompletableFuture.completedFuture( null );
-		}
-		return orchestrator.submit( workFactory.flush().index( indexName ).build(), operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<?> purge(Set<String> routingKeys, OperationSubmitter operationSubmitter, UnsupportedOperationBehavior unsupportedOperationBehavior) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> refresh(OperationSubmitter operationSubmitter,
-			UnsupportedOperationBehavior unsupportedOperationBehavior) {
-		if ( !workFactory.isRefreshSupported()
-				&& UnsupportedOperationBehavior.IGNORE.equals( unsupportedOperationBehavior ) ) {
-			return CompletableFuture.completedFuture( null );
-		}
-		return orchestrator.submit( workFactory.refresh().index( indexName ).build(), operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<?> flush(OperationSubmitter operationSubmitter, UnsupportedOperationBehavior unsupportedOperationBehavior) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CompletableFuture<?> refresh(OperationSubmitter operationSubmitter, UnsupportedOperationBehavior unsupportedOperationBehavior) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

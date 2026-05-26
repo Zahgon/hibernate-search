@@ -5,7 +5,6 @@
 package org.hibernate.search.processor.writer.impl;
 
 import static org.hibernate.search.processor.HibernateSearchProcessorSettings.Configuration;
-
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.hibernate.search.engine.backend.metamodel.IndexFieldDescriptor;
 import org.hibernate.search.engine.backend.metamodel.IndexObjectFieldDescriptor;
 import org.hibernate.search.engine.backend.metamodel.IndexValueFieldDescriptor;
@@ -28,339 +26,190 @@ import org.hibernate.search.util.common.annotation.impl.SuppressJQAssistant;
 
 @SuppressJQAssistant(reason = "Need to use an impl clss for the value converter to get to the type element")
 public class MetamodelClassWriter {
-	private final TraitReferenceMapping traitReferenceMapping;
-	private final Map<String, ValueFieldReferenceDetails> valueFieldReferenceDetails;
-	private final Configuration configuration;
-	private final MetamodelNamesFormatter metamodelNamesFormatter;
 
-	private final boolean ormMapperPresent;
-	private final String packageName;
-	private final String className;
-	private final String scopeTypeName;
-	private final TreeSet<RegularProperty> regularProperties;
-	private final TreeSet<ObjectField> objectProperties;
-	private final int depth;
+    private final TraitReferenceMapping traitReferenceMapping;
 
-	public MetamodelClassWriter(boolean ormMapperPresent, Configuration configuration,
-			MetamodelNamesFormatter metamodelNamesFormatter,
-			String packageName, String className) {
-		this( ormMapperPresent, configuration, metamodelNamesFormatter, packageName, className,
-				metamodelClassName( metamodelNamesFormatter, packageName, className ),
-				TraitReferenceMapping.instance(), new TreeMap<>(), 1 );
-	}
+    private final Map<String, ValueFieldReferenceDetails> valueFieldReferenceDetails;
 
-	private MetamodelClassWriter(boolean ormMapperPresent, Configuration configuration,
-			MetamodelNamesFormatter metamodelNamesFormatter,
-			String packageName, String className,
-			String scopeTypeName, TraitReferenceMapping traitReferenceMapping,
-			Map<String, ValueFieldReferenceDetails> valueFieldReferenceDetails, int depth) {
-		this.traitReferenceMapping = traitReferenceMapping;
-		this.valueFieldReferenceDetails = valueFieldReferenceDetails;
-		this.configuration = configuration;
-		this.metamodelNamesFormatter = metamodelNamesFormatter;
+    private final Configuration configuration;
 
-		this.ormMapperPresent = ormMapperPresent;
-		this.packageName = packageName;
-		this.className = className;
-		this.scopeTypeName = scopeTypeName;
-		this.regularProperties = new TreeSet<>();
-		this.objectProperties = new TreeSet<>();
-		this.depth = depth;
-	}
+    private final MetamodelNamesFormatter metamodelNamesFormatter;
 
-	public void addProperty(IndexValueFieldDescriptor valueField) {
-		IndexValueFieldTypeDescriptor type = valueField.type();
-		if ( type instanceof SearchIndexValueFieldTypeContext<?, ?, ?> context ) {
-			regularProperties.add( new RegularProperty(
-					valueField.relativeName(),
-					valueField.absolutePath(),
-					typeFromDslConverter( context.mappingDslConverter() ),
-					typeFromProjectionConverter( context.mappingProjectionConverter() ),
-					typeFromDslConverter( context.indexDslConverter() ),
-					typeFromDslConverter( context.rawDslConverter() ),
-					fromTraits( type.traits() )
-			) );
-		}
-	}
+    private final boolean ormMapperPresent;
 
-	private String typeFromDslConverter(DslConverter<?, ?> converter) {
-		return typeFromConverter( converter.delegate(), converter.valueType() );
-	}
+    private final String packageName;
 
-	private String typeFromProjectionConverter(ProjectionConverter<?, ?> converter) {
-		return typeFromConverter( converter.delegate(), converter.valueType() );
-	}
+    private final String className;
 
-	private String typeFromConverter(Object delegate, Class<?> valueType) {
-		if ( delegate instanceof PojoValueBridgeDocumentValueConverter<?, ?> pvbdc
-				&& pvbdc.bridge() instanceof HibernateSearchProcessorEnum.Bridge bridge ) {
-			return bridge.valueType();
-		}
-		return typeToString( valueType );
-	}
+    private final String scopeTypeName;
 
-	public void addProperty(IndexObjectFieldDescriptor objectField) {
-		String name = objectField.relativeName();
-		MetamodelClassWriter writer =
-				new MetamodelClassWriter( ormMapperPresent, configuration, metamodelNamesFormatter, "",
-						metamodelClassName() + name,
-						scopeTypeName,
-						traitReferenceMapping, valueFieldReferenceDetails, depth + 1 );
-		objectProperties.add( new ObjectField( name, objectField.absolutePath(), objectField.type().nested(), writer ) );
+    private final TreeSet<RegularProperty> regularProperties;
 
-		for ( IndexFieldDescriptor child : objectField.staticChildren() ) {
-			if ( child.isValueField() ) {
-				writer.addProperty( child.toValueField() );
-			}
-			else {
-				writer.addProperty( child.toObjectField() );
-			}
-		}
-	}
+    private final TreeSet<ObjectField> objectProperties;
 
-	private String typeToString(Class<?> type) {
-		if ( type.isArray() ) {
-			return type.getComponentType().getName() + "[]";
-		}
-		else {
-			return type.getName();
-		}
-	}
+    private final int depth;
 
-	private ValueFieldReferenceDetails fromTraits(Collection<String> traits) {
-		Set<TraitReferenceDetails> details = new TreeSet<>();
-		for ( String trait : traits ) {
-			details.add( traitReferenceMapping.reference( trait ) );
-		}
-		String key = details.stream().map( TraitReferenceDetails::implementationLabel ).collect( Collectors.joining() );
+    public MetamodelClassWriter(boolean ormMapperPresent, Configuration configuration, MetamodelNamesFormatter metamodelNamesFormatter, String packageName, String className) {
+        this(ormMapperPresent, configuration, metamodelNamesFormatter, packageName, className, metamodelClassName(metamodelNamesFormatter, packageName, className), TraitReferenceMapping.instance(), new TreeMap<>(), 1);
+    }
 
-		return valueFieldReferenceDetails.computeIfAbsent( key, k -> createValueFieldReferenceDetails( details ) );
-	}
+    private MetamodelClassWriter(boolean ormMapperPresent, Configuration configuration, MetamodelNamesFormatter metamodelNamesFormatter, String packageName, String className, String scopeTypeName, TraitReferenceMapping traitReferenceMapping, Map<String, ValueFieldReferenceDetails> valueFieldReferenceDetails, int depth) {
+        this.traitReferenceMapping = traitReferenceMapping;
+        this.valueFieldReferenceDetails = valueFieldReferenceDetails;
+        this.configuration = configuration;
+        this.metamodelNamesFormatter = metamodelNamesFormatter;
+        this.ormMapperPresent = ormMapperPresent;
+        this.packageName = packageName;
+        this.className = className;
+        this.scopeTypeName = scopeTypeName;
+        this.regularProperties = new TreeSet<>();
+        this.objectProperties = new TreeSet<>();
+        this.depth = depth;
+    }
 
-	private ValueFieldReferenceDetails createValueFieldReferenceDetails(Set<TraitReferenceDetails> details) {
-		return new ValueFieldReferenceDetails( TypedFieldReferenceDetails.of( details ) );
-	}
+    public void addProperty(IndexValueFieldDescriptor valueField) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String formatted() {
-		String metamodelClassName = metamodelClassName();
-		return String.format(
-				Locale.ROOT,
-				"""
-						%s
-						%s
-						public final class %s implements
-							%s<%s, %s> {
+    private String typeFromDslConverter(DslConverter<?, ?> converter) {
+        return typeFromConverter(converter.delegate(), converter.valueType());
+    }
 
-							public static final %s %s = new %s();
+    private String typeFromProjectionConverter(ProjectionConverter<?, ?> converter) {
+        return typeFromConverter(converter.delegate(), converter.valueType());
+    }
 
-							%s
-							private %s() {
-								// simple value field references:
-								%s
-								// various object field references:
-								%s
-							}
+    private String typeFromConverter(Object delegate, Class<?> valueType) {
+        if (delegate instanceof PojoValueBridgeDocumentValueConverter<?, ?> pvbdc && pvbdc.bridge() instanceof HibernateSearchProcessorEnum.Bridge bridge) {
+            return bridge.valueType();
+        }
+        return typeToString(valueType);
+    }
 
-							@Override
-							public Class<%s> rootReferenceType() {
-								return %s.class;
-							}
-						%s
+    public void addProperty(IndexObjectFieldDescriptor objectField) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-						%s
+    private String typeToString(Class<?> type) {
+        if (type.isArray()) {
+            return type.getComponentType().getName() + "[]";
+        } else {
+            return type.getName();
+        }
+    }
 
-						%s
-						}
-						""",
-				packageName.isEmpty() ? "" : "package " + packageName + ";\n",
-				configuration.formattedGeneratedAnnotation(),
-				metamodelClassName,
-				scopeInterfaceType(),
-				metamodelClassName,
-				className,
-				metamodelClassName,
-				metamodelNamesFormatter.formatIndexFieldName( metamodelClassName ),
-				metamodelClassName,
-				getFieldReferences( metamodelClassName ),
-				metamodelClassName,
-				regularProperties.stream().map( p -> p.asSetInConstructor( metamodelClassName ) )
-						.collect( Collectors.joining( "\n\t\t" ) ),
-				objectProperties.stream().map( p -> p.asSetInConstructor( metamodelClassName ) )
-						.collect( Collectors.joining( "\n\t\t" ) ),
-				metamodelClassName,
-				metamodelClassName,
-				scopeMethod( metamodelClassName, className ),
-				valueFieldReferenceDetails.values().stream()
-						.map( ValueFieldReferenceDetails::formattedWithTypedField )
-						.collect( Collectors.joining( "\n\n" ) )
-						.replaceAll( "(?m)^", indent() ),
-				objectProperties.stream()
-						.map( f -> f.formatted( scopeTypeName ) )
-						.collect( Collectors.joining( "\n\n" ) )
-						.replaceAll( "(?m)^", indent() )
-		);
-	}
+    private ValueFieldReferenceDetails fromTraits(Collection<String> traits) {
+        Set<TraitReferenceDetails> details = new TreeSet<>();
+        for (String trait : traits) {
+            details.add(traitReferenceMapping.reference(trait));
+        }
+        String key = details.stream().map(TraitReferenceDetails::implementationLabel).collect(Collectors.joining());
+        return valueFieldReferenceDetails.computeIfAbsent(key, k -> createValueFieldReferenceDetails(details));
+    }
 
-	private String getFieldReferences(String metamodelClassName) {
-		if ( regularProperties.isEmpty() && objectProperties.isEmpty() ) {
-			return "";
-		}
-		return Stream.concat(
-				regularProperties.stream().map( p -> p.asProperty( metamodelClassName ) ),
-				objectProperties.stream().map( p -> p.asProperty( metamodelClassName ) )
-		).collect( Collectors.joining( ";\n\tpublic final ", "public final ", ";\n" ) );
-	}
+    private ValueFieldReferenceDetails createValueFieldReferenceDetails(Set<TraitReferenceDetails> details) {
+        return new ValueFieldReferenceDetails(TypedFieldReferenceDetails.of(details));
+    }
 
-	private String scopeInterfaceType() {
-		return ormMapperPresent
-				? "org.hibernate.search.mapper.orm.scope.HibernateOrmRootReferenceScope"
-				: "org.hibernate.search.mapper.pojo.standalone.scope.StandalonePojoRootReferenceScope";
-	}
+    public String formatted() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private String scopeMethod(String metamodelClassName, String entityName) {
-		return String.format( Locale.ROOT, ormMapperPresent
-				? """
-							@Override
-							public org.hibernate.search.mapper.orm.scope.TypedSearchScope<%s, %s> scope(org.hibernate.search.mapper.orm.scope.SearchScopeProvider scopeProvider) {
-								return scopeProvider.typedScope( %s.class, java.util.List.of( %s.class ) );
-							}
-						"""
-				: """
-							@Override
-							public org.hibernate.search.mapper.pojo.standalone.scope.TypedSearchScope<%s, %s> scope(org.hibernate.search.mapper.pojo.standalone.scope.SearchScopeProvider scopeProvider) {
-								return scopeProvider.typedScope( %s.class, java.util.List.of( %s.class ) );
-							}
-						""",
-				metamodelClassName, entityName, metamodelClassName, entityName );
-	}
+    private String getFieldReferences(String metamodelClassName) {
+        if (regularProperties.isEmpty() && objectProperties.isEmpty()) {
+            return "";
+        }
+        return Stream.concat(regularProperties.stream().map(p -> p.asProperty(metamodelClassName)), objectProperties.stream().map(p -> p.asProperty(metamodelClassName))).collect(Collectors.joining(";\n\tpublic final ", "public final ", ";\n"));
+    }
 
-	private String indent() {
-		return "\t".repeat( depth );
-	}
+    private String scopeInterfaceType() {
+        return ormMapperPresent ? "org.hibernate.search.mapper.orm.scope.HibernateOrmRootReferenceScope" : "org.hibernate.search.mapper.pojo.standalone.scope.StandalonePojoRootReferenceScope";
+    }
 
-	public String metamodelClassName() {
-		return metamodelClassName( metamodelNamesFormatter, packageName, className );
-	}
+    private String scopeMethod(String metamodelClassName, String entityName) {
+        return String.format(Locale.ROOT, ormMapperPresent ? """
+            	@Override
+            	public org.hibernate.search.mapper.orm.scope.TypedSearchScope<%s, %s> scope(org.hibernate.search.mapper.orm.scope.SearchScopeProvider scopeProvider) {
+            		return scopeProvider.typedScope( %s.class, java.util.List.of( %s.class ) );
+            	}
+            """ : """
+            	@Override
+            	public org.hibernate.search.mapper.pojo.standalone.scope.TypedSearchScope<%s, %s> scope(org.hibernate.search.mapper.pojo.standalone.scope.SearchScopeProvider scopeProvider) {
+            		return scopeProvider.typedScope( %s.class, java.util.List.of( %s.class ) );
+            	}
+            """, metamodelClassName, entityName, metamodelClassName, entityName);
+    }
 
-	private static String metamodelClassName(MetamodelNamesFormatter metamodelNamesFormatter, String packageName,
-			String className) {
-		String classSimpleName;
-		if ( className.contains( "." ) ) {
-			classSimpleName = className.substring( packageName.length() + 1 ).replace( '.', '_' );
-		}
-		else {
-			classSimpleName = className;
-		}
-		return metamodelNamesFormatter.formatMetamodelClassName( classSimpleName );
-	}
+    private String indent() {
+        return "\t".repeat(depth);
+    }
 
-	public CharSequence fqcn() {
-		return packageName.isEmpty() ? metamodelClassName() : packageName + "." + metamodelClassName();
-	}
+    public String metamodelClassName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private record RegularProperty( String name,
-									String path,
-									String inputType,
-									String outputType,
-									String indexType,
-									String rawType,
-									ValueFieldReferenceDetails valueFieldReference)
-			implements Comparable<RegularProperty> {
+    private static String metamodelClassName(MetamodelNamesFormatter metamodelNamesFormatter, String packageName, String className) {
+        String classSimpleName;
+        if (className.contains(".")) {
+            classSimpleName = className.substring(packageName.length() + 1).replace('.', '_');
+        } else {
+            classSimpleName = className;
+        }
+        return metamodelNamesFormatter.formatMetamodelClassName(classSimpleName);
+    }
 
-		@Override
-		public int compareTo(RegularProperty o) {
-			return name.compareTo( o.name );
-		}
+    public CharSequence fqcn() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public String asProperty(String scopeType) {
-			return valueFieldReference().asType( scopeType, inputType, outputType, indexType, rawType ) + " " + name;
-		}
+    private record RegularProperty(String name, String path, String inputType, String outputType, String indexType, String rawType, ValueFieldReferenceDetails valueFieldReference) implements Comparable<RegularProperty> {
 
-		public String asSetInConstructor(String scopeType) {
-			return "this." + name + " = "
-					+ valueFieldReference.constructorCall( path, scopeType, inputType, outputType, indexType, rawType );
-		}
-	}
+        @Override
+        public int compareTo(RegularProperty o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private record ObjectField(String name, String path, boolean nested, MetamodelClassWriter writer)
-			implements Comparable<ObjectField> {
-		public String asProperty(String scopeType) {
-			return writer.metamodelClassName() + " " + name;
-		}
+        public String asProperty(String scopeType) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public String asSetInConstructor(String scopeType) {
-			return "this." + name + " = new " + writer.metamodelClassName() + "();";
-		}
+        public String asSetInConstructor(String scopeType) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		public String formatted(String scopeType) {
-			String metamodelClassName = writer.metamodelClassName();
-			return String.format(
-					Locale.ROOT, """
-							public static class %s implements %s<%s> {
+    private record ObjectField(String name, String path, boolean nested, MetamodelClassWriter writer) implements Comparable<ObjectField> {
 
-								%s
-								private %s() {
-									// simple value field references:
-									%s
-									// various object field references:
-									%s
-								}
+        public String asProperty(String scopeType) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-								@Override
-								public String absolutePath() {
-									return "%s";
-								}
+        public String asSetInConstructor(String scopeType) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-								@Override
-								public Class<%s> scopeRootType() {
-									return %s.class;
-								}
+        public String formatted(String scopeType) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-							%s
-							}
-							""",
-					metamodelClassName,
-					objectReferenceClass(),
-					scopeType,
-					getFieldReferences( scopeType ),
-					metamodelClassName,
-					writer.regularProperties.stream().map( p -> p.asSetInConstructor( scopeType ) )
-							.collect( Collectors.joining( "\n\t\t" ) ),
-					writer.objectProperties.stream().map( p -> p.asSetInConstructor( scopeType ) )
-							.collect( Collectors.joining( "\n\t\t" ) ),
-					path,
-					scopeType,
-					scopeType,
-					writer.objectProperties.stream()
-							.map( f -> f.formatted( writer.scopeTypeName ) )
-							.collect( Collectors.joining( "\n\n" ) )
-							.replaceAll( "(?m)^", "\t" )
-			);
-		}
+        private String getFieldReferences(String scopeType) {
+            if (writer.regularProperties.isEmpty() && writer.objectProperties.isEmpty()) {
+                return "";
+            }
+            return Stream.concat(writer.regularProperties.stream().map(p -> p.asProperty(scopeType)), writer.objectProperties.stream().map(p -> p.asProperty(scopeType))).collect(Collectors.joining(";\n\tpublic final ", "public final ", ";\n"));
+        }
 
-		private String getFieldReferences(String scopeType) {
-			if ( writer.regularProperties.isEmpty() && writer.objectProperties.isEmpty() ) {
-				return "";
-			}
-			return Stream.concat(
-					writer.regularProperties.stream().map( p -> p.asProperty( scopeType ) ),
-					writer.objectProperties.stream().map( p -> p.asProperty( scopeType ) )
-			)
-					.collect( Collectors.joining( ";\n\tpublic final ", "public final ", ";\n" ) );
-		}
+        private String objectReferenceClass() {
+            if (nested) {
+                return "org.hibernate.search.engine.search.reference.object.NestedFieldReference";
+            } else {
+                return "org.hibernate.search.engine.search.reference.object.FlattenedFieldReference";
+            }
+        }
 
-		private String objectReferenceClass() {
-			if ( nested ) {
-				return "org.hibernate.search.engine.search.reference.object.NestedFieldReference";
-			}
-			else {
-				return "org.hibernate.search.engine.search.reference.object.FlattenedFieldReference";
-			}
-		}
-
-		@Override
-		public int compareTo(ObjectField o) {
-			return name.compareTo( o.name );
-		}
-	}
+        @Override
+        public int compareTo(ObjectField o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

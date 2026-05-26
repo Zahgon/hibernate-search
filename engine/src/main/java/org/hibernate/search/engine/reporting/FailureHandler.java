@@ -21,42 +21,42 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 public interface FailureHandler {
 
-	/**
-	 * Handle a generic failure.
-	 * <p>
-	 * This method is expected to report the failure somewhere (logs, ...),
-	 * then return as quickly as possible.
-	 * Heavy error processing (sending emails, ...), if any, should be done asynchronously.
-	 * <p>
-	 * Any error or exception thrown by this method will be caught by Hibernate Search and logged.
-	 *
-	 * @param context Contextual information about the failure (throwable, operation, ...)
-	 */
-	void handle(FailureContext context);
+    /**
+     * Handle a generic failure.
+     * <p>
+     * This method is expected to report the failure somewhere (logs, ...),
+     * then return as quickly as possible.
+     * Heavy error processing (sending emails, ...), if any, should be done asynchronously.
+     * <p>
+     * Any error or exception thrown by this method will be caught by Hibernate Search and logged.
+     *
+     * @param context Contextual information about the failure (throwable, operation, ...)
+     */
+    void handle(FailureContext context);
 
-	/**
-	 * Handle the failure of entity indexing.
-	 * <p>
-	 * This method is expected to report the failure somewhere (logs, ...),
-	 * then return as quickly as possible.
-	 * Heavy error processing (sending emails, ...), if any, should be done asynchronously.
-	 * <p>
-	 * Any error or exception thrown by this method will be caught by Hibernate Search and logged.
-	 *
-	 * @param context Contextual information about the failure (throwable, operation, ...)
-	 */
-	void handle(EntityIndexingFailureContext context);
+    /**
+     * Handle the failure of entity indexing.
+     * <p>
+     * This method is expected to report the failure somewhere (logs, ...),
+     * then return as quickly as possible.
+     * Heavy error processing (sending emails, ...), if any, should be done asynchronously.
+     * <p>
+     * Any error or exception thrown by this method will be caught by Hibernate Search and logged.
+     *
+     * @param context Contextual information about the failure (throwable, operation, ...)
+     */
+    void handle(EntityIndexingFailureContext context);
 
-	/**
-	 * When this handler is used for handling mass indexing failures - returns the number of failures during
-	 * one mass indexing beyond which the failure handler will no longer be notified. This threshold is reached
-	 * separately for each indexed type. Otherwise, i.e. not in the context of mass indexing, this value is ignored.
-	 * <p>
-	 * May be overridden by mass indexer parameters
-	 * (see {@code failureFloodingThreshold(long)} in the {@code MassIndexer} interface).
-	 */
-	@Incubating
-	default long failureFloodingThreshold() {
-		return Long.MAX_VALUE;
-	}
+    /**
+     * When this handler is used for handling mass indexing failures - returns the number of failures during
+     * one mass indexing beyond which the failure handler will no longer be notified. This threshold is reached
+     * separately for each indexed type. Otherwise, i.e. not in the context of mass indexing, this value is ignored.
+     * <p>
+     * May be overridden by mass indexer parameters
+     * (see {@code failureFloodingThreshold(long)} in the {@code MassIndexer} interface).
+     */
+    @Incubating
+    default long failureFloodingThreshold() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

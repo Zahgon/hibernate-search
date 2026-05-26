@@ -10,36 +10,34 @@ import org.hibernate.search.mapper.pojo.extractor.ValueProcessor;
 
 final class SingleContainerExtractorHolder<C, V> implements ContainerExtractorHolder<C, V> {
 
-	private final BeanHolder<? extends ContainerExtractor<? super C, V>> extractorBeanHolder;
+    private final BeanHolder<? extends ContainerExtractor<? super C, V>> extractorBeanHolder;
 
-	SingleContainerExtractorHolder(BeanHolder<? extends ContainerExtractor<? super C, V>> extractorBeanHolder) {
-		this.extractorBeanHolder = extractorBeanHolder;
-	}
+    SingleContainerExtractorHolder(BeanHolder<? extends ContainerExtractor<? super C, V>> extractorBeanHolder) {
+        this.extractorBeanHolder = extractorBeanHolder;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		appendToString( builder );
-		return builder.toString();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		extractorBeanHolder.close();
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T, C2> ValueProcessor<T, C, C2> wrap(ValueProcessor<T, ? super V, C2> perValueProcessor) {
-		return new ContainerExtractingProcessor<>( extractorBeanHolder.get(), perValueProcessor );
-	}
+    @Override
+    public <T, C2> ValueProcessor<T, C, C2> wrap(ValueProcessor<T, ? super V, C2> perValueProcessor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean multiValued() {
-		return extractorBeanHolder.get().multiValued();
-	}
+    @Override
+    public boolean multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendToString(StringBuilder builder) {
-		builder.append( extractorBeanHolder.get() );
-	}
+    @Override
+    public void appendToString(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

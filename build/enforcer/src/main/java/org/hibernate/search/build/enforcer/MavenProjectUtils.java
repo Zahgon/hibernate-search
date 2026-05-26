@@ -8,45 +8,38 @@ import org.apache.maven.project.MavenProject;
 
 public class MavenProjectUtils {
 
-	public static final String HIBERNATE_SEARCH_PARENT_PUBLIC = "hibernate-search-parent-public";
-	public static final String HIBERNATE_SEARCH_PARENT_PUBLIC_LUCENE_NEXT = "hibernate-search-parent-public-lucene-next";
-	public static final String HIBERNATE_SEARCH_PARENT_INTEGRATION_TEST = "hibernate-search-parent-integrationtest";
-	public static final String HIBERNATE_SEARCH_PARENT_INTEGRATION_TEST_LUCENE_NEXT =
-			"hibernate-search-parent-integrationtest-lucene-next";
-	public static final String HIBERNATE_SEARCH_PARENT_RELOCATION = "hibernate-search-parent-relocation";
-	public static final String DEPLOY_SKIP = "deploy.skip";
+    public static final String HIBERNATE_SEARCH_PARENT_PUBLIC = "hibernate-search-parent-public";
 
-	private MavenProjectUtils() {
-	}
+    public static final String HIBERNATE_SEARCH_PARENT_PUBLIC_LUCENE_NEXT = "hibernate-search-parent-public-lucene-next";
 
-	public static boolean isAnyParentPublicParent(MavenProject project) {
-		return !HIBERNATE_SEARCH_PARENT_PUBLIC_LUCENE_NEXT.equals( project.getArtifactId() )
-				&& project.hasParent()
-				&& ( HIBERNATE_SEARCH_PARENT_PUBLIC.equals( project.getParent().getArtifactId() )
-						|| HIBERNATE_SEARCH_PARENT_PUBLIC_LUCENE_NEXT.equals( project.getParent().getArtifactId() )
-						|| isAnyParentPublicParent( project.getParent() ) );
-	}
+    public static final String HIBERNATE_SEARCH_PARENT_INTEGRATION_TEST = "hibernate-search-parent-integrationtest";
 
-	public static boolean isAnyParentRelocationParent(MavenProject project) {
-		return project.hasParent()
-				&& ( HIBERNATE_SEARCH_PARENT_RELOCATION.equals( project.getParent().getArtifactId() )
-						|| isAnyParentRelocationParent( project.getParent() ) );
-	}
+    public static final String HIBERNATE_SEARCH_PARENT_INTEGRATION_TEST_LUCENE_NEXT = "hibernate-search-parent-integrationtest-lucene-next";
 
-	public static boolean isAnyParentIntegrationTestParent(MavenProject project) {
-		return project.hasParent()
-				&& ( HIBERNATE_SEARCH_PARENT_INTEGRATION_TEST.equals( project.getParent().getArtifactId() )
-						|| HIBERNATE_SEARCH_PARENT_INTEGRATION_TEST_LUCENE_NEXT.equals( project.getParent().getArtifactId() )
-						|| isAnyParentIntegrationTestParent( project.getParent() ) );
-	}
+    public static final String HIBERNATE_SEARCH_PARENT_RELOCATION = "hibernate-search-parent-relocation";
 
-	public static boolean isProjectDeploySkipped(MavenProject project) {
-		return Boolean.TRUE.toString()
-				.equals( project.getProperties().getOrDefault( DEPLOY_SKIP, Boolean.FALSE ).toString() );
-	}
+    public static final String DEPLOY_SKIP = "deploy.skip";
 
-	public static boolean isProjectJacocoSkipped(MavenProject project) {
-		return Boolean.TRUE.toString()
-				.equals( project.getProperties().getOrDefault( "jacoco.skip", Boolean.FALSE ).toString() );
-	}
+    private MavenProjectUtils() {
+    }
+
+    public static boolean isAnyParentPublicParent(MavenProject project) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public static boolean isAnyParentRelocationParent(MavenProject project) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public static boolean isAnyParentIntegrationTestParent(MavenProject project) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public static boolean isProjectDeploySkipped(MavenProject project) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public static boolean isProjectJacocoSkipped(MavenProject project) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

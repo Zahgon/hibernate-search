@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.extractor.mapping.programmatic.ContainerExtractorPath;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.AssociationInverseSide;
@@ -16,18 +15,8 @@ import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 
 public class AssociationInverseSideProcessor implements PropertyMappingAnnotationProcessor<AssociationInverseSide> {
 
-	@Override
-	public void process(PropertyMappingStep mappingContext, AssociationInverseSide annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		ContainerExtractorPath extractorPath = context.toContainerExtractorPath( annotation.extraction() );
-
-		Optional<PojoModelPathValueNode> inversePathOptional =
-				context.toPojoModelPathValueNode( annotation.inversePath() );
-		if ( !inversePathOptional.isPresent() ) {
-			throw MappingLog.INSTANCE.missingInversePathInAssociationInverseSideMapping();
-		}
-
-		mappingContext.associationInverseSide( inversePathOptional.get() )
-				.extractors( extractorPath );
-	}
+    @Override
+    public void process(PropertyMappingStep mappingContext, AssociationInverseSide annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -12,39 +12,36 @@ import org.hibernate.search.mapper.pojo.mapping.spi.PojoMappingDelegate;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 import org.hibernate.search.mapper.pojo.standalone.reporting.impl.StandalonePojoMappingHints;
 
-public final class StandalonePojoMapperDelegate
-		implements PojoMapperDelegate<StandalonePojoMappingPartialBuildState> {
+public final class StandalonePojoMapperDelegate implements PojoMapperDelegate<StandalonePojoMappingPartialBuildState> {
 
-	private final StandalonePojoTypeContextContainer.Builder typeContextContainerBuilder;
+    private final StandalonePojoTypeContextContainer.Builder typeContextContainerBuilder;
 
-	public StandalonePojoMapperDelegate() {
-		this.typeContextContainerBuilder = new StandalonePojoTypeContextContainer.Builder();
-	}
+    public StandalonePojoMapperDelegate() {
+        this.typeContextContainerBuilder = new StandalonePojoTypeContextContainer.Builder();
+    }
 
-	@Override
-	public void closeOnFailure() {
-		// Nothing to do
-	}
+    @Override
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <E> PojoIndexedTypeExtendedMappingCollector createIndexedTypeExtendedMappingCollector(
-			PojoRawTypeModel<E> rawTypeModel, String entityName) {
-		return typeContextContainerBuilder.addIndexed( rawTypeModel, entityName );
-	}
+    @Override
+    public <E> PojoIndexedTypeExtendedMappingCollector createIndexedTypeExtendedMappingCollector(PojoRawTypeModel<E> rawTypeModel, String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <E> PojoContainedTypeExtendedMappingCollector createContainedTypeExtendedMappingCollector(
-			PojoRawTypeModel<E> rawTypeModel, String entityName) {
-		return typeContextContainerBuilder.addContained( rawTypeModel, entityName );
-	}
+    @Override
+    public <E> PojoContainedTypeExtendedMappingCollector createContainedTypeExtendedMappingCollector(PojoRawTypeModel<E> rawTypeModel, String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandalonePojoMappingPartialBuildState prepareBuild(PojoMappingDelegate mappingDelegate) {
-		return new StandalonePojoMappingPartialBuildState( mappingDelegate, typeContextContainerBuilder.build() );
-	}
+    @Override
+    public StandalonePojoMappingPartialBuildState prepareBuild(PojoMappingDelegate mappingDelegate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BackendMappingHints hints() {
-		return StandalonePojoMappingHints.INSTANCE;
-	}
+    @Override
+    public BackendMappingHints hints() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -13,25 +13,23 @@ import java.util.Set;
  *
  * @param <S> The "self" type (the actual exposed type of this step).
  */
-public interface SimpleQueryStringPredicateOptionsStep<S extends SimpleQueryStringPredicateOptionsStep<?>>
-		extends CommonQueryStringPredicateOptionsStep<S> {
+public interface SimpleQueryStringPredicateOptionsStep<S extends SimpleQueryStringPredicateOptionsStep<?>> extends CommonQueryStringPredicateOptionsStep<S> {
 
-	/**
-	 * Enable operation in the given flags.
-	 *
-	 * @param flags The operation flags.
-	 * @return {@code this}, for method chaining.
-	 */
-	default S flags(SimpleQueryFlag... flags) {
-		return flags( EnumSet.copyOf( Arrays.asList( flags ) ) );
-	}
+    /**
+     * Enable operation in the given flags.
+     *
+     * @param flags The operation flags.
+     * @return {@code this}, for method chaining.
+     */
+    default S flags(SimpleQueryFlag... flags) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Enable operation in the given flags.
-	 *
-	 * @param flags The operation flags.
-	 * @return {@code this}, for method chaining.
-	 */
-	S flags(Set<SimpleQueryFlag> flags);
-
+    /**
+     * Enable operation in the given flags.
+     *
+     * @param flags The operation flags.
+     * @return {@code this}, for method chaining.
+     */
+    S flags(Set<SimpleQueryFlag> flags);
 }

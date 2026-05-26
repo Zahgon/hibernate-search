@@ -11,7 +11,6 @@ import org.hibernate.search.backend.lucene.search.predicate.impl.AbstractLuceneL
 import org.hibernate.search.backend.lucene.search.predicate.impl.PredicateRequestContext;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.PrefixPredicateBuilder;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.PrefixQuery;
@@ -19,42 +18,42 @@ import org.apache.lucene.search.Query;
 
 public class LuceneTextPrefixPredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneTextPrefixPredicate(Builder<?> builder) {
-		super( builder );
-	}
+    private LuceneTextPrefixPredicate(Builder<?> builder) {
+        super(builder);
+    }
 
-	public static class Factory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<PrefixPredicateBuilder, F> {
-		@Override
-		public PrefixPredicateBuilder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( scope, field );
-		}
-	}
+    public static class Factory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<PrefixPredicateBuilder, F> {
 
-	private static class Builder<F> extends AbstractBuilder<F> implements PrefixPredicateBuilder {
+        @Override
+        public PrefixPredicateBuilder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private final Analyzer analyzerOrNormalizer;
+    private static class Builder<F> extends AbstractBuilder<F> implements PrefixPredicateBuilder {
 
-		private String prefix;
+        private final Analyzer analyzerOrNormalizer;
 
-		private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			this.analyzerOrNormalizer = field.type().searchAnalyzerOrNormalizer();
-		}
+        private String prefix;
 
-		@Override
-		public void prefix(String prefix) {
-			this.prefix = prefix;
-		}
+        private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            this.analyzerOrNormalizer = field.type().searchAnalyzerOrNormalizer();
+        }
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneTextPrefixPredicate( this );
-		}
+        @Override
+        public void prefix(String prefix) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			return new PrefixQuery(
-					new Term( absoluteFieldPath, analyzerOrNormalizer.normalize( absoluteFieldPath, prefix ) ) );
-		}
-	}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -16,31 +16,29 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
  */
 public class PojoModelTypeRootElement<T> extends AbstractPojoModelCompositeElement<T> implements PojoModelType {
 
-	private final BoundPojoModelPathTypeNode<T> modelPath;
+    private final BoundPojoModelPathTypeNode<T> modelPath;
 
-	public PojoModelTypeRootElement(BoundPojoModelPathTypeNode<T> modelPath,
-			PojoBootstrapIntrospector introspector,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
-		super( introspector, typeAdditionalMetadataProvider );
-		this.modelPath = modelPath;
-	}
+    public PojoModelTypeRootElement(BoundPojoModelPathTypeNode<T> modelPath, PojoBootstrapIntrospector introspector, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
+        super(introspector, typeAdditionalMetadataProvider);
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	public String toString() {
-		return modelPath.getTypeModel().toString();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
-		contributePropertyDependencies( dependencyCollector );
-	}
+    public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PojoElementAccessor<T> doCreateAccessor() {
-		return new PojoRootElementAccessor<>();
-	}
+    @Override
+    PojoElementAccessor<T> doCreateAccessor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	BoundPojoModelPathTypeNode<T> getModelPathTypeNode() {
-		return modelPath;
-	}
+    @Override
+    BoundPojoModelPathTypeNode<T> getModelPathTypeNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

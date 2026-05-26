@@ -8,38 +8,30 @@ import java.util.Locale;
 
 public class Sum implements AggregationFunction<Sum> {
 
-	private Long sum = null;
+    private Long sum = null;
 
-	@Override
-	public void apply(long value) {
-		if ( sum == null ) {
-			sum = value;
-		}
-		else {
-			sum += value;
-		}
-	}
+    @Override
+    public void apply(long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void merge(AggregationFunction<Sum> sibling) {
-		Long result = sibling.result();
-		if ( result != null ) {
-			apply( result );
-		}
-	}
+    @Override
+    public void merge(AggregationFunction<Sum> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long result() {
-		return sum;
-	}
+    @Override
+    public Long result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Sum implementation() {
-		return this;
-	}
+    @Override
+    public Sum implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return String.format( Locale.ROOT, "Sum{sum=%d}", sum );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

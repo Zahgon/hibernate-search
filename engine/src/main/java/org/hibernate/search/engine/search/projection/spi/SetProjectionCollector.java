@@ -7,7 +7,6 @@ package org.hibernate.search.engine.search.projection.spi;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -18,26 +17,27 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 final class SetProjectionCollector<E, V> extends ListBasedProjectionCollector<E, V, Set<V>> {
 
-	@SuppressWarnings("rawtypes")
-	static final Provider PROVIDER = new Provider() {
-		private final SetProjectionCollector instance = new SetProjectionCollector();
+    @SuppressWarnings("rawtypes")
+    static final Provider PROVIDER = new Provider() {
 
-		@Override
-		public ProjectionCollector get() {
-			return instance;
-		}
+        private final SetProjectionCollector instance = new SetProjectionCollector();
 
-		@Override
-		public boolean isSingleValued() {
-			return false;
-		}
-	};
+        @Override
+        public ProjectionCollector get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private SetProjectionCollector() {
-	}
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	@Override
-	public Set<V> doFinish(List<V> accumulated) {
-		return new HashSet<>( accumulated );
-	}
+    private SetProjectionCollector() {
+    }
+
+    @Override
+    public Set<V> doFinish(List<V> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

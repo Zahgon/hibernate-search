@@ -22,25 +22,25 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  * @param <V> The extracted value type
  */
 public class BoundContainerExtractorPath<C, V> {
-	public static <V> BoundContainerExtractorPath<V, V> noExtractors(PojoTypeModel<V> sourceType) {
-		return new BoundContainerExtractorPath<>(
-				ContainerExtractorPath.noExtractors(), sourceType
-		);
-	}
 
-	private final ContainerExtractorPath extractorPath;
-	private final PojoTypeModel<V> extractedType;
+    public static <V> BoundContainerExtractorPath<V, V> noExtractors(PojoTypeModel<V> sourceType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	BoundContainerExtractorPath(ContainerExtractorPath extractorPath, PojoTypeModel<V> extractedType) {
-		this.extractorPath = extractorPath;
-		this.extractedType = extractedType;
-	}
+    private final ContainerExtractorPath extractorPath;
 
-	public ContainerExtractorPath getExtractorPath() {
-		return extractorPath;
-	}
+    private final PojoTypeModel<V> extractedType;
 
-	public PojoTypeModel<V> getExtractedType() {
-		return extractedType;
-	}
+    BoundContainerExtractorPath(ContainerExtractorPath extractorPath, PojoTypeModel<V> extractedType) {
+        this.extractorPath = extractorPath;
+        this.extractedType = extractedType;
+    }
+
+    public ContainerExtractorPath getExtractorPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PojoTypeModel<V> getExtractedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

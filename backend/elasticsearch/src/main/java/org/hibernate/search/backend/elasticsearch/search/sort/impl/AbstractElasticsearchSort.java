@@ -5,33 +5,32 @@
 package org.hibernate.search.backend.elasticsearch.search.sort.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 import org.hibernate.search.engine.search.sort.spi.SearchSortBuilder;
 
 public abstract class AbstractElasticsearchSort implements ElasticsearchSearchSort {
 
-	protected final Set<String> indexNames;
+    protected final Set<String> indexNames;
 
-	protected AbstractElasticsearchSort(AbstractBuilder builder) {
-		this( builder.scope );
-	}
+    protected AbstractElasticsearchSort(AbstractBuilder builder) {
+        this(builder.scope);
+    }
 
-	protected AbstractElasticsearchSort(ElasticsearchSearchIndexScope<?> scope) {
-		indexNames = scope.hibernateSearchIndexNames();
-	}
+    protected AbstractElasticsearchSort(ElasticsearchSearchIndexScope<?> scope) {
+        indexNames = scope.hibernateSearchIndexNames();
+    }
 
-	@Override
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class AbstractBuilder implements SearchSortBuilder {
+    public abstract static class AbstractBuilder implements SearchSortBuilder {
 
-		protected final ElasticsearchSearchIndexScope<?> scope;
+        protected final ElasticsearchSearchIndexScope<?> scope;
 
-		protected AbstractBuilder(ElasticsearchSearchIndexScope<?> scope) {
-			this.scope = scope;
-		}
-	}
+        protected AbstractBuilder(ElasticsearchSearchIndexScope<?> scope) {
+            this.scope = scope;
+        }
+    }
 }

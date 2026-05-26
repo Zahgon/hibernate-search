@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.timeout.spi;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-
 import org.hibernate.search.engine.common.timing.Deadline;
 import org.hibernate.search.engine.common.timing.spi.TimingSource;
 import org.hibernate.search.engine.logging.impl.QueryLog;
@@ -18,177 +17,147 @@ import org.hibernate.search.util.common.impl.TimeHelper;
  */
 public class TimeoutManager {
 
-	public static TimeoutManager of(TimingSource timingSource, Long timeout, TimeUnit timeUnit,
-			boolean exceptionOnTimeout) {
-		if ( timeout != null && timeUnit != null ) {
-			if ( exceptionOnTimeout ) {
-				return TimeoutManager.hardTimeout( timingSource, timeout, timeUnit );
-			}
-			else {
-				return TimeoutManager.softTimeout( timingSource, timeout, timeUnit );
-			}
-		}
-		return TimeoutManager.noTimeout( timingSource );
-	}
+    public static TimeoutManager of(TimingSource timingSource, Long timeout, TimeUnit timeUnit, boolean exceptionOnTimeout) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static TimeoutManager noTimeout(TimingSource timingSource) {
-		return new TimeoutManager( timingSource, null, null, Type.NONE );
-	}
+    public static TimeoutManager noTimeout(TimingSource timingSource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static TimeoutManager softTimeout(TimingSource timingSource, long timeout, TimeUnit timeUnit) {
-		return new TimeoutManager( timingSource, timeout, timeUnit, Type.LIMIT );
-	}
+    public static TimeoutManager softTimeout(TimingSource timingSource, long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static TimeoutManager hardTimeout(TimingSource timingSource, long timeout, TimeUnit timeUnit) {
-		return new TimeoutManager( timingSource, timeout, timeUnit, Type.EXCEPTION );
-	}
+    public static TimeoutManager hardTimeout(TimingSource timingSource, long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public enum Type {
-		NONE,
-		EXCEPTION,
-		LIMIT
-	}
+    public enum Type {
 
-	protected final TimingSource timingSource;
-	protected final Long timeoutValue;
-	protected final TimeUnit timeoutUnit;
-	protected final Long timeoutMs;
-	protected final Type type;
-	private final DynamicDeadline deadline;
+        NONE, EXCEPTION, LIMIT
+    }
 
-	private Long monotonicTimeEstimateStart;
-	private Long nanoTimeStart;
+    protected final TimingSource timingSource;
 
-	public TimeoutManager(TimingSource timingSource, Long timeoutValue, TimeUnit timeoutUnit, Type type) {
-		this.timingSource = timingSource;
-		this.timeoutValue = timeoutValue;
-		this.timeoutUnit = timeoutUnit;
-		this.timeoutMs = TimeHelper.toMillisecondsRoundedUp( timeoutValue, timeoutUnit );
-		this.type = type;
-		this.deadline = timeoutMs == null ? null : new DynamicDeadline();
+    protected final Long timeoutValue;
 
-		if ( requireMonotonicTimeEstimate() ) {
-			timingSource.ensureTimeEstimateIsInitialized();
-		}
-	}
+    protected final TimeUnit timeoutUnit;
 
-	/**
-	 * we start counting from this method call (if needed)
-	 */
-	public void start() {
-		if ( requireMonotonicTimeEstimate() ) {
-			monotonicTimeEstimateStart = timingSource.monotonicTimeEstimate();
-		}
+    protected final Long timeoutMs;
 
-		nanoTimeStart = timingSource.nanoTime();
-	}
+    protected final Type type;
 
-	public void stop() {
-		monotonicTimeEstimateStart = null;
-		nanoTimeStart = null;
-	}
+    private final DynamicDeadline deadline;
 
-	public TimingSource timingSource() {
-		return timingSource;
-	}
+    private Long monotonicTimeEstimateStart;
 
-	/**
-	 * @return The deadline for the timeout defined by this timeout manager,
-	 * {@code null} if no timeout is set.
-	 */
-	public Deadline deadlineOrNull() {
-		return this.deadline;
-	}
+    private Long nanoTimeStart;
 
-	/**
-	 * @return The hard deadline defined by this timeout manager,
-	 * i.e. the deadline beyond which an exception should be thrown.
-	 * {@code null} if no hard timeout is set.
-	 */
-	public Deadline hardDeadlineOrNull() {
-		if ( !hasHardTimeout() ) {
-			return null;
-		}
-		return this.deadline;
-	}
+    public TimeoutManager(TimingSource timingSource, Long timeoutValue, TimeUnit timeoutUnit, Type type) {
+        this.timingSource = timingSource;
+        this.timeoutValue = timeoutValue;
+        this.timeoutUnit = timeoutUnit;
+        this.timeoutMs = TimeHelper.toMillisecondsRoundedUp(timeoutValue, timeoutUnit);
+        this.type = type;
+        this.deadline = timeoutMs == null ? null : new DynamicDeadline();
+        if (requireMonotonicTimeEstimate()) {
+            timingSource.ensureTimeEstimateIsInitialized();
+        }
+    }
 
-	public long timeoutBaseline() {
-		return monotonicTimeEstimateStart;
-	}
+    /**
+     * we start counting from this method call (if needed)
+     */
+    public void start() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return {@code true} if the timeout was reached in a previous call to {@link #checkTimedOut()},
-	 * {@code false} otherwise.
-	 */
-	public boolean isTimedOut() {
-		return deadline != null && deadline.timedOut;
-	}
+    public void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return {@code true} if the timeout was reached, {@code false} otherwise.
-	 * @throws org.hibernate.search.util.common.SearchTimeoutException If the timeout was reached and
-	 * a hard timeout was requested.
-	 */
-	public boolean checkTimedOut() {
-		if ( deadline == null ) {
-			return false;
-		}
-		return deadline.checkRemainingTimeMillis() <= 0;
-	}
+    public TimingSource timingSource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean hasHardTimeout() {
-		return this.type == Type.EXCEPTION;
-	}
+    /**
+     * @return The deadline for the timeout defined by this timeout manager,
+     * {@code null} if no timeout is set.
+     */
+    public Deadline deadlineOrNull() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Returns the time passed from the start with high precision.
-	 * This method may be performance expensive.
-	 *
-	 * @return high precision duration of took time.
-	 */
-	public Duration tookTime() {
-		return Duration.ofNanos( timingSource.nanoTime() - nanoTimeStart );
-	}
+    /**
+     * @return The hard deadline defined by this timeout manager,
+     * i.e. the deadline beyond which an exception should be thrown.
+     * {@code null} if no hard timeout is set.
+     */
+    public Deadline hardDeadlineOrNull() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected long elapsedTimeEstimateMillis() {
-		return timingSource.monotonicTimeEstimate() - monotonicTimeEstimateStart;
-	}
+    public long timeoutBaseline() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean requireMonotonicTimeEstimate() {
-		return !Type.NONE.equals( type );
-	}
+    /**
+     * @return {@code true} if the timeout was reached in a previous call to {@link #checkTimedOut()},
+     * {@code false} otherwise.
+     */
+    public boolean isTimedOut() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final class DynamicDeadline implements Deadline {
-		boolean timedOut = false;
+    /**
+     * @return {@code true} if the timeout was reached, {@code false} otherwise.
+     * @throws org.hibernate.search.util.common.SearchTimeoutException If the timeout was reached and
+     * a hard timeout was requested.
+     */
+    public boolean checkTimedOut() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public long checkRemainingTimeMillis() {
-			final long elapsedTime = elapsedTimeEstimateMillis();
-			long timeLeft = timeoutMs - elapsedTime;
-			if ( timeLeft <= 0 ) {
-				forceTimeout( null );
-				// Timed out: don't return a negative number.
-				return 0L;
-			}
-			else {
-				return timeLeft;
-			}
-		}
+    public boolean hasHardTimeout() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public void forceTimeout(Exception cause) {
-			if ( hasHardTimeout() ) {
-				throw forceTimeoutAndCreateException( cause );
-			}
-			else {
-				this.timedOut = true;
-			}
-		}
+    /**
+     * Returns the time passed from the start with high precision.
+     * This method may be performance expensive.
+     *
+     * @return high precision duration of took time.
+     */
+    public Duration tookTime() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public SearchTimeoutException forceTimeoutAndCreateException(Exception cause) {
-			this.timedOut = true;
-			return QueryLog.INSTANCE.timedOut( Duration.ofNanos( timeoutUnit.toNanos( timeoutValue ) ), cause );
-		}
-	}
+    protected long elapsedTimeEstimateMillis() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private boolean requireMonotonicTimeEstimate() {
+        return !Type.NONE.equals(type);
+    }
+
+    final class DynamicDeadline implements Deadline {
+
+        boolean timedOut = false;
+
+        @Override
+        public long checkRemainingTimeMillis() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void forceTimeout(Exception cause) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchTimeoutException forceTimeoutAndCreateException(Exception cause) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

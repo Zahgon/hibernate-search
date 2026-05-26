@@ -7,14 +7,11 @@ package org.hibernate.search.backend.elasticsearch.client.impl;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
-
 import org.hibernate.search.backend.elasticsearch.client.common.gson.entity.spi.ContentEncoder;
 import org.hibernate.search.backend.elasticsearch.client.common.gson.entity.spi.GsonHttpEntityContentProvider;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
@@ -53,89 +50,82 @@ import org.apache.http.protocol.HTTP;
  */
 final class ClientRest4GsonHttpEntity extends GsonHttpEntityContentProvider implements HttpEntity, HttpAsyncContentProducer {
 
-	private static final BasicHeader CONTENT_TYPE =
-			new BasicHeader( HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString() );
+    private static final BasicHeader CONTENT_TYPE = new BasicHeader(HTTP.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
 
+    public static HttpEntity toEntity(Gson gson, ElasticsearchRequest request) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static HttpEntity toEntity(Gson gson, ElasticsearchRequest request) throws IOException {
-		final List<JsonObject> bodyParts = request.bodyParts();
-		if ( bodyParts.isEmpty() ) {
-			return null;
-		}
-		return new ClientRest4GsonHttpEntity( gson, bodyParts );
-	}
+    public ClientRest4GsonHttpEntity(Gson gson, List<JsonObject> bodyParts) throws IOException {
+        super(gson, bodyParts);
+    }
 
-	public ClientRest4GsonHttpEntity(Gson gson, List<JsonObject> bodyParts) throws IOException {
-		super( gson, bodyParts );
-	}
+    @Override
+    public boolean isRepeatable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isRepeatable() {
-		return true;
-	}
+    @Override
+    public boolean isChunked() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isChunked() {
-		return false;
-	}
+    @Override
+    public Header getContentType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Header getContentType() {
-		return CONTENT_TYPE;
-	}
+    @Override
+    public Header getContentEncoding() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Header getContentEncoding() {
-		//Apparently this is the correct value:
-		return null;
-	}
+    @Override
+    public boolean isStreaming() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isStreaming() {
-		return false;
-	}
+    @Override
+    // javac warns about this method being deprecated, but we have to implement it
+    @SuppressWarnings("deprecation")
+    public void consumeContent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("deprecation") // javac warns about this method being deprecated, but we have to implement it
-	public void consumeContent() {
-		//not used (and deprecated)
-	}
+    @Override
+    public void produceContent(org.apache.http.nio.ContentEncoder encoder, IOControl ioctrl) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void produceContent(org.apache.http.nio.ContentEncoder encoder, IOControl ioctrl) throws IOException {
-		produceContent( toGsonContentEncoder( encoder ) );
-	}
+    private ContentEncoder toGsonContentEncoder(org.apache.http.nio.ContentEncoder encoder) {
+        if (encoder instanceof ContentEncoder gce) {
+            return gce;
+        } else {
+            return new ClientRest4ContentEncoder(encoder);
+        }
+    }
 
-	private ContentEncoder toGsonContentEncoder(org.apache.http.nio.ContentEncoder encoder) {
-		if ( encoder instanceof ContentEncoder gce ) {
-			return gce;
-		}
-		else {
-			return new ClientRest4ContentEncoder( encoder );
-		}
-	}
+    private static class ClientRest4ContentEncoder implements ContentEncoder {
 
-	private static class ClientRest4ContentEncoder implements ContentEncoder {
+        private final org.apache.http.nio.ContentEncoder encoder;
 
-		private final org.apache.http.nio.ContentEncoder encoder;
+        public ClientRest4ContentEncoder(org.apache.http.nio.ContentEncoder encoder) {
+            this.encoder = encoder;
+        }
 
-		public ClientRest4ContentEncoder(org.apache.http.nio.ContentEncoder encoder) {
-			this.encoder = encoder;
-		}
+        @Override
+        public int write(ByteBuffer src) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public int write(ByteBuffer src) throws IOException {
-			return encoder.write( src );
-		}
+        @Override
+        public void complete() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void complete() throws IOException {
-			encoder.complete();
-		}
-
-		@Override
-		public boolean isCompleted() {
-			return encoder.isCompleted();
-		}
-	}
+        @Override
+        public boolean isCompleted() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.mapping.building.impl;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexBindingContext;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexFieldTypeDefaultsProvider;
@@ -58,151 +57,56 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  * <p>
  * Incidentally, this will also generate the index model,
  * due to bridges contributing to the index model as we bind them.
- *
  */
 public final class PojoIndexModelBinder {
 
-	private final BeanResolver beanResolver;
-	private final PojoBootstrapIntrospector introspector;
-	private final ContainerExtractorBinder extractorBinder;
-	private final BridgeResolver bridgeResolver;
-	private final PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider;
+    private final BeanResolver beanResolver;
 
-	PojoIndexModelBinder(MappingBuildContext buildContext,
-			PojoBootstrapIntrospector introspector,
-			ContainerExtractorBinder extractorBinder, BridgeResolver bridgeResolver,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
-		this.beanResolver = buildContext.beanResolver();
-		this.introspector = introspector;
-		this.extractorBinder = extractorBinder;
-		this.bridgeResolver = bridgeResolver;
-		this.typeAdditionalMetadataProvider = typeAdditionalMetadataProvider;
-	}
+    private final PojoBootstrapIntrospector introspector;
 
-	public <T> Optional<BoundPojoModelPathPropertyNode<T, ?>> createEntityIdPropertyPath(PojoTypeModel<T> type) {
-		Optional<String> entityIdPropertyName = typeAdditionalMetadataProvider
-				.get( type.rawType() )
-				.getEntityTypeMetadata()
-				.flatMap( PojoEntityTypeAdditionalMetadata::getEntityIdPropertyName );
-		if ( !entityIdPropertyName.isPresent() ) {
-			return Optional.empty();
-		}
-		return Optional.of( BoundPojoModelPath.root( type ).property( entityIdPropertyName.get() ) );
-	}
+    private final ContainerExtractorBinder extractorBinder;
 
-	public <C> BoundContainerExtractorPath<C, ?> bindExtractorPath(
-			PojoTypeModel<C> pojoGenericTypeModel, ContainerExtractorPath extractorPath) {
-		return extractorBinder.bindPath( pojoGenericTypeModel, extractorPath );
-	}
+    private final BridgeResolver bridgeResolver;
 
-	public <C, V> ContainerExtractorHolder<C, V> createExtractors(
-			BoundContainerExtractorPath<C, V> boundExtractorPath) {
-		return extractorBinder.create( boundExtractorPath );
-	}
+    private final PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider;
 
-	public <I> BoundIdentifierBridge<I> bindIdentifier(
-			Optional<IndexedEntityBindingContext> indexedEntityBindingContext,
-			BoundPojoModelPathPropertyNode<?, I> modelPath,
-			IdentifierBinder binder, Map<String, Object> params) {
-		PojoTypeModel<I> identifierTypeModel = modelPath.valueWithoutExtractors().getTypeModel();
-		return bindIdentifier( indexedEntityBindingContext, identifierTypeModel, binder, params );
-	}
+    PojoIndexModelBinder(MappingBuildContext buildContext, PojoBootstrapIntrospector introspector, ContainerExtractorBinder extractorBinder, BridgeResolver bridgeResolver, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
+        this.beanResolver = buildContext.beanResolver();
+        this.introspector = introspector;
+        this.extractorBinder = extractorBinder;
+        this.bridgeResolver = bridgeResolver;
+        this.typeAdditionalMetadataProvider = typeAdditionalMetadataProvider;
+    }
 
-	public <I> BoundIdentifierBridge<I> bindIdentifier(
-			Optional<IndexedEntityBindingContext> indexedEntityBindingContext,
-			PojoTypeModel<I> identifierTypeModel,
-			IdentifierBinder binder, Map<String, Object> params) {
-		IdentifierBinder defaultedBinder = binder;
-		if ( binder == null ) {
-			defaultedBinder = bridgeResolver.resolveIdentifierBinderForType( identifierTypeModel );
-		}
+    public <T> Optional<BoundPojoModelPathPropertyNode<T, ?>> createEntityIdPropertyPath(PojoTypeModel<T> type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		DefaultIdentifierBindingContext<I> bindingContext = new DefaultIdentifierBindingContext<>(
-				beanResolver,
-				introspector,
-				indexedEntityBindingContext,
-				identifierTypeModel,
-				params
-		);
+    public <C> BoundContainerExtractorPath<C, ?> bindExtractorPath(PojoTypeModel<C> pojoGenericTypeModel, ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return bindingContext.applyBinder( defaultedBinder );
-	}
+    public <C, V> ContainerExtractorHolder<C, V> createExtractors(BoundContainerExtractorPath<C, V> boundExtractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <T> Optional<BoundTypeBridge<T>> bindType(IndexBindingContext indexBindingContext,
-			BoundPojoModelPathTypeNode<T> modelPath, TypeBinder binder,
-			Map<String, Object> params) {
-		PojoModelTypeRootElement<T> pojoModelRootElement =
-				new PojoModelTypeRootElement<>( modelPath, introspector, typeAdditionalMetadataProvider );
+    public <I> BoundIdentifierBridge<I> bindIdentifier(Optional<IndexedEntityBindingContext> indexedEntityBindingContext, BoundPojoModelPathPropertyNode<?, I> modelPath, IdentifierBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PojoTypeModel<T> typeModel = modelPath.getTypeModel();
+    public <I> BoundIdentifierBridge<I> bindIdentifier(Optional<IndexedEntityBindingContext> indexedEntityBindingContext, PojoTypeModel<I> identifierTypeModel, IdentifierBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PojoTypeIndexingDependencyConfigurationContextImpl<T> pojoDependencyContext =
-				new PojoTypeIndexingDependencyConfigurationContextImpl<>(
-						introspector,
-						extractorBinder,
-						typeAdditionalMetadataProvider,
-						typeModel
-				);
+    public <T> Optional<BoundTypeBridge<T>> bindType(IndexBindingContext indexBindingContext, BoundPojoModelPathTypeNode<T> modelPath, TypeBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		TypeBindingContextImpl<T> bindingContext = new TypeBindingContextImpl<>(
-				beanResolver, introspector,
-				typeModel,
-				indexBindingContext,
-				pojoModelRootElement,
-				pojoDependencyContext,
-				params
-		);
+    public <P> Optional<BoundPropertyBridge<P>> bindProperty(IndexBindingContext indexBindingContext, BoundPojoModelPathPropertyNode<?, P> modelPath, PropertyBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return bindingContext.applyBinder( binder );
-	}
-
-	public <P> Optional<BoundPropertyBridge<P>> bindProperty(IndexBindingContext indexBindingContext,
-			BoundPojoModelPathPropertyNode<?, P> modelPath, PropertyBinder binder, Map<String, Object> params) {
-		PojoModelPropertyRootElement<P> pojoModelRootElement =
-				new PojoModelPropertyRootElement<>( modelPath, introspector, typeAdditionalMetadataProvider );
-		PojoPropertyIndexingDependencyConfigurationContextImpl<P> pojoDependencyContext =
-				new PojoPropertyIndexingDependencyConfigurationContextImpl<>(
-						introspector,
-						extractorBinder,
-						typeAdditionalMetadataProvider,
-						modelPath
-				);
-
-		PojoTypeModel<P> propertyTypeModel = modelPath.getPropertyModel().typeModel();
-
-		PropertyBindingContextImpl<P> bindingContext = new PropertyBindingContextImpl<>(
-				beanResolver, introspector,
-				propertyTypeModel,
-				indexBindingContext,
-				pojoModelRootElement,
-				pojoDependencyContext,
-				params
-		);
-
-		return bindingContext.applyBinder( binder );
-	}
-
-	public <V> Optional<BoundValueBridge<V, ?>> bindValue(IndexBindingContext indexBindingContext,
-			BoundPojoModelPathValueNode<?, ?, V> modelPath, boolean multiValued,
-			ValueBinder binder, Map<String, Object> params,
-			String relativeFieldName, FieldModelContributor contributor) {
-		Integer decimalScale = typeAdditionalMetadataProvider.get( modelPath ).getDecimalScale();
-		IndexFieldTypeDefaultsProvider defaultsProvider = new IndexFieldTypeDefaultsProvider( decimalScale );
-
-		PojoTypeModel<V> valueTypeModel = modelPath.getTypeModel();
-
-		ValueBinder defaultedBinder = binder;
-		if ( binder == null ) {
-			defaultedBinder = bridgeResolver.resolveValueBinderForType( valueTypeModel );
-		}
-
-		ValueBindingContextImpl<V> bindingContext = new ValueBindingContextImpl<>(
-				beanResolver, introspector,
-				valueTypeModel, multiValued,
-				indexBindingContext, defaultsProvider,
-				relativeFieldName, contributor, params
-		);
-
-		return bindingContext.applyBinder( defaultedBinder );
-	}
+    public <V> Optional<BoundValueBridge<V, ?>> bindValue(IndexBindingContext indexBindingContext, BoundPojoModelPathValueNode<?, ?, V> modelPath, boolean multiValued, ValueBinder binder, Map<String, Object> params, String relativeFieldName, FieldModelContributor contributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

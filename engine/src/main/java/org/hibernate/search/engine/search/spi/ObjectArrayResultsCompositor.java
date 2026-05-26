@@ -7,39 +7,36 @@ package org.hibernate.search.engine.search.spi;
 import org.hibernate.search.util.common.annotation.Incubating;
 
 @Incubating
-abstract class ObjectArrayResultsCompositor<V>
-		implements ResultsCompositor<Object[], V> {
+abstract class ObjectArrayResultsCompositor<V> implements ResultsCompositor<Object[], V> {
 
-	private final int size;
+    private final int size;
 
-	ObjectArrayResultsCompositor(int size) {
-		this.size = size;
-	}
+    ObjectArrayResultsCompositor(int size) {
+        this.size = size;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + transformer() + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract Object transformer();
+    protected abstract Object transformer();
 
-	@Override
-	public Object[] createInitial() {
-		return new Object[size];
-	}
+    @Override
+    public Object[] createInitial() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object[] set(Object[] components, int index, Object value) {
-		components[index] = value;
-		return components;
-	}
+    @Override
+    public Object[] set(Object[] components, int index, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object get(Object[] components, int index) {
-		return components[index];
-	}
+    @Override
+    public Object get(Object[] components, int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public abstract V finish(Object[] components);
-
+    @Override
+    public abstract V finish(Object[] components);
 }

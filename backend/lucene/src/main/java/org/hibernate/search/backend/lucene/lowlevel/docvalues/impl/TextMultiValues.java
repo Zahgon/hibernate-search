@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.lowlevel.docvalues.impl;
 
 import java.io.IOException;
-
 import org.apache.lucene.index.SortedSetDocValues;
 import org.apache.lucene.util.BytesRef;
 
@@ -21,114 +20,113 @@ import org.apache.lucene.util.BytesRef;
  */
 public abstract class TextMultiValues {
 
-	/**
-	 * Sole constructor. (For invocation by subclass
-	 * constructors, typically implicit.)
-	 */
-	protected TextMultiValues() {
-	}
+    /**
+     * Sole constructor. (For invocation by subclass
+     * constructors, typically implicit.)
+     */
+    protected TextMultiValues() {
+    }
 
-	/**
-	 * Advance this instance to the given document id
-	 *
-	 * @return true if there is a value for this document
-	 */
-	public abstract boolean advanceExact(int doc) throws IOException;
+    /**
+     * Advance this instance to the given document id
+     *
+     * @return true if there is a value for this document
+     */
+    public abstract boolean advanceExact(int doc) throws IOException;
 
-	/**
-	 * @return true if there is a next value for this document,
-	 * i.e. if nextValue() can be called.
-	 */
-	public abstract boolean hasNextValue() throws IOException;
+    /**
+     * @return true if there is a next value for this document,
+     * i.e. if nextValue() can be called.
+     */
+    public abstract boolean hasNextValue() throws IOException;
 
-	/**
-	 * @return The next value for the current document.
-	 * Can only be called after {@link #hasNextValue()} returned {@code true}.
-	 */
-	public abstract long nextOrd() throws IOException;
+    /**
+     * @return The next value for the current document.
+     * Can only be called after {@link #hasNextValue()} returned {@code true}.
+     */
+    public abstract long nextOrd() throws IOException;
 
-	public abstract BytesRef lookupOrd(long ord) throws IOException;
+    public abstract BytesRef lookupOrd(long ord) throws IOException;
 
-	/**
-	 * Returns the number of unique values.
-	 * @return number of unique values in this SortedDocValues. This is
-	 *         also equivalent to one plus the maximum ordinal.
-	 */
-	public abstract long getValueCount();
+    /**
+     * Returns the number of unique values.
+     * @return number of unique values in this SortedDocValues. This is
+     *         also equivalent to one plus the maximum ordinal.
+     */
+    public abstract long getValueCount();
 
-	public static TextMultiValues fromDocValues(SortedSetDocValues docValues) {
-		return new DocValuesTextMultiValues( docValues );
-	}
+    public static TextMultiValues fromDocValues(SortedSetDocValues docValues) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * An empty DoubleMultiValues instance that always returns {@code false} from {@link #advanceExact(int)}
-	 */
-	public static final TextMultiValues EMPTY = new TextMultiValues() {
+    /**
+     * An empty DoubleMultiValues instance that always returns {@code false} from {@link #advanceExact(int)}
+     */
+    public static final TextMultiValues EMPTY = new TextMultiValues() {
 
-		@Override
-		public boolean advanceExact(int doc) {
-			return false;
-		}
+        @Override
+        public boolean advanceExact(int doc) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean hasNextValue() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public boolean hasNextValue() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public long nextOrd() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public long nextOrd() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public BytesRef lookupOrd(long ord) {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public BytesRef lookupOrd(long ord) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public long getValueCount() {
-			return 0;
-		}
-	};
+        @Override
+        public long getValueCount() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	protected static class DocValuesTextMultiValues extends TextMultiValues {
-		protected final SortedSetDocValues values;
-		private int remaining;
+    protected static class DocValuesTextMultiValues extends TextMultiValues {
 
-		DocValuesTextMultiValues(SortedSetDocValues values) {
-			this.values = values;
-		}
+        protected final SortedSetDocValues values;
 
-		@Override
-		public boolean advanceExact(int doc) throws IOException {
-			boolean found = values.advanceExact( doc );
-			updateRemaining( found );
-			return found;
-		}
+        private int remaining;
 
-		protected final void updateRemaining(boolean hasDocValue) {
-			remaining = hasDocValue ? values.docValueCount() : 0;
-		}
+        DocValuesTextMultiValues(SortedSetDocValues values) {
+            this.values = values;
+        }
 
-		@Override
-		public boolean hasNextValue() throws IOException {
-			return remaining > 0;
-		}
+        @Override
+        public boolean advanceExact(int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public long nextOrd() throws IOException {
-			--remaining;
-			return values.nextOrd();
-		}
+        protected final void updateRemaining(boolean hasDocValue) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public BytesRef lookupOrd(long ord) throws IOException {
-			return values.lookupOrd( ord );
-		}
+        @Override
+        public boolean hasNextValue() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public long getValueCount() {
-			return values.getValueCount();
-		}
-	}
+        @Override
+        public long nextOrd() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public BytesRef lookupOrd(long ord) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public long getValueCount() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

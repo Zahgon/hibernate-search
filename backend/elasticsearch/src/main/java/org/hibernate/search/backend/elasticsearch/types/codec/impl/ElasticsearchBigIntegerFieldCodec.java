@@ -8,12 +8,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonElementTypes;
 import org.hibernate.search.backend.elasticsearch.logging.impl.IndexingLog;
 import org.hibernate.search.engine.cfg.spi.NumberScaleConstants;
 import org.hibernate.search.engine.cfg.spi.NumberUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -21,79 +19,53 @@ import com.google.gson.JsonPrimitive;
 
 public class ElasticsearchBigIntegerFieldCodec extends AbstractElasticsearchFieldCodec<BigInteger> {
 
-	private final int decimalScale;
-	private final BigDecimal scalingFactor;
-	private final BigDecimal minScaledValue;
-	private final BigDecimal maxScaledValue;
+    private final int decimalScale;
 
-	public ElasticsearchBigIntegerFieldCodec(Gson gson, int decimalScale) {
-		super( gson );
-		this.decimalScale = decimalScale;
-		scalingFactor = BigDecimal.TEN.pow( decimalScale, new MathContext( 10, RoundingMode.HALF_UP ) );
-		minScaledValue = new BigDecimal( NumberScaleConstants.MIN_LONG_AS_BIGINTEGER, decimalScale );
-		maxScaledValue = new BigDecimal( NumberScaleConstants.MAX_LONG_AS_BIGINTEGER, decimalScale );
-	}
+    private final BigDecimal scalingFactor;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "decimalScale=" + decimalScale
-				+ "]";
-	}
+    private final BigDecimal minScaledValue;
 
-	@Override
-	public JsonElement encode(BigInteger value) {
-		if ( value == null ) {
-			return JsonNull.INSTANCE;
-		}
+    private final BigDecimal maxScaledValue;
 
-		BigDecimal decimal = new BigDecimal( value );
-		if ( decimal.compareTo( minScaledValue ) < 0 || decimal.compareTo( maxScaledValue ) > 0 ) {
-			throw IndexingLog.INSTANCE.scaledNumberTooLarge( value, minScaledValue, maxScaledValue );
-		}
+    public ElasticsearchBigIntegerFieldCodec(Gson gson, int decimalScale) {
+        super(gson);
+        this.decimalScale = decimalScale;
+        scalingFactor = BigDecimal.TEN.pow(decimalScale, new MathContext(10, RoundingMode.HALF_UP));
+        minScaledValue = new BigDecimal(NumberScaleConstants.MIN_LONG_AS_BIGINTEGER, decimalScale);
+        maxScaledValue = new BigDecimal(NumberScaleConstants.MAX_LONG_AS_BIGINTEGER, decimalScale);
+    }
 
-		return new JsonPrimitive( value );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BigInteger decode(JsonElement element) {
-		if ( element == null || element.isJsonNull() ) {
-			return null;
-		}
+    @Override
+    public JsonElement encode(BigInteger value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return JsonElementTypes.BIG_INTEGER.fromElement( element );
-	}
+    @Override
+    public BigInteger decode(JsonElement element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BigInteger decode(Double value) {
-		return NumberUtils.toBigInteger( value );
-	}
+    @Override
+    public BigInteger decode(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BigInteger decodeAggregationKey(JsonElement key, JsonElement keyAsString) {
-		if ( key == null || key.isJsonNull() ) {
-			return null;
-		}
+    @Override
+    public BigInteger decodeAggregationKey(JsonElement key, JsonElement keyAsString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// scaled_float aggregations format keys in double format, e.g. 1.514843E8
-		return JsonElementTypes.BIG_DECIMAL.fromElement( key ).toBigInteger();
-	}
+    @Override
+    public boolean isCompatibleWith(ElasticsearchFieldCodec<?> obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ElasticsearchFieldCodec<?> obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		if ( getClass() != obj.getClass() ) {
-			return false;
-		}
-
-		ElasticsearchBigIntegerFieldCodec other = (ElasticsearchBigIntegerFieldCodec) obj;
-		return decimalScale == other.decimalScale;
-	}
-
-	public BigDecimal scalingFactor() {
-		return scalingFactor;
-	}
-
+    public BigDecimal scalingFactor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,11 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -71,426 +69,265 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoTypeIndexingPlan;
 import org.hibernate.search.util.common.impl.Closer;
 
 @SuppressWarnings("deprecation")
-public class HibernateOrmMapping extends AbstractPojoMappingImplementor<HibernateOrmMapping>
-		implements SearchMapping, AutoCloseable, HibernateOrmMappingContext,
-		HibernateOrmListenerContextProvider, BatchMappingContext,
-		HibernateOrmScopeMappingContext, HibernateOrmSearchSessionMappingContext,
-		AutomaticIndexingMappingContext, CoordinationStrategyContext {
-
-	private static final ConfigurationProperty<EntityLoadingCacheLookupStrategy> QUERY_LOADING_CACHE_LOOKUP_STRATEGY =
-			ConfigurationProperty.forKey( HibernateOrmMapperSettings.Radicals.QUERY_LOADING_CACHE_LOOKUP_STRATEGY )
-					.as( EntityLoadingCacheLookupStrategy.class, EntityLoadingCacheLookupStrategy::of )
-					.withDefault( HibernateOrmMapperSettings.Defaults.QUERY_LOADING_CACHE_LOOKUP_STRATEGY )
-					.build();
-
-	private static final ConfigurationProperty<Integer> QUERY_LOADING_FETCH_SIZE =
-			ConfigurationProperty.forKey( HibernateOrmMapperSettings.Radicals.QUERY_LOADING_FETCH_SIZE )
-					.asIntegerStrictlyPositive()
-					.withDefault( HibernateOrmMapperSettings.Defaults.QUERY_LOADING_FETCH_SIZE )
-					.build();
-
-	private static final ConfigurationProperty<SchemaManagementStrategyName> SCHEMA_MANAGEMENT_STRATEGY =
-			ConfigurationProperty.forKey( HibernateOrmMapperSettings.Radicals.SCHEMA_MANAGEMENT_STRATEGY )
-					.as( SchemaManagementStrategyName.class, SchemaManagementStrategyName::of )
-					.withDefault( HibernateOrmMapperSettings.Defaults.SCHEMA_MANAGEMENT_STRATEGY )
-					.build();
-
-	private static final ConfigurationProperty<MassIndexingDefaultCleanOperation> INDEXING_MASS_DEFAULT_CLEAN_OPERATION =
-			ConfigurationProperty.forKey( HibernateOrmMapperSettings.Radicals.INDEXING_MASS_DEFAULT_CLEAN_OPERATION )
-					.as( MassIndexingDefaultCleanOperation.class, MassIndexingDefaultCleanOperation::of )
-					.withDefault( HibernateOrmMapperSettings.Defaults.INDEXING_MASS_DEFAULT_CLEAN_OPERATION )
-					.build();
-
-	public static MappingImplementor<HibernateOrmMapping> create(
-			PojoMappingDelegate mappingDelegate, HibernateOrmTypeContextContainer typeContextContainer,
-			BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder,
-			ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy,
-			SessionFactoryImplementor sessionFactory, ConfigurationPropertySource propertySource) {
-		EntityLoadingCacheLookupStrategy cacheLookupStrategy =
-				QUERY_LOADING_CACHE_LOOKUP_STRATEGY.get( propertySource );
-
-		int fetchSize = QUERY_LOADING_FETCH_SIZE.get( propertySource );
-
-		SchemaManagementStrategyName schemaManagementStrategyName = SCHEMA_MANAGEMENT_STRATEGY.get( propertySource );
-		SchemaManagementListener schemaManagementListener = new SchemaManagementListener( schemaManagementStrategyName );
-
-		MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation =
-				INDEXING_MASS_DEFAULT_CLEAN_OPERATION.get( propertySource );
-
-		return new HibernateOrmMapping(
-				mappingDelegate,
-				typeContextContainer, sessionFactory,
-				coordinationStrategyHolder,
-				configuredAutomaticIndexingStrategy,
-				cacheLookupStrategy, fetchSize,
-				schemaManagementListener,
-				massIndexingDefaultCleanOperation
-		);
-	}
-
-	private final SessionFactoryImplementor sessionFactory;
-	private final HibernateOrmTypeContextContainer typeContextContainer;
-	private final BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder;
-	private final ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy;
-	private final EntityLoadingCacheLookupStrategy cacheLookupStrategy;
-	private final int fetchSize;
-
-	private final SchemaManagementListener schemaManagementListener;
-	private final MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation;
-
-	private volatile ConfiguredSearchIndexingPlanFilter applicationIndexingPlanFilter =
-			ConfiguredSearchIndexingPlanFilter.IncludeAll.INSTANCE;
-
-	private TenancyConfiguration tenancyConfiguration;
-
-	private SearchIntegration.Handle integrationHandle;
-
-	private volatile boolean listenerEnabled = true;
-
-	private HibernateOrmMapping(PojoMappingDelegate mappingDelegate,
-			HibernateOrmTypeContextContainer typeContextContainer,
-			SessionFactoryImplementor sessionFactory,
-			BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder,
-			ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy,
-			EntityLoadingCacheLookupStrategy cacheLookupStrategy,
-			int fetchSize,
-			SchemaManagementListener schemaManagementListener,
-			MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation) {
-		super( mappingDelegate, org.hibernate.search.mapper.orm.common.impl.HibernateOrmEntityReference::new );
-		this.typeContextContainer = typeContextContainer;
-		this.sessionFactory = sessionFactory;
-		this.coordinationStrategyHolder = coordinationStrategyHolder;
-		this.configuredAutomaticIndexingStrategy = configuredAutomaticIndexingStrategy;
-		this.cacheLookupStrategy = cacheLookupStrategy;
-		this.fetchSize = fetchSize;
-		this.schemaManagementListener = schemaManagementListener;
-		this.massIndexingDefaultCleanOperation = massIndexingDefaultCleanOperation;
-	}
-
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( SearchIntegration::close, integrationHandle, SearchIntegration.Handle::getOrNull );
-			integrationHandle = null;
-		}
-	}
-
-	@Override
-	public CompletableFuture<?> start(MappingStartContext context) {
-		integrationHandle = context.integrationHandle();
-		// This may fail and normally doesn't involve I/O, so do it first
-		configuredAutomaticIndexingStrategy.start(
-				this,
-				new AutomaticIndexingStrategyStartContextImpl( context ),
-				this
-		);
-
-		Optional<TypedSearchScopeImpl<?, Object>> scopeOptional = createAllScope();
-		if ( !scopeOptional.isPresent() ) {
-			// No indexed type
-			return CompletableFuture.completedFuture( null );
-		}
-		TypedSearchScopeImpl<?, Object> scope = scopeOptional.get();
-
-		this.tenancyConfiguration =
-				TenancyConfiguration.create( context.beanResolver(), delegate().tenancyMode(),
-						context.configurationPropertySource() );
-
-		// Schema management
-		PojoScopeSchemaManager schemaManager = scope.schemaManagerDelegate();
-		return schemaManagementListener.onStart( context, schemaManager )
-				.thenCompose( ignored -> coordinationStrategyHolder.get().start(
-						new CoordinationStrategyStartContextImpl( this, context, tenancyConfiguration )
-				) );
-	}
-
-	@Override
-	public CompletableFuture<?> preStop(MappingPreStopContext context) {
-		Optional<TypedSearchScopeImpl<?, Object>> scope = createAllScope();
-		if ( !scope.isPresent() ) {
-			// No indexed type
-			return CompletableFuture.completedFuture( null );
-		}
-		PojoScopeSchemaManager schemaManager = scope.get().schemaManagerDelegate();
-		return coordinationStrategyHolder.get().preStop( new CoordinationStrategyPreStopContextImpl( context ) )
-				.thenCompose( ignored -> schemaManagementListener.onStop( context, schemaManager ) );
-	}
-
-	@Override
-	protected void doStop() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ConfiguredAutomaticIndexingStrategy::stop, configuredAutomaticIndexingStrategy );
-			closer.push( CoordinationStrategy::stop, coordinationStrategyHolder, BeanHolder::get );
-			closer.push( BeanHolder::close, coordinationStrategyHolder );
-			closer.push( TenancyConfiguration::close, tenancyConfiguration );
-		}
-	}
-
-	@Override
-	public BackendMappingHints hints() {
-		return HibernateOrmMappingHints.INSTANCE;
-	}
-
-	@Override
-	public <T> TypedSearchScopeImpl<?, T> scope(Class<T> clazz) {
-		return scope( Collections.singleton( clazz ) );
-	}
-
-	@Override
-	public <T> TypedSearchScopeImpl<?, T> scope(Class<T> expectedSuperType, String entityName) {
-		return scope( expectedSuperType, Collections.singleton( entityName ) );
-	}
-
-	@Override
-	public <T> TypedSearchScopeImpl<?, T> scope(Collection<? extends Class<? extends T>> classes) {
-		return createScope( NonStaticMetamodelScope.class, classes );
-	}
-
-	@Override
-	public <T> TypedSearchScopeImpl<?, T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
-		return createScope( NonStaticMetamodelScope.class, expectedSuperType, entityNames );
-	}
-
-	@Override
-	public <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
-		return createScope( rootScope, classes );
-	}
-
-	@Override
-	public EntityManagerFactory toEntityManagerFactory() {
-		return sessionFactory;
-	}
-
-	@Override
-	public SessionFactory toOrmSessionFactory() {
-		return sessionFactory;
-	}
-
-	@Override
-	public <E> SearchIndexedEntity<E> indexedEntity(Class<E> entityType) {
-		return typeContextContainer.indexedForExactClass( entityType );
-	}
-
-	@Override
-	public SearchIndexedEntity<?> indexedEntity(String entityName) {
-		return typeContextContainer.indexedByEntityName().getOrFail( entityName );
-	}
-
-	@Override
-	public Collection<SearchIndexedEntity<?>> allIndexedEntities() {
-		return Collections.unmodifiableCollection( typeContextContainer.allIndexed() );
-	}
-
-	@Override
-	public IndexManager indexManager(String indexName) {
-		return searchIntegration().indexManager( indexName );
-	}
-
-	@Override
-	public Backend backend() {
-		return searchIntegration().backend();
-	}
-
-	@Override
-	public Backend backend(String backendName) {
-		return searchIntegration().backend( backendName );
-	}
-
-	@Override
-	public void indexingPlanFilter(SearchIndexingPlanFilter filter) {
-		this.applicationIndexingPlanFilter = delegate().configuredSearchIndexingPlanFilter( filter, null );
-	}
-
-	public ConfiguredSearchIndexingPlanFilter applicationIndexingPlanFilter() {
-		return applicationIndexingPlanFilter;
-	}
-
-	@Override
-	public ConfiguredSearchIndexingPlanFilter configuredSearchIndexingPlanFilter(SearchIndexingPlanFilter filter) {
-		return delegate().configuredSearchIndexingPlanFilter( filter, applicationIndexingPlanFilter );
-	}
-
-	@Override
-	public HibernateOrmMapping toConcreteType() {
-		return this;
-	}
-
-	@Override
-	public EntityLoadingCacheLookupStrategy cacheLookupStrategy() {
-		return cacheLookupStrategy;
-	}
-
-	@Override
-	public int fetchSize() {
-		return fetchSize;
-	}
-
-	@Override
-	public SessionFactoryImplementor sessionFactory() {
-		return sessionFactory;
-	}
-
-	@Override
-	public TenancyConfiguration tenancyConfiguration() {
-		return tenancyConfiguration;
-	}
-
-	@Override
-	public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
-		return massIndexingDefaultCleanOperation;
-	}
-
-	@Override
-	public HibernateOrmScopeSessionContext sessionContext(EntityManager entityManager) {
-		return HibernateOrmSearchSession.get( this, HibernateOrmUtils.toSessionImplementor( entityManager ) );
-	}
-
-	@Override
-	public boolean listenerEnabled() {
-		return listenerEnabled;
-	}
-
-	// For tests
-	public void listenerEnabled(boolean enabled) {
-		this.listenerEnabled = enabled;
-	}
-
-	// For tests
-	public CompletableFuture<?> backgroundIndexingCompletion() {
-		return coordinationStrategyHolder.get().completion();
-	}
-
-	@Override
-	public PojoMassIndexerAgent createMassIndexerAgent(PojoMassIndexerAgentCreateContext context) {
-		return coordinationStrategyHolder.get().createMassIndexerAgent( context );
-	}
-
-	@Override
-	public PojoIndexingPlan currentIndexingPlanIfExisting(SessionImplementor session) {
-		HibernateOrmSearchSession searchSession = HibernateOrmSearchSession.get( this, session, false );
-		if ( searchSession == null ) {
-			// Only happens if createIfDoesNotExist is false
-			return null;
-		}
-		return searchSession.currentIndexingPlan( false );
-	}
-
-	@Override
-	public PojoTypeIndexingPlan currentIndexingPlanIfTypeIncluded(
-			SharedSessionContractImplementor session,
-			PojoRawTypeIdentifier<?> typeIdentifier) {
-		try {
-			HibernateOrmSearchSession searchSession = HibernateOrmSearchSession.get( this, session, false );
-			if ( searchSession != null ) {
-				// If the session exist, rely on the session-level filter
-				if ( searchSession.configuredIndexingPlanFilter().isIncluded( typeIdentifier ) ) {
-					return searchSession.currentIndexingPlan( true ).typeIfIncludedOrNull( typeIdentifier );
-				}
-				else {
-					return null;
-				}
-			}
-			else {
-				// If the search session doesn't exist yet, we can safely rely on the global filter
-				if ( applicationIndexingPlanFilter.isIncluded( typeIdentifier ) ) {
-					searchSession = HibernateOrmSearchSession.get( this, session, true );
-					if ( searchSession != null ) {
-						return searchSession.currentIndexingPlan( true ).typeIfIncludedOrNull( typeIdentifier );
-					}
-				}
-				return null;
-			}
-		}
-		catch (PersistenceException e) {
-			throw OrmMiscLog.INSTANCE.unsupportedSessionType( session.getClass() );
-		}
-	}
-
-	@Override
-	public AutomaticIndexingQueueEventProcessingPlan createIndexingQueueEventProcessingPlan(Session session) {
-		HibernateOrmSearchSession searchSession =
-				HibernateOrmSearchSession.get( this, session.unwrap( SessionImplementor.class ), true );
-		return new AutomaticIndexingQueueEventProcessingPlanImpl( searchSession.createIndexingQueueEventProcessingPlan() );
-	}
-
-	@Override
-	public ConfiguredIndexingPlanSynchronizationStrategy currentAutomaticIndexingSynchronizationStrategy(
-			SessionImplementor session) {
-		return HibernateOrmSearchSession.get( this, session )
-				.configuredAutomaticIndexingSynchronizationStrategy();
-	}
-
-	@Override
-	public HibernateOrmTypeContextContainer typeContextProvider() {
-		return typeContextContainer;
-	}
-
-	@Override
-	public <SR, T> TypedSearchScopeImpl<SR, T> createScope(Class<SR> rootScope,
-			Collection<? extends Class<? extends T>> classes) {
-		PojoScopeDelegate<SR,
-				EntityReference,
-				T,
-				SearchIndexedEntity<? extends T>> scopeDelegate =
-						delegate().createPojoScopeForClasses(
-								this,
-								rootScope,
-								classes,
-								typeContextContainer::indexedForExactType
-						);
-
-		// Explicit type parameter is necessary here for ECJ (Eclipse compiler)
-		return new TypedSearchScopeImpl<SR, T>( this, tenancyConfiguration, scopeDelegate );
-	}
-
-	@Override
-	public <SR, T> TypedSearchScopeImpl<SR, T> createScope(Class<SR> rootScope, Class<T> expectedSuperType,
-			Collection<String> entityNames) {
-		PojoScopeDelegate<SR,
-				EntityReference,
-				T,
-				SearchIndexedEntity<? extends T>> scopeDelegate =
-						delegate().createPojoScopeForEntityNames(
-								this,
-								rootScope,
-								expectedSuperType, entityNames,
-								typeContextContainer::indexedForExactType
-						);
-
-		// Explicit type parameter is necessary here for ECJ (Eclipse compiler)
-		return new TypedSearchScopeImpl<SR, T>( this, tenancyConfiguration, scopeDelegate );
-	}
-
-	@Override
-	public HibernateOrmSearchSession.Builder createSessionBuilder(
-			SharedSessionContractImplementor sessionImplementor) {
-		SessionFactory givenSessionFactory = sessionImplementor.getSessionFactory();
-
-		if ( !givenSessionFactory.equals( sessionFactory ) ) {
-			throw OrmMiscLog.INSTANCE.usingDifferentSessionFactories( sessionFactory, givenSessionFactory );
-		}
-
-		return new HibernateOrmSearchSession.Builder( this, typeContextContainer,
-				configuredAutomaticIndexingStrategy, sessionImplementor );
-	}
-
-	@Override
-	public CoordinationStrategy coordinationStrategy() {
-		return coordinationStrategyHolder.get();
-	}
-
-	private SearchIntegration searchIntegration() {
-		return integrationHandle.getOrFail();
-	}
-
-	private Optional<TypedSearchScopeImpl<?, Object>> createAllScope() {
-		return delegate().<NonStaticMetamodelScope, EntityReference,
-				SearchIndexedEntity<?>>createPojoAllScope(
-						this,
-						NonStaticMetamodelScope.class,
-						typeContextContainer::indexedForExactType
-				)
-				.map( scopeDelegate -> new TypedSearchScopeImpl<>( this, tenancyConfiguration, scopeDelegate ) );
-	}
+public class HibernateOrmMapping extends AbstractPojoMappingImplementor<HibernateOrmMapping> implements SearchMapping, AutoCloseable, HibernateOrmMappingContext, HibernateOrmListenerContextProvider, BatchMappingContext, HibernateOrmScopeMappingContext, HibernateOrmSearchSessionMappingContext, AutomaticIndexingMappingContext, CoordinationStrategyContext {
 
+    private static final ConfigurationProperty<EntityLoadingCacheLookupStrategy> QUERY_LOADING_CACHE_LOOKUP_STRATEGY = ConfigurationProperty.forKey(HibernateOrmMapperSettings.Radicals.QUERY_LOADING_CACHE_LOOKUP_STRATEGY).as(EntityLoadingCacheLookupStrategy.class, EntityLoadingCacheLookupStrategy::of).withDefault(HibernateOrmMapperSettings.Defaults.QUERY_LOADING_CACHE_LOOKUP_STRATEGY).build();
+
+    private static final ConfigurationProperty<Integer> QUERY_LOADING_FETCH_SIZE = ConfigurationProperty.forKey(HibernateOrmMapperSettings.Radicals.QUERY_LOADING_FETCH_SIZE).asIntegerStrictlyPositive().withDefault(HibernateOrmMapperSettings.Defaults.QUERY_LOADING_FETCH_SIZE).build();
+
+    private static final ConfigurationProperty<SchemaManagementStrategyName> SCHEMA_MANAGEMENT_STRATEGY = ConfigurationProperty.forKey(HibernateOrmMapperSettings.Radicals.SCHEMA_MANAGEMENT_STRATEGY).as(SchemaManagementStrategyName.class, SchemaManagementStrategyName::of).withDefault(HibernateOrmMapperSettings.Defaults.SCHEMA_MANAGEMENT_STRATEGY).build();
+
+    private static final ConfigurationProperty<MassIndexingDefaultCleanOperation> INDEXING_MASS_DEFAULT_CLEAN_OPERATION = ConfigurationProperty.forKey(HibernateOrmMapperSettings.Radicals.INDEXING_MASS_DEFAULT_CLEAN_OPERATION).as(MassIndexingDefaultCleanOperation.class, MassIndexingDefaultCleanOperation::of).withDefault(HibernateOrmMapperSettings.Defaults.INDEXING_MASS_DEFAULT_CLEAN_OPERATION).build();
+
+    public static MappingImplementor<HibernateOrmMapping> create(PojoMappingDelegate mappingDelegate, HibernateOrmTypeContextContainer typeContextContainer, BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder, ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy, SessionFactoryImplementor sessionFactory, ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private final SessionFactoryImplementor sessionFactory;
+
+    private final HibernateOrmTypeContextContainer typeContextContainer;
+
+    private final BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder;
+
+    private final ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy;
+
+    private final EntityLoadingCacheLookupStrategy cacheLookupStrategy;
+
+    private final int fetchSize;
+
+    private final SchemaManagementListener schemaManagementListener;
+
+    private final MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation;
+
+    private volatile ConfiguredSearchIndexingPlanFilter applicationIndexingPlanFilter = ConfiguredSearchIndexingPlanFilter.IncludeAll.INSTANCE;
+
+    private TenancyConfiguration tenancyConfiguration;
+
+    private SearchIntegration.Handle integrationHandle;
+
+    private volatile boolean listenerEnabled = true;
+
+    private HibernateOrmMapping(PojoMappingDelegate mappingDelegate, HibernateOrmTypeContextContainer typeContextContainer, SessionFactoryImplementor sessionFactory, BeanHolder<? extends CoordinationStrategy> coordinationStrategyHolder, ConfiguredAutomaticIndexingStrategy configuredAutomaticIndexingStrategy, EntityLoadingCacheLookupStrategy cacheLookupStrategy, int fetchSize, SchemaManagementListener schemaManagementListener, MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation) {
+        super(mappingDelegate, org.hibernate.search.mapper.orm.common.impl.HibernateOrmEntityReference::new);
+        this.typeContextContainer = typeContextContainer;
+        this.sessionFactory = sessionFactory;
+        this.coordinationStrategyHolder = coordinationStrategyHolder;
+        this.configuredAutomaticIndexingStrategy = configuredAutomaticIndexingStrategy;
+        this.cacheLookupStrategy = cacheLookupStrategy;
+        this.fetchSize = fetchSize;
+        this.schemaManagementListener = schemaManagementListener;
+        this.massIndexingDefaultCleanOperation = massIndexingDefaultCleanOperation;
+    }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CompletableFuture<?> start(MappingStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CompletableFuture<?> preStop(MappingPreStopContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected void doStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BackendMappingHints hints() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <T> TypedSearchScopeImpl<?, T> scope(Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <T> TypedSearchScopeImpl<?, T> scope(Class<T> expectedSuperType, String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <T> TypedSearchScopeImpl<?, T> scope(Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <T> TypedSearchScopeImpl<?, T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public EntityManagerFactory toEntityManagerFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SessionFactory toOrmSessionFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <E> SearchIndexedEntity<E> indexedEntity(Class<E> entityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SearchIndexedEntity<?> indexedEntity(String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Collection<SearchIndexedEntity<?>> allIndexedEntities() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public IndexManager indexManager(String indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Backend backend() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Backend backend(String backendName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void indexingPlanFilter(SearchIndexingPlanFilter filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public ConfiguredSearchIndexingPlanFilter applicationIndexingPlanFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfiguredSearchIndexingPlanFilter configuredSearchIndexingPlanFilter(SearchIndexingPlanFilter filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public HibernateOrmMapping toConcreteType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public EntityLoadingCacheLookupStrategy cacheLookupStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int fetchSize() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SessionFactoryImplementor sessionFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public TenancyConfiguration tenancyConfiguration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public HibernateOrmScopeSessionContext sessionContext(EntityManager entityManager) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean listenerEnabled() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    // For tests
+    public void listenerEnabled(boolean enabled) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    // For tests
+    public CompletableFuture<?> backgroundIndexingCompletion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoMassIndexerAgent createMassIndexerAgent(PojoMassIndexerAgentCreateContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoIndexingPlan currentIndexingPlanIfExisting(SessionImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoTypeIndexingPlan currentIndexingPlanIfTypeIncluded(SharedSessionContractImplementor session, PojoRawTypeIdentifier<?> typeIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public AutomaticIndexingQueueEventProcessingPlan createIndexingQueueEventProcessingPlan(Session session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfiguredIndexingPlanSynchronizationStrategy currentAutomaticIndexingSynchronizationStrategy(SessionImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public HibernateOrmTypeContextContainer typeContextProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <SR, T> TypedSearchScopeImpl<SR, T> createScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <SR, T> TypedSearchScopeImpl<SR, T> createScope(Class<SR> rootScope, Class<T> expectedSuperType, Collection<String> entityNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public HibernateOrmSearchSession.Builder createSessionBuilder(SharedSessionContractImplementor sessionImplementor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CoordinationStrategy coordinationStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private SearchIntegration searchIntegration() {
+        return integrationHandle.getOrFail();
+    }
+
+    private Optional<TypedSearchScopeImpl<?, Object>> createAllScope() {
+        return delegate().<NonStaticMetamodelScope, EntityReference, SearchIndexedEntity<?>>createPojoAllScope(this, NonStaticMetamodelScope.class, typeContextContainer::indexedForExactType).map(scopeDelegate -> new TypedSearchScopeImpl<>(this, tenancyConfiguration, scopeDelegate));
+    }
 }

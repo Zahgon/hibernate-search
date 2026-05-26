@@ -8,19 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultDoubleBridge extends AbstractPassThroughDefaultBridge<Double> {
 
-	public static final DefaultDoubleBridge INSTANCE = new DefaultDoubleBridge();
+    public static final DefaultDoubleBridge INSTANCE = new DefaultDoubleBridge();
 
-	private DefaultDoubleBridge() {
-	}
+    private DefaultDoubleBridge() {
+    }
 
-	@Override
-	protected String toString(Double value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Double fromString(String value) {
-		return ParseUtils.parseDouble( value );
-	}
-
+    @Override
+    protected Double fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

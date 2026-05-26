@@ -9,21 +9,19 @@ import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.FieldProjectionOptionsStep;
 import org.hibernate.search.engine.search.projection.spi.FieldProjectionBuilder;
 
-public class FieldProjectionOptionsStepImpl<T, P>
-		implements FieldProjectionOptionsStep<FieldProjectionOptionsStepImpl<T, P>, P> {
+public class FieldProjectionOptionsStepImpl<T, P> implements FieldProjectionOptionsStep<FieldProjectionOptionsStepImpl<T, P>, P> {
 
-	protected final FieldProjectionBuilder<T> fieldProjectionBuilder;
-	private final ProjectionCollector.Provider<T, P> collectorProvider;
+    protected final FieldProjectionBuilder<T> fieldProjectionBuilder;
 
-	FieldProjectionOptionsStepImpl(FieldProjectionBuilder<T> fieldProjectionBuilder,
-			ProjectionCollector.Provider<T, P> collectorProvider) {
-		this.fieldProjectionBuilder = fieldProjectionBuilder;
-		this.collectorProvider = collectorProvider;
-	}
+    private final ProjectionCollector.Provider<T, P> collectorProvider;
 
-	@Override
-	public SearchProjection<P> toProjection() {
-		return fieldProjectionBuilder.build( collectorProvider );
-	}
+    FieldProjectionOptionsStepImpl(FieldProjectionBuilder<T> fieldProjectionBuilder, ProjectionCollector.Provider<T, P> collectorProvider) {
+        this.fieldProjectionBuilder = fieldProjectionBuilder;
+        this.collectorProvider = collectorProvider;
+    }
 
+    @Override
+    public SearchProjection<P> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -11,54 +11,33 @@ import org.hibernate.search.mapper.pojo.massindexing.MassIndexingFailureHandler;
 
 public class PojoMassIndexingFailSafeFailureHandlerWrapper implements MassIndexingFailureHandler {
 
-	private final MassIndexingFailureHandler delegate;
-	private final boolean failFast;
+    private final MassIndexingFailureHandler delegate;
 
-	public PojoMassIndexingFailSafeFailureHandlerWrapper(MassIndexingFailureHandler delegate, boolean failFast) {
-		this.delegate = delegate;
-		this.failFast = failFast;
-	}
+    private final boolean failFast;
 
-	@Override
-	public void handle(MassIndexingFailureContext context) {
-		try {
-			delegate.handle( context );
-		}
-		catch (Throwable t) {
-			MassIndexingLog.INSTANCE.failureInMassIndexingFailureHandler( t );
-		}
-		finally {
-			failFastIfNeeded();
-		}
-	}
+    public PojoMassIndexingFailSafeFailureHandlerWrapper(MassIndexingFailureHandler delegate, boolean failFast) {
+        this.delegate = delegate;
+        this.failFast = failFast;
+    }
 
-	@Override
-	public void handle(MassIndexingEntityFailureContext context) {
-		try {
-			delegate.handle( context );
-		}
-		catch (Throwable t) {
-			MassIndexingLog.INSTANCE.failureInMassIndexingFailureHandler( t );
-		}
-		finally {
-			failFastIfNeeded();
-		}
-	}
+    @Override
+    public void handle(MassIndexingFailureContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long failureFloodingThreshold() {
-		try {
-			return delegate.failureFloodingThreshold();
-		}
-		catch (Throwable t) {
-			MassIndexingLog.INSTANCE.failureInMassIndexingFailureHandler( t );
-			return MassIndexingFailureHandler.super.failureFloodingThreshold();
-		}
-	}
+    @Override
+    public void handle(MassIndexingEntityFailureContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void failFastIfNeeded() {
-		if ( failFast ) {
-			throw MassIndexingLog.INSTANCE.massIndexerFailFast();
-		}
-	}
+    @Override
+    public long failureFloodingThreshold() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private void failFastIfNeeded() {
+        if (failFast) {
+            throw MassIndexingLog.INSTANCE.massIndexerFailFast();
+        }
+    }
 }

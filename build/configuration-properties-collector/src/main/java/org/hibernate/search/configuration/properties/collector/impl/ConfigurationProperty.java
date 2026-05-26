@@ -12,162 +12,126 @@ import java.util.stream.Collectors;
 
 public class ConfigurationProperty implements Comparable<ConfigurationProperty> {
 
-	public enum Type {
-		/**
-		 * Configuration property type API/SPI will be determined by inspecting the package in which a class is located.
-		 * In case package contains {@code spi} package at any upper levels the type will be {@code SPI}, otherwise - {@code API}
-		 */
-		API,
-		SPI
-	}
+    public enum Type {
 
-	private static final Comparator<ConfigurationProperty> CONFIGURATION_PROPERTY_COMPARATOR = Comparator.comparing(
-			c -> c.key().key );
-	private Key key;
-	private String javadoc;
-	private String sourceClass;
+        /**
+         * Configuration property type API/SPI will be determined by inspecting the package in which a class is located.
+         * In case package contains {@code spi} package at any upper levels the type will be {@code SPI}, otherwise - {@code API}
+         */
+        API,
+        SPI
+    }
 
-	private Type type;
+    private static final Comparator<ConfigurationProperty> CONFIGURATION_PROPERTY_COMPARATOR = Comparator.comparing(c -> c.key().key);
 
-	private Object defaultValue;
+    private Key key;
 
-	private String anchorPrefix;
-	private String moduleName;
+    private String javadoc;
 
-	public Key key() {
-		return key;
-	}
+    private String sourceClass;
 
-	public ConfigurationProperty key(Key key) {
-		this.key = key;
-		return this;
-	}
+    private Type type;
 
-	public String javadoc() {
-		return javadoc;
-	}
+    private Object defaultValue;
 
-	public ConfigurationProperty javadoc(String javadoc) {
-		this.javadoc = javadoc == null ? "" : javadoc;
-		return this;
-	}
+    private String anchorPrefix;
 
-	public String sourceClass() {
-		return sourceClass;
-	}
+    private String moduleName;
 
-	public ConfigurationProperty sourceClass(String sourceClass) {
-		this.sourceClass = sourceClass;
-		return this;
-	}
+    public Key key() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Type type() {
-		return type;
-	}
+    public ConfigurationProperty key(Key key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationProperty type(Type type) {
-		this.type = type;
-		return this;
-	}
+    public String javadoc() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Object defaultValue() {
-		return defaultValue;
-	}
+    public ConfigurationProperty javadoc(String javadoc) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationProperty defaultValue(Object defaultValue) {
-		this.defaultValue = defaultValue == null ? "" : defaultValue;
-		return this;
-	}
+    public String sourceClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String anchorPrefix() {
-		return anchorPrefix;
-	}
+    public ConfigurationProperty sourceClass(String sourceClass) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationProperty anchorPrefix(String anchorPrefix) {
-		this.anchorPrefix = anchorPrefix.replaceAll( "[^\\w-.]", "_" );
-		return this;
-	}
+    public Type type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String moduleName() {
-		return moduleName;
-	}
+    public ConfigurationProperty type(Type type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationProperty moduleName(String moduleName) {
-		this.moduleName = moduleName;
-		return this;
-	}
+    public Object defaultValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "ConfigurationProperty{" +
-				"key='" + key + '\'' +
-				", javadoc='" + javadoc + '\'' +
-				", sourceClass='" + sourceClass + '\'' +
-				", type='" + type + '\'' +
-				", default='" + defaultValue + '\'' +
-				", anchorPrefix='" + anchorPrefix + '\'' +
-				", moduleName='" + moduleName + '\'' +
-				'}';
-	}
+    public ConfigurationProperty defaultValue(Object defaultValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int compareTo(ConfigurationProperty o) {
-		return CONFIGURATION_PROPERTY_COMPARATOR.compare( this, o );
-	}
+    public String anchorPrefix() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		ConfigurationProperty that = (ConfigurationProperty) o;
-		return Objects.equals( key, that.key )
-				&& Objects.equals( javadoc, that.javadoc )
-				&& Objects.equals( sourceClass, that.sourceClass )
-				&& type == that.type
-				&& Objects.equals( defaultValue, that.defaultValue )
-				&& Objects.equals( anchorPrefix, that.anchorPrefix )
-				&& Objects.equals( moduleName, that.moduleName );
-	}
+    public ConfigurationProperty anchorPrefix(String anchorPrefix) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( key, javadoc, sourceClass, type, defaultValue, anchorPrefix, moduleName );
-	}
+    public String moduleName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Key {
-		private final List<String> prefixes;
-		private final String key;
+    public ConfigurationProperty moduleName(String moduleName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Key(List<String> prefixes, String key) {
-			this.key = key;
-			this.prefixes = prefixes;
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public List<String> resolvedKeys() {
-			if ( prefixes.isEmpty() ) {
-				return Collections.singletonList( key );
-			}
-			else {
-				return prefixes.stream()
-						.map( p -> p + key )
-						.collect( Collectors.toList() );
-			}
-		}
+    @Override
+    public int compareTo(ConfigurationProperty o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public String toString() {
-			if ( prefixes.isEmpty() ) {
-				return key;
-			}
-			else {
-				return prefixes.stream()
-						.map( p -> p + key )
-						.collect( Collectors.joining( "/" ) );
-			}
-		}
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public static class Key {
+
+        private final List<String> prefixes;
+
+        private final String key;
+
+        public Key(List<String> prefixes, String key) {
+            this.key = key;
+            this.prefixes = prefixes;
+        }
+
+        public List<String> resolvedKeys() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

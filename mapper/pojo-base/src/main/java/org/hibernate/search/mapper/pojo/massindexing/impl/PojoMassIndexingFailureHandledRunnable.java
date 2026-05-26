@@ -4,7 +4,6 @@
  */
 package org.hibernate.search.mapper.pojo.massindexing.impl;
 
-
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingEnvironment;
 import org.hibernate.search.mapper.pojo.reporting.impl.PojoMassIndexerMessages;
 
@@ -14,169 +13,67 @@ import org.hibernate.search.mapper.pojo.reporting.impl.PojoMassIndexerMessages;
  */
 public abstract class PojoMassIndexingFailureHandledRunnable implements Runnable {
 
-	private final PojoMassIndexingNotifier notifier;
-	private final MassIndexingEnvironment environment;
+    private final PojoMassIndexingNotifier notifier;
 
-	protected PojoMassIndexingFailureHandledRunnable(PojoMassIndexingNotifier notifier, MassIndexingEnvironment environment) {
-		this.notifier = notifier;
-		this.environment = environment;
-	}
+    private final MassIndexingEnvironment environment;
 
-	@Override
-	public final void run() {
-		boolean interrupted = false;
+    protected PojoMassIndexingFailureHandledRunnable(PojoMassIndexingNotifier notifier, MassIndexingEnvironment environment) {
+        this.notifier = notifier;
+        this.environment = environment;
+    }
 
-		try {
-			beforeExecution();
-			try {
-				runWithFailureHandler();
-			}
-			finally {
-				// will only make an attempt to call `afterExecution()` if `beforeExecution()` call was successful.
-				afterExecution();
-			}
-		}
-		catch (MassIndexingOperationHandledFailureException e) {
-			// This exception has already been reported; just clean up then propagate it.
-			try {
-				cleanUpOnFailure();
-			}
-			catch (RuntimeException e2) {
-				e.addSuppressed( e2 );
-			}
-			catch (InterruptedException e2) {
-				interrupted = true;
-				e.addSuppressed( e2 );
-			}
+    @Override
+    public final void run() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			throw e;
-		}
-		catch (InterruptedException e) {
-			interrupted = true;
-			try {
-				cleanUpOnInterruption();
-			}
-			catch (RuntimeException | InterruptedException e2) {
-				e.addSuppressed( e2 );
-			}
+    protected abstract void runWithFailureHandler() throws InterruptedException;
 
-			// This may throw an exception, and we're fine with not catching it.
-			notifyInterrupted( e );
-		}
-		catch (RuntimeException e) {
-			try {
-				cleanUpOnFailure();
-			}
-			catch (RuntimeException e2) {
-				e.addSuppressed( e2 );
-			}
-			catch (InterruptedException e2) {
-				interrupted = true;
-				e.addSuppressed( e2 );
-			}
+    protected abstract void cleanUpOnInterruption() throws InterruptedException;
 
-			// This may throw an exception, and we're fine with not catching it.
-			notifyFailure( e );
+    protected abstract void cleanUpOnFailure() throws InterruptedException;
 
-			// Also propagate the exception
-			throw new MassIndexingOperationHandledFailureException( e );
-		}
-		catch (Error e) {
-			try {
-				cleanUpOnFailure();
-			}
-			catch (RuntimeException | Error e2) {
-				e.addSuppressed( e2 );
-			}
-			catch (InterruptedException e2) {
-				interrupted = true;
-				e.addSuppressed( e2 );
-			}
+    protected MassIndexingEnvironment.Context createMassIndexingEnvironmentContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			try {
-				notifyError( e );
-			}
-			// We always want to throw the original error, even of something was thrown in the try block.
-			catch (RuntimeException | Error e2) {
-				e.addSuppressed( e2 );
-			}
+    protected boolean supportsThreadLifecycleHooks() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			// Also propagate the error
-			throw e;
-		}
-		finally {
-			if ( interrupted ) {
-				// Restore interruption signal
-				Thread.currentThread().interrupt();
-			}
-		}
+    protected void beforeExecution() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( !interrupted ) {
-			// This may throw an exception, and we're fine with not catching it.
-			notifySuccess();
-		}
-	}
+    protected void afterExecution() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract void runWithFailureHandler() throws InterruptedException;
+    protected final PojoMassIndexingNotifier getNotifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract void cleanUpOnInterruption() throws InterruptedException;
+    protected final MassIndexingEnvironment getMassIndexingEnvironment() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract void cleanUpOnFailure() throws InterruptedException;
+    protected void notifySuccess() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected MassIndexingEnvironment.Context createMassIndexingEnvironmentContext() {
-		throw new UnsupportedOperationException( "There's no context supported for " + this.getClass().getSimpleName() );
-	}
+    protected void notifyError(Error error) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected boolean supportsThreadLifecycleHooks() {
-		return false;
-	}
+    protected void notifyInterrupted(InterruptedException exception) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected void beforeExecution() {
-		if ( supportsThreadLifecycleHooks() ) {
-			getMassIndexingEnvironment().beforeExecution(
-					createMassIndexingEnvironmentContext()
-			);
-		}
-	}
+    protected void notifyFailure(RuntimeException exception) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected void afterExecution() {
-		if ( supportsThreadLifecycleHooks() ) {
-			getMassIndexingEnvironment().afterExecution(
-					createMassIndexingEnvironmentContext()
-			);
-		}
-	}
-
-	protected final PojoMassIndexingNotifier getNotifier() {
-		return notifier;
-	}
-
-	protected final MassIndexingEnvironment getMassIndexingEnvironment() {
-		return environment;
-	}
-
-	protected void notifySuccess() {
-		// Do nothing by default
-	}
-
-	protected void notifyError(Error error) {
-		notifier.reportError( error );
-	}
-
-	protected void notifyInterrupted(InterruptedException exception) {
-		// By default, just report the interruption to the coordinator...
-		notifier.reportInterrupted( exception );
-		/// ... and to the caller.
-		throw new MassIndexingOperationHandledFailureException( exception );
-		// run() will reset the interrupt flag on this thread, so we don't need to do it here.
-	}
-
-	protected void notifyFailure(RuntimeException exception) {
-		notifier.reportRunnableFailure( exception, operationName() );
-	}
-
-	protected String operationName() {
-		return PojoMassIndexerMessages.INSTANCE.massIndexerOperation();
-	}
-
+    protected String operationName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

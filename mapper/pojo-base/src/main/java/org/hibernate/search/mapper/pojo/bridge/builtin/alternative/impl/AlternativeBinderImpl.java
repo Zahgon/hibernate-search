@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.bridge.builtin.alternative.impl;
 
 import static java.util.function.Predicate.isEqual;
-
 import org.hibernate.search.engine.backend.document.DocumentElement;
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.environment.bean.BeanReference;
@@ -23,88 +22,59 @@ import org.hibernate.search.util.common.impl.StreamHelper;
 
 public final class AlternativeBinderImpl<D, P> implements AlternativeBinder {
 
-	private final Class<D> discriminatorType;
-	private final String fieldValueSourcePropertyName;
-	private final Class<P> fieldValueSourcePropertyType;
-	private final BeanReference<? extends AlternativeBinderDelegate<D, P>> delegateRef;
+    private final Class<D> discriminatorType;
 
-	private String alternativeId;
+    private final String fieldValueSourcePropertyName;
 
-	public AlternativeBinderImpl(Class<D> discriminatorType,
-			String fieldValueSourcePropertyName, Class<P> fieldValueSourcePropertyType,
-			BeanReference<? extends AlternativeBinderDelegate<D, P>> delegateRef) {
-		this.discriminatorType = discriminatorType;
-		this.fieldValueSourcePropertyName = fieldValueSourcePropertyName;
-		this.fieldValueSourcePropertyType = fieldValueSourcePropertyType;
-		this.delegateRef = delegateRef;
-	}
+    private final Class<P> fieldValueSourcePropertyType;
 
-	@Override
-	public AlternativeBinder alternativeId(String id) {
-		alternativeId = id;
-		return this;
-	}
+    private final BeanReference<? extends AlternativeBinderDelegate<D, P>> delegateRef;
 
-	@Override
-	public void bind(TypeBindingContext context) {
-		PojoModelType bridgedElement = context.bridgedElement();
+    private String alternativeId;
 
-		PojoElementAccessor<D> discriminatorAccessor;
-		PojoElementAccessor<P> fieldValueSourceAccessor;
-		AlternativeValueBridge<D, P> bridgeDelegate;
+    public AlternativeBinderImpl(Class<D> discriminatorType, String fieldValueSourcePropertyName, Class<P> fieldValueSourcePropertyType, BeanReference<? extends AlternativeBinderDelegate<D, P>> delegateRef) {
+        this.discriminatorType = discriminatorType;
+        this.fieldValueSourcePropertyName = fieldValueSourcePropertyName;
+        this.fieldValueSourcePropertyType = fieldValueSourcePropertyType;
+        this.delegateRef = delegateRef;
+    }
 
-		try ( BeanHolder<? extends AlternativeBinderDelegate<D, P>> alternativeBinderHolder =
-				delegateRef.resolve( context.beanResolver() ) ) {
-			AlternativeBinderDelegate<D, P> delegate = alternativeBinderHolder.get();
-			discriminatorAccessor = findAlternativeDiscriminatorProperty( bridgedElement )
-					.createAccessor( discriminatorType );
-			PojoModelProperty fieldValueSource = bridgedElement.property( fieldValueSourcePropertyName );
-			fieldValueSourceAccessor = fieldValueSource.createAccessor( fieldValueSourcePropertyType );
-			bridgeDelegate = delegate.bind( context.indexSchemaElement(), fieldValueSource );
-		}
+    @Override
+    public AlternativeBinder alternativeId(String id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		context.bridge( new Bridge<>( discriminatorAccessor, fieldValueSourceAccessor, bridgeDelegate ) );
-	}
+    @Override
+    public void bind(TypeBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private PojoModelProperty findAlternativeDiscriminatorProperty(PojoModelType bridgedElement) {
-		return bridgedElement.properties().stream()
-				.filter( p -> p.markers( AlternativeDiscriminatorBinderImpl.Marker.class ).stream()
-						.map( AlternativeDiscriminatorBinderImpl.Marker::id )
-						.anyMatch( isEqual( alternativeId ) ) )
-				.collect( StreamHelper.singleElement(
-						() -> MappingLog.INSTANCE.cannotFindAlternativeDiscriminator( alternativeId,
-								fieldValueSourcePropertyName ),
-						() -> MappingLog.INSTANCE.conflictingAlternativeDiscriminators( alternativeId,
-								fieldValueSourcePropertyName )
-				) );
-	}
+    private PojoModelProperty findAlternativeDiscriminatorProperty(PojoModelType bridgedElement) {
+        return bridgedElement.properties().stream().filter(p -> p.markers(AlternativeDiscriminatorBinderImpl.Marker.class).stream().map(AlternativeDiscriminatorBinderImpl.Marker::id).anyMatch(isEqual(alternativeId))).collect(StreamHelper.singleElement(() -> MappingLog.INSTANCE.cannotFindAlternativeDiscriminator(alternativeId, fieldValueSourcePropertyName), () -> MappingLog.INSTANCE.conflictingAlternativeDiscriminators(alternativeId, fieldValueSourcePropertyName)));
+    }
 
-	private static final class Bridge<D, P> implements TypeBridge<Object> {
-		private final PojoElementAccessor<D> discriminatorAccessor;
-		private final PojoElementAccessor<P> fieldValueSourceAccessor;
-		private final AlternativeValueBridge<D, P> delegate;
+    private static final class Bridge<D, P> implements TypeBridge<Object> {
 
-		private Bridge(PojoElementAccessor<D> discriminatorAccessor,
-				PojoElementAccessor<P> fieldValueSourceAccessor,
-				AlternativeValueBridge<D, P> delegate) {
-			this.discriminatorAccessor = discriminatorAccessor;
-			this.fieldValueSourceAccessor = fieldValueSourceAccessor;
-			this.delegate = delegate;
-		}
+        private final PojoElementAccessor<D> discriminatorAccessor;
 
-		@Override
-		public String toString() {
-			return getClass().getSimpleName() + "["
-					+ "discriminatorAccessor=" + discriminatorAccessor
-					+ ", fieldValueSourceAccessor=" + fieldValueSourceAccessor
-					+ ", delegate=" + delegate
-					+ "]";
-		}
+        private final PojoElementAccessor<P> fieldValueSourceAccessor;
 
-		@Override
-		public void write(DocumentElement target, Object bridgedElement, TypeBridgeWriteContext context) {
-			delegate.write( target, discriminatorAccessor.read( bridgedElement ),
-					fieldValueSourceAccessor.read( bridgedElement ) );
-		}
-	}
+        private final AlternativeValueBridge<D, P> delegate;
+
+        private Bridge(PojoElementAccessor<D> discriminatorAccessor, PojoElementAccessor<P> fieldValueSourceAccessor, AlternativeValueBridge<D, P> delegate) {
+            this.discriminatorAccessor = discriminatorAccessor;
+            this.fieldValueSourceAccessor = fieldValueSourceAccessor;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void write(DocumentElement target, Object bridgedElement, TypeBridgeWriteContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

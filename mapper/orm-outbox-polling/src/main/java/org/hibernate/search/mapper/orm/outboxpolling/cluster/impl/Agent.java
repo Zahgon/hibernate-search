@@ -6,129 +6,125 @@ package org.hibernate.search.mapper.orm.outboxpolling.cluster.impl;
 
 import java.time.Instant;
 import java.util.UUID;
-
 import jakarta.persistence.Transient;
 
 public class Agent {
-	private UUID id;
-	private AgentType type;
-	private String name;
-	private Instant expiration;
-	private AgentState state;
-	private Integer totalShardCount;
-	private Integer assignedShardIndex;
-	private byte[] payload;
-	private String tenantId;
 
-	protected Agent() {
-	}
+    private UUID id;
 
-	public Agent(AgentType type, String name, Instant expiration, AgentState state,
-			ShardAssignmentDescriptor shardAssignment) {
-		this.type = type;
-		this.name = name;
-		this.expiration = expiration;
-		this.state = state;
-		this.totalShardCount = shardAssignment == null ? null : shardAssignment.totalShardCount;
-		this.assignedShardIndex = shardAssignment == null ? null : shardAssignment.assignedShardIndex;
-	}
+    private AgentType type;
 
-	@Override
-	public String toString() {
-		return "Agent{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", expiration=" + expiration +
-				", type=" + type +
-				", currentState=" + state +
-				", totalShardCount=" + totalShardCount +
-				", assignedShardIndex=" + assignedShardIndex +
-				", tenantId=" + tenantId +
-				'}';
-	}
+    private String name;
 
-	public UUID getId() {
-		return id;
-	}
+    private Instant expiration;
 
-	// For tests only
-	public void setId(UUID id) {
-		this.id = id;
-	}
+    private AgentState state;
 
-	public AgentType getType() {
-		return type;
-	}
+    private Integer totalShardCount;
 
-	public void setType(AgentType type) {
-		this.type = type;
-	}
+    private Integer assignedShardIndex;
 
-	public String getName() {
-		return name;
-	}
+    private byte[] payload;
 
-	protected void setName(String name) {
-		this.name = name;
-	}
+    private String tenantId;
 
-	public Instant getExpiration() {
-		return expiration;
-	}
+    protected Agent() {
+    }
 
-	public void setExpiration(Instant expiration) {
-		this.expiration = expiration;
-	}
+    public Agent(AgentType type, String name, Instant expiration, AgentState state, ShardAssignmentDescriptor shardAssignment) {
+        this.type = type;
+        this.name = name;
+        this.expiration = expiration;
+        this.state = state;
+        this.totalShardCount = shardAssignment == null ? null : shardAssignment.totalShardCount;
+        this.assignedShardIndex = shardAssignment == null ? null : shardAssignment.assignedShardIndex;
+    }
 
-	public AgentState getState() {
-		return state;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setState(AgentState state) {
-		this.state = state;
-	}
+    public UUID getId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Integer getTotalShardCount() {
-		return totalShardCount;
-	}
+    // For tests only
+    public void setId(UUID id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setTotalShardCount(Integer totalShardCount) {
-		this.totalShardCount = totalShardCount;
-	}
+    public AgentType getType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Integer getAssignedShardIndex() {
-		return assignedShardIndex;
-	}
+    public void setType(AgentType type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setAssignedShardIndex(Integer assignedShardIndex) {
-		this.assignedShardIndex = assignedShardIndex;
-	}
+    public String getName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public byte[] getPayload() {
-		return payload;
-	}
+    protected void setName(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setPayload(byte[] payload) {
-		this.payload = payload;
-	}
+    public Instant getExpiration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+    public void setExpiration(Instant expiration) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
+    public AgentState getState() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Transient
-	public AgentReference getReference() {
-		return AgentReference.of( id, name );
-	}
+    public void setState(AgentState state) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Transient
-	public ShardAssignmentDescriptor getShardAssignment() {
-		return ( totalShardCount == null || assignedShardIndex == null )
-				? null
-				: new ShardAssignmentDescriptor( totalShardCount, assignedShardIndex );
-	}
+    public Integer getTotalShardCount() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setTotalShardCount(Integer totalShardCount) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Integer getAssignedShardIndex() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setAssignedShardIndex(Integer assignedShardIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public byte[] getPayload() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setPayload(byte[] payload) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public String getTenantId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setTenantId(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Transient
+    public AgentReference getReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Transient
+    public ShardAssignmentDescriptor getShardAssignment() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

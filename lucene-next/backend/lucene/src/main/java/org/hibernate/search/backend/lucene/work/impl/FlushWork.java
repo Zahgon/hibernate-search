@@ -6,19 +6,18 @@ package org.hibernate.search.backend.lucene.work.impl;
 
 public class FlushWork implements IndexManagementWork<Void> {
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Void execute(IndexManagementWorkExecutionContext context) {
-		context.getIndexAccessor().commit();
-		return null;
-	}
+    @Override
+    public Void execute(IndexManagementWorkExecutionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object getInfo() {
-		return this;
-	}
+    @Override
+    public Object getInfo() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

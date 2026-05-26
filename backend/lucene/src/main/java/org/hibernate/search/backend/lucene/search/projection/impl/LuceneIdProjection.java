@@ -12,39 +12,32 @@ import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConvert
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public class LuceneIdProjection<I> extends AbstractLuceneProjection<I>
-		implements LuceneSearchProjection.Extractor<String, I> {
+public class LuceneIdProjection<I> extends AbstractLuceneProjection<I> implements LuceneSearchProjection.Extractor<String, I> {
 
-	private final ProjectionConverter<String, I> converter;
+    private final ProjectionConverter<String, I> converter;
 
-	LuceneIdProjection(LuceneSearchIndexScope<?> scope, ProjectionConverter<String, I> converter) {
-		super( scope );
-		this.converter = converter;
-	}
+    LuceneIdProjection(LuceneSearchIndexScope<?> scope, ProjectionConverter<String, I> converter) {
+        super(scope);
+        this.converter = converter;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, I> request(ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.ID,
-				LuceneSearchHints.INSTANCE.idProjectionNestingNotSupportedHint()
-		);
-		return this;
-	}
+    @Override
+    public Extractor<?, I> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Values<String> values(ProjectionExtractContext context) {
-		return new IdentifierValues();
-	}
+    @Override
+    public Values<String> values(ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public I transform(LoadingResult<?> loadingResult, String extractedData,
-			ProjectionTransformContext context) {
-		return converter.fromDocumentValue( extractedData, context.fromDocumentValueConvertContext() );
-	}
-
+    @Override
+    public I transform(LoadingResult<?> loadingResult, String extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

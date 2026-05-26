@@ -15,66 +15,53 @@ import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoPropertyMetadat
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingVectorFieldOptionsStep;
 
-class PropertyMappingVectorFieldOptionsStepImpl
-		extends AbstractPropertyMappingFieldOptionsStep<PropertyMappingVectorFieldOptionsStep>
-		implements PropertyMappingVectorFieldOptionsStep, PojoPropertyMetadataContributor {
+class PropertyMappingVectorFieldOptionsStepImpl extends AbstractPropertyMappingFieldOptionsStep<PropertyMappingVectorFieldOptionsStep> implements PropertyMappingVectorFieldOptionsStep, PojoPropertyMetadataContributor {
 
-	PropertyMappingVectorFieldOptionsStepImpl(PropertyMappingStep parent, Integer dimension, String relativeFieldName) {
-		super( parent, relativeFieldName,
-				IndexFieldTypeFactory::asVector,
-				FieldModelContributorContext::vectorTypeOptionsStep );
-		if ( dimension != null ) {
-			fieldModelContributor.add( c -> c.vectorTypeOptionsStep().dimension( dimension ) );
-		}
-		extractors( ContainerExtractorPath.noExtractors() );
-	}
+    PropertyMappingVectorFieldOptionsStepImpl(PropertyMappingStep parent, Integer dimension, String relativeFieldName) {
+        super(parent, relativeFieldName, IndexFieldTypeFactory::asVector, FieldModelContributorContext::vectorTypeOptionsStep);
+        if (dimension != null) {
+            fieldModelContributor.add(c -> c.vectorTypeOptionsStep().dimension(dimension));
+        }
+        extractors(ContainerExtractorPath.noExtractors());
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep projectable(Projectable projectable) {
-		fieldModelContributor.add( c -> c.vectorTypeOptionsStep().projectable( projectable ) );
-		return thisAsS();
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep projectable(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep searchable(Searchable searchable) {
-		fieldModelContributor.add( c -> c.vectorTypeOptionsStep().searchable( searchable ) );
-		return this;
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep searchable(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorSimilarity(VectorSimilarity vectorSimilarity) {
-		fieldModelContributor.add( c -> c.vectorTypeOptionsStep().vectorSimilarity( vectorSimilarity ) );
-		return thisAsS();
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorSimilarity(VectorSimilarity vectorSimilarity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep efConstruction(int efConstruction) {
-		fieldModelContributor.add( c -> c.vectorTypeOptionsStep().efConstruction( efConstruction ) );
-		return thisAsS();
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep efConstruction(int efConstruction) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep m(int m) {
-		fieldModelContributor.add( c -> c.vectorTypeOptionsStep().m( m ) );
-		return thisAsS();
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep m(int m) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep indexNullAs(String indexNullAs) {
-		fieldModelContributor.add( c -> c.indexNullAs( indexNullAs ) );
-		return thisAsS();
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep indexNullAs(String indexNullAs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep extractors(ContainerExtractorPath extractorPath) {
-		if ( extractorPath.isDefault() ) {
-			throw MappingLog.INSTANCE.vectorFieldMustUseExplicitExtractorPath();
-		}
-		return super.extractors( extractorPath );
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep extractors(ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PropertyMappingVectorFieldOptionsStepImpl thisAsS() {
-		return this;
-	}
+    @Override
+    PropertyMappingVectorFieldOptionsStepImpl thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

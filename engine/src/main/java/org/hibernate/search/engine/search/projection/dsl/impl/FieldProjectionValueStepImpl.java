@@ -12,24 +12,19 @@ import org.hibernate.search.engine.search.projection.dsl.FieldProjectionValueSte
 import org.hibernate.search.engine.search.projection.dsl.spi.SearchProjectionDslContext;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public final class FieldProjectionValueStepImpl<T>
-		extends FieldProjectionOptionsStepImpl<T, T>
-		implements FieldProjectionValueStep<FieldProjectionOptionsStepImpl<T, T>, T> {
+public final class FieldProjectionValueStepImpl<T> extends FieldProjectionOptionsStepImpl<T, T> implements FieldProjectionValueStep<FieldProjectionOptionsStepImpl<T, T>, T> {
 
-	public FieldProjectionValueStepImpl(SearchProjectionDslContext<?> dslContext, String fieldPath,
-			Class<T> clazz, ValueModel valueModel) {
-		super( dslContext.scope().fieldQueryElement( fieldPath, ProjectionTypeKeys.FIELD )
-				.type( clazz, valueModel ),
-				ProjectionCollector.nullable() );
-	}
+    public FieldProjectionValueStepImpl(SearchProjectionDslContext<?> dslContext, String fieldPath, Class<T> clazz, ValueModel valueModel) {
+        super(dslContext.scope().fieldQueryElement(fieldPath, ProjectionTypeKeys.FIELD).type(clazz, valueModel), ProjectionCollector.nullable());
+    }
 
-	@Override
-	public <R> FieldProjectionOptionsStep<?, R> collector(ProjectionCollector.Provider<T, R> collector) {
-		return new FieldProjectionOptionsStepImpl<>( fieldProjectionBuilder, collector );
-	}
+    @Override
+    public <R> FieldProjectionOptionsStep<?, R> collector(ProjectionCollector.Provider<T, R> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjection<T> toProjection() {
-		return fieldProjectionBuilder.build();
-	}
+    @Override
+    public SearchProjection<T> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

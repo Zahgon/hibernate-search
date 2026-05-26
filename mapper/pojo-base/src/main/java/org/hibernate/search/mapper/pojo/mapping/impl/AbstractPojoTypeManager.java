@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.engine.common.EntityReference;
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.environment.bean.BeanResolver;
@@ -48,354 +47,296 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  * @param <I> The identifier type for the entity type.
  * @param <E> The entity type.
  */
-public abstract class AbstractPojoTypeManager<I, E>
-		implements AutoCloseable, ToStringTreeAppendable, PojoWorkTypeContext<I, E> {
+public abstract class AbstractPojoTypeManager<I, E> implements AutoCloseable, ToStringTreeAppendable, PojoWorkTypeContext<I, E> {
 
-	protected final PojoRawTypeIdentifier<E> typeIdentifier;
-	private final List<PojoRawTypeIdentifier<? super E>> ascendingSuperTypes;
-	protected final PojoCaster<E> caster;
-	protected final String entityName;
-	protected final String secondaryEntityName;
-	private final boolean singleConcreteTypeInEntityHierarchy;
-	protected final IdentifierMappingImplementor<I, E> identifierMapping;
-	private final PojoPathOrdinals pathOrdinals;
-	protected final PojoImplicitReindexingResolver<E> reindexingResolver;
-	private final Optional<PojoSelectionLoadingStrategy<? super E>> selectionLoadingStrategyOptional;
-	private final Optional<PojoMassLoadingStrategy<? super E, ?>> massLoadingStrategyOptional;
-	private final boolean hasNonIndexedConcreteSubtypes;
+    protected final PojoRawTypeIdentifier<E> typeIdentifier;
 
-	public AbstractPojoTypeManager(Builder<E> builder, IdentifierMappingImplementor<I, E> identifierMapping) {
-		this.typeIdentifier = builder.typeModel.typeIdentifier();
-		this.ascendingSuperTypes = builder.typeModel.ascendingSuperTypes()
-				.map( PojoRawTypeModel::typeIdentifier )
-				.collect( Collectors.toUnmodifiableList() );
-		this.caster = builder.typeModel.caster();
-		this.entityName = builder.entityName;
-		this.secondaryEntityName = builder.secondaryEntityName;
-		this.singleConcreteTypeInEntityHierarchy = builder.singleConcreteTypeInEntityHierarchy;
-		this.identifierMapping = identifierMapping;
-		this.pathOrdinals = builder.pathOrdinals;
-		this.reindexingResolver = builder.reindexingResolver;
-		this.selectionLoadingStrategyOptional = Optional.ofNullable( builder.selectionLoadingStrategy );
-		this.massLoadingStrategyOptional = Optional.ofNullable( builder.massLoadingStrategy );
-		this.hasNonIndexedConcreteSubtypes = builder.hasNonIndexedConcreteSubtypes;
-	}
+    private final List<PojoRawTypeIdentifier<? super E>> ascendingSuperTypes;
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		AbstractPojoTypeManager<?, ?> that = (AbstractPojoTypeManager<?, ?>) o;
-		return typeIdentifier.equals( that.typeIdentifier );
-	}
+    protected final PojoCaster<E> caster;
 
-	@Override
-	public int hashCode() {
-		return typeIdentifier.hashCode();
-	}
+    protected final String entityName;
 
-	@Override
-	public final String toString() {
-		return getClass().getSimpleName() + "[entityName = " + entityName + ", javaType = " + typeIdentifier + "]";
-	}
+    protected final String secondaryEntityName;
 
-	@Override
-	public void close() {
-		reindexingResolver.close();
-	}
+    private final boolean singleConcreteTypeInEntityHierarchy;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "entityName", entityName )
-				.attribute( "typeIdentifier", typeIdentifier )
-				.attribute( "identifierMapping", identifierMapping )
-				.attribute( "reindexingResolver", reindexingResolver )
-				.attribute( "selectionLoadingStrategy", selectionLoadingStrategyOptional.orElse( null ) )
-				.attribute( "massLoadingStrategy", massLoadingStrategyOptional.orElse( null ) );
-	}
+    protected final IdentifierMappingImplementor<I, E> identifierMapping;
 
-	@Override
-	public final PojoRawTypeIdentifier<E> typeIdentifier() {
-		return typeIdentifier;
-	}
+    private final PojoPathOrdinals pathOrdinals;
 
-	@Override
-	public final List<PojoRawTypeIdentifier<? super E>> ascendingSuperTypes() {
-		return ascendingSuperTypes;
-	}
+    protected final PojoImplicitReindexingResolver<E> reindexingResolver;
 
-	@Override
-	public Optional<PojoIndexedTypeManager<I, E>> asIndexed() {
-		return Optional.empty();
-	}
+    private final Optional<PojoSelectionLoadingStrategy<? super E>> selectionLoadingStrategyOptional;
 
-	@Override
-	public Optional<PojoContainedTypeManager<I, E>> asContained() {
-		return Optional.empty();
-	}
+    private final Optional<PojoMassLoadingStrategy<? super E, ?>> massLoadingStrategyOptional;
 
-	@Override
-	public String entityName() {
-		return entityName;
-	}
+    private final boolean hasNonIndexedConcreteSubtypes;
 
-	@Override
-	public String secondaryEntityName() {
-		return secondaryEntityName;
-	}
+    public AbstractPojoTypeManager(Builder<E> builder, IdentifierMappingImplementor<I, E> identifierMapping) {
+        this.typeIdentifier = builder.typeModel.typeIdentifier();
+        this.ascendingSuperTypes = builder.typeModel.ascendingSuperTypes().map(PojoRawTypeModel::typeIdentifier).collect(Collectors.toUnmodifiableList());
+        this.caster = builder.typeModel.caster();
+        this.entityName = builder.entityName;
+        this.secondaryEntityName = builder.secondaryEntityName;
+        this.singleConcreteTypeInEntityHierarchy = builder.singleConcreteTypeInEntityHierarchy;
+        this.identifierMapping = identifierMapping;
+        this.pathOrdinals = builder.pathOrdinals;
+        this.reindexingResolver = builder.reindexingResolver;
+        this.selectionLoadingStrategyOptional = Optional.ofNullable(builder.selectionLoadingStrategy);
+        this.massLoadingStrategyOptional = Optional.ofNullable(builder.massLoadingStrategy);
+        this.hasNonIndexedConcreteSubtypes = builder.hasNonIndexedConcreteSubtypes;
+    }
 
-	public String name() {
-		return entityName;
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Class<?> javaClass() {
-		return typeIdentifier.javaClass();
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean loadingAvailable() {
-		return selectionLoadingStrategyOptional.isPresent();
-	}
+    @Override
+    public final String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final boolean isSingleConcreteTypeInEntityHierarchy() {
-		return singleConcreteTypeInEntityHierarchy;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IdentifierMappingImplementor<I, E> identifierMapping() {
-		return identifierMapping;
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toDocumentIdentifier(PojoWorkSessionContext sessionContext, I identifier) {
-		return identifierMapping.toDocumentIdentifier( identifier, sessionContext.mappingContext() );
-	}
+    @Override
+    public final PojoRawTypeIdentifier<E> typeIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathOrdinals pathOrdinals() {
-		return pathOrdinals;
-	}
+    @Override
+    public final List<PojoRawTypeIdentifier<? super E>> ascendingSuperTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoImplicitReindexingResolver<E> reindexingResolver() {
-		return reindexingResolver;
-	}
+    @Override
+    public Optional<PojoIndexedTypeManager<I, E>> asIndexed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public E toEntity(Object unproxiedEntity) {
-		return caster.cast( unproxiedEntity );
-	}
+    @Override
+    public Optional<PojoContainedTypeManager<I, E>> asContained() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Supplier<E> toEntitySupplier(PojoWorkSessionContext sessionContext, Object entity) {
-		if ( entity == null ) {
-			return null;
-		}
-		PojoRuntimeIntrospector introspector = sessionContext.runtimeIntrospector();
-		return new CachingCastingEntitySupplier<>( caster, introspector, entity );
-	}
+    @Override
+    public String entityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final void resolveEntitiesToReindex(PojoReindexingCollector collector, PojoWorkSessionContext sessionContext,
-			Object identifier, Supplier<E> entitySupplier,
-			PojoImplicitReindexingResolverRootContext context) {
-		try {
-			reindexingResolver.resolveEntitiesToReindex( collector, entitySupplier.get(), context );
-		}
-		catch (RuntimeException e) {
-			EntityReference entityReference = sessionContext.mappingContext().entityReferenceFactoryDelegate()
-					.create( typeIdentifier, entityName, identifier );
-			throw IndexingLog.INSTANCE.errorResolvingEntitiesToReindex( entityReference, e.getMessage(), e );
-		}
-	}
+    @Override
+    public String secondaryEntityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoSelectionLoadingStrategy<? super E> selectionLoadingStrategy() {
-		return selectionLoadingStrategyOptional()
-				.orElseThrow( () -> IndexingLog.INSTANCE.noSelectionLoadingStrategy( entityName ) );
-	}
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<PojoSelectionLoadingStrategy<? super E>> selectionLoadingStrategyOptional() {
-		return selectionLoadingStrategyOptional;
-	}
+    public Class<?> javaClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoMassLoadingStrategy<? super E, ?> massLoadingStrategy() {
-		return massLoadingStrategyOptional()
-				.orElseThrow( () -> IndexingLog.INSTANCE.noMassLoadingStrategy( entityName ) );
-	}
+    public boolean loadingAvailable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<PojoMassLoadingStrategy<? super E, ?>> massLoadingStrategyOptional() {
-		return massLoadingStrategyOptional;
-	}
+    @Override
+    public final boolean isSingleConcreteTypeInEntityHierarchy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean hasNonIndexedConcreteSubtypes() {
-		return hasNonIndexedConcreteSubtypes;
-	}
+    @Override
+    public IdentifierMappingImplementor<I, E> identifierMapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class Builder<E> {
-		public final PojoRawTypeModel<E> typeModel;
-		private final String entityName;
-		private final String secondaryEntityName;
+    @Override
+    public String toDocumentIdentifier(PojoWorkSessionContext sessionContext, I identifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private PojoRootIdentityMappingCollector<E> identityMappingCollector;
-		protected BoundIdentifierMapping<?, E> identifierMapping;
+    @Override
+    public PojoPathOrdinals pathOrdinals() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private PojoImplicitReindexingResolver<E> reindexingResolver;
+    @Override
+    public PojoImplicitReindexingResolver<E> reindexingResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Boolean singleConcreteTypeInEntityHierarchy;
-		private PojoPathOrdinals pathOrdinals;
-		private PojoSelectionLoadingStrategy<? super E> selectionLoadingStrategy;
-		private PojoMassLoadingStrategy<? super E, ?> massLoadingStrategy;
-		private boolean hasNonIndexedConcreteSubtypes = false;
+    @Override
+    public E toEntity(Object unproxiedEntity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		protected boolean closed = false;
+    @Override
+    public final Supplier<E> toEntitySupplier(PojoWorkSessionContext sessionContext, Object entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Builder(PojoRawTypeModel<E> typeModel, String entityName, String secondaryEntityName,
-				PojoRootIdentityMappingCollector<E> identityMappingCollector) {
-			this.typeModel = typeModel;
-			this.entityName = entityName;
-			this.secondaryEntityName = secondaryEntityName;
-			this.identityMappingCollector = identityMappingCollector;
-		}
+    @Override
+    public final void resolveEntitiesToReindex(PojoReindexingCollector collector, PojoWorkSessionContext sessionContext, Object identifier, Supplier<E> entitySupplier, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void closeOnFailure() {
-			if ( closed ) {
-				return;
-			}
-			try ( Closer<RuntimeException> closer = new Closer<>() ) {
-				doCloseOnFailure( closer );
-				closed = true;
-			}
-		}
+    @Override
+    public PojoSelectionLoadingStrategy<? super E> selectionLoadingStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		protected void doCloseOnFailure(Closer<RuntimeException> closer) {
-			closer.push( PojoRootIdentityMappingCollector::closeOnFailure, identityMappingCollector );
-			closer.push( IdentifierMappingImplementor::close, identifierMapping, BoundIdentifierMapping::mapping );
-			closer.push( PojoImplicitReindexingResolver::close, reindexingResolver );
-		}
+    @Override
+    public Optional<PojoSelectionLoadingStrategy<? super E>> selectionLoadingStrategyOptional() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		protected abstract PojoTypeExtendedMappingCollector extendedMappingCollector();
+    @Override
+    public PojoMassLoadingStrategy<? super E, ?> massLoadingStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public void preBuildIdentifierMapping(IdentityMappingMode identityMappingMode) {
-			if ( this.identifierMapping != null ) {
-				throw new AssertionFailure( "Internal error - preBuildIdentifierMapping should be called only once" );
-			}
-			this.identifierMapping = this.identityMappingCollector.build( identityMappingMode );
-			this.identityMappingCollector = null;
+    @Override
+    public Optional<PojoMassLoadingStrategy<? super E, ?>> massLoadingStrategyOptional() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( identifierMapping.documentIdSourceProperty.isPresent() ) {
-				extendedMappingCollector().documentIdSourceProperty( identifierMapping.documentIdSourceProperty.get() );
-			}
+    @Override
+    public boolean hasNonIndexedConcreteSubtypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			extendedMappingCollector().identifierMapping( identifierMapping.mapping );
-		}
+    public abstract static class Builder<E> {
 
-		public void reindexingResolver(PojoImplicitReindexingResolver<E> reindexingResolver) {
-			if ( this.reindexingResolver != null ) {
-				throw new AssertionFailure( "Internal error - reindexingResolver should be called only once" );
-			}
-			this.reindexingResolver = reindexingResolver;
-			extendedMappingCollector().dirtyFilter( reindexingResolver.dirtySelfOrContainingFilter() );
-			extendedMappingCollector().dirtyContainingAssociationFilter(
-					reindexingResolver.associationInverseSideResolver().dirtyContainingAssociationFilter() );
-		}
+        public final PojoRawTypeModel<E> typeModel;
 
-		public void preBuildOtherMetadata(BeanResolver beanResolver, PojoBootstrapIntrospector introspector,
-				boolean singleConcreteTypeInEntityHierarchy,
-				PojoPathOrdinals pathOrdinals,
-				Optional<? extends ParameterizedBeanReference<?>> loadingBinderRefOptional) {
-			this.singleConcreteTypeInEntityHierarchy = singleConcreteTypeInEntityHierarchy;
-			this.pathOrdinals = pathOrdinals;
-			preBuildLoadingConfiguration( beanResolver, introspector, loadingBinderRefOptional );
-		}
+        private final String entityName;
 
-		private void preBuildLoadingConfiguration(BeanResolver beanResolver, PojoBootstrapIntrospector introspector,
-				Optional<? extends ParameterizedBeanReference<?>> loadingBinderRefOptional) {
-			if ( loadingBinderRefOptional.isEmpty() ) {
-				return;
-			}
-			var entityType = new PojoModelValueElement<>( introspector, typeModel );
-			var identifierType = new PojoModelValueElement<>( introspector, identifierMapping.identifierType );
-			try ( BeanHolder<?> loadingBinderHolder = loadingBinderRefOptional.get().reference().resolve( beanResolver ) ) {
-				Map<String, ?> params = loadingBinderRefOptional.get().params();
-				extendedMappingCollector().applyLoadingBinder(
-						loadingBinderHolder.get(),
-						new PojoEntityLoadingBindingContext() {
-							@Override
-							public PojoModelElement entityType() {
-								return entityType;
-							}
+        private final String secondaryEntityName;
 
-							@Override
-							public PojoModelElement identifierType() {
-								return identifierType;
-							}
+        private PojoRootIdentityMappingCollector<E> identityMappingCollector;
 
-							@Override
-							@SuppressWarnings("unchecked") // Checked using reflection
-							public <E2> void selectionLoadingStrategy(Class<E2> expectedEntitySuperType,
-									PojoSelectionLoadingStrategy<? super E2> strategy) {
-								checkEntitySuperType( expectedEntitySuperType );
-								selectionLoadingStrategy = (PojoSelectionLoadingStrategy<? super E>) strategy;
-							}
+        protected BoundIdentifierMapping<?, E> identifierMapping;
 
-							@Override
-							@SuppressWarnings("unchecked") // Checked using reflection
-							public <E2> void massLoadingStrategy(Class<E2> expectedEntitySuperType,
-									PojoMassLoadingStrategy<? super E2, ?> strategy) {
-								checkEntitySuperType( expectedEntitySuperType );
-								massLoadingStrategy = (PojoMassLoadingStrategy<? super E, ?>) strategy;
-							}
+        private PojoImplicitReindexingResolver<E> reindexingResolver;
 
-							private <E2> void checkEntitySuperType(Class<E2> expectedEntitySuperType) {
-								if ( !expectedEntitySuperType.isAssignableFrom( typeModel.typeIdentifier().javaClass() ) ) {
-									throw IndexingLog.INSTANCE.loadingConfigurationTypeMismatch( typeModel,
-											expectedEntitySuperType );
-								}
-							}
+        private Boolean singleConcreteTypeInEntityHierarchy;
 
-							@Override
-							public BeanResolver beanResolver() {
-								return beanResolver;
-							}
+        private PojoPathOrdinals pathOrdinals;
 
-							@Override
-							public <T> T param(String name, Class<T> paramType) {
-								Contracts.assertNotNull( name, "name" );
-								Contracts.assertNotNull( paramType, "paramType" );
+        private PojoSelectionLoadingStrategy<? super E> selectionLoadingStrategy;
 
-								Object value = params.get( name );
-								if ( value == null ) {
-									throw PojoMapperMiscLog.INSTANCE.paramNotDefined( name );
-								}
+        private PojoMassLoadingStrategy<? super E, ?> massLoadingStrategy;
 
-								return paramType.cast( value );
-							}
+        private boolean hasNonIndexedConcreteSubtypes = false;
 
-							@Override
-							public <T> Optional<T> paramOptional(String name, Class<T> paramType) {
-								Contracts.assertNotNull( name, "name" );
-								Contracts.assertNotNull( paramType, "paramType" );
+        protected boolean closed = false;
 
-								return Optional.ofNullable( params.get( name ) ).map( paramType::cast );
-							}
-						} );
-			}
-		}
+        Builder(PojoRawTypeModel<E> typeModel, String entityName, String secondaryEntityName, PojoRootIdentityMappingCollector<E> identityMappingCollector) {
+            this.typeModel = typeModel;
+            this.entityName = entityName;
+            this.secondaryEntityName = secondaryEntityName;
+            this.identityMappingCollector = identityMappingCollector;
+        }
 
-		public void hasNonIndexedConcreteSubtypes(boolean hasNonIndexedConcreteSubtypes) {
-			this.hasNonIndexedConcreteSubtypes = hasNonIndexedConcreteSubtypes;
-		}
+        public final void closeOnFailure() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public abstract AbstractPojoTypeManager<?, E> build();
+        protected void doCloseOnFailure(Closer<RuntimeException> closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	}
+        protected abstract PojoTypeExtendedMappingCollector extendedMappingCollector();
+
+        public void preBuildIdentifierMapping(IdentityMappingMode identityMappingMode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void reindexingResolver(PojoImplicitReindexingResolver<E> reindexingResolver) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void preBuildOtherMetadata(BeanResolver beanResolver, PojoBootstrapIntrospector introspector, boolean singleConcreteTypeInEntityHierarchy, PojoPathOrdinals pathOrdinals, Optional<? extends ParameterizedBeanReference<?>> loadingBinderRefOptional) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private void preBuildLoadingConfiguration(BeanResolver beanResolver, PojoBootstrapIntrospector introspector, Optional<? extends ParameterizedBeanReference<?>> loadingBinderRefOptional) {
+            if (loadingBinderRefOptional.isEmpty()) {
+                return;
+            }
+            var entityType = new PojoModelValueElement<>(introspector, typeModel);
+            var identifierType = new PojoModelValueElement<>(introspector, identifierMapping.identifierType);
+            try (BeanHolder<?> loadingBinderHolder = loadingBinderRefOptional.get().reference().resolve(beanResolver)) {
+                Map<String, ?> params = loadingBinderRefOptional.get().params();
+                extendedMappingCollector().applyLoadingBinder(loadingBinderHolder.get(), new PojoEntityLoadingBindingContext() {
+
+                    @Override
+                    public PojoModelElement entityType() {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+
+                    @Override
+                    public PojoModelElement identifierType() {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+
+                    @Override
+                    // Checked using reflection
+                    @SuppressWarnings("unchecked")
+                    public <E2> void selectionLoadingStrategy(Class<E2> expectedEntitySuperType, PojoSelectionLoadingStrategy<? super E2> strategy) {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+
+                    @Override
+                    // Checked using reflection
+                    @SuppressWarnings("unchecked")
+                    public <E2> void massLoadingStrategy(Class<E2> expectedEntitySuperType, PojoMassLoadingStrategy<? super E2, ?> strategy) {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+
+                    private <E2> void checkEntitySuperType(Class<E2> expectedEntitySuperType) {
+                        if (!expectedEntitySuperType.isAssignableFrom(typeModel.typeIdentifier().javaClass())) {
+                            throw IndexingLog.INSTANCE.loadingConfigurationTypeMismatch(typeModel, expectedEntitySuperType);
+                        }
+                    }
+
+                    @Override
+                    public BeanResolver beanResolver() {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+
+                    @Override
+                    public <T> T param(String name, Class<T> paramType) {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+
+                    @Override
+                    public <T> Optional<T> paramOptional(String name, Class<T> paramType) {
+                        throw new UnsupportedOperationException("STUB: not implemented");
+                    }
+                });
+            }
+        }
+
+        public void hasNonIndexedConcreteSubtypes(boolean hasNonIndexedConcreteSubtypes) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public abstract AbstractPojoTypeManager<?, E> build();
+    }
 }

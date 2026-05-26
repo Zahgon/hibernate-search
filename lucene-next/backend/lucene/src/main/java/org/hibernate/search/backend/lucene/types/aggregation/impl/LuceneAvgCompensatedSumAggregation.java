@@ -16,84 +16,59 @@ import org.hibernate.search.backend.lucene.types.codec.impl.AbstractLuceneNumeri
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneNumericDomain;
 import org.hibernate.search.engine.search.aggregation.spi.FieldMetricAggregationBuilder;
 
-public class LuceneAvgCompensatedSumAggregation<F, E extends Number, K>
-		extends AbstractLuceneMetricCompensatedSumAggregation<F, E, K> {
+public class LuceneAvgCompensatedSumAggregation<F, E extends Number, K> extends AbstractLuceneMetricCompensatedSumAggregation<F, E, K> {
 
-	public static <F> Factory<F> factory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
-		return new Factory<>( codec );
-	}
+    public static <F> Factory<F> factory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneAvgCompensatedSumAggregation(Builder<F, E, K> builder) {
-		super( builder );
-	}
+    LuceneAvgCompensatedSumAggregation(Builder<F, E, K> builder) {
+        super(builder);
+    }
 
-	@Override
-	void fillCollectors(JoiningLongMultiValuesSource source, AggregationRequestContext context) {
-		CompensatedSumCollectorFactory sumCollectorFactory =
-				new CompensatedSumCollectorFactory( source, codec::sortedDocValueToDouble );
-		compensatedSumCollectorKey = sumCollectorFactory.getCollectorKey();
-		context.requireCollector( sumCollectorFactory );
+    @Override
+    void fillCollectors(JoiningLongMultiValuesSource source, AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		CountValuesCollectorFactory countValuesCollectorFactory = new CountValuesCollectorFactory( source );
-		collectorKey = countValuesCollectorFactory.getCollectorKey();
-		context.requireCollector( countValuesCollectorFactory );
-	}
+    @Override
+    E extractEncoded(AggregationExtractContext context, LuceneNumericDomain<E> numericDomain) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	E extractEncoded(AggregationExtractContext context, LuceneNumericDomain<E> numericDomain) {
-		Double sum = context.getCollectorResults( compensatedSumCollectorKey );
-		if ( sum == null ) {
-			return null;
-		}
-		Long counts = context.getCollectorResults( collectorKey );
-		double avg = ( sum / counts );
-		return numericDomain.doubleToTerm( avg );
-	}
+    public static class Factory<F> extends AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, F, AbstractLuceneNumericFieldCodec<F, ?>> {
 
-	public static class Factory<F>
-			extends AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector,
-					F,
-					AbstractLuceneNumericFieldCodec<F, ?>> {
+        protected Factory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
+            super(codec);
+        }
 
-		protected Factory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
-			super( codec );
-		}
+        @Override
+        public FieldMetricAggregationBuilder.TypeSelector create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public FieldMetricAggregationBuilder.TypeSelector create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			return new FunctionTypeSelector<>( codec, scope, field );
-		}
-	}
+    protected static class FunctionTypeSelector<F, E extends Number> extends TypeSelector<F, E> implements FieldMetricAggregationBuilder.TypeSelector {
 
-	protected static class FunctionTypeSelector<F, E extends Number> extends TypeSelector<F, E>
-			implements FieldMetricAggregationBuilder.TypeSelector {
+        protected FunctionTypeSelector(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(codec, scope, field);
+        }
 
-		protected FunctionTypeSelector(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			super( codec, scope, field );
-		}
+        @Override
+        protected <T> Builder<F, ? extends Number, T> getFtBuilder(ExtractedValueConverter<E, ? extends T> extractedConverter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		protected <T> Builder<F, ? extends Number, T> getFtBuilder(
-				ExtractedValueConverter<E, ? extends T> extractedConverter) {
-			return new Builder<>( codec, scope, field, extractedConverter );
-		}
-	}
+    protected static class Builder<F, E extends Number, K> extends AbstractLuceneMetricCompensatedSumAggregation.Builder<F, E, K> {
 
-	protected static class Builder<F, E extends Number, K>
-			extends AbstractLuceneMetricCompensatedSumAggregation.Builder<F, E, K> {
+        public Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field, ExtractedValueConverter<E, ? extends K> extractedConverter) {
+            super(codec, scope, field, extractedConverter);
+        }
 
-		public Builder(AbstractLuceneNumericFieldCodec<F, E> codec,
-				LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field,
-				ExtractedValueConverter<E, ? extends K> extractedConverter) {
-			super( codec, scope, field, extractedConverter );
-		}
-
-		@Override
-		public AbstractLuceneMetricCompensatedSumAggregation<F, E, K> build() {
-			return new LuceneAvgCompensatedSumAggregation<>( this );
-		}
-	}
+        @Override
+        public AbstractLuceneMetricCompensatedSumAggregation<F, E, K> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

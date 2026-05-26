@@ -10,42 +10,41 @@ import org.hibernate.search.engine.search.sort.spi.CompositeSortBuilder;
 import org.hibernate.search.engine.search.sort.spi.ScoreSortBuilder;
 import org.hibernate.search.engine.search.sort.spi.SearchSortBuilderFactory;
 import org.hibernate.search.engine.search.sort.spi.WithParametersSortBuilder;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchSearchSortBuilderFactory implements SearchSortBuilderFactory {
 
-	private final ElasticsearchSearchIndexScope<?> scope;
+    private final ElasticsearchSearchIndexScope<?> scope;
 
-	public ElasticsearchSearchSortBuilderFactory(ElasticsearchSearchIndexScope<?> scope) {
-		this.scope = scope;
-	}
+    public ElasticsearchSearchSortBuilderFactory(ElasticsearchSearchIndexScope<?> scope) {
+        this.scope = scope;
+    }
 
-	@Override
-	public ScoreSortBuilder score() {
-		return new ElasticsearchScoreSort.Builder( scope );
-	}
+    @Override
+    public ScoreSortBuilder score() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSort indexOrder() {
-		return new ElasticsearchIndexOrderSort( scope );
-	}
+    @Override
+    public SearchSort indexOrder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeSortBuilder composite() {
-		return new ElasticsearchCompositeSort.Builder( scope );
-	}
+    @Override
+    public CompositeSortBuilder composite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WithParametersSortBuilder withParameters() {
-		return new ElasticsearchWithParametersSort.Builder( scope );
-	}
+    @Override
+    public WithParametersSortBuilder withParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ElasticsearchSearchSort fromJson(JsonObject jsonObject) {
-		return new ElasticsearchUserProvidedJsonSort( scope, jsonObject );
-	}
+    public ElasticsearchSearchSort fromJson(JsonObject jsonObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ElasticsearchSearchSort fromJson(String jsonString) {
-		return fromJson( scope.userFacingGson().fromJson( jsonString, JsonObject.class ) );
-	}
+    public ElasticsearchSearchSort fromJson(String jsonString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

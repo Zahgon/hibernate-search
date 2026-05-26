@@ -6,7 +6,6 @@ package org.hibernate.search.util.logging.impl;
 
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.Locale;
-
 import org.jboss.logging.Logger;
 
 /**
@@ -17,17 +16,15 @@ import org.jboss.logging.Logger;
  */
 public final class LoggerFactory {
 
-	private LoggerFactory() {
-		//now allowed
-	}
+    private LoggerFactory() {
+        //now allowed
+    }
 
-	public static MigrationHelperLog make(Lookup creationContext) {
-		return make( MigrationHelperLog.class, creationContext );
-	}
+    public static MigrationHelperLog make(Lookup creationContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <T> T make(Class<T> logClass, Lookup creationContext) {
-		final String className = creationContext.lookupClass().getName();
-		return Logger.getMessageLogger( creationContext, logClass, className, Locale.ROOT );
-	}
-
+    public static <T> T make(Class<T> logClass, Lookup creationContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

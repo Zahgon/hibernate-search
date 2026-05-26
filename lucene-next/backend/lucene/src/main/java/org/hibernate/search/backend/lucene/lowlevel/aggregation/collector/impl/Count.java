@@ -6,25 +6,25 @@ package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 public class Count implements AggregationFunction<Count> {
 
-	private long count = 0L;
+    private long count = 0L;
 
-	@Override
-	public void apply(long value) {
-		count++;
-	}
+    @Override
+    public void apply(long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void merge(AggregationFunction<Count> sibling) {
-		count += sibling.implementation().count;
-	}
+    @Override
+    public void merge(AggregationFunction<Count> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long result() {
-		return count;
-	}
+    @Override
+    public Long result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Count implementation() {
-		return this;
-	}
+    @Override
+    public Count implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

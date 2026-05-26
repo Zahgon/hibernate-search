@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.predicate.spi;
 
 import java.util.Map;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.engine.search.common.spi.MapNamedValues;
 import org.hibernate.search.engine.search.predicate.definition.TypedPredicateDefinitionContext;
@@ -17,23 +16,22 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public final class NamedValuesBasedTypedPredicateDefinitionContext<SR> implements TypedPredicateDefinitionContext<SR> {
 
-	private final TypedSearchPredicateFactory<SR> factory;
-	private final NamedValues parameters;
+    private final TypedSearchPredicateFactory<SR> factory;
 
-	public NamedValuesBasedTypedPredicateDefinitionContext(TypedSearchPredicateFactory<SR> factory, Map<String, Object> params,
-			Function<String, SearchException> namedValueMissing) {
-		this.factory = factory;
-		this.parameters = MapNamedValues.fromMap( params, namedValueMissing );
-	}
+    private final NamedValues parameters;
 
-	@Override
-	public TypedSearchPredicateFactory<SR> predicate() {
-		return factory;
-	}
+    public NamedValuesBasedTypedPredicateDefinitionContext(TypedSearchPredicateFactory<SR> factory, Map<String, Object> params, Function<String, SearchException> namedValueMissing) {
+        this.factory = factory;
+        this.parameters = MapNamedValues.fromMap(params, namedValueMissing);
+    }
 
-	@Override
-	public NamedValues params() {
-		return parameters;
-	}
+    @Override
+    public TypedSearchPredicateFactory<SR> predicate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public NamedValues params() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

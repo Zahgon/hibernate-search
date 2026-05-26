@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverDirtinessFilterNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverMultiNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverNode;
@@ -20,152 +19,65 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 abstract class AbstractPojoImplicitReindexingResolverNodeBuilder<T> {
 
-	final PojoImplicitReindexingResolverBuildingHelper buildingHelper;
+    final PojoImplicitReindexingResolverBuildingHelper buildingHelper;
 
-	private boolean frozen = false;
-	// Use a LinkedHashSet for deterministic iteration
-	private final Set<PojoModelPathValueNode> dirtyPathsTriggeringReindexingIncludingNestedNodes = new LinkedHashSet<>();
+    private boolean frozen = false;
 
-	AbstractPojoImplicitReindexingResolverNodeBuilder(PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
-		this.buildingHelper = buildingHelper;
-	}
+    // Use a LinkedHashSet for deterministic iteration
+    private final Set<PojoModelPathValueNode> dirtyPathsTriggeringReindexingIncludingNestedNodes = new LinkedHashSet<>();
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + getModelPath() + "]";
-	}
+    AbstractPojoImplicitReindexingResolverNodeBuilder(PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
+        this.buildingHelper = buildingHelper;
+    }
 
-	abstract BoundPojoModelPath getModelPath();
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract void closeOnFailure();
+    abstract BoundPojoModelPath getModelPath();
 
-	/**
-	 * Freeze the builder, signaling that no mutating method will be called anymore
-	 * and that derived data can be safely computed.
-	 */
-	final void freeze() {
-		if ( !frozen ) {
-			frozen = true;
-			onFreeze( dirtyPathsTriggeringReindexingIncludingNestedNodes );
-		}
-	}
+    abstract void closeOnFailure();
 
-	abstract void onFreeze(Set<PojoModelPathValueNode> dirtyPathsTriggeringReindexingCollector);
+    /**
+     * Freeze the builder, signaling that no mutating method will be called anymore
+     * and that derived data can be safely computed.
+     */
+    final void freeze() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final void checkNotFrozen() {
-		if ( frozen ) {
-			throw new AssertionFailure(
-					"A mutating method was called on " + this + " after it was frozen."
-			);
-		}
-	}
+    abstract void onFreeze(Set<PojoModelPathValueNode> dirtyPathsTriggeringReindexingCollector);
 
-	final void checkFrozen() {
-		if ( !frozen ) {
-			throw new AssertionFailure(
-					"A method was called on " + this + " before it was frozen, but a preliminary freeze is required."
-			);
-		}
-	}
+    final void checkNotFrozen() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final Set<PojoModelPathValueNode> getDirtyPathsTriggeringReindexingIncludingNestedNodes() {
-		checkFrozen();
-		return dirtyPathsTriggeringReindexingIncludingNestedNodes;
-	}
+    final void checkFrozen() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param pathsBuildingHelper A helper to build path filters that will be used in the resolver (and its nested resolvers)
-	 * @param allPotentialDirtyPaths A comprehensive list of all paths that may be dirty
-	 * when the built resolver will be called. {@code null} if unknown.
-	 */
-	final Optional<PojoImplicitReindexingResolverNode<T>> build(PojoRuntimePathsBuildingHelper pathsBuildingHelper,
-			Set<PojoModelPathValueNode> allPotentialDirtyPaths) {
-		freeze();
+    final Set<PojoModelPathValueNode> getDirtyPathsTriggeringReindexingIncludingNestedNodes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Set<PojoModelPathValueNode> immutableDirtyPathsAcceptedByFilter =
-				getDirtyPathsTriggeringReindexingIncludingNestedNodes();
+    /**
+     * @param pathsBuildingHelper A helper to build path filters that will be used in the resolver (and its nested resolvers)
+     * @param allPotentialDirtyPaths A comprehensive list of all paths that may be dirty
+     * when the built resolver will be called. {@code null} if unknown.
+     */
+    final Optional<PojoImplicitReindexingResolverNode<T>> build(PojoRuntimePathsBuildingHelper pathsBuildingHelper, Set<PojoModelPathValueNode> allPotentialDirtyPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Optional<PojoImplicitReindexingResolverNode<T>> result;
+    abstract Optional<PojoImplicitReindexingResolverNode<T>> doBuild(PojoRuntimePathsBuildingHelper pathsBuildingHelper, Set<PojoModelPathValueNode> allPotentialDirtyPaths);
 
-		/*
-		 * The following code allows us to decide whether we need a path filter
-		 * (a PojoImplicitReindexingResolverDirtinessFilterNode) to wrap our node,
-		 * depending on the dirty paths we may encounter.
-		 */
-		if ( allPotentialDirtyPaths == null
-				|| !immutableDirtyPathsAcceptedByFilter.containsAll( allPotentialDirtyPaths ) ) {
-			/*
-			 * Either:
-			 * - The node we are building is the root node, thus we don't have a clue about
-			 * which dirty path might be submitted to us (allPotentialDirtyPaths = null, meaning unknown).
-			 * - The node we are building is the child of another node,
-			 * but ancestor nodes are triggered by a broader sets of dirty paths than our node,
-			 * because sibling nodes are triggered by different dirty paths:
-			 * the resolveEntitiesToReindex method may
-			 * still be called with a dirtiness state that only contains paths that should not trigger
-			 * reindexing by this node.
-			 *
-			 * Thus we need to filter out all the paths that are not tied to this node.
-			 */
-			result = doBuild( pathsBuildingHelper, immutableDirtyPathsAcceptedByFilter );
-			if ( result.isPresent() ) {
-				result = Optional.of(
-						wrapWithFilter( result.get(), pathsBuildingHelper, immutableDirtyPathsAcceptedByFilter )
-				);
-			}
-		}
-		else {
-			/*
-			 * Optimization avoiding to add redundant filters.
-			 *
-			 * The node we are building is the child of another node,
-			 * and the ancestor nodes filter input enough so that the resolveEntitiesToReindex method will
-			 * only be called with a dirtiness state that only contains paths that should trigger
-			 * reindexing by this node.
-			 *
-			 * This will happen when the node we are building is the only child of its parent node,
-			 * or when all of its sibling nodes are triggered by the same paths as the node we are building,
-			 * or on a subset of those paths.
-			 *
-			 * Thus we do not need to add our own dirty check: no filter node wrapping the node we are building
-			 * is necessary.
-			 */
-			result = doBuild( pathsBuildingHelper, allPotentialDirtyPaths );
-		}
+    private PojoImplicitReindexingResolverNode<T> wrapWithFilter(PojoImplicitReindexingResolverNode<T> resolver, PojoRuntimePathsBuildingHelper pathsBuildingHelper, Set<PojoModelPathValueNode> immutableDirtyPathsTriggeringReindexing) {
+        PojoPathFilter filter = pathsBuildingHelper.createFilter(immutableDirtyPathsTriggeringReindexing);
+        return new PojoImplicitReindexingResolverDirtinessFilterNode<>(filter, resolver);
+    }
 
-		if ( !result.isPresent() ) {
-			// If for some reason this node is not used, it may still hold resources that should be closed
-			closeOnFailure();
-		}
-
-		return result;
-	}
-
-	abstract Optional<PojoImplicitReindexingResolverNode<T>> doBuild(PojoRuntimePathsBuildingHelper pathsBuildingHelper,
-			Set<PojoModelPathValueNode> allPotentialDirtyPaths);
-
-	private PojoImplicitReindexingResolverNode<T> wrapWithFilter(PojoImplicitReindexingResolverNode<T> resolver,
-			PojoRuntimePathsBuildingHelper pathsBuildingHelper,
-			Set<PojoModelPathValueNode> immutableDirtyPathsTriggeringReindexing) {
-		PojoPathFilter filter = pathsBuildingHelper.createFilter( immutableDirtyPathsTriggeringReindexing );
-		return new PojoImplicitReindexingResolverDirtinessFilterNode<>(
-				filter, resolver
-		);
-	}
-
-	protected final <T2> PojoImplicitReindexingResolverNode<? super T2> createNested(
-			Collection<? extends PojoImplicitReindexingResolverNode<? super T2>> elements) {
-		int size = elements.size();
-		if ( size == 0 ) {
-			// Simplify the tree: no need for a node here
-			return PojoImplicitReindexingResolverNode.noOp();
-		}
-		else if ( size == 1 ) {
-			// Simplify the tree: no need for a multi-node here
-			return elements.iterator().next();
-		}
-		else {
-			return new PojoImplicitReindexingResolverMultiNode<>( elements );
-		}
-	}
+    protected final <T2> PojoImplicitReindexingResolverNode<? super T2> createNested(Collection<? extends PojoImplicitReindexingResolverNode<? super T2>> elements) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.mapper.mapping.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.engine.backend.index.IndexManager;
 import org.hibernate.search.engine.backend.index.spi.IndexManagerImplementor;
 import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
@@ -22,55 +21,49 @@ import org.hibernate.search.engine.mapper.scope.spi.MappedIndexScopeBuilder;
 
 public class MappedIndexManagerImpl implements MappedIndexManager {
 
-	private final IndexManagerImplementor implementor;
+    private final IndexManagerImplementor implementor;
 
-	public MappedIndexManagerImpl(IndexManagerImplementor implementor) {
-		this.implementor = implementor;
-	}
+    public MappedIndexManagerImpl(IndexManagerImplementor implementor) {
+        this.implementor = implementor;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "implementor=" + implementor
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexManager toAPI() {
-		return implementor.toAPI();
-	}
+    @Override
+    public IndexManager toAPI() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaManager schemaManager() {
-		return implementor.schemaManager();
-	}
+    @Override
+    public IndexSchemaManager schemaManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
-		return implementor.createIndexingPlan( sessionContext, commitStrategy, refreshStrategy );
-	}
+    @Override
+    public IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexer createIndexer(BackendSessionContext sessionContext) {
-		return implementor.createIndexer( sessionContext );
-	}
+    @Override
+    public IndexIndexer createIndexer(BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
-		return implementor.createWorkspace( mappingContext, tenantIds );
-	}
+    @Override
+    public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, R, E> MappedIndexScopeBuilder<SR, R, E> createScopeBuilder(BackendMappingContext mappingContext,
-			Class<SR> rootScope) {
-		return new MappedIndexScopeBuilderImpl<>(
-				implementor, mappingContext, rootScope
-		);
-	}
+    @Override
+    public <SR, R, E> MappedIndexScopeBuilder<SR, R, E> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addTo(MappedIndexScopeBuilder<?, ?, ?> builder) {
-		( (MappedIndexScopeBuilderImpl<?, ?, ?>) builder ).add( implementor );
-	}
+    @Override
+    public void addTo(MappedIndexScopeBuilder<?, ?, ?> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

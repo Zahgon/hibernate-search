@@ -18,67 +18,36 @@ import org.hibernate.search.util.common.impl.Futures;
 
 public class ElasticsearchSearchScrollImpl<H> implements ElasticsearchSearchScroll<H> {
 
-	private final ElasticsearchParallelWorkOrchestrator queryOrchestrator;
-	private final ElasticsearchWorkFactory workFactory;
-	private final ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor;
-	private final String scrollTimeoutString;
-	private final SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> firstScroll;
-	private final TimeoutManager timeoutManager;
+    private final ElasticsearchParallelWorkOrchestrator queryOrchestrator;
 
-	private String scrollId;
+    private final ElasticsearchWorkFactory workFactory;
 
-	public ElasticsearchSearchScrollImpl(ElasticsearchParallelWorkOrchestrator queryOrchestrator,
-			ElasticsearchWorkFactory workFactory,
-			ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor,
-			String scrollTimeoutString,
-			SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> firstScroll,
-			TimeoutManager timeoutManager) {
-		this.workFactory = workFactory;
-		this.queryOrchestrator = queryOrchestrator;
-		this.searchResultExtractor = searchResultExtractor;
-		this.scrollTimeoutString = scrollTimeoutString;
-		this.firstScroll = firstScroll;
-		this.timeoutManager = timeoutManager;
-	}
+    private final ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor;
 
-	@Override
-	public void close() {
-		if ( scrollId != null ) {
-			Futures.unwrappedExceptionJoin(
-					queryOrchestrator.submit(
-							workFactory.clearScroll( scrollId ).build(),
-							OperationSubmitter.blocking()
-					)
-			);
-		}
-	}
+    private final String scrollTimeoutString;
 
-	@Override
-	public ElasticsearchSearchScrollResult<H> next() {
-		timeoutManager.start();
+    private final SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> firstScroll;
 
-		NonBulkableWork<ElasticsearchLoadableSearchResult<H>> scroll = ( scrollId == null )
-				? firstScroll.build()
-				: workFactory.scroll( scrollId, scrollTimeoutString, searchResultExtractor )
-						.deadline( timeoutManager.deadlineOrNull(), timeoutManager.hasHardTimeout() )
-						.build();
+    private final TimeoutManager timeoutManager;
 
-		ElasticsearchLoadableSearchResult<H> loadableSearchResult = Futures.unwrappedExceptionJoin(
-				queryOrchestrator.submit(
-						scroll,
-						OperationSubmitter.blocking()
-				)
-		);
-		ElasticsearchSearchResultImpl<H> searchResult = loadableSearchResult.loadBlocking();
+    private String scrollId;
 
-		scrollId = searchResult.scrollId();
-		if ( scrollId == null ) {
-			throw new AssertionFailure( "Elasticsearch response lacked a value for scroll id" );
-		}
+    public ElasticsearchSearchScrollImpl(ElasticsearchParallelWorkOrchestrator queryOrchestrator, ElasticsearchWorkFactory workFactory, ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor, String scrollTimeoutString, SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> firstScroll, TimeoutManager timeoutManager) {
+        this.workFactory = workFactory;
+        this.queryOrchestrator = queryOrchestrator;
+        this.searchResultExtractor = searchResultExtractor;
+        this.scrollTimeoutString = scrollTimeoutString;
+        this.firstScroll = firstScroll;
+        this.timeoutManager = timeoutManager;
+    }
 
-		timeoutManager.stop();
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new ElasticsearchSearchScrollResultImpl<>( searchResult.total(), loadableSearchResult.hasHits(),
-				searchResult.hits(), searchResult.took(), searchResult.timedOut() );
-	}
+    @Override
+    public ElasticsearchSearchScrollResult<H> next() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

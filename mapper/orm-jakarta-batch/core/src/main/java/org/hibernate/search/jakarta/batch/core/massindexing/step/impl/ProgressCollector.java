@@ -5,7 +5,6 @@
 package org.hibernate.search.jakarta.batch.core.massindexing.step.impl;
 
 import java.io.Serializable;
-
 import jakarta.batch.api.partition.PartitionCollector;
 import jakarta.batch.runtime.context.StepContext;
 import jakarta.inject.Inject;
@@ -18,16 +17,15 @@ import jakarta.inject.Inject;
  */
 public class ProgressCollector implements PartitionCollector {
 
-	@Inject
-	private StepContext stepContext;
+    @Inject
+    private StepContext stepContext;
 
-	/**
-	 * The collectPartitionData method receives control periodically during partition processing. This method receives
-	 * control on each thread processing a partition as lucene document production, once at the end of the process.
-	 */
-	@Override
-	public Serializable collectPartitionData() throws Exception {
-		return ( (PartitionContextData) stepContext.getTransientUserData() )
-				.getPartitionProgress();
-	}
+    /**
+     * The collectPartitionData method receives control periodically during partition processing. This method receives
+     * control on each thread processing a partition as lucene document production, once at the end of the process.
+     */
+    @Override
+    public Serializable collectPartitionData() throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,14 +8,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.client.common.gson.entity.spi.ContentEncoder;
 import org.hibernate.search.backend.elasticsearch.client.common.gson.entity.spi.GsonHttpEntityContentProvider;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import org.apache.hc.core5.function.Supplier;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
@@ -53,99 +50,92 @@ import org.apache.hc.core5.http.nio.DataStreamChannel;
  */
 final class ClientRest5GsonHttpEntity extends GsonHttpEntityContentProvider implements HttpEntity, AsyncEntityProducer {
 
-	private static final String CONTENT_TYPE = ContentType.APPLICATION_JSON.toString();
+    private static final String CONTENT_TYPE = ContentType.APPLICATION_JSON.toString();
 
+    public static HttpEntity toEntity(Gson gson, ElasticsearchRequest request) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static HttpEntity toEntity(Gson gson, ElasticsearchRequest request) throws IOException {
-		final List<JsonObject> bodyParts = request.bodyParts();
-		if ( bodyParts.isEmpty() ) {
-			return null;
-		}
-		return new ClientRest5GsonHttpEntity( gson, bodyParts );
-	}
+    public ClientRest5GsonHttpEntity(Gson gson, List<JsonObject> bodyParts) throws IOException {
+        super(gson, bodyParts);
+    }
 
-	public ClientRest5GsonHttpEntity(Gson gson, List<JsonObject> bodyParts) throws IOException {
-		super( gson, bodyParts );
-	}
+    @Override
+    public boolean isRepeatable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isRepeatable() {
-		return true;
-	}
+    @Override
+    public void failed(Exception cause) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void failed(Exception cause) {
+    @Override
+    public boolean isChunked() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	}
+    @Override
+    public Set<String> getTrailerNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isChunked() {
-		return false;
-	}
+    @Override
+    public String getContentType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> getTrailerNames() {
-		return Set.of();
-	}
+    @Override
+    public String getContentEncoding() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String getContentType() {
-		return CONTENT_TYPE;
-	}
+    @Override
+    public boolean isStreaming() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String getContentEncoding() {
-		//Apparently this is the correct value:
-		return null;
-	}
+    @Override
+    public Supplier<List<? extends Header>> getTrailers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isStreaming() {
-		return false;
-	}
+    @Override
+    public int available() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Supplier<List<? extends Header>> getTrailers() {
-		return null;
-	}
+    @Override
+    public void produce(DataStreamChannel channel) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int available() {
-		return 0;
-	}
+    @Override
+    public void releaseResources() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void produce(DataStreamChannel channel) throws IOException {
-		produceContent( new ClientRest5ContentEncoder( channel ) );
-	}
+    private static class ClientRest5ContentEncoder implements ContentEncoder {
 
-	@Override
-	public void releaseResources() {
-		close();
-	}
+        private final DataStreamChannel channel;
 
+        public ClientRest5ContentEncoder(DataStreamChannel channel) {
+            this.channel = channel;
+        }
 
-	private static class ClientRest5ContentEncoder implements ContentEncoder {
+        @Override
+        public int write(ByteBuffer src) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final DataStreamChannel channel;
+        @Override
+        public void complete() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public ClientRest5ContentEncoder(DataStreamChannel channel) {
-			this.channel = channel;
-		}
-
-		@Override
-		public int write(ByteBuffer src) throws IOException {
-			return channel.write( src );
-		}
-
-		@Override
-		public void complete() throws IOException {
-			channel.endStream();
-		}
-
-		@Override
-		public boolean isCompleted() {
-			return false;
-		}
-	}
+        @Override
+        public boolean isCompleted() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

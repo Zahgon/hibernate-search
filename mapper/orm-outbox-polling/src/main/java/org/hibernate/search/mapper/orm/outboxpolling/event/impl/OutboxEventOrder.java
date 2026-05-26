@@ -12,49 +12,32 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 public enum OutboxEventOrder {
 
-	NONE {
-		@Override
-		String queryPart(String eventAlias) {
-			return "";
-		}
-	},
-	TIME {
-		@Override
-		String queryPart(String eventAlias) {
-			return " order by " + eventAlias + ".processAfter";
-		}
-	},
-	ID {
-		@Override
-		String queryPart(String eventAlias) {
-			return " order by " + eventAlias + ".id";
-		}
-	};
+    NONE {
 
-	abstract String queryPart(String eventAlias);
+        @Override
+        String queryPart(String eventAlias) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    , TIME {
 
-	public static OutboxEventOrder of(OutboxEventProcessingOrder order, UuidGenerationStrategy uuidGenerationStrategy,
-			Dialect dialect) {
-		switch ( order ) {
-			case NONE:
-				return NONE;
-			case TIME:
-				return TIME;
-			case ID:
-				return ID;
-			case AUTO:
-				if ( UuidGenerationStrategy.TIME.equals( uuidGenerationStrategy ) ) {
-					return ID;
-				}
-				else if ( dialect instanceof SQLServerDialect ) {
-					return NONE;
-				}
-				else {
-					return TIME;
-				}
-			default:
-				throw new AssertionFailure( "Unknown order: " + order );
-		}
-	}
+        @Override
+        String queryPart(String eventAlias) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    , ID {
 
+        @Override
+        String queryPart(String eventAlias) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    ;
+
+    abstract String queryPart(String eventAlias);
+
+    public static OutboxEventOrder of(OutboxEventProcessingOrder order, UuidGenerationStrategy uuidGenerationStrategy, Dialect dialect) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

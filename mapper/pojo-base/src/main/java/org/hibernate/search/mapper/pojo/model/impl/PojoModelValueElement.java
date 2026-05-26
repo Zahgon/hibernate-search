@@ -13,31 +13,31 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public class PojoModelValueElement<T> implements PojoModelValue<T> {
 
-	private final PojoBootstrapIntrospector introspector;
-	private final PojoTypeModel<? extends T> typeModel;
+    private final PojoBootstrapIntrospector introspector;
 
-	public PojoModelValueElement(PojoBootstrapIntrospector introspector,
-			PojoTypeModel<? extends T> typeModel) {
-		this.introspector = introspector;
-		this.typeModel = typeModel;
-	}
+    private final PojoTypeModel<? extends T> typeModel;
 
-	@Override
-	public String toString() {
-		return "PojoModelValueElement[" + typeModel.toString() + "]";
-	}
+    public PojoModelValueElement(PojoBootstrapIntrospector introspector, PojoTypeModel<? extends T> typeModel) {
+        this.introspector = introspector;
+        this.typeModel = typeModel;
+    }
 
-	@Override
-	public boolean isAssignableTo(Class<?> clazz) {
-		return typeModel.rawType().isSubTypeOf( introspector.typeModel( clazz ) );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Class<?> rawType() {
-		return typeModel.rawType().typeIdentifier().javaClass();
-	}
+    @Override
+    public boolean isAssignableTo(Class<?> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PojoTypeModel<? extends T> typeModel() {
-		return typeModel;
-	}
+    @Override
+    public Class<?> rawType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PojoTypeModel<? extends T> typeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

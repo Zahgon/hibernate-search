@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.dsl.impl;
 
 import java.time.ZonedDateTime;
-
 import org.hibernate.search.backend.lucene.types.codec.impl.AbstractLuceneNumericFieldCodec;
 import org.hibernate.search.backend.lucene.types.codec.impl.DocValues;
 import org.hibernate.search.backend.lucene.types.codec.impl.Indexing;
@@ -13,21 +12,19 @@ import org.hibernate.search.backend.lucene.types.codec.impl.LuceneZonedDateTimeF
 import org.hibernate.search.backend.lucene.types.codec.impl.Storage;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 
-class LuceneZonedDateTimeIndexFieldTypeOptionsStep
-		extends AbstractLuceneTemporalIndexFieldTypeOptionsStep<LuceneZonedDateTimeIndexFieldTypeOptionsStep, ZonedDateTime> {
+class LuceneZonedDateTimeIndexFieldTypeOptionsStep extends AbstractLuceneTemporalIndexFieldTypeOptionsStep<LuceneZonedDateTimeIndexFieldTypeOptionsStep, ZonedDateTime> {
 
-	LuceneZonedDateTimeIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, ZonedDateTime.class, DefaultStringConverters.ZONED_DATE_TIME );
-	}
+    LuceneZonedDateTimeIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, ZonedDateTime.class, DefaultStringConverters.ZONED_DATE_TIME);
+    }
 
-	@Override
-	protected LuceneZonedDateTimeIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneZonedDateTimeIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneNumericFieldCodec<ZonedDateTime, ?> createCodec(Indexing indexing, DocValues docValues,
-			Storage storage, ZonedDateTime indexNullAsValue) {
-		return new LuceneZonedDateTimeFieldCodec( indexing, docValues, storage, indexNullAsValue );
-	}
+    @Override
+    protected AbstractLuceneNumericFieldCodec<ZonedDateTime, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, ZonedDateTime indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

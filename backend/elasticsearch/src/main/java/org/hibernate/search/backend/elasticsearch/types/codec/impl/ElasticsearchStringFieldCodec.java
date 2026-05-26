@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.types.codec.impl;
 
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonElementTypes;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -13,33 +12,27 @@ import com.google.gson.JsonPrimitive;
 
 public final class ElasticsearchStringFieldCodec extends AbstractElasticsearchFieldCodec<String> {
 
-	public ElasticsearchStringFieldCodec(Gson gson) {
-		super( gson );
-	}
+    public ElasticsearchStringFieldCodec(Gson gson) {
+        super(gson);
+    }
 
-	@Override
-	public JsonElement encode(String value) {
-		if ( value == null ) {
-			return JsonNull.INSTANCE;
-		}
-		return new JsonPrimitive( value );
-	}
+    @Override
+    public JsonElement encode(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String decode(JsonElement element) {
-		if ( element == null || element.isJsonNull() ) {
-			return null;
-		}
-		return JsonElementTypes.STRING.fromElement( element );
-	}
+    @Override
+    public String decode(JsonElement element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String decode(Double value) {
-		return value.toString();
-	}
+    @Override
+    public String decode(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ElasticsearchFieldCodec<?> other) {
-		return other instanceof ElasticsearchStringFieldCodec;
-	}
+    @Override
+    public boolean isCompatibleWith(ElasticsearchFieldCodec<?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

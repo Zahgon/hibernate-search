@@ -13,46 +13,38 @@ import org.hibernate.search.engine.common.timing.spi.StaticDeadline;
 
 public class WaitForIndexStatusWork extends AbstractNonBulkableWork<Void> {
 
-	protected WaitForIndexStatusWork(Builder builder) {
-		super( builder );
-	}
+    protected WaitForIndexStatusWork(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		return null;
-	}
+    @Override
+    protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder
-			extends AbstractBuilder<Builder> {
-		private final URLEncodedString indexName;
-		private final IndexStatus requiredStatus;
-		private final int requiredStatusTimeoutInMs;
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		public Builder(URLEncodedString indexName, IndexStatus requiredStatus, int requiredStatusTimeoutInMs) {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-			this.indexName = indexName;
-			this.requiredStatus = requiredStatus;
-			this.requiredStatusTimeoutInMs = requiredStatusTimeoutInMs;
-		}
+        private final URLEncodedString indexName;
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.get()
-							.pathComponent( Paths._CLUSTER )
-							.pathComponent( Paths.HEALTH )
-							.pathComponent( indexName )
-							.param( "wait_for_status", requiredStatus.externalRepresentation() )
-							.param( "timeout", requiredStatusTimeoutInMs + "ms" );
+        private final IndexStatus requiredStatus;
 
-			builder.deadline( StaticDeadline.ofMilliseconds( requiredStatusTimeoutInMs ) );
+        private final int requiredStatusTimeoutInMs;
 
-			return builder.build();
-		}
+        public Builder(URLEncodedString indexName, IndexStatus requiredStatus, int requiredStatusTimeoutInMs) {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+            this.indexName = indexName;
+            this.requiredStatus = requiredStatus;
+            this.requiredStatusTimeoutInMs = requiredStatusTimeoutInMs;
+        }
 
-		@Override
-		public WaitForIndexStatusWork build() {
-			return new WaitForIndexStatusWork( this );
-		}
-	}
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public WaitForIndexStatusWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

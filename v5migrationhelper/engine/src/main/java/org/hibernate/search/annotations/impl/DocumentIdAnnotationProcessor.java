@@ -11,9 +11,9 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 @Deprecated
 public class DocumentIdAnnotationProcessor implements PropertyMappingAnnotationProcessor<DocumentId> {
-	@Override
-	public void process(PropertyMappingStep mapping, DocumentId annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		mapping.documentId();
-	}
+
+    @Override
+    public void process(PropertyMappingStep mapping, DocumentId annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -11,18 +11,17 @@ import org.hibernate.search.mapper.pojo.work.impl.PojoWorkTypeContext;
 
 final class PojoEntityReferenceFactory implements EntityReferenceFactory {
 
-	public final PojoEntityReferenceFactoryDelegate delegate;
-	private final PojoTypeManagerContainer typeManagers;
+    public final PojoEntityReferenceFactoryDelegate delegate;
 
-	PojoEntityReferenceFactory(PojoEntityReferenceFactoryDelegate delegate,
-			PojoTypeManagerContainer typeManagers) {
-		this.delegate = delegate;
-		this.typeManagers = typeManagers;
-	}
+    private final PojoTypeManagerContainer typeManagers;
 
-	@Override
-	public EntityReference createEntityReference(String typeName, Object identifier) {
-		PojoWorkTypeContext<?, ?> typeContext = typeManagers.byEntityName().getOrFail( typeName );
-		return delegate.create( typeContext.typeIdentifier(), typeContext.entityName(), identifier );
-	}
+    PojoEntityReferenceFactory(PojoEntityReferenceFactoryDelegate delegate, PojoTypeManagerContainer typeManagers) {
+        this.delegate = delegate;
+        this.typeManagers = typeManagers;
+    }
+
+    @Override
+    public EntityReference createEntityReference(String typeName, Object identifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -14,53 +14,48 @@ import org.hibernate.search.backend.elasticsearch.search.common.impl.Elasticsear
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexValueFieldContext;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.ExistsPredicateBuilder;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchExistsPredicate extends AbstractElasticsearchSingleFieldPredicate {
 
-	private static final JsonObjectAccessor EXISTS_ACCESSOR = JsonAccessor.root().property( "exists" ).asObject();
-	private static final JsonAccessor<String> FIELD_ACCESSOR = JsonAccessor.root().property( "field" ).asString();
+    private static final JsonObjectAccessor EXISTS_ACCESSOR = JsonAccessor.root().property("exists").asObject();
 
-	private ElasticsearchExistsPredicate(Builder builder) {
-		super( builder );
-	}
+    private static final JsonAccessor<String> FIELD_ACCESSOR = JsonAccessor.root().property("field").asString();
 
-	@Override
-	protected JsonObject doToJsonQuery(PredicateRequestContext context,
-			JsonObject outerObject, JsonObject innerObject) {
-		FIELD_ACCESSOR.set( innerObject, absoluteFieldPath );
+    private ElasticsearchExistsPredicate(Builder builder) {
+        super(builder);
+    }
 
-		EXISTS_ACCESSOR.set( outerObject, innerObject );
-		return outerObject;
-	}
+    @Override
+    protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Factory<F>
-			extends AbstractElasticsearchValueFieldSearchQueryElementFactory<ExistsPredicateBuilder, F> {
-		@Override
-		public ExistsPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new Builder( scope, field );
-		}
-	}
+    public static class Factory<F> extends AbstractElasticsearchValueFieldSearchQueryElementFactory<ExistsPredicateBuilder, F> {
 
-	public static class ObjectFieldFactory
-			extends AbstractElasticsearchCompositeNodeSearchQueryElementFactory<ExistsPredicateBuilder> {
-		@Override
-		public ExistsPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexCompositeNodeContext node) {
-			return new Builder( scope, node );
-		}
-	}
+        @Override
+        public ExistsPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private static class Builder extends AbstractBuilder implements ExistsPredicateBuilder {
-		Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexNodeContext node) {
-			super( scope, node );
-		}
+    public static class ObjectFieldFactory extends AbstractElasticsearchCompositeNodeSearchQueryElementFactory<ExistsPredicateBuilder> {
 
-		@Override
-		public SearchPredicate build() {
-			return new ElasticsearchExistsPredicate( this );
-		}
-	}
+        @Override
+        public ExistsPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexCompositeNodeContext node) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static class Builder extends AbstractBuilder implements ExistsPredicateBuilder {
+
+        Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexNodeContext node) {
+            super(scope, node);
+        }
+
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

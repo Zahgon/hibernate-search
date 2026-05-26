@@ -16,47 +16,46 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
 
 public abstract class AbstractPojoSearchSession implements PojoWorkSessionContext, PojoScopeSessionContext {
 
-	private final PojoSearchSessionMappingContext mappingContext;
+    private final PojoSearchSessionMappingContext mappingContext;
 
-	private final SessionBasedBridgeOperationContext sessionBasedBridgeOperationContext;
+    private final SessionBasedBridgeOperationContext sessionBasedBridgeOperationContext;
 
-	protected AbstractPojoSearchSession(PojoSearchSessionMappingContext mappingContext) {
-		this.mappingContext = mappingContext;
-		this.sessionBasedBridgeOperationContext = new SessionBasedBridgeOperationContext( this );
-	}
+    protected AbstractPojoSearchSession(PojoSearchSessionMappingContext mappingContext) {
+        this.mappingContext = mappingContext;
+        this.sessionBasedBridgeOperationContext = new SessionBasedBridgeOperationContext(this);
+    }
 
-	@Override
-	public PojoSearchSessionMappingContext mappingContext() {
-		return mappingContext;
-	}
+    @Override
+    public PojoSearchSessionMappingContext mappingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final IdentifierBridgeFromDocumentIdentifierContext identifierBridgeFromDocumentIdentifierContext() {
-		return sessionBasedBridgeOperationContext;
-	}
+    @Override
+    public final IdentifierBridgeFromDocumentIdentifierContext identifierBridgeFromDocumentIdentifierContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public RoutingBridgeRouteContext routingBridgeRouteContext() {
-		return sessionBasedBridgeOperationContext;
-	}
+    @Override
+    public RoutingBridgeRouteContext routingBridgeRouteContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final TypeBridgeWriteContext typeBridgeWriteContext() {
-		return sessionBasedBridgeOperationContext;
-	}
+    @Override
+    public final TypeBridgeWriteContext typeBridgeWriteContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final PropertyBridgeWriteContext propertyBridgeWriteContext() {
-		return sessionBasedBridgeOperationContext;
-	}
+    @Override
+    public final PropertyBridgeWriteContext propertyBridgeWriteContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final ValueBridgeFromIndexedValueContext valueBridgeFromIndexedValueContext() {
-		return sessionBasedBridgeOperationContext;
-	}
+    @Override
+    public final ValueBridgeFromIndexedValueContext valueBridgeFromIndexedValueContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected PojoIndexer createIndexer() {
-		return mappingContext.createIndexer( this );
-	}
-
+    protected PojoIndexer createIndexer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

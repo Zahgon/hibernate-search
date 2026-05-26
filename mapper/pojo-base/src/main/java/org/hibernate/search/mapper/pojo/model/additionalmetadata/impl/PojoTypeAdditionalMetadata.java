@@ -11,54 +11,50 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class PojoTypeAdditionalMetadata {
-	private final Optional<PojoEntityTypeAdditionalMetadata> entityTypeMetadata;
-	private final Optional<PojoIndexedTypeAdditionalMetadata> indexedTypeMetadata;
-	private final Map<String, Supplier<PojoPropertyAdditionalMetadata>> propertiesAdditionalMetadataSuppliers;
-	private final Map<String, PojoPropertyAdditionalMetadata> propertiesAdditionalMetadata = new LinkedHashMap<>();
 
-	public PojoTypeAdditionalMetadata(Optional<PojoEntityTypeAdditionalMetadata> entityTypeMetadata,
-			Optional<PojoIndexedTypeAdditionalMetadata> indexedTypeMetadata,
-			Map<String, Supplier<PojoPropertyAdditionalMetadata>> propertiesAdditionalMetadataSuppliers) {
-		this.entityTypeMetadata = entityTypeMetadata;
-		this.indexedTypeMetadata = indexedTypeMetadata;
-		this.propertiesAdditionalMetadataSuppliers = propertiesAdditionalMetadataSuppliers;
-	}
+    private final Optional<PojoEntityTypeAdditionalMetadata> entityTypeMetadata;
 
-	/**
-	 * Determine whether the given type is an entity type.
-	 * <p>
-	 * Types marked as entity types are guaranteed by the contributors
-	 * to be the only types that can be the target of an association.
-	 * All other types are assumed to only be able to be embedded in other objects,
-	 * with their lifecycle completely tied to their embedding object.
-	 * As a result, entity types are the only types whose lifecycle events are expected to be sent
-	 * to POJO indexing plans.
-	 *
-	 * @return {@code true} if this type is an entity type, {@code false} otherwise.
-	 */
-	public boolean isEntity() {
-		return entityTypeMetadata.isPresent();
-	}
+    private final Optional<PojoIndexedTypeAdditionalMetadata> indexedTypeMetadata;
 
-	public Optional<PojoEntityTypeAdditionalMetadata> getEntityTypeMetadata() {
-		return entityTypeMetadata;
-	}
+    private final Map<String, Supplier<PojoPropertyAdditionalMetadata>> propertiesAdditionalMetadataSuppliers;
 
-	public Optional<PojoIndexedTypeAdditionalMetadata> getIndexedTypeMetadata() {
-		return indexedTypeMetadata;
-	}
+    private final Map<String, PojoPropertyAdditionalMetadata> propertiesAdditionalMetadata = new LinkedHashMap<>();
 
-	public Set<String> getNamesOfPropertiesWithAdditionalMetadata() {
-		return propertiesAdditionalMetadataSuppliers.keySet();
-	}
+    public PojoTypeAdditionalMetadata(Optional<PojoEntityTypeAdditionalMetadata> entityTypeMetadata, Optional<PojoIndexedTypeAdditionalMetadata> indexedTypeMetadata, Map<String, Supplier<PojoPropertyAdditionalMetadata>> propertiesAdditionalMetadataSuppliers) {
+        this.entityTypeMetadata = entityTypeMetadata;
+        this.indexedTypeMetadata = indexedTypeMetadata;
+        this.propertiesAdditionalMetadataSuppliers = propertiesAdditionalMetadataSuppliers;
+    }
 
-	public PojoPropertyAdditionalMetadata getPropertyAdditionalMetadata(String name) {
-		return propertiesAdditionalMetadata.computeIfAbsent( name, theName -> {
-			Supplier<PojoPropertyAdditionalMetadata> supplier = propertiesAdditionalMetadataSuppliers.get( theName );
-			if ( supplier == null ) {
-				return PojoPropertyAdditionalMetadata.EMPTY;
-			}
-			return supplier.get();
-		} );
-	}
+    /**
+     * Determine whether the given type is an entity type.
+     * <p>
+     * Types marked as entity types are guaranteed by the contributors
+     * to be the only types that can be the target of an association.
+     * All other types are assumed to only be able to be embedded in other objects,
+     * with their lifecycle completely tied to their embedding object.
+     * As a result, entity types are the only types whose lifecycle events are expected to be sent
+     * to POJO indexing plans.
+     *
+     * @return {@code true} if this type is an entity type, {@code false} otherwise.
+     */
+    public boolean isEntity() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Optional<PojoEntityTypeAdditionalMetadata> getEntityTypeMetadata() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Optional<PojoIndexedTypeAdditionalMetadata> getIndexedTypeMetadata() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Set<String> getNamesOfPropertiesWithAdditionalMetadata() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PojoPropertyAdditionalMetadata getPropertyAdditionalMetadata(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

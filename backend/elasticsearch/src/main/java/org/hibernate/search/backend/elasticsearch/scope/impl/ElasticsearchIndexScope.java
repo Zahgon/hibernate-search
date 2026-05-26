@@ -5,32 +5,27 @@
 package org.hibernate.search.backend.elasticsearch.scope.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexModel;
 import org.hibernate.search.backend.elasticsearch.search.query.impl.ElasticsearchSearchQueryIndexScope;
 import org.hibernate.search.backend.elasticsearch.search.query.impl.SearchBackendContext;
 import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
 import org.hibernate.search.engine.backend.scope.spi.IndexScope;
 
-public class ElasticsearchIndexScope<SR>
-		implements IndexScope<SR> {
+public class ElasticsearchIndexScope<SR> implements IndexScope<SR> {
 
-	private final ElasticsearchSearchQueryIndexScope<SR, ?> searchScope;
+    private final ElasticsearchSearchQueryIndexScope<SR, ?> searchScope;
 
-	public ElasticsearchIndexScope(BackendMappingContext mappingContext, SearchBackendContext backendContext,
-			Class<SR> rootScopeType,
-			Set<ElasticsearchIndexModel> indexModels) {
-		this.searchScope = backendContext.createSearchContext( mappingContext, rootScopeType, indexModels );
-	}
+    public ElasticsearchIndexScope(BackendMappingContext mappingContext, SearchBackendContext backendContext, Class<SR> rootScopeType, Set<ElasticsearchIndexModel> indexModels) {
+        this.searchScope = backendContext.createSearchContext(mappingContext, rootScopeType, indexModels);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[indexNames=" + searchScope.hibernateSearchIndexNames() + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchQueryIndexScope<SR, ?> searchScope() {
-		return searchScope;
-	}
-
+    @Override
+    public ElasticsearchSearchQueryIndexScope<SR, ?> searchScope() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

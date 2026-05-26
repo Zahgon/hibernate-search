@@ -6,29 +6,29 @@ package org.hibernate.search.processor.writer.impl;
 
 enum TraitKind {
 
-	UNTYPED( false, false, false ),
-	TYPED_INPUT( true, true, false ),
-	TYPED_OUTPUT( true, false, true );
+    UNTYPED(false, false, false), TYPED_INPUT(true, true, false), TYPED_OUTPUT(true, false, true);
 
-	private final boolean requiresValueModel;
-	private final boolean requiresInputType;
-	private final boolean requiresOutputType;
+    private final boolean requiresValueModel;
 
-	TraitKind(boolean requiresValueModel, boolean requiresInputType, boolean requiresOutputType) {
-		this.requiresValueModel = requiresValueModel;
-		this.requiresInputType = requiresInputType;
-		this.requiresOutputType = requiresOutputType;
-	}
+    private final boolean requiresInputType;
 
-	public boolean requiresValueModel() {
-		return requiresValueModel;
-	}
+    private final boolean requiresOutputType;
 
-	public boolean requiresInputType() {
-		return requiresInputType;
-	}
+    TraitKind(boolean requiresValueModel, boolean requiresInputType, boolean requiresOutputType) {
+        this.requiresValueModel = requiresValueModel;
+        this.requiresInputType = requiresInputType;
+        this.requiresOutputType = requiresOutputType;
+    }
 
-	public boolean requiresOutputType() {
-		return requiresOutputType;
-	}
+    public boolean requiresValueModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public boolean requiresInputType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public boolean requiresOutputType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

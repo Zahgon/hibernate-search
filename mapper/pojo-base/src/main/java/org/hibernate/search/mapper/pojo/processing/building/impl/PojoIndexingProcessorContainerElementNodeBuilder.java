@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.processing.building.impl;
 
 import java.util.Collection;
 import java.util.Optional;
-
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexBindingContext;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorPropertyNode;
 import org.hibernate.search.mapper.pojo.extractor.impl.ContainerExtractorHolder;
@@ -26,74 +25,49 @@ import org.hibernate.search.util.common.impl.Closer;
  */
 class PojoIndexingProcessorContainerElementNodeBuilder<P extends C, C, V> extends AbstractPojoProcessorNodeBuilder {
 
-	private final BoundPojoModelPathValueNode<?, P, V> modelPath;
-	private final ContainerExtractorHolder<C, V> extractorHolder;
+    private final BoundPojoModelPathValueNode<?, P, V> modelPath;
 
-	private final PojoIndexingProcessorValueNodeBuilderDelegate<P, V> valueNodeProcessorCollectionBuilder;
+    private final ContainerExtractorHolder<C, V> extractorHolder;
 
-	PojoIndexingProcessorContainerElementNodeBuilder(BoundPojoModelPathValueNode<?, P, V> modelPath,
-			ContainerExtractorHolder<C, V> extractorHolder,
-			PojoMappingHelper mappingHelper, IndexBindingContext bindingContext) {
-		super( mappingHelper, bindingContext );
-		this.modelPath = modelPath;
-		this.extractorHolder = extractorHolder;
+    private final PojoIndexingProcessorValueNodeBuilderDelegate<P, V> valueNodeProcessorCollectionBuilder;
 
-		valueNodeProcessorCollectionBuilder = new PojoIndexingProcessorValueNodeBuilderDelegate<>(
-				modelPath,
-				mappingHelper, bindingContext,
-				extractorHolder.multiValued()
-		);
-	}
+    PojoIndexingProcessorContainerElementNodeBuilder(BoundPojoModelPathValueNode<?, P, V> modelPath, ContainerExtractorHolder<C, V> extractorHolder, PojoMappingHelper mappingHelper, IndexBindingContext bindingContext) {
+        super(mappingHelper, bindingContext);
+        this.modelPath = modelPath;
+        this.extractorHolder = extractorHolder;
+        valueNodeProcessorCollectionBuilder = new PojoIndexingProcessorValueNodeBuilderDelegate<>(modelPath, mappingHelper, bindingContext, extractorHolder.multiValued());
+    }
 
-	public PojoIndexMappingCollectorValueNode value() {
-		return valueNodeProcessorCollectionBuilder;
-	}
+    public PojoIndexMappingCollectorValueNode value() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	BoundPojoModelPathValueNode<?, ? extends C, V> getModelPath() {
-		return modelPath;
-	}
+    @Override
+    BoundPojoModelPathValueNode<?, ? extends C, V> getModelPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void closeOnFailure() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.pushAll( ContainerExtractorHolder::close, extractorHolder );
-			closer.pushAll(
-					PojoIndexingProcessorValueNodeBuilderDelegate::closeOnFailure,
-					valueNodeProcessorCollectionBuilder
-			);
-		}
-	}
+    @Override
+    void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	Optional<PojoIndexingProcessorContainerElementNode<C, V>> build(
-			PojoIndexingDependencyCollectorPropertyNode<?, P> parentDependencyCollector) {
-		try {
-			return doBuild( parentDependencyCollector );
-		}
-		catch (RuntimeException e) {
-			failureCollector().add( e );
-			return Optional.empty();
-		}
-	}
+    Optional<PojoIndexingProcessorContainerElementNode<C, V>> build(PojoIndexingDependencyCollectorPropertyNode<?, P> parentDependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private Optional<PojoIndexingProcessorContainerElementNode<C, V>> doBuild(
-			PojoIndexingDependencyCollectorPropertyNode<?, P> parentDependencyCollector) {
-		Collection<PojoIndexingProcessor<? super V>> immutableNestedProcessors =
-				valueNodeProcessorCollectionBuilder.build( parentDependencyCollector );
-
-		if ( immutableNestedProcessors.isEmpty() ) {
-			/*
+    private Optional<PojoIndexingProcessorContainerElementNode<C, V>> doBuild(PojoIndexingDependencyCollectorPropertyNode<?, P> parentDependencyCollector) {
+        Collection<PojoIndexingProcessor<? super V>> immutableNestedProcessors = valueNodeProcessorCollectionBuilder.build(parentDependencyCollector);
+        if (immutableNestedProcessors.isEmpty()) {
+            /*
 			 * If this processor doesn't have any bridge, nor any nested processor,
 			 * it is useless and we don't need to build it.
 			 * Release the other resources (the container value extractors) and return.
 			 */
-			extractorHolder.close();
-			return Optional.empty();
-		}
-		else {
-			return Optional.of( new PojoIndexingProcessorContainerElementNode<>(
-					extractorHolder, createNested( immutableNestedProcessors )
-			) );
-		}
-	}
+            extractorHolder.close();
+            return Optional.empty();
+        } else {
+            return Optional.of(new PojoIndexingProcessorContainerElementNode<>(extractorHolder, createNested(immutableNestedProcessors)));
+        }
+    }
 }

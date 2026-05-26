@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.types.dsl.provider.impl;
 
 import org.hibernate.search.backend.elasticsearch.types.mapping.impl.Elasticsearch814VectorFieldTypeMappingContributor;
 import org.hibernate.search.backend.elasticsearch.types.mapping.impl.ElasticsearchVectorFieldTypeMappingContributor;
-
 import com.google.gson.Gson;
 
 /**
@@ -14,15 +13,14 @@ import com.google.gson.Gson;
  */
 public class Elasticsearch814IndexFieldTypeFactoryProvider extends AbstractIndexFieldTypeFactoryProvider {
 
-	private final Elasticsearch814VectorFieldTypeMappingContributor vectorFieldTypeMappingContributor =
-			new Elasticsearch814VectorFieldTypeMappingContributor();
+    private final Elasticsearch814VectorFieldTypeMappingContributor vectorFieldTypeMappingContributor = new Elasticsearch814VectorFieldTypeMappingContributor();
 
-	public Elasticsearch814IndexFieldTypeFactoryProvider(Gson userFacingGson) {
-		super( userFacingGson );
-	}
+    public Elasticsearch814IndexFieldTypeFactoryProvider(Gson userFacingGson) {
+        super(userFacingGson);
+    }
 
-	@Override
-	protected ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor() {
-		return vectorFieldTypeMappingContributor;
-	}
+    @Override
+    protected ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

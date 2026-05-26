@@ -5,40 +5,31 @@
 package org.hibernate.search.backend.elasticsearch.search.projection.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.ProjectionFinalStep;
-
 import com.google.gson.JsonObject;
 
-final class ElasticsearchWithParametersProjection<P>
-		extends AbstractElasticsearchProjection<P> {
+final class ElasticsearchWithParametersProjection<P> extends AbstractElasticsearchProjection<P> {
 
-	private final ElasticsearchSearchIndexScope<?> scope;
-	private final Function<? super NamedValues,
-			? extends ProjectionFinalStep<P>> projectionCreator;
+    private final ElasticsearchSearchIndexScope<?> scope;
 
-	public ElasticsearchWithParametersProjection(ElasticsearchSearchIndexScope<?> scope,
-			Function<? super NamedValues, ? extends ProjectionFinalStep<P>> projectionCreator) {
-		super( scope );
-		this.scope = scope;
-		this.projectionCreator = projectionCreator;
-	}
+    private final Function<? super NamedValues, ? extends ProjectionFinalStep<P>> projectionCreator;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "projectionCreator=" + projectionCreator
-				+ "]";
-	}
+    public ElasticsearchWithParametersProjection(ElasticsearchSearchIndexScope<?> scope, Function<? super NamedValues, ? extends ProjectionFinalStep<P>> projectionCreator) {
+        super(scope);
+        this.scope = scope;
+        this.projectionCreator = projectionCreator;
+    }
 
-	@Override
-	public Extractor<?, P> request(JsonObject requestBody, ProjectionRequestContext context) {
-		SearchProjection<P> delegate = projectionCreator.apply( context.queryParameters() )
-				.toProjection();
-		return ElasticsearchSearchProjection.from( scope, delegate ).request( requestBody, context );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public Extractor<?, P> request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

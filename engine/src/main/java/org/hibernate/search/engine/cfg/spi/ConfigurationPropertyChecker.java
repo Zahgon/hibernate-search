@@ -8,7 +8,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertyCheckingStrategyName;
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.EngineSettings;
@@ -23,110 +22,71 @@ import org.hibernate.search.util.common.impl.CollectionHelper;
  */
 public final class ConfigurationPropertyChecker {
 
-	private static final ConfigurationProperty<
-			ConfigurationPropertyCheckingStrategyName> CONFIGURATION_PROPERTY_CHECKING_STRATEGY =
-					ConfigurationProperty.forKey( EngineSettings.CONFIGURATION_PROPERTY_CHECKING_STRATEGY )
-							.as( ConfigurationPropertyCheckingStrategyName.class,
-									ConfigurationPropertyCheckingStrategyName::of )
-							.withDefault( EngineSettings.Defaults.CONFIGURATION_PROPERTY_CHECKING_STRATEGY )
-							.build();
+    private static final ConfigurationProperty<ConfigurationPropertyCheckingStrategyName> CONFIGURATION_PROPERTY_CHECKING_STRATEGY = ConfigurationProperty.forKey(EngineSettings.CONFIGURATION_PROPERTY_CHECKING_STRATEGY).as(ConfigurationPropertyCheckingStrategyName.class, ConfigurationPropertyCheckingStrategyName::of).withDefault(EngineSettings.Defaults.CONFIGURATION_PROPERTY_CHECKING_STRATEGY).build();
 
-	public static ConfigurationPropertyChecker create() {
-		return new ConfigurationPropertyChecker();
-	}
+    public static ConfigurationPropertyChecker create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static boolean isRelevantPropertyEntry(String key, Object value) {
-		return key.startsWith( EngineSettings.PREFIX )
-				&& ConvertUtils.trimIfString( value ) != null;
-	}
+    private static boolean isRelevantPropertyEntry(String key, Object value) {
+        return key.startsWith(EngineSettings.PREFIX) && ConvertUtils.trimIfString(value) != null;
+    }
 
-	private String configurationPropertyCheckingStrategyPropertyName;
+    private String configurationPropertyCheckingStrategyPropertyName;
 
-	private final Set<String> availablePropertyKeys = ConcurrentHashMap.newKeySet();
-	private final Set<String> consumedPropertyKeys = ConcurrentHashMap.newKeySet();
+    private final Set<String> availablePropertyKeys = ConcurrentHashMap.newKeySet();
 
-	private volatile boolean warn;
+    private final Set<String> consumedPropertyKeys = ConcurrentHashMap.newKeySet();
 
-	private ConfigurationPropertyChecker() {
-	}
+    private volatile boolean warn;
 
-	public ConfigurationPropertySource wrap(AllAwareConfigurationPropertySource source) {
-		ConfigurationPropertySource trackingSource =
-				new ConsumedPropertyTrackingConfigurationPropertySource(
-						source, this::addConsumedPropertyKey
-				);
-		ConfigurationPropertyCheckingStrategyName checkingStrategy =
-				CONFIGURATION_PROPERTY_CHECKING_STRATEGY.get( trackingSource );
-		this.configurationPropertyCheckingStrategyPropertyName =
-				CONFIGURATION_PROPERTY_CHECKING_STRATEGY.resolveOrRaw( source );
-		switch ( checkingStrategy ) {
-			case WARN:
-				this.warn = true;
-				availablePropertyKeys.addAll( source.resolveAll( ConfigurationPropertyChecker::isRelevantPropertyEntry ) );
-				return trackingSource;
-			case IGNORE:
-				return source;
-			default:
-				throw new AssertionFailure(
-						"Unexpected configuration property checking strategy name: " + checkingStrategy
-				);
-		}
-	}
+    private ConfigurationPropertyChecker() {
+    }
 
-	public void beforeBoot() {
-		if ( !warn ) {
-			ConfigurationLog.INSTANCE.configurationPropertyTrackingDisabled();
-		}
+    public ConfigurationPropertySource wrap(AllAwareConfigurationPropertySource source) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		checkHibernateSearch5Properties();
-	}
+    public void beforeBoot() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void afterBoot(ConfigurationPropertyChecker firstPhaseChecker) {
-		checkUnconsumedProperties( firstPhaseChecker );
-	}
+    public void afterBoot(ConfigurationPropertyChecker firstPhaseChecker) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void checkHibernateSearch5Properties() {
-		Set<String> obsoleteKeys = new LinkedHashSet<>();
-		for ( String propertyKey : availablePropertyKeys ) {
-			if ( HibernateSearch5Properties.isSearch5PropertyKey( propertyKey ) ) {
-				obsoleteKeys.add( propertyKey );
-			}
-		}
-		if ( !obsoleteKeys.isEmpty() ) {
-			throw ConfigurationLog.INSTANCE.obsoleteConfigurationPropertiesFromSearch5( obsoleteKeys );
-		}
-	}
+    private void checkHibernateSearch5Properties() {
+        Set<String> obsoleteKeys = new LinkedHashSet<>();
+        for (String propertyKey : availablePropertyKeys) {
+            if (HibernateSearch5Properties.isSearch5PropertyKey(propertyKey)) {
+                obsoleteKeys.add(propertyKey);
+            }
+        }
+        if (!obsoleteKeys.isEmpty()) {
+            throw ConfigurationLog.INSTANCE.obsoleteConfigurationPropertiesFromSearch5(obsoleteKeys);
+        }
+    }
 
-	private void checkUnconsumedProperties(ConfigurationPropertyChecker firstPhaseChecker) {
-		if ( !warn ) {
-			return;
-		}
+    private void checkUnconsumedProperties(ConfigurationPropertyChecker firstPhaseChecker) {
+        if (!warn) {
+            return;
+        }
+        List<ConfigurationPropertyChecker> checkers = CollectionHelper.asImmutableList(firstPhaseChecker, this);
+        Set<String> unconsumedPropertyKeys = new LinkedHashSet<>();
+        // Add all available property keys
+        for (ConfigurationPropertyChecker checker : checkers) {
+            unconsumedPropertyKeys.addAll(checker.availablePropertyKeys);
+        }
+        // Remove all consumed property keys
+        for (ConfigurationPropertyChecker checker : checkers) {
+            unconsumedPropertyKeys.removeAll(checker.consumedPropertyKeys);
+        }
+        if (!unconsumedPropertyKeys.isEmpty()) {
+            ConfigurationLog.INSTANCE.configurationPropertyTrackingUnusedProperties(unconsumedPropertyKeys, configurationPropertyCheckingStrategyPropertyName, ConfigurationPropertyCheckingStrategyName.IGNORE.externalRepresentation());
+        }
+    }
 
-		List<ConfigurationPropertyChecker> checkers =
-				CollectionHelper.asImmutableList( firstPhaseChecker, this );
-		Set<String> unconsumedPropertyKeys = new LinkedHashSet<>();
-
-		// Add all available property keys
-		for ( ConfigurationPropertyChecker checker : checkers ) {
-			unconsumedPropertyKeys.addAll( checker.availablePropertyKeys );
-		}
-
-		// Remove all consumed property keys
-		for ( ConfigurationPropertyChecker checker : checkers ) {
-			unconsumedPropertyKeys.removeAll( checker.consumedPropertyKeys );
-		}
-
-		if ( !unconsumedPropertyKeys.isEmpty() ) {
-			ConfigurationLog.INSTANCE.configurationPropertyTrackingUnusedProperties(
-					unconsumedPropertyKeys,
-					configurationPropertyCheckingStrategyPropertyName,
-					ConfigurationPropertyCheckingStrategyName.IGNORE.externalRepresentation()
-			);
-		}
-	}
-
-	private void addConsumedPropertyKey(String key) {
-		consumedPropertyKeys.add( key );
-	}
-
+    private void addConsumedPropertyKey(String key) {
+        consumedPropertyKeys.add(key);
+    }
 }

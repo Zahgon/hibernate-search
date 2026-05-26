@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.model.path;
 
 import java.util.Objects;
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.extractor.mapping.programmatic.ContainerExtractorPath;
 import org.hibernate.search.util.common.impl.Contracts;
 
@@ -22,65 +21,58 @@ import org.hibernate.search.util.common.impl.Contracts;
  */
 public final class PojoModelPathValueNode extends PojoModelPath {
 
-	private final PojoModelPathPropertyNode parent;
-	private final ContainerExtractorPath extractorPath;
+    private final PojoModelPathPropertyNode parent;
 
-	PojoModelPathValueNode(PojoModelPathPropertyNode parent, ContainerExtractorPath extractorPath) {
-		Contracts.assertNotNull( parent, "parent" );
-		Contracts.assertNotNull( extractorPath, "extractorPath" );
-		this.parent = parent;
-		this.extractorPath = extractorPath;
-	}
+    private final ContainerExtractorPath extractorPath;
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		PojoModelPathValueNode that = (PojoModelPathValueNode) o;
-		return parent.equals( that.parent ) && Objects.equals( extractorPath, that.extractorPath );
-	}
+    PojoModelPathValueNode(PojoModelPathPropertyNode parent, ContainerExtractorPath extractorPath) {
+        Contracts.assertNotNull(parent, "parent");
+        Contracts.assertNotNull(extractorPath, "extractorPath");
+        this.parent = parent;
+        this.extractorPath = extractorPath;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( parent, extractorPath );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The model path to the property from which the value represented by this node is extracted.
-	 */
-	@Override
-	public PojoModelPathPropertyNode parent() {
-		return parent;
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The extractor path from the parent property to this value.
-	 * The path is guaranteed to be explicit (i.e. it won't be {@link ContainerExtractorPath#defaultExtractors()}).
-	 */
-	public ContainerExtractorPath extractorPath() {
-		return extractorPath;
-	}
+    /**
+     * @return The model path to the property from which the value represented by this node is extracted.
+     */
+    @Override
+    public PojoModelPathPropertyNode parent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param propertyName The name of a property exposed by the type of this value.
-	 * The property name may be invalid: no check will be performed.
-	 * @return A new path representing the current path, with an additional access to the given property at the end.
-	 */
-	public PojoModelPathPropertyNode property(String propertyName) {
-		return new PojoModelPathPropertyNode( this, propertyName );
-	}
+    /**
+     * @return The extractor path from the parent property to this value.
+     * The path is guaranteed to be explicit (i.e. it won't be {@link ContainerExtractorPath#defaultExtractors()}).
+     */
+    public ContainerExtractorPath extractorPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Optional<PojoModelPathValueNode> relativize(PojoModelPathValueNode other) {
-		return parent.relativize( other )
-				.map( newParent -> new PojoModelPathValueNode( newParent, extractorPath ) );
-	}
+    /**
+     * @param propertyName The name of a property exposed by the type of this value.
+     * The property name may be invalid: no check will be performed.
+     * @return A new path representing the current path, with an additional access to the given property at the end.
+     */
+    public PojoModelPathPropertyNode property(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(StringBuilder builder) {
-		builder.append( extractorPath() );
-	}
+    public Optional<PojoModelPathValueNode> relativize(PojoModelPathValueNode other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    void appendSelfPath(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

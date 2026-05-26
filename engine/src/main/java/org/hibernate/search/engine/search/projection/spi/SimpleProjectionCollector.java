@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.projection.spi;
 
 import java.util.List;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -19,32 +18,33 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 final class SimpleProjectionCollector<E, V, R> extends ListBasedProjectionCollector<E, V, R> {
 
-	static final class Provider<V, R> implements ProjectionCollector.Provider<V, R> {
-		private final Function<List<V>, R> finisher;
+    static final class Provider<V, R> implements ProjectionCollector.Provider<V, R> {
 
-		Provider(Function<List<V>, R> finisher) {
-			this.finisher = finisher;
-		}
+        private final Function<List<V>, R> finisher;
 
-		@Override
-		public <T> ProjectionCollector<T, V, ?, R> get() {
-			return new SimpleProjectionCollector<>( finisher );
-		}
+        Provider(Function<List<V>, R> finisher) {
+            this.finisher = finisher;
+        }
 
-		@Override
-		public boolean isSingleValued() {
-			return false;
-		}
-	}
+        @Override
+        public <T> ProjectionCollector<T, V, ?, R> get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private final Function<List<V>, R> finisher;
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private SimpleProjectionCollector(Function<List<V>, R> finisher) {
-		this.finisher = finisher;
-	}
+    private final Function<List<V>, R> finisher;
 
-	@Override
-	public R doFinish(List<V> accumulated) {
-		return finisher.apply( accumulated );
-	}
+    private SimpleProjectionCollector(Function<List<V>, R> finisher) {
+        this.finisher = finisher;
+    }
+
+    @Override
+    public R doFinish(List<V> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

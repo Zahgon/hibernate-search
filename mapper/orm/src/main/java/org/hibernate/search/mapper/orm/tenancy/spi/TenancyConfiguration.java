@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.spi.ConfigurationProperty;
 import org.hibernate.search.engine.cfg.spi.OptionalConfigurationProperty;
@@ -26,98 +25,61 @@ import org.hibernate.search.util.common.impl.Contracts;
 
 public class TenancyConfiguration implements AutoCloseable {
 
-	private static final OptionalConfigurationProperty<List<String>> MULTI_TENANCY_TENANT_IDS =
-			ConfigurationProperty.forKey( HibernateOrmMapperSettings.Radicals.MULTI_TENANCY_TENANT_IDS )
-					.asString().multivalued()
-					.validate( value -> Contracts.assertNotNullNorEmpty( value, "value" ) )
-					.build();
+    private static final OptionalConfigurationProperty<List<String>> MULTI_TENANCY_TENANT_IDS = ConfigurationProperty.forKey(HibernateOrmMapperSettings.Radicals.MULTI_TENANCY_TENANT_IDS).asString().multivalued().validate(value -> Contracts.assertNotNullNorEmpty(value, "value")).build();
 
-	private static final ConfigurationProperty<
-			BeanReference<? extends TenantIdentifierConverter>> MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER =
-					ConfigurationProperty
-							.forKey( HibernateOrmMapperSettings.Radicals.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER )
-							.asBeanReference( TenantIdentifierConverter.class )
-							.withDefault( HibernateOrmMapperSettings.Defaults.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER )
-							.build();
+    private static final ConfigurationProperty<BeanReference<? extends TenantIdentifierConverter>> MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER = ConfigurationProperty.forKey(HibernateOrmMapperSettings.Radicals.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER).asBeanReference(TenantIdentifierConverter.class).withDefault(HibernateOrmMapperSettings.Defaults.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER).build();
 
-	public static TenancyConfiguration create(BeanResolver beanResolver, TenancyMode tenancyMode,
-			ConfigurationPropertySource configurationPropertySource) {
-		String tenantIdsConfigurationPropertyKey = MULTI_TENANCY_TENANT_IDS.resolveOrRaw( configurationPropertySource );
+    public static TenancyConfiguration create(BeanResolver beanResolver, TenancyMode tenancyMode, ConfigurationPropertySource configurationPropertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter =
-				MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER.getAndTransform(
-						configurationPropertySource, beanResolver::resolve );
-		switch ( tenancyMode ) {
-			case SINGLE_TENANCY:
-				return new TenancyConfiguration( tenancyMode, tenantIdentifierConverter, Optional.of( Collections.emptySet() ),
-						tenantIdsConfigurationPropertyKey );
-			case MULTI_TENANCY:
-				return new TenancyConfiguration(
-						tenancyMode,
-						tenantIdentifierConverter,
-						MULTI_TENANCY_TENANT_IDS.getAndMap( configurationPropertySource, LinkedHashSet::new ),
-						tenantIdsConfigurationPropertyKey );
-		}
-		throw new AssertionFailure( "Unknown tenancy mode: " + tenancyMode );
-	}
+    // for tests:
+    public static TenancyConfiguration create(TenancyMode tenancyMode, BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter, Optional<Set<String>> tenantIds, String tenantIdsConfigurationPropertyKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// for tests:
-	public static TenancyConfiguration create(TenancyMode tenancyMode,
-			BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter,
-			Optional<Set<String>> tenantIds,
-			String tenantIdsConfigurationPropertyKey) {
-		return new TenancyConfiguration( tenancyMode, tenantIdentifierConverter, tenantIds, tenantIdsConfigurationPropertyKey );
-	}
+    private final TenancyMode tenancyMode;
 
-	private final TenancyMode tenancyMode;
-	private final Optional<Set<String>> tenantIds;
-	private final String tenantIdsConfigurationPropertyKey;
-	private final BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter;
+    private final Optional<Set<String>> tenantIds;
 
-	private TenancyConfiguration(TenancyMode tenancyMode,
-			BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter,
-			Optional<Set<String>> tenantIds,
-			String tenantIdsConfigurationPropertyKey) {
-		this.tenancyMode = tenancyMode;
-		this.tenantIdentifierConverter = tenantIdentifierConverter;
-		this.tenantIds = tenantIds;
-		this.tenantIdsConfigurationPropertyKey = tenantIdsConfigurationPropertyKey;
-	}
+    private final String tenantIdsConfigurationPropertyKey;
 
-	/**
-	 * @return A set of all possible tenant IDs, or an empty set if the application is single-tenant.
-	 * @throws org.hibernate.search.util.common.SearchException if the application is multi-tenant
-	 * and the full list of tenant IDs was not configured.
-	 */
-	public Set<String> tenantIdsOrFail() {
-		// This will only fail when using multi-tenancy,
-		// because the set is always defined when using single-tenancy.
-		return tenantIds
-				.orElseThrow(
-						() -> ConfigurationLog.INSTANCE.missingTenantIdConfiguration( tenantIdsConfigurationPropertyKey ) );
-	}
+    private final BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter;
 
-	public SearchException invalidTenantId(String tenantId) {
-		return ConfigurationLog.INSTANCE.invalidTenantId( tenantId, tenantIds.orElse( Collections.emptySet() ),
-				tenantIdsConfigurationPropertyKey );
-	}
+    private TenancyConfiguration(TenancyMode tenancyMode, BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter, Optional<Set<String>> tenantIds, String tenantIdsConfigurationPropertyKey) {
+        this.tenancyMode = tenancyMode;
+        this.tenantIdentifierConverter = tenantIdentifierConverter;
+        this.tenantIds = tenantIds;
+        this.tenantIdsConfigurationPropertyKey = tenantIdsConfigurationPropertyKey;
+    }
 
-	public Object convert(String tenantIdentifier) {
-		return tenantIdentifierConverter.get().fromStringValue( tenantIdentifier );
-	}
+    /**
+     * @return A set of all possible tenant IDs, or an empty set if the application is single-tenant.
+     * @throws org.hibernate.search.util.common.SearchException if the application is multi-tenant
+     * and the full list of tenant IDs was not configured.
+     */
+    public Set<String> tenantIdsOrFail() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String convert(Object tenantIdentifier) {
-		return tenantIdentifierConverter.get().toStringValue( tenantIdentifier );
-	}
+    public SearchException invalidTenantId(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		if ( tenantIdentifierConverter != null ) {
-			tenantIdentifierConverter.close();
-		}
-	}
+    public Object convert(String tenantIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public TenancyMode tenancyMode() {
-		return tenancyMode;
-	}
+    public String convert(Object tenantIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public TenancyMode tenancyMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

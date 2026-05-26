@@ -11,17 +11,14 @@ import org.hibernate.search.engine.search.projection.dsl.CompositeProjectionValu
 import org.hibernate.search.engine.search.projection.spi.CompositeProjectionBuilder;
 import org.hibernate.search.engine.search.spi.ResultsCompositor;
 
-public class CompositeProjectionValueStepImpl<T>
-		extends CompositeProjectionOptionsStepImpl<T, T>
-		implements CompositeProjectionValueStep<CompositeProjectionOptionsStepImpl<T, T>, T> {
+public class CompositeProjectionValueStepImpl<T> extends CompositeProjectionOptionsStepImpl<T, T> implements CompositeProjectionValueStep<CompositeProjectionOptionsStepImpl<T, T>, T> {
 
-	public CompositeProjectionValueStepImpl(CompositeProjectionBuilder builder,
-			SearchProjection<?>[] inners, ResultsCompositor<?, T> compositor) {
-		super( builder, inners, compositor, ProjectionCollector.nullable() );
-	}
+    public CompositeProjectionValueStepImpl(CompositeProjectionBuilder builder, SearchProjection<?>[] inners, ResultsCompositor<?, T> compositor) {
+        super(builder, inners, compositor, ProjectionCollector.nullable());
+    }
 
-	@Override
-	public <R> CompositeProjectionOptionsStep<?, R> collector(ProjectionCollector.Provider<T, R> collector) {
-		return new CompositeProjectionOptionsStepImpl<>( builder, inners, compositor, collector );
-	}
+    @Override
+    public <R> CompositeProjectionOptionsStep<?, R> collector(ProjectionCollector.Provider<T, R> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

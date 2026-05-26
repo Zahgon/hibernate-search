@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.sort.dsl.spi;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.engine.search.sort.SearchSort;
 import org.hibernate.search.engine.search.sort.dsl.FieldSortOptionsStep;
@@ -25,111 +24,100 @@ import org.hibernate.search.engine.search.sort.spi.SearchSortIndexScope;
  */
 public final class SearchSortDslContext<SR, SC extends SearchSortIndexScope<?>, PDF extends TypedSearchPredicateFactory<SR>> {
 
-	public static <
-			SR,
-			SC extends SearchSortIndexScope<?>,
-			PDF extends TypedSearchPredicateFactory<SR>> SearchSortDslContext<SR, SC, PDF> root(
-					SC scope,
-					Function<SearchSortDslContext<SR, SC, PDF>, TypedSearchSortFactory<SR>> factoryProvider,
-					PDF predicateFactory) {
-		return new SearchSortDslContext<>( scope, factoryProvider, null, null, predicateFactory );
-	}
+    public static <SR, SC extends SearchSortIndexScope<?>, PDF extends TypedSearchPredicateFactory<SR>> SearchSortDslContext<SR, SC, PDF> root(SC scope, Function<SearchSortDslContext<SR, SC, PDF>, TypedSearchSortFactory<SR>> factoryProvider, PDF predicateFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final SC scope;
-	private final Function<SearchSortDslContext<SR, SC, PDF>, TypedSearchSortFactory<SR>> factoryProvider;
-	private final SearchSortDslContext<SR, ?, ?> parent;
-	private final SearchSort sort;
-	private final PDF predicateFactory;
+    private final SC scope;
 
-	private SearchSort compositeSort;
+    private final Function<SearchSortDslContext<SR, SC, PDF>, TypedSearchSortFactory<SR>> factoryProvider;
 
-	private SearchSortDslContext(SC scope,
-			Function<SearchSortDslContext<SR, SC, PDF>, TypedSearchSortFactory<SR>> factoryProvider,
-			SearchSortDslContext<SR, ?, ?> parent, SearchSort sort,
-			PDF predicateFactory) {
-		this.scope = scope;
-		this.factoryProvider = factoryProvider;
-		this.parent = parent;
-		this.sort = sort;
-		this.predicateFactory = predicateFactory;
-	}
+    private final SearchSortDslContext<SR, ?, ?> parent;
 
-	/**
-	 * @return The search scope.
-	 */
-	public SC scope() {
-		return scope;
-	}
+    private final SearchSort sort;
 
-	/**
-	 * @return A new factory to be returned by {@link SortThenStep#then()}.
-	 */
-	public TypedSearchSortFactory<SR> then() {
-		return factoryProvider.apply( this );
-	}
+    private final PDF predicateFactory;
 
-	/**
-	 * @param newScope The new scope for the new DSL context.
-	 * @param newPredicateFactory The new predicate factory for the new DSL context.
-	 * @return A copy of this DSL context with its scope and predicate factory replaced with the given ones.
-	 */
-	public SearchSortDslContext<SR, SC, PDF> rescope(SC newScope, PDF newPredicateFactory) {
-		return new SearchSortDslContext<>( newScope, factoryProvider, parent, sort, newPredicateFactory );
-	}
+    private SearchSort compositeSort;
 
-	/**
-	 * Create a new context with a sort appended.
-	 *
-	 * @param sort The sort to add.
-	 * @return A new DSL context, with the given builder appended.
-	 */
-	public SearchSortDslContext<SR, SC, PDF> append(SearchSort sort) {
-		return new SearchSortDslContext<>( scope, factoryProvider, this, sort, predicateFactory );
-	}
+    private SearchSortDslContext(SC scope, Function<SearchSortDslContext<SR, SC, PDF>, TypedSearchSortFactory<SR>> factoryProvider, SearchSortDslContext<SR, ?, ?> parent, SearchSort sort, PDF predicateFactory) {
+        this.scope = scope;
+        this.factoryProvider = factoryProvider;
+        this.parent = parent;
+        this.sort = sort;
+        this.predicateFactory = predicateFactory;
+    }
 
-	/**
-	 * @return The predicate factory. Will always return the exact same instance.
-	 */
-	public PDF predicateFactory() {
-		return predicateFactory;
-	}
+    /**
+     * @return The search scope.
+     */
+    public SC scope() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Create a {@link SearchSort} instance
-	 * matching the definition given in the previous DSL steps.
-	 *
-	 * @return The {@link SearchSort} instance.
-	 */
-	public SearchSort toSort() {
-		if ( compositeSort == null ) {
-			compositeSort = createCompositeSort();
-		}
-		return compositeSort;
-	}
+    /**
+     * @return A new factory to be returned by {@link SortThenStep#then()}.
+     */
+    public TypedSearchSortFactory<SR> then() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SearchSort createCompositeSort() {
-		if ( parent == null ) {
-			// No sort at all; just use an empty composite sort.
-			return scope.sortBuilders().composite().build();
-		}
-		else if ( parent.sort == null ) {
-			// Only one element
-			return sort;
-		}
-		else {
-			CompositeSortBuilder builder = scope.sortBuilders().composite();
-			collectSorts( builder );
-			return builder.build();
-		}
-	}
+    /**
+     * @param newScope The new scope for the new DSL context.
+     * @param newPredicateFactory The new predicate factory for the new DSL context.
+     * @return A copy of this DSL context with its scope and predicate factory replaced with the given ones.
+     */
+    public SearchSortDslContext<SR, SC, PDF> rescope(SC newScope, PDF newPredicateFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void collectSorts(CompositeSortBuilder builder) {
-		if ( sort == null ) {
-			// We've reached the root
-			return;
-		}
+    /**
+     * Create a new context with a sort appended.
+     *
+     * @param sort The sort to add.
+     * @return A new DSL context, with the given builder appended.
+     */
+    public SearchSortDslContext<SR, SC, PDF> append(SearchSort sort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		parent.collectSorts( builder );
-		builder.add( sort );
-	}
+    /**
+     * @return The predicate factory. Will always return the exact same instance.
+     */
+    public PDF predicateFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * Create a {@link SearchSort} instance
+     * matching the definition given in the previous DSL steps.
+     *
+     * @return The {@link SearchSort} instance.
+     */
+    public SearchSort toSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private SearchSort createCompositeSort() {
+        if (parent == null) {
+            // No sort at all; just use an empty composite sort.
+            return scope.sortBuilders().composite().build();
+        } else if (parent.sort == null) {
+            // Only one element
+            return sort;
+        } else {
+            CompositeSortBuilder builder = scope.sortBuilders().composite();
+            collectSorts(builder);
+            return builder.build();
+        }
+    }
+
+    private void collectSorts(CompositeSortBuilder builder) {
+        if (sort == null) {
+            // We've reached the root
+            return;
+        }
+        parent.collectSorts(builder);
+        builder.add(sort);
+    }
 }

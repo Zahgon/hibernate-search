@@ -16,35 +16,33 @@ import org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentVal
 @Deprecated(since = "6.1")
 public interface ToDocumentFieldValueConverter<V, F> extends ToDocumentValueConverter<V, F> {
 
-	@Override
-	default F toDocumentValue(V value, ToDocumentValueConvertContext context) {
-		return convert( value, context );
-	}
+    @Override
+    default F toDocumentValue(V value, ToDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default boolean isCompatibleWith(ToDocumentValueConverter<?, ?> other) {
-		return other instanceof ToDocumentFieldValueConverter
-				&& isCompatibleWith( (ToDocumentFieldValueConverter<?, ?>) other );
-	}
+    @Override
+    default boolean isCompatibleWith(ToDocumentValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param value The source value to convert.
-	 * @param context A context that can be
-	 * {@link org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext#extension(org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContextExtension) extended}
-	 * to a more useful type, giving access to such things as a Hibernate ORM SessionFactory (if using the Hibernate ORM mapper).
-	 * @return The converted index field value.
-	 */
-	F convert(V value, org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext context);
+    /**
+     * @param value The source value to convert.
+     * @param context A context that can be
+     * {@link org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext#extension(org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContextExtension) extended}
+     * to a more useful type, giving access to such things as a Hibernate ORM SessionFactory (if using the Hibernate ORM mapper).
+     * @return The converted index field value.
+     */
+    F convert(V value, org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext context);
 
-	/**
-	 * @param other Another {@link ToDocumentFieldValueConverter}, never {@code null}.
-	 * @return {@code true} if the given object behaves exactly the same as this object,
-	 * i.e. its {@link #convert(Object, org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext)}
-	 * method is guaranteed to always return the same value as this object's
-	 * when given the same input. {@code false} otherwise, or when in doubt.
-	 */
-	default boolean isCompatibleWith(ToDocumentFieldValueConverter<?, ?> other) {
-		return equals( other );
-	}
-
+    /**
+     * @param other Another {@link ToDocumentFieldValueConverter}, never {@code null}.
+     * @return {@code true} if the given object behaves exactly the same as this object,
+     * i.e. its {@link #convert(Object, org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext)}
+     * method is guaranteed to always return the same value as this object's
+     * when given the same input. {@code false} otherwise, or when in doubt.
+     */
+    default boolean isCompatibleWith(ToDocumentFieldValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

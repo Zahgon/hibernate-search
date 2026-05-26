@@ -9,42 +9,32 @@ import java.util.Objects;
 
 public final class DocumentRouteDescriptor implements Serializable {
 
-	public static DocumentRouteDescriptor of(String routingKey) {
-		return new DocumentRouteDescriptor( routingKey );
-	}
+    public static DocumentRouteDescriptor of(String routingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String routingKey;
+    private final String routingKey;
 
-	private DocumentRouteDescriptor(String routingKey) {
-		this.routingKey = routingKey;
-	}
+    private DocumentRouteDescriptor(String routingKey) {
+        this.routingKey = routingKey;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		DocumentRouteDescriptor that = (DocumentRouteDescriptor) o;
-		return Objects.equals( routingKey, that.routingKey );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( routingKey );
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "DocumentRouteDescriptor{" +
-				"routingKey='" + routingKey + '\'' +
-				'}';
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String routingKey() {
-		return routingKey;
-	}
-
+    public String routingKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

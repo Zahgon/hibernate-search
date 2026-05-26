@@ -11,41 +11,43 @@ import java.io.Serializable;
  */
 public class PartitionProgress implements Serializable {
 
-	private static final long serialVersionUID = -5923539799807235429L;
-	private String entityName;
-	private int partitionId;
-	private long workDone;
+    private static final long serialVersionUID = -5923539799807235429L;
 
-	public PartitionProgress(int partitionId, String entityName) {
-		this.partitionId = partitionId;
-		this.entityName = entityName;
-		this.workDone = 0L;
-	}
+    private String entityName;
 
-	/**
-	 * documentsAdded is an elementary count. It records how many items have been written in the current chunk. This
-	 * value is overwritten be the item writer at the end of each
-	 * {@link EntityWriter#writeItems}
-	 */
-	public void documentsAdded(int increment) {
-		this.workDone += increment;
-	}
+    private int partitionId;
 
-	public String getEntityName() {
-		return entityName;
-	}
+    private long workDone;
 
-	public int getPartitionId() {
-		return partitionId;
-	}
+    public PartitionProgress(int partitionId, String entityName) {
+        this.partitionId = partitionId;
+        this.entityName = entityName;
+        this.workDone = 0L;
+    }
 
-	public long getWorkDone() {
-		return workDone;
-	}
+    /**
+     * documentsAdded is an elementary count. It records how many items have been written in the current chunk. This
+     * value is overwritten be the item writer at the end of each
+     * {@link EntityWriter#writeItems}
+     */
+    public void documentsAdded(int increment) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "PartitionProgress [workDone=" + workDone + ", entityName=" + entityName
-				+ ", partitionId=" + partitionId + "]";
-	}
+    public String getEntityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public int getPartitionId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public long getWorkDone() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

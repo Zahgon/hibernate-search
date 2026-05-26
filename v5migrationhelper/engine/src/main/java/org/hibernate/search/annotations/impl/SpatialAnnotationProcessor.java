@@ -15,29 +15,22 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMappingStep;
 
 @Deprecated
-public class SpatialAnnotationProcessor
-		implements TypeMappingAnnotationProcessor<Spatial>,
-		PropertyMappingAnnotationProcessor<Spatial> {
-	@Override
-	public void process(TypeMappingStep mapping, Spatial annotation,
-			TypeMappingAnnotationProcessorContext context) {
-		mapping.binder( createBinder( annotation ) );
-	}
+public class SpatialAnnotationProcessor implements TypeMappingAnnotationProcessor<Spatial>, PropertyMappingAnnotationProcessor<Spatial> {
 
-	@Override
-	public void process(PropertyMappingStep mapping, Spatial annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		mapping.binder( createBinder( annotation ) );
-	}
+    @Override
+    public void process(TypeMappingStep mapping, Spatial annotation, TypeMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private CoordinatesBridge.Binder createBinder(Spatial annotation) {
-		return new CoordinatesBridge.Binder()
-				.fieldName( annotation.name() )
-				.markerSet( annotation.name() )
-				// The "distance" projection used to be available regardless of configuration,
-				// so we need to always mark the field as projectable.
-				// As a nasty side-effect, the field will always be stored, regardless of the "store" attribute...
-				.projectable( Projectable.YES );
-	}
+    @Override
+    public void process(PropertyMappingStep mapping, Spatial annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    private CoordinatesBridge.Binder createBinder(Spatial annotation) {
+        return new CoordinatesBridge.Binder().fieldName(annotation.name()).markerSet(annotation.name()).// The "distance" projection used to be available regardless of configuration,
+        // so we need to always mark the field as projectable.
+        // As a nasty side-effect, the field will always be stored, regardless of the "store" attribute...
+        projectable(Projectable.YES);
+    }
 }

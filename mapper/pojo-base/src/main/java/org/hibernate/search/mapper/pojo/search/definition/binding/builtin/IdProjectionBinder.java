@@ -20,52 +20,52 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  * @see org.hibernate.search.mapper.pojo.mapping.definition.annotation.IdProjection
  */
 public final class IdProjectionBinder implements ProjectionBinder {
-	private static final IdProjectionBinder INSTANCE = new IdProjectionBinder();
 
-	/**
-	 * Creates an {@link IdProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @return The binder.
-	 */
-	public static IdProjectionBinder create() {
-		return INSTANCE;
-	}
+    private static final IdProjectionBinder INSTANCE = new IdProjectionBinder();
 
-	private IdProjectionBinder() {
-	}
+    /**
+     * Creates an {@link IdProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @return The binder.
+     */
+    public static IdProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		bind( context, context.constructorParameter().rawType() );
-	}
+    private IdProjectionBinder() {
+    }
 
-	private <T> void bind(ProjectionBindingContext context, Class<T> constructorParameterType) {
-		context.definition( constructorParameterType, new Definition<>( constructorParameterType ) );
-	}
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class Definition<I> extends AbstractProjectionDefinition<I> {
-		private final Class<I> requestedIdentifierType;
+    private <T> void bind(ProjectionBindingContext context, Class<T> constructorParameterType) {
+        context.definition(constructorParameterType, new Definition<>(constructorParameterType));
+    }
 
-		private Definition(Class<I> requestedIdentifierType) {
-			this.requestedIdentifierType = requestedIdentifierType;
-		}
+    private static class Definition<I> extends AbstractProjectionDefinition<I> {
 
-		@Override
-		protected String type() {
-			return "id";
-		}
+        private final Class<I> requestedIdentifierType;
 
-		@Override
-		public void appendTo(ToStringTreeAppender appender) {
-			super.appendTo( appender );
-			appender.attribute( "requestedIdentifierType", requestedIdentifierType );
-		}
+        private Definition(Class<I> requestedIdentifierType) {
+            this.requestedIdentifierType = requestedIdentifierType;
+        }
 
-		@Override
-		public SearchProjection<I> create(ProjectionDefinitionContext context) {
-			return context.projection().id( requestedIdentifierType ).toProjection();
-		}
-	}
+        @Override
+        protected String type() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public void appendTo(ToStringTreeAppender appender) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<I> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

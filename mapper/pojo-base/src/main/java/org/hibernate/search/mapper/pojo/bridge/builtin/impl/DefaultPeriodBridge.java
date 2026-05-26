@@ -6,47 +6,37 @@ package org.hibernate.search.mapper.pojo.bridge.builtin.impl;
 
 import java.time.Period;
 import java.util.Locale;
-
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 import org.hibernate.search.mapper.pojo.logging.impl.FormattingLog;
 
 public final class DefaultPeriodBridge extends AbstractConvertingDefaultBridge<Period, String> {
 
-	private static final int PADDING = 11;
-	private static final String INDEXED_FORMAT = "%+0" + PADDING + "d%+0" + PADDING + "d%+0" + PADDING + "d";
+    private static final int PADDING = 11;
 
-	public static final DefaultPeriodBridge INSTANCE = new DefaultPeriodBridge();
+    private static final String INDEXED_FORMAT = "%+0" + PADDING + "d%+0" + PADDING + "d%+0" + PADDING + "d";
 
-	private DefaultPeriodBridge() {
-	}
+    public static final DefaultPeriodBridge INSTANCE = new DefaultPeriodBridge();
 
-	@Override
-	protected String toString(Period value) {
-		return value.toString();
-	}
+    private DefaultPeriodBridge() {
+    }
 
-	@Override
-	protected Period fromString(String value) {
-		return ParseUtils.parsePeriod( value );
-	}
+    @Override
+    protected String toString(Period value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected String toConvertedValue(Period value) {
-		return String.format( Locale.ROOT, INDEXED_FORMAT, value.getYears(), value.getMonths(), value.getDays() );
-	}
+    @Override
+    protected Period fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Period fromConvertedValue(String value) {
-		try {
-			int years = Integer.parseInt( value.substring( 0, PADDING ) );
-			int months = Integer.parseInt( value.substring( PADDING, 2 * PADDING ) );
-			int days = Integer.parseInt( value.substring( 2 * PADDING ) );
+    @Override
+    protected String toConvertedValue(Period value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			return Period.of( years, months, days );
-		}
-		catch (NumberFormatException e) {
-			throw FormattingLog.INSTANCE.parseException( value, Period.class, e.getMessage(), e );
-		}
-	}
-
+    @Override
+    protected Period fromConvertedValue(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

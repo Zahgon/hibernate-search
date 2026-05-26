@@ -8,14 +8,13 @@ import java.util.Map;
 
 class HibernateOrmBasicClassTypeMetadata {
 
-	private final Map<String, HibernateOrmBasicClassPropertyMetadata> properties;
+    private final Map<String, HibernateOrmBasicClassPropertyMetadata> properties;
 
-	HibernateOrmBasicClassTypeMetadata(Map<String, HibernateOrmBasicClassPropertyMetadata> properties) {
-		this.properties = properties;
-	}
+    HibernateOrmBasicClassTypeMetadata(Map<String, HibernateOrmBasicClassPropertyMetadata> properties) {
+        this.properties = properties;
+    }
 
-	HibernateOrmBasicClassPropertyMetadata getClassPropertyMetadataOrNull(String propertyName) {
-		return properties.get( propertyName );
-	}
-
+    HibernateOrmBasicClassPropertyMetadata getClassPropertyMetadataOrNull(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,43 +10,36 @@ import org.hibernate.search.engine.backend.types.converter.ToDocumentValueConver
 import org.hibernate.search.engine.backend.types.dsl.IndexFieldTypeOptionsStep;
 import org.hibernate.search.util.common.impl.Contracts;
 
-abstract class AbstractLuceneIndexFieldTypeOptionsStep<S extends AbstractLuceneIndexFieldTypeOptionsStep<?, F>, F>
-		implements IndexFieldTypeOptionsStep<S, F> {
-	protected final LuceneIndexFieldTypeBuildContext buildContext;
-	protected final LuceneIndexValueFieldType.Builder<F> builder;
+abstract class AbstractLuceneIndexFieldTypeOptionsStep<S extends AbstractLuceneIndexFieldTypeOptionsStep<?, F>, F> implements IndexFieldTypeOptionsStep<S, F> {
 
-	AbstractLuceneIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> valueType) {
-		this.buildContext = buildContext;
-		this.builder = new LuceneIndexValueFieldType.Builder<>( valueType );
-	}
+    protected final LuceneIndexFieldTypeBuildContext buildContext;
 
-	@Override
-	public <V> S dslConverter(Class<V> valueType, ToDocumentValueConverter<V, ? extends F> toIndexConverter) {
-		Contracts.assertNotNull( toIndexConverter, "toIndexConverter" );
-		builder.dslConverter( valueType, toIndexConverter );
-		return thisAsS();
-	}
+    protected final LuceneIndexValueFieldType.Builder<F> builder;
 
-	@Override
-	public <V> S projectionConverter(Class<V> valueType, FromDocumentValueConverter<? super F, V> fromIndexConverter) {
-		Contracts.assertNotNull( fromIndexConverter, "fromIndexConverter" );
-		builder.projectionConverter( valueType, fromIndexConverter );
-		return thisAsS();
-	}
+    AbstractLuceneIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> valueType) {
+        this.buildContext = buildContext;
+        this.builder = new LuceneIndexValueFieldType.Builder<>(valueType);
+    }
 
-	@Override
-	public S parser(ToDocumentValueConverter<String, ? extends F> parser) {
-		Contracts.assertNotNull( parser, "parser" );
-		builder.parser( parser );
-		return thisAsS();
-	}
+    @Override
+    public <V> S dslConverter(Class<V> valueType, ToDocumentValueConverter<V, ? extends F> toIndexConverter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S formatter(FromDocumentValueConverter<? super F, String> formatter) {
-		Contracts.assertNotNull( formatter, "formatter" );
-		builder.formatter( formatter );
-		return thisAsS();
-	}
+    @Override
+    public <V> S projectionConverter(Class<V> valueType, FromDocumentValueConverter<? super F, V> fromIndexConverter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract S thisAsS();
+    @Override
+    public S parser(ToDocumentValueConverter<String, ? extends F> parser) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public S formatter(FromDocumentValueConverter<? super F, String> formatter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected abstract S thisAsS();
 }

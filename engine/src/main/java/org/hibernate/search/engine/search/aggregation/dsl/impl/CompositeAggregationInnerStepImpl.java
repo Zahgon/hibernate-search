@@ -16,40 +16,34 @@ import org.hibernate.search.engine.search.aggregation.spi.CompositeAggregationBu
 
 public class CompositeAggregationInnerStepImpl implements CompositeAggregationInnerStep {
 
-	private final CompositeAggregationBuilder<?> builder;
+    private final CompositeAggregationBuilder<?> builder;
 
-	public CompositeAggregationInnerStepImpl(SearchAggregationDslContext<?, ?, ?> dslContext) {
-		this.builder = dslContext.scope().aggregationBuilders().compositeAggregation();
-	}
+    public CompositeAggregationInnerStepImpl(SearchAggregationDslContext<?, ?, ?> dslContext) {
+        this.builder = dslContext.scope().aggregationBuilders().compositeAggregation();
+    }
 
-	@Override
-	public <V1> CompositeAggregationFrom1AsStep<V1> from(SearchAggregation<V1> aggregation) {
-		return new CompositeAggregationFrom1AsStepImpl<>( builder, aggregation );
-	}
+    @Override
+    public <V1> CompositeAggregationFrom1AsStep<V1> from(SearchAggregation<V1> aggregation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <V1, V2> CompositeAggregationFrom2AsStep<V1, V2> from(SearchAggregation<V1> aggregation1,
-			SearchAggregation<V2> aggregation2) {
-		return new CompositeAggregationFrom2AsStepImpl<>( builder, aggregation1, aggregation2 );
-	}
+    @Override
+    public <V1, V2> CompositeAggregationFrom2AsStep<V1, V2> from(SearchAggregation<V1> aggregation1, SearchAggregation<V2> aggregation2) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <V1, V2, V3> CompositeAggregationFrom3AsStep<V1, V2, V3> from(SearchAggregation<V1> aggregation1,
-			SearchAggregation<V2> aggregation2, SearchAggregation<V3> aggregation3) {
-		return new CompositeAggregationFrom3AsStepImpl<>( builder, aggregation1, aggregation2, aggregation3 );
-	}
+    @Override
+    public <V1, V2, V3> CompositeAggregationFrom3AsStep<V1, V2, V3> from(SearchAggregation<V1> aggregation1, SearchAggregation<V2> aggregation2, SearchAggregation<V3> aggregation3) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeAggregationFromAsStep from(SearchAggregation<?>... aggregations) {
-		return new CompositeAggregationFromAnyNumberAsStep( builder, aggregations );
-	}
+    @Override
+    public CompositeAggregationFromAsStep from(SearchAggregation<?>... aggregations) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeAggregationFromAsStep from(AggregationFinalStep<?>... dslFinalSteps) {
-		SearchAggregation<?>[] aggregations = new SearchAggregation<?>[dslFinalSteps.length];
-		for ( int i = 0; i < dslFinalSteps.length; i++ ) {
-			aggregations[i] = dslFinalSteps[i].toAggregation();
-		}
-		return from( aggregations );
-	}
+    @Override
+    public CompositeAggregationFromAsStep from(AggregationFinalStep<?>... dslFinalSteps) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

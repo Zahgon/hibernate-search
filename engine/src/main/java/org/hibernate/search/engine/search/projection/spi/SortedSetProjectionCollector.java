@@ -7,7 +7,6 @@ package org.hibernate.search.engine.search.projection.spi;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -18,27 +17,27 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 final class SortedSetProjectionCollector<E, V> extends ListBasedProjectionCollector<E, V, SortedSet<V>> {
 
-	@SuppressWarnings("rawtypes")
-	static final ProjectionCollector.Provider PROVIDER =
-			new ProjectionCollector.Provider() {
-				private final SortedSetProjectionCollector instance = new SortedSetProjectionCollector();
+    @SuppressWarnings("rawtypes")
+    static final ProjectionCollector.Provider PROVIDER = new ProjectionCollector.Provider() {
 
-				@Override
-				public ProjectionCollector get() {
-					return instance;
-				}
+        private final SortedSetProjectionCollector instance = new SortedSetProjectionCollector();
 
-				@Override
-				public boolean isSingleValued() {
-					return false;
-				}
-			};
+        @Override
+        public ProjectionCollector get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private SortedSetProjectionCollector() {
-	}
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	@Override
-	public SortedSet<V> doFinish(List<V> accumulated) {
-		return new TreeSet<>( accumulated );
-	}
+    private SortedSetProjectionCollector() {
+    }
+
+    @Override
+    public SortedSet<V> doFinish(List<V> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

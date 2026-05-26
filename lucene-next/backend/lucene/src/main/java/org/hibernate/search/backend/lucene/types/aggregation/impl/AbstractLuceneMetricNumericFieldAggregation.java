@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.types.aggregation.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningLongMultiValuesSource;
 import org.hibernate.search.backend.lucene.search.aggregation.impl.AggregationExtractContext;
@@ -24,220 +23,176 @@ import org.hibernate.search.engine.search.common.ValueModel;
  * @param <K> The type of returned value. It can be {@code F}, {@link Double}
  * or a different type if value converters are used.
  */
-public abstract class AbstractLuceneMetricNumericFieldAggregation<F, E extends Number, K>
-		extends AbstractLuceneNestableAggregation<K> {
+public abstract class AbstractLuceneMetricNumericFieldAggregation<F, E extends Number, K> extends AbstractLuceneNestableAggregation<K> {
 
-	private final Set<String> indexNames;
-	private final String absoluteFieldPath;
-	protected final AbstractLuceneNumericFieldCodec<F, E> codec;
-	protected final LuceneNumericDomain<E> numericDomain;
-	private final AbstractExtractorBuilder<F, E, K> extractorCreator;
+    private final Set<String> indexNames;
 
-	AbstractLuceneMetricNumericFieldAggregation(Builder<F, E, K> builder) {
-		super( builder );
-		this.indexNames = builder.scope.hibernateSearchIndexNames();
-		this.absoluteFieldPath = builder.field.absolutePath();
-		this.codec = builder.codec;
-		this.numericDomain = codec.getDomain();
-		this.extractorCreator = builder.extractorCreator;
-	}
+    private final String absoluteFieldPath;
 
-	@Override
-	public Extractor<K> request(AggregationRequestContext context) {
-		JoiningLongMultiValuesSource source = JoiningLongMultiValuesSource.fromField(
-				absoluteFieldPath, createNestedDocsProvider( context )
-		);
-		return extractorCreator.extractor( this, fillCollectors( source, context ) );
-	}
+    protected final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-	abstract List<CollectorKey<?, Long>> fillCollectors(JoiningLongMultiValuesSource source, AggregationRequestContext context);
+    protected final LuceneNumericDomain<E> numericDomain;
 
-	@Override
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    private final AbstractExtractorBuilder<F, E, K> extractorCreator;
 
-	private static class LuceneNumericMetricFieldAggregationExtraction<F, E extends Number, K> implements Extractor<K> {
-		private final CollectorKey<?, Long> collectorKey;
-		private final AbstractLuceneNumericFieldCodec<F, E> codec;
-		private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
+    AbstractLuceneMetricNumericFieldAggregation(Builder<F, E, K> builder) {
+        super(builder);
+        this.indexNames = builder.scope.hibernateSearchIndexNames();
+        this.absoluteFieldPath = builder.field.absolutePath();
+        this.codec = builder.codec;
+        this.numericDomain = codec.getDomain();
+        this.extractorCreator = builder.extractorCreator;
+    }
 
-		private LuceneNumericMetricFieldAggregationExtraction(CollectorKey<?, Long> collectorKey,
-				AbstractLuceneNumericFieldCodec<F, E> codec, ProjectionConverter<F, ? extends K> fromFieldValueConverter) {
-			this.collectorKey = collectorKey;
-			this.codec = codec;
-			this.fromFieldValueConverter = fromFieldValueConverter;
-		}
+    @Override
+    public Extractor<K> request(AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public K extract(AggregationExtractContext context) {
-			Long aggregatedValue = context.getCollectorResults( collectorKey );
-			if ( aggregatedValue == null ) {
-				return null;
-			}
-			E e = codec.getDomain().sortedDocValueToTerm( aggregatedValue );
-			F decoded = codec.decode( e );
-			return fromFieldValueConverter.fromDocumentValue( decoded, context.fromDocumentValueConvertContext() );
-		}
+    abstract List<CollectorKey<?, Long>> fillCollectors(JoiningLongMultiValuesSource source, AggregationRequestContext context);
 
-		private static class Builder<F, E extends Number, K> extends AbstractExtractorBuilder<F, E, K> {
-			private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			private Builder(ProjectionConverter<F, ? extends K> fromFieldValueConverter) {
-				this.fromFieldValueConverter = fromFieldValueConverter;
-			}
+    private static class LuceneNumericMetricFieldAggregationExtraction<F, E extends Number, K> implements Extractor<K> {
 
-			@Override
-			Extractor<K> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, K> aggregation,
-					List<CollectorKey<?, Long>> collectorKeys) {
-				return new LuceneNumericMetricFieldAggregationExtraction<>(
-						collectorKeys.get( 0 ),
-						aggregation.codec,
-						fromFieldValueConverter
-				);
-			}
-		}
-	}
+        private final CollectorKey<?, Long> collectorKey;
 
-	private static class LuceneNumericMetricFieldAggregationDoubleExtractor implements Extractor<Double> {
+        private final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-		private final CollectorKey<?, Long> collectorKey;
-		private final AbstractLuceneNumericFieldCodec<?, ?> codec;
+        private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
 
-		private LuceneNumericMetricFieldAggregationDoubleExtractor(CollectorKey<?, Long> collectorKey,
-				AbstractLuceneNumericFieldCodec<?, ?> codec) {
-			this.collectorKey = collectorKey;
-			this.codec = codec;
-		}
+        private LuceneNumericMetricFieldAggregationExtraction(CollectorKey<?, Long> collectorKey, AbstractLuceneNumericFieldCodec<F, E> codec, ProjectionConverter<F, ? extends K> fromFieldValueConverter) {
+            this.collectorKey = collectorKey;
+            this.codec = codec;
+            this.fromFieldValueConverter = fromFieldValueConverter;
+        }
 
-		@Override
-		public Double extract(AggregationExtractContext context) {
-			Long aggregatedValue = context.getCollectorResults( collectorKey );
-			if ( aggregatedValue == null ) {
-				return null;
-			}
+        @Override
+        public K extract(AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return codec.sortedDocValueToDouble( aggregatedValue );
-		}
+        private static class Builder<F, E extends Number, K> extends AbstractExtractorBuilder<F, E, K> {
 
-		private static class Builder<F, E extends Number> extends AbstractExtractorBuilder<F, E, Double> {
+            private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
 
-			@Override
-			Extractor<Double> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, Double> aggregation,
-					List<CollectorKey<?, Long>> collectorKeys) {
-				return new LuceneNumericMetricFieldAggregationDoubleExtractor(
-						collectorKeys.get( 0 ),
-						aggregation.codec
-				);
-			}
-		}
-	}
+            private Builder(ProjectionConverter<F, ? extends K> fromFieldValueConverter) {
+                this.fromFieldValueConverter = fromFieldValueConverter;
+            }
 
-	private static class LuceneNumericMetricFieldAggregationRawExtraction<E extends Number, K> implements Extractor<K> {
+            @Override
+            Extractor<K> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, K> aggregation, List<CollectorKey<?, Long>> collectorKeys) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-		private final CollectorKey<?, Long> collectorKey;
-		private final LuceneNumericDomain<E> numericDomain;
+    private static class LuceneNumericMetricFieldAggregationDoubleExtractor implements Extractor<Double> {
 
-		private LuceneNumericMetricFieldAggregationRawExtraction(CollectorKey<?, Long> collectorKey,
-				LuceneNumericDomain<E> numericDomain) {
-			this.collectorKey = collectorKey;
-			this.numericDomain = numericDomain;
-		}
+        private final CollectorKey<?, Long> collectorKey;
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public K extract(AggregationExtractContext context) {
-			Long aggregatedValue = context.getCollectorResults( collectorKey );
-			if ( aggregatedValue == null ) {
-				return null;
-			}
-			return (K) numericDomain.sortedDocValueToTerm( aggregatedValue );
-		}
+        private final AbstractLuceneNumericFieldCodec<?, ?> codec;
 
-		private static class Builder<F, E extends Number, K> extends AbstractExtractorBuilder<F, E, K> {
+        private LuceneNumericMetricFieldAggregationDoubleExtractor(CollectorKey<?, Long> collectorKey, AbstractLuceneNumericFieldCodec<?, ?> codec) {
+            this.collectorKey = collectorKey;
+            this.codec = codec;
+        }
 
-			@Override
-			Extractor<K> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, K> aggregation,
-					List<CollectorKey<?, Long>> collectorKeys) {
-				return new LuceneNumericMetricFieldAggregationRawExtraction<>(
-						collectorKeys.get( 0 ),
-						aggregation.numericDomain
-				);
-			}
-		}
-	}
+        @Override
+        public Double extract(AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	protected abstract static class AbstractExtractorBuilder<F, E extends Number, K> {
+        private static class Builder<F, E extends Number> extends AbstractExtractorBuilder<F, E, Double> {
 
-		abstract Extractor<K> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, K> aggregation,
-				List<CollectorKey<?, Long>> collectorKeys);
-	}
+            @Override
+            Extractor<Double> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, Double> aggregation, List<CollectorKey<?, Long>> collectorKeys) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-	protected abstract static class TypeSelector<F, E extends Number> implements FieldMetricAggregationBuilder.TypeSelector {
-		protected final AbstractLuceneNumericFieldCodec<F, E> codec;
-		protected final LuceneSearchIndexScope<?> scope;
-		protected final LuceneSearchIndexValueFieldContext<F> field;
+    private static class LuceneNumericMetricFieldAggregationRawExtraction<E extends Number, K> implements Extractor<K> {
 
-		protected TypeSelector(AbstractLuceneNumericFieldCodec<F, E> codec,
-				LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			this.codec = codec;
-			this.scope = scope;
-			this.field = field;
-		}
+        private final CollectorKey<?, Long> collectorKey;
 
-		@Override
-		public <T> Builder<F, ?, T> type(Class<T> expectedType, ValueModel valueModel) {
-			AbstractExtractorBuilder<F, E, T> extractorCreator;
-			if ( ValueModel.RAW.equals( valueModel ) ) {
-				if ( Double.class.isAssignableFrom( expectedType ) ) {
-					extractorCreator = doubleExtractor();
-				}
-				else {
-					var projectionConverter = field.type().rawProjectionConverter()
-							.withConvertedType( expectedType, field );
-					extractorCreator = rawExtractor( projectionConverter );
-				}
-			}
-			else {
-				var projectionConverter = field.type().projectionConverter( valueModel )
-						.withConvertedType( expectedType, field );
-				extractorCreator = extractor( projectionConverter );
-			}
+        private final LuceneNumericDomain<E> numericDomain;
 
-			return getFtBuilder( extractorCreator );
-		}
+        private LuceneNumericMetricFieldAggregationRawExtraction(CollectorKey<?, Long> collectorKey, LuceneNumericDomain<E> numericDomain) {
+            this.collectorKey = collectorKey;
+            this.numericDomain = numericDomain;
+        }
 
-		protected <T> AbstractExtractorBuilder<F, E, T> extractor(ProjectionConverter<F, ? extends T> projectionConverter) {
-			return new LuceneNumericMetricFieldAggregationExtraction.Builder<>( projectionConverter );
-		}
+        @SuppressWarnings("unchecked")
+        @Override
+        public K extract(AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		// we've checked the types in the place where we are calling this method:
-		protected <T> AbstractExtractorBuilder<F, E, T> rawExtractor(ProjectionConverter<?, ? extends T> projectionConverter) {
-			return new LuceneNumericMetricFieldAggregationRawExtraction.Builder<>();
-		}
+        private static class Builder<F, E extends Number, K> extends AbstractExtractorBuilder<F, E, K> {
 
-		// we've checked the types in the place where we are calling this method:
-		@SuppressWarnings("unchecked")
-		protected <T> AbstractExtractorBuilder<F, E, T> doubleExtractor() {
-			return (AbstractExtractorBuilder<F, E, T>) new LuceneNumericMetricFieldAggregationDoubleExtractor.Builder<>();
-		}
+            @Override
+            Extractor<K> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, K> aggregation, List<CollectorKey<?, Long>> collectorKeys) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-		protected abstract <T> Builder<F, E, T> getFtBuilder(AbstractExtractorBuilder<F, E, T> extractorCreator);
+    protected abstract static class AbstractExtractorBuilder<F, E extends Number, K> {
 
-	}
+        abstract Extractor<K> extractor(AbstractLuceneMetricNumericFieldAggregation<F, E, K> aggregation, List<CollectorKey<?, Long>> collectorKeys);
+    }
 
-	protected abstract static class Builder<F, E extends Number, K> extends AbstractBuilder<K>
-			implements FieldMetricAggregationBuilder<K> {
+    protected abstract static class TypeSelector<F, E extends Number> implements FieldMetricAggregationBuilder.TypeSelector {
 
-		private final AbstractLuceneNumericFieldCodec<F, E> codec;
-		private final AbstractExtractorBuilder<F, E, K> extractorCreator;
+        protected final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-		public Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field,
-				AbstractExtractorBuilder<F, E, K> extractorCreator) {
-			super( scope, field );
-			this.codec = codec;
-			this.extractorCreator = extractorCreator;
-		}
-	}
+        protected final LuceneSearchIndexScope<?> scope;
+
+        protected final LuceneSearchIndexValueFieldContext<F> field;
+
+        protected TypeSelector(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            this.codec = codec;
+            this.scope = scope;
+            this.field = field;
+        }
+
+        @Override
+        public <T> Builder<F, ?, T> type(Class<T> expectedType, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        protected <T> AbstractExtractorBuilder<F, E, T> extractor(ProjectionConverter<F, ? extends T> projectionConverter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        // we've checked the types in the place where we are calling this method:
+        protected <T> AbstractExtractorBuilder<F, E, T> rawExtractor(ProjectionConverter<?, ? extends T> projectionConverter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        // we've checked the types in the place where we are calling this method:
+        @SuppressWarnings("unchecked")
+        protected <T> AbstractExtractorBuilder<F, E, T> doubleExtractor() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        protected abstract <T> Builder<F, E, T> getFtBuilder(AbstractExtractorBuilder<F, E, T> extractorCreator);
+    }
+
+    protected abstract static class Builder<F, E extends Number, K> extends AbstractBuilder<K> implements FieldMetricAggregationBuilder<K> {
+
+        private final AbstractLuceneNumericFieldCodec<F, E> codec;
+
+        private final AbstractExtractorBuilder<F, E, K> extractorCreator;
+
+        public Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field, AbstractExtractorBuilder<F, E, K> extractorCreator) {
+            super(scope, field);
+            this.codec = codec;
+            this.extractorCreator = extractorCreator;
+        }
+    }
 }

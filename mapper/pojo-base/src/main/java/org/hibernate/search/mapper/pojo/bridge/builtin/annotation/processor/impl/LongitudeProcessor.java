@@ -12,10 +12,8 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class LongitudeProcessor implements PropertyMappingAnnotationProcessor<Longitude> {
 
-	@Override
-	public void process(PropertyMappingStep mapping, Longitude annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		mapping.marker( GeoPointBinder.longitude().markerSet( annotation.markerSet() ) );
-	}
-
+    @Override
+    public void process(PropertyMappingStep mapping, Longitude annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

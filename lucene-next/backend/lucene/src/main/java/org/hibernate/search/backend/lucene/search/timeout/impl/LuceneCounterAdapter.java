@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.search.timeout.impl;
 
 import org.hibernate.search.engine.common.timing.spi.TimingSource;
-
 import org.apache.lucene.util.Counter;
 
 /**
@@ -15,22 +14,20 @@ import org.apache.lucene.util.Counter;
  */
 public final class LuceneCounterAdapter extends Counter {
 
-	private final TimingSource timingSource;
+    private final TimingSource timingSource;
 
-	public LuceneCounterAdapter(TimingSource timingSource) {
-		timingSource.ensureTimeEstimateIsInitialized();
-		this.timingSource = timingSource;
-	}
+    public LuceneCounterAdapter(TimingSource timingSource) {
+        timingSource.ensureTimeEstimateIsInitialized();
+        this.timingSource = timingSource;
+    }
 
-	@Override
-	public long addAndGet(final long delta) {
-		//parameter delta is ignored as we don't use the clock ticking strategy from Lucene's threads
-		//as I don't want to deal with statically referenced threads.
-		return timingSource.monotonicTimeEstimate();
-	}
+    @Override
+    public long addAndGet(final long delta) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long get() {
-		return timingSource.monotonicTimeEstimate();
-	}
+    @Override
+    public long get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

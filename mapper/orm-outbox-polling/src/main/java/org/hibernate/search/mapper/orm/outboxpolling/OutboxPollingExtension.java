@@ -25,23 +25,14 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public class OutboxPollingExtension implements SearchMappingExtension<OutboxPollingSearchMapping> {
 
-	private static final OutboxPollingExtension instance = new OutboxPollingExtension();
+    private static final OutboxPollingExtension instance = new OutboxPollingExtension();
 
-	@Override
-	public OutboxPollingSearchMapping extendOrFail(SearchMapping original) {
-		if ( !( original instanceof CoordinationStrategyContext ) ) {
-			throw ConfigurationLog.INSTANCE.outboxPollingExtensionOnUnknownType( original );
-		}
+    @Override
+    public OutboxPollingSearchMapping extendOrFail(SearchMapping original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		CoordinationStrategy coordinationStrategy = ( (CoordinationStrategyContext) original ).coordinationStrategy();
-		if ( coordinationStrategy instanceof OutboxPollingCoordinationStrategy ) {
-			return ( (OutboxPollingCoordinationStrategy) coordinationStrategy ).outboxPollingSearchMapping();
-		}
-
-		throw ConfigurationLog.INSTANCE.outboxPollingExtensionOnUnknownType( original );
-	}
-
-	public static OutboxPollingExtension get() {
-		return instance;
-	}
+    public static OutboxPollingExtension get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

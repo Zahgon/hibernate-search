@@ -6,7 +6,6 @@ package org.hibernate.search.impl;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
-
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionDelegatorBaseImpl;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -37,123 +36,94 @@ import org.hibernate.search.util.logging.impl.MigrationHelperLog;
  * @author John Griffin
  * @author Hardy Ferentschik
  */
-final class FullTextSessionImpl extends SessionDelegatorBaseImpl
-		implements FullTextSession, SessionImplementor, V5MigrationSearchSession<SearchLoadingOptionsStep> {
+final class FullTextSessionImpl extends SessionDelegatorBaseImpl implements FullTextSession, SessionImplementor, V5MigrationSearchSession<SearchLoadingOptionsStep> {
 
-	private static final MigrationHelperLog log = LoggerFactory.make( MethodHandles.lookup() );
+    private static final MigrationHelperLog log = LoggerFactory.make(MethodHandles.lookup());
 
-	private static SessionImplementor doUnwrap(Session session) {
-		if ( session == null ) {
-			throw log.getNullSessionPassedToFullTextSessionCreationException();
-		}
-		// Keeping both instanceofs in case the interface hierarchy changes.
-		else if ( session instanceof SessionImplementor && session instanceof EventSource ) {
-			// A session proxied with ThreadLocalSessionContext will implement all the interfaces we need,
-			// but won't allow a call to .unwrap() outside of a transaction.
-			// Thus we need to proceed with the cast.
-			return (EventSource) session;
-		}
-		else {
-			// Other proxies (such as Spring's after version 2.4),
-			// only implement Session, not SessionImplementor,
-			// but allow a call to .unwrap().
-			return session.unwrap( SessionImplementor.class );
-		}
-	}
+    private static SessionImplementor doUnwrap(Session session) {
+        if (session == null) {
+            throw log.getNullSessionPassedToFullTextSessionCreationException();
+        } else // Keeping both instanceofs in case the interface hierarchy changes.
+        if (session instanceof SessionImplementor && session instanceof EventSource) {
+            // A session proxied with ThreadLocalSessionContext will implement all the interfaces we need,
+            // but won't allow a call to .unwrap() outside of a transaction.
+            // Thus we need to proceed with the cast.
+            return (EventSource) session;
+        } else {
+            // Other proxies (such as Spring's after version 2.4),
+            // only implement Session, not SessionImplementor,
+            // but allow a call to .unwrap().
+            return session.unwrap(SessionImplementor.class);
+        }
+    }
 
+    private transient V5MigrationOrmSearchIntegratorAdapter searchIntegrator;
 
-	private transient V5MigrationOrmSearchIntegratorAdapter searchIntegrator;
-	private transient SearchFactory searchFactoryAPI;
+    private transient SearchFactory searchFactoryAPI;
 
-	public FullTextSessionImpl(org.hibernate.Session session) {
-		super( doUnwrap( session ) );
-	}
+    public FullTextSessionImpl(org.hibernate.Session session) {
+        super(doUnwrap(session));
+    }
 
-	@Override
-	public FullTextQuery createFullTextQuery(org.apache.lucene.search.Query luceneQuery, Class<?>... entities) {
-		return new FullTextQueryImpl( luceneQuery, delegate, getSearchIntegrator(), this, entities );
-	}
+    @Override
+    public FullTextQuery createFullTextQuery(org.apache.lucene.search.Query luceneQuery, Class<?>... entities) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> void purgeAll(Class<T> entityType) {
-		searchSession().workspace( entityType ).purge();
-	}
+    @Override
+    public <T> void purgeAll(Class<T> entityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void flushToIndexes() {
-		searchSession().indexingPlan().execute();
-	}
+    @Override
+    public void flushToIndexes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> void purge(Class<T> entityType, Serializable id) {
-		if ( entityType == null ) {
-			return;
-		}
-		if ( id == null ) {
-			// Search 5 behavior: if id is null, the method call is interpreted as purgeAll.
-			purgeAll( entityType );
-		}
-		else {
-			searchSession().indexingPlan().purge( entityType, id, null );
-		}
-	}
+    @Override
+    public <T> void purge(Class<T> entityType, Serializable id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> void index(T entity) {
-		if ( entity == null ) {
-			throw new IllegalArgumentException( "Entity to index should not be null" );
-		}
-		searchSession().indexingPlan().addOrUpdate( entity );
-	}
+    @Override
+    public <T> void index(T entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexer createIndexer(Class<?>... types) {
-		return new V5MigrationMassIndexerAdapter( types == null || types.length == 0
-				? searchSession().massIndexer( Object.class )
-				: searchSession().massIndexer( types ) );
-	}
+    @Override
+    public MassIndexer createIndexer(Class<?>... types) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchFactory getSearchFactory() {
-		if ( searchFactoryAPI == null ) {
-			searchFactoryAPI = new SearchFactoryImpl( getSearchIntegrator() );
-		}
-		return searchFactoryAPI;
-	}
+    @Override
+    public SearchFactory getSearchFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private V5MigrationOrmSearchIntegratorAdapter getSearchIntegrator() {
-		if ( searchIntegrator == null ) {
-			searchIntegrator = ContextHelper.getSearchIntegrator( delegate );
-		}
-		return searchIntegrator;
-	}
+    private V5MigrationOrmSearchIntegratorAdapter getSearchIntegrator() {
+        if (searchIntegrator == null) {
+            searchIntegrator = ContextHelper.getSearchIntegrator(delegate);
+        }
+        return searchIntegrator;
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder sessionWithOptions() {
-		return new FullTextSharedSessionBuilderDelegator( super.sessionWithOptions() );
-	}
+    @Override
+    public FullTextSharedSessionBuilder sessionWithOptions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T unwrap(Class<T> type) {
-		if ( type.equals( FullTextEntityManager.class ) ) {
-			return (T) this;
-		}
-		else if ( type.equals( FullTextSession.class ) ) {
-			return (T) this;
-		}
-		else {
-			return super.unwrap( type );
-		}
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchQuerySelectStep<?, ?, ?, ?, SearchLoadingOptionsStep, ?, ?> search(V5MigrationSearchScope scope) {
-		SearchSession searchSession = searchSession();
-		return searchSession.search( ( (V5MigrationOrmSearchScopeAdapter) scope ).toSearchScope() );
-	}
+    @Override
+    public SearchQuerySelectStep<?, ?, ?, ?, SearchLoadingOptionsStep, ?, ?> search(V5MigrationSearchScope scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SearchSession searchSession() {
-		return Search.session( delegate );
-	}
+    private SearchSession searchSession() {
+        return Search.session(delegate);
+    }
 }

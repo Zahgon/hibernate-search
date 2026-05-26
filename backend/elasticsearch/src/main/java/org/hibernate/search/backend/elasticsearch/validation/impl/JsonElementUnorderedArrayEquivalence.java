@@ -9,32 +9,31 @@ import com.google.gson.JsonElement;
 
 /**
  * An {@link JsonElementEquivalence} that considers that arrays are unordered containers.
- *
  */
 class JsonElementUnorderedArrayEquivalence extends JsonElementEquivalence {
 
-	JsonElementUnorderedArrayEquivalence(JsonElementEquivalence nestedEquivalence) {
-		super( nestedEquivalence );
-	}
+    JsonElementUnorderedArrayEquivalence(JsonElementEquivalence nestedEquivalence) {
+        super(nestedEquivalence);
+    }
 
-	@Override
-	protected boolean isArrayEquivalent(JsonArray left, JsonArray right) {
-		return containsAll( left, right ) && containsAll( right, left );
-	}
+    @Override
+    protected boolean isArrayEquivalent(JsonArray left, JsonArray right) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean containsAll(JsonArray containerToTest, JsonArray elementsToFind) {
-		for ( JsonElement elementToFind : elementsToFind ) {
-			boolean found = false;
-			for ( JsonElement candidate : containerToTest ) {
-				if ( isNestedEquivalent( elementToFind, candidate ) ) {
-					found = true;
-					break;
-				}
-			}
-			if ( !found ) {
-				return false;
-			}
-		}
-		return true;
-	}
+    private boolean containsAll(JsonArray containerToTest, JsonArray elementsToFind) {
+        for (JsonElement elementToFind : elementsToFind) {
+            boolean found = false;
+            for (JsonElement candidate : containerToTest) {
+                if (isNestedEquivalent(elementToFind, candidate)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

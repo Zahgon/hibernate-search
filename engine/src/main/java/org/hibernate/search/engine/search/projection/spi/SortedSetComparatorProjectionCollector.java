@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -19,39 +18,38 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 final class SortedSetComparatorProjectionCollector<E, V> extends ListBasedProjectionCollector<E, V, SortedSet<V>> {
 
-	static <U, R> Provider<U, R> provider(Comparator<? super U> comparator) {
-		return new ComparatorBasedSortedSetProvider<>( comparator );
-	}
+    static <U, R> Provider<U, R> provider(Comparator<? super U> comparator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SortedSetComparatorProjectionCollector(Comparator<? super V> comparator) {
-		this.comparator = comparator;
-	}
+    private SortedSetComparatorProjectionCollector(Comparator<? super V> comparator) {
+        this.comparator = comparator;
+    }
 
-	private final Comparator<? super V> comparator;
+    private final Comparator<? super V> comparator;
 
-	@Override
-	public SortedSet<V> doFinish(List<V> accumulated) {
-		TreeSet<V> set = new TreeSet<>( comparator );
-		set.addAll( accumulated );
-		return set;
-	}
+    @Override
+    public SortedSet<V> doFinish(List<V> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	private static class ComparatorBasedSortedSetProvider<U, R> implements Provider<U, R> {
-		private final SortedSetComparatorProjectionCollector<?, U> instance;
+    @SuppressWarnings("unchecked")
+    private static class ComparatorBasedSortedSetProvider<U, R> implements Provider<U, R> {
 
-		private ComparatorBasedSortedSetProvider(Comparator<? super U> comparator) {
-			instance = new SortedSetComparatorProjectionCollector<>( comparator );
-		}
+        private final SortedSetComparatorProjectionCollector<?, U> instance;
 
-		@Override
-		public <T> ProjectionCollector<T, U, ?, R> get() {
-			return (ProjectionCollector<T, U, ?, R>) instance;
-		}
+        private ComparatorBasedSortedSetProvider(Comparator<? super U> comparator) {
+            instance = new SortedSetComparatorProjectionCollector<>(comparator);
+        }
 
-		@Override
-		public boolean isSingleValued() {
-			return false;
-		}
-	}
+        @Override
+        public <T> ProjectionCollector<T, U, ?, R> get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

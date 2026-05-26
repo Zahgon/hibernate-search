@@ -17,74 +17,68 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public class BoundPojoModelPathValueNode<T, P, V> extends BoundPojoModelPath {
 
-	private final BoundPojoModelPathPropertyNode<T, P> parent;
-	private final BoundContainerExtractorPath<? super P, V> boundExtractorPath;
-	private BoundPojoModelPathOriginalTypeNode<V> elementTypePathNode;
+    private final BoundPojoModelPathPropertyNode<T, P> parent;
 
-	BoundPojoModelPathValueNode(BoundPojoModelPathPropertyNode<T, P> parent,
-			BoundContainerExtractorPath<? super P, V> boundExtractorPath) {
-		this.parent = parent;
-		this.boundExtractorPath = boundExtractorPath;
-	}
+    private final BoundContainerExtractorPath<? super P, V> boundExtractorPath;
 
-	/**
-	 * @return The model path to the property from which the value represented by this node is extracted.
-	 */
-	@Override
-	public BoundPojoModelPathPropertyNode<T, P> getParent() {
-		return parent;
-	}
+    private BoundPojoModelPathOriginalTypeNode<V> elementTypePathNode;
 
-	@Override
-	public PojoTypeModel<?> getRootType() {
-		return parent.getRootType();
-	}
+    BoundPojoModelPathValueNode(BoundPojoModelPathPropertyNode<T, P> parent, BoundContainerExtractorPath<? super P, V> boundExtractorPath) {
+        this.parent = parent;
+        this.boundExtractorPath = boundExtractorPath;
+    }
 
-	@Override
-	public PojoModelPathValueNode toUnboundPath() {
-		PojoModelPath.Builder builder = PojoModelPath.builder();
-		appendPath( builder );
-		return builder.toValuePathOrNull();
-	}
+    /**
+     * @return The model path to the property from which the value represented by this node is extracted.
+     */
+    @Override
+    public BoundPojoModelPathPropertyNode<T, P> getParent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A child path node representing the type of values represented by this node.
-	 */
-	public BoundPojoModelPathOriginalTypeNode<V> type() {
-		if ( elementTypePathNode == null ) {
-			elementTypePathNode = new BoundPojoModelPathOriginalTypeNode<>(
-					this, boundExtractorPath.getExtractedType()
-			);
-		}
-		return elementTypePathNode;
-	}
+    @Override
+    public PojoTypeModel<?> getRootType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PojoTypeModel<V> getTypeModel() {
-		return boundExtractorPath.getExtractedType();
-	}
+    @Override
+    public PojoModelPathValueNode toUnboundPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The bound extractor path from the parent property to this value.
-	 */
-	public BoundContainerExtractorPath<? super P, V> getBoundExtractorPath() {
-		return boundExtractorPath;
-	}
+    /**
+     * @return A child path node representing the type of values represented by this node.
+     */
+    public BoundPojoModelPathOriginalTypeNode<V> type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The extractor path from the parent property to this value.
-	 * The path is guaranteed to be explicit (i.e. it won't be {@link ContainerExtractorPath#defaultExtractors()}).
-	 */
-	public ContainerExtractorPath getExtractorPath() {
-		return boundExtractorPath.getExtractorPath();
-	}
+    public PojoTypeModel<V> getTypeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(StringBuilder builder) {
-		builder.append( getExtractorPath() );
-	}
+    /**
+     * @return The bound extractor path from the parent property to this value.
+     */
+    public BoundContainerExtractorPath<? super P, V> getBoundExtractorPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(PojoModelPath.Builder builder) {
-		builder.value( getExtractorPath() );
-	}
+    /**
+     * @return The extractor path from the parent property to this value.
+     * The path is guaranteed to be explicit (i.e. it won't be {@link ContainerExtractorPath#defaultExtractors()}).
+     */
+    public ContainerExtractorPath getExtractorPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    void appendSelfPath(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    void appendSelfPath(PojoModelPath.Builder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

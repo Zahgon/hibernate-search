@@ -23,52 +23,19 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 
-class ElasticsearchBooleanIndexFieldTypeOptionsStep
-		extends
-		AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<ElasticsearchBooleanIndexFieldTypeOptionsStep, Boolean> {
+class ElasticsearchBooleanIndexFieldTypeOptionsStep extends AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<ElasticsearchBooleanIndexFieldTypeOptionsStep, Boolean> {
 
-	ElasticsearchBooleanIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Boolean.class, DataTypes.BOOLEAN, DefaultStringConverters.BOOLEAN );
-	}
+    ElasticsearchBooleanIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Boolean.class, DataTypes.BOOLEAN, DefaultStringConverters.BOOLEAN);
+    }
 
-	@Override
-	protected void complete() {
-		ElasticsearchFieldCodec<Boolean> codec = new ElasticsearchBooleanFieldCodec( buildContext.getUserFacingGson() );
-		builder.codec( codec );
+    @Override
+    protected void complete() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.MATCH,
-					new ElasticsearchStandardMatchPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.RANGE, new ElasticsearchRangePredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.Factory<>() );
-			builder.queryElementFactory( PredicateTypeKeys.TERMS, new ElasticsearchTermsPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( ElasticsearchPredicateTypeKeys.SIMPLE_QUERY_STRING,
-					new ElasticsearchCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-			builder.queryElementFactory( ElasticsearchPredicateTypeKeys.QUERY_STRING,
-					new ElasticsearchCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.FIELD, new ElasticsearchStandardFieldSort.Factory<>( codec ) );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new ElasticsearchFieldProjection.Factory<>( codec ) );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			builder.queryElementFactory( AggregationTypeKeys.TERMS, new ElasticsearchTermsAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.COUNT, ElasticsearchCountValuesAggregation.factory() );
-		}
-	}
-
-	@Override
-	protected ElasticsearchBooleanIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
-
+    @Override
+    protected ElasticsearchBooleanIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

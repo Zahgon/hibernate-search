@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import jakarta.batch.api.BatchProperty;
 import jakarta.batch.api.partition.PartitionMapper;
 import jakarta.batch.api.partition.PartitionPlan;
@@ -17,7 +16,6 @@ import jakarta.batch.runtime.context.JobContext;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.LockModeType;
-
 import org.hibernate.StatelessSession;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.query.SelectionQuery;
@@ -53,170 +51,88 @@ import org.hibernate.search.mapper.orm.loading.spi.ConditionalExpression;
  */
 public class HibernateSearchPartitionMapper implements PartitionMapper {
 
-	@Inject
-	private JobContext jobContext;
+    @Inject
+    private JobContext jobContext;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.REINDEX_ONLY_HQL)
-	private String reindexOnlyHql;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.REINDEX_ONLY_HQL)
+    private String reindexOnlyHql;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.REINDEX_ONLY_PARAMETERS)
-	private String serializedReindexOnlyParameters;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.REINDEX_ONLY_PARAMETERS)
+    private String serializedReindexOnlyParameters;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.MAX_THREADS)
-	private String serializedMaxThreads;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.MAX_THREADS)
+    private String serializedMaxThreads;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY)
-	private String serializedMaxResultsPerEntity;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY)
+    private String serializedMaxResultsPerEntity;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ROWS_PER_PARTITION)
-	private String serializedRowsPerPartition;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ROWS_PER_PARTITION)
+    private String serializedRowsPerPartition;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.CHECKPOINT_INTERVAL)
-	private String serializedCheckpointInterval;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.CHECKPOINT_INTERVAL)
+    private String serializedCheckpointInterval;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.TENANT_ID)
-	private String tenantId;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.TENANT_ID)
+    private String tenantId;
 
-	private EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
-	public HibernateSearchPartitionMapper() {
-	}
+    public HibernateSearchPartitionMapper() {
+    }
 
-	/**
-	 * Constructor for unit test.
-	 */
-	public HibernateSearchPartitionMapper(
-			String reindexOnlyHql,
-			String serializedReindexOnlyParameters,
-			String serializedMaxThreads,
-			String serializedMaxResultsPerEntity,
-			String serializedRowsPerPartition,
-			String serializedCheckpointInterval,
-			String tenantId,
-			JobContext jobContext) {
-		this.reindexOnlyHql = reindexOnlyHql;
-		this.serializedReindexOnlyParameters = serializedReindexOnlyParameters;
-		this.serializedMaxThreads = serializedMaxThreads;
-		this.serializedMaxResultsPerEntity = serializedMaxResultsPerEntity;
-		this.serializedRowsPerPartition = serializedRowsPerPartition;
-		this.serializedCheckpointInterval = serializedCheckpointInterval;
-		this.tenantId = tenantId;
-		this.jobContext = jobContext;
-	}
+    /**
+     * Constructor for unit test.
+     */
+    public HibernateSearchPartitionMapper(String reindexOnlyHql, String serializedReindexOnlyParameters, String serializedMaxThreads, String serializedMaxResultsPerEntity, String serializedRowsPerPartition, String serializedCheckpointInterval, String tenantId, JobContext jobContext) {
+        this.reindexOnlyHql = reindexOnlyHql;
+        this.serializedReindexOnlyParameters = serializedReindexOnlyParameters;
+        this.serializedMaxThreads = serializedMaxThreads;
+        this.serializedMaxResultsPerEntity = serializedMaxResultsPerEntity;
+        this.serializedRowsPerPartition = serializedRowsPerPartition;
+        this.serializedCheckpointInterval = serializedCheckpointInterval;
+        this.tenantId = tenantId;
+        this.jobContext = jobContext;
+    }
 
-	@Override
-	public PartitionPlan mapPartitions() throws Exception {
+    @Override
+    public PartitionPlan mapPartitions() throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JobContextData jobData = (JobContextData) jobContext.getTransientUserData();
-		emf = jobData.getEntityManagerFactory();
+    private <I> List<PartitionBound> buildPartitionUnitsFrom(StatelessSession ss, EntityTypeDescriptor<?, I> type, Integer maxResults, int rowsPerPartition, ConditionalExpression reindexOnly) {
+        List<PartitionBound> partitionUnits = new ArrayList<>();
+        int index = 0;
+        Object lowerBound = null;
+        Object upperBound;
+        // If there are no results or fewer than "rowsPerPartition" results,
+        // we'll just create one partition with two null bounds.
+        do {
+            upperBound = selectNextId(type, reindexOnly, ss, lowerBound, rowsPerPartition);
+            partitionUnits.add(new PartitionBound(type, lowerBound, upperBound));
+            index += rowsPerPartition;
+            lowerBound = upperBound;
+        } while (lowerBound != null && (maxResults == null || index < maxResults));
+        return partitionUnits;
+    }
 
-		try ( StatelessSession ss =
-				PersistenceUtil.openStatelessSession( emf, jobData.getTenancyConfiguration().convert( tenantId ) ) ) {
-			Integer maxResults = SerializationUtil.parseIntegerParameterOptional(
-					MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY, serializedMaxResultsPerEntity, null
-			);
-			int rowsPerPartition = SerializationUtil.parseIntegerParameterOptional(
-					MassIndexingJobParameters.ROWS_PER_PARTITION, serializedRowsPerPartition,
-					MassIndexingJobParameters.Defaults.ROWS_PER_PARTITION
-			);
-			Integer checkpointIntervalRaw = SerializationUtil.parseIntegerParameterOptional(
-					MassIndexingJobParameters.CHECKPOINT_INTERVAL, serializedCheckpointInterval, null
-			);
-			int checkpointInterval =
-					MassIndexingJobParameters.Defaults.checkpointInterval( checkpointIntervalRaw, rowsPerPartition );
-			ConditionalExpression reindexOnly =
-					SerializationUtil.parseReindexOnlyParameters( reindexOnlyHql, serializedReindexOnlyParameters );
-
-			List<EntityTypeDescriptor<?, ?>> entityTypeDescriptors = jobData.getEntityTypeDescriptors();
-			List<PartitionBound> partitionBounds = new ArrayList<>();
-
-			for ( EntityTypeDescriptor<?, ?> entityTypeDescriptor : entityTypeDescriptors ) {
-				partitionBounds.addAll( buildPartitionUnitsFrom( ss, entityTypeDescriptor,
-						maxResults, rowsPerPartition, reindexOnly ) );
-			}
-
-			// Build partition plan
-			final int partitions = partitionBounds.size();
-			final Properties[] props = new Properties[partitions];
-
-			for ( int i = 0; i < partitionBounds.size(); i++ ) {
-				PartitionBound bound = partitionBounds.get( i );
-				props[i] = new Properties();
-				props[i].setProperty( MassIndexingPartitionProperties.ENTITY_NAME, bound.getEntityName() );
-				props[i].setProperty( MassIndexingPartitionProperties.PARTITION_ID, String.valueOf( i ) );
-				props[i].setProperty( MassIndexingPartitionProperties.LOWER_BOUND,
-						SerializationUtil.serialize( bound.getLowerBound() ) );
-				props[i].setProperty( MassIndexingPartitionProperties.UPPER_BOUND,
-						SerializationUtil.serialize( bound.getUpperBound() ) );
-				props[i].setProperty(
-						MassIndexingPartitionProperties.CHECKPOINT_INTERVAL,
-						String.valueOf( checkpointInterval )
-				);
-			}
-
-			JakartaBatchLog.INSTANCE.listPartitions( Arrays.toString( props ) );
-
-			PartitionPlan partitionPlan = new PartitionPlanImpl();
-			partitionPlan.setPartitionProperties( props );
-			partitionPlan.setPartitions( partitions );
-			Integer threads = SerializationUtil.parseIntegerParameterOptional(
-					MassIndexingJobParameters.MAX_THREADS, serializedMaxThreads, null
-			);
-			if ( threads != null ) {
-				partitionPlan.setThreads( threads );
-			}
-
-			JakartaBatchLog.INSTANCE.partitionsPlan( partitionPlan.getPartitions(), partitionPlan.getThreads() );
-			return partitionPlan;
-		}
-	}
-
-	private <I> List<PartitionBound> buildPartitionUnitsFrom(StatelessSession ss,
-			EntityTypeDescriptor<?, I> type,
-			Integer maxResults, int rowsPerPartition, ConditionalExpression reindexOnly) {
-		List<PartitionBound> partitionUnits = new ArrayList<>();
-
-		int index = 0;
-		Object lowerBound = null;
-		Object upperBound;
-		// If there are no results or fewer than "rowsPerPartition" results,
-		// we'll just create one partition with two null bounds.
-		do {
-			upperBound = selectNextId( type, reindexOnly, ss, lowerBound, rowsPerPartition );
-			partitionUnits.add( new PartitionBound( type, lowerBound, upperBound ) );
-			index += rowsPerPartition;
-			lowerBound = upperBound;
-		}
-		while ( lowerBound != null && ( maxResults == null || index < maxResults ) );
-
-		return partitionUnits;
-	}
-
-	private <I> I selectNextId(EntityTypeDescriptor<?, I> type, ConditionalExpression reindexOnly,
-			StatelessSession ss, Object lowerId, int offset) {
-		List<ConditionalExpression> conditions = new ArrayList<>();
-		if ( reindexOnly != null ) {
-			conditions.add( reindexOnly );
-		}
-		if ( lowerId != null ) {
-			conditions.add( type.idOrder()
-					.idGreater( "HIBERNATE_SEARCH_PARTITION_LOWER_BOUND_", lowerId ) );
-		}
-		SelectionQuery<I> query = type.createIdentifiersQuery( (SharedSessionContractImplementor) ss, conditions )
-				.setFetchSize( 1 )
-				.setReadOnly( true )
-				.setCacheable( false )
-				.setLockMode( LockModeType.NONE );
-		query.setFirstResult( offset );
-		query.setMaxResults( 1 );
-		return query.getSingleResultOrNull();
-	}
-
+    private <I> I selectNextId(EntityTypeDescriptor<?, I> type, ConditionalExpression reindexOnly, StatelessSession ss, Object lowerId, int offset) {
+        List<ConditionalExpression> conditions = new ArrayList<>();
+        if (reindexOnly != null) {
+            conditions.add(reindexOnly);
+        }
+        if (lowerId != null) {
+            conditions.add(type.idOrder().idGreater("HIBERNATE_SEARCH_PARTITION_LOWER_BOUND_", lowerId));
+        }
+        SelectionQuery<I> query = type.createIdentifiersQuery((SharedSessionContractImplementor) ss, conditions).setFetchSize(1).setReadOnly(true).setCacheable(false).setLockMode(LockModeType.NONE);
+        query.setFirstResult(offset);
+        query.setMaxResults(1);
+        return query.getSingleResultOrNull();
+    }
 }

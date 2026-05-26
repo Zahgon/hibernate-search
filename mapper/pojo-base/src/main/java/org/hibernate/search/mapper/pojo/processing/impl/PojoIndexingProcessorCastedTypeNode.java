@@ -23,55 +23,35 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoIndexingProcessorCastedTypeNode<T, U> extends PojoIndexingProcessor<T> {
 
-	private final PojoCaster<? super U> caster;
-	private final Iterable<IndexObjectFieldReference> parentIndexObjectReferences;
-	private final PojoIndexingProcessor<? super U> nested;
-	private final boolean isEntityType;
+    private final PojoCaster<? super U> caster;
 
-	public PojoIndexingProcessorCastedTypeNode(PojoCaster<? super U> caster,
-			Iterable<IndexObjectFieldReference> parentIndexObjectReferences,
-			PojoIndexingProcessor<? super U> nested,
-			boolean isEntityType) {
-		this.caster = caster;
-		this.parentIndexObjectReferences = parentIndexObjectReferences;
-		this.nested = nested;
-		this.isEntityType = isEntityType;
-	}
+    private final Iterable<IndexObjectFieldReference> parentIndexObjectReferences;
 
-	@Override
-	public void close() {
-		nested.close();
-	}
+    private final PojoIndexingProcessor<? super U> nested;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process type (with cast)" );
-		appender.attribute( "caster", caster );
-		appender.attribute( "objectFieldsToCreate", parentIndexObjectReferences );
-		appender.attribute( "nested", nested );
-		appender.attribute( "isEntityType", isEntityType );
-	}
+    private final boolean isEntityType;
 
-	@Override
-	@SuppressWarnings("unchecked") // As long as T is not a proxy-specific interface, it will also be implemented by the unproxified object
-	public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
-		if ( source == null ) {
-			return;
-		}
-		source = (T) context.sessionContext().runtimeIntrospector().unproxy( source );
-		// The caster can only cast to the raw type, beyond that we have to use an unchecked cast.
-		@SuppressWarnings("unchecked")
-		U castedSource = (U) caster.cast( source );
-		// "isEntityType" is just an optimization to avoid unnecessary calls to isDeleted(),
-		// which may be costly (reflection, ...)
-		if ( isEntityType && context.isDeleted( castedSource ) ) {
-			return;
-		}
-		DocumentElement parentObject = target;
-		for ( IndexObjectFieldReference objectFieldReference : parentIndexObjectReferences ) {
-			parentObject = parentObject.addObject( objectFieldReference );
-		}
-		nested.process( parentObject, castedSource, context );
-	}
+    public PojoIndexingProcessorCastedTypeNode(PojoCaster<? super U> caster, Iterable<IndexObjectFieldReference> parentIndexObjectReferences, PojoIndexingProcessor<? super U> nested, boolean isEntityType) {
+        this.caster = caster;
+        this.parentIndexObjectReferences = parentIndexObjectReferences;
+        this.nested = nested;
+        this.isEntityType = isEntityType;
+    }
 
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    // As long as T is not a proxy-specific interface, it will also be implemented by the unproxified object
+    @SuppressWarnings("unchecked")
+    public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -9,38 +9,31 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public enum DynamicMapping {
 
-	/**
-	 * Add unknown fields to the schema dynamically
-	 */
-	TRUE( "true" ),
+    /**
+     * Add unknown fields to the schema dynamically
+     */
+    TRUE("true"),
+    /**
+     * Ignore unknown fields
+     */
+    FALSE("false"),
+    /**
+     * Throw an exception on unknown fields
+     */
+    STRICT("strict");
 
-	/**
-	 * Ignore unknown fields
-	 */
-	FALSE( "false" ),
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static DynamicMapping of(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Throw an exception on unknown fields
-	 */
-	STRICT( "strict" );
+    private final String externalRepresentation;
 
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static DynamicMapping of(String value) {
-		return ParseUtils.parseDiscreteValues(
-				DynamicMapping.values(),
-				DynamicMapping::externalRepresentation,
-				ConfigurationLog.INSTANCE::invalidDynamicType,
-				value
-		);
-	}
+    DynamicMapping(String externalRepresentation) {
+        this.externalRepresentation = externalRepresentation;
+    }
 
-	private final String externalRepresentation;
-
-	DynamicMapping(String externalRepresentation) {
-		this.externalRepresentation = externalRepresentation;
-	}
-
-	public String externalRepresentation() {
-		return externalRepresentation;
-	}
+    public String externalRepresentation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

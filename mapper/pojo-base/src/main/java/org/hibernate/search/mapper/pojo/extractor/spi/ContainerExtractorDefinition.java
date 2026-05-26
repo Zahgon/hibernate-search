@@ -7,22 +7,24 @@ package org.hibernate.search.mapper.pojo.extractor.spi;
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.extractor.ContainerExtractor;
 
-@SuppressWarnings("rawtypes") // We need to allow raw container types, e.g. MapValueExtractor.class
+// We need to allow raw container types, e.g. MapValueExtractor.class
+@SuppressWarnings("rawtypes")
 public final class ContainerExtractorDefinition<C extends ContainerExtractor> {
 
-	private final Class<C> type;
-	private final BeanReference<? extends C> reference;
+    private final Class<C> type;
 
-	ContainerExtractorDefinition(Class<C> type, BeanReference<? extends C> reference) {
-		this.type = type;
-		this.reference = reference;
-	}
+    private final BeanReference<? extends C> reference;
 
-	public Class<C> type() {
-		return type;
-	}
+    ContainerExtractorDefinition(Class<C> type, BeanReference<? extends C> reference) {
+        this.type = type;
+        this.reference = reference;
+    }
 
-	public BeanReference<? extends C> reference() {
-		return reference;
-	}
+    public Class<C> type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public BeanReference<? extends C> reference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

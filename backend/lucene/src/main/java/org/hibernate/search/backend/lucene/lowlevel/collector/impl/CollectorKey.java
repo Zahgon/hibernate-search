@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.lowlevel.collector.impl;
 
 import java.util.Collection;
-
 import org.apache.lucene.search.Collector;
 
 /**
@@ -18,9 +17,7 @@ import org.apache.lucene.search.Collector;
  */
 public interface CollectorKey<C extends Collector, T> {
 
-	static <C extends Collector, T> CollectorKey<C, T> create() {
-		return new CollectorKey<C, T>() {
-		};
-	}
-
+    static <C extends Collector, T> CollectorKey<C, T> create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

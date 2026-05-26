@@ -11,35 +11,25 @@ import org.hibernate.search.backend.lucene.types.converter.LuceneFieldValueExtra
 import org.hibernate.search.engine.backend.types.IndexFieldType;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-class LuceneNativeIndexFieldTypeOptionsStep<F>
-		extends AbstractLuceneIndexFieldTypeOptionsStep<LuceneNativeIndexFieldTypeOptionsStep<F>, F> {
+class LuceneNativeIndexFieldTypeOptionsStep<F> extends AbstractLuceneIndexFieldTypeOptionsStep<LuceneNativeIndexFieldTypeOptionsStep<F>, F> {
 
-	private final LuceneFieldContributor<F> fieldContributor;
-	private final LuceneFieldValueExtractor<F> fieldValueExtractor;
+    private final LuceneFieldContributor<F> fieldContributor;
 
-	LuceneNativeIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> fieldType,
-			LuceneFieldContributor<F> fieldContributor, LuceneFieldValueExtractor<F> fieldValueExtractor) {
-		super( buildContext, fieldType );
-		this.fieldContributor = fieldContributor;
-		this.fieldValueExtractor = fieldValueExtractor;
-	}
+    private final LuceneFieldValueExtractor<F> fieldValueExtractor;
 
-	@Override
-	public IndexFieldType<F> toIndexFieldType() {
-		LuceneFieldFieldCodec<F> codec =
-				new LuceneFieldFieldCodec<>( builder.valueClass(), fieldContributor, fieldValueExtractor );
-		builder.codec( codec );
+    LuceneNativeIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> fieldType, LuceneFieldContributor<F> fieldContributor, LuceneFieldValueExtractor<F> fieldValueExtractor) {
+        super(buildContext, fieldType);
+        this.fieldContributor = fieldContributor;
+        this.fieldValueExtractor = fieldValueExtractor;
+    }
 
-		if ( fieldValueExtractor != null ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new LuceneFieldProjection.Factory<>( codec ) );
-		}
+    @Override
+    public IndexFieldType<F> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return builder.build();
-	}
-
-	@Override
-	protected LuceneNativeIndexFieldTypeOptionsStep<F> thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneNativeIndexFieldTypeOptionsStep<F> thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

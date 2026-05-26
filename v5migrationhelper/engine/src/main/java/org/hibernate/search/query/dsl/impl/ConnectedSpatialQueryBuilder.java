@@ -11,40 +11,35 @@ import org.hibernate.search.engine.search.predicate.dsl.SpatialWithinPredicateOp
 import org.hibernate.search.engine.spatial.DistanceUnit;
 import org.hibernate.search.query.dsl.SpatialTermination;
 import org.hibernate.search.spatial.Coordinates;
-
 import org.apache.lucene.search.Query;
 
 /**
  * @author Emmanuel Bernard
  */
 public class ConnectedSpatialQueryBuilder implements SpatialTermination {
-	private final QueryBuildingContext queryContext;
-	private final QueryCustomizer queryCustomizer;
-	private final SpatialQueryContext spatialContext;
 
-	public ConnectedSpatialQueryBuilder(QueryBuildingContext queryContext, QueryCustomizer queryCustomizer,
-			SpatialQueryContext spatialContext) {
-		this.queryContext = queryContext;
-		this.spatialContext = spatialContext;
-		this.queryCustomizer = queryCustomizer;
-	}
+    private final QueryBuildingContext queryContext;
 
-	@Override
-	public Query createQuery() {
-		return LuceneMigrationUtils.toLuceneQuery( createPredicate() );
-	}
+    private final QueryCustomizer queryCustomizer;
 
-	private SearchPredicate createPredicate() {
-		SearchPredicateFactory factory = queryContext.getScope().predicate();
+    private final SpatialQueryContext spatialContext;
 
-		SpatialWithinPredicateOptionsStep<?> optionsStep = factory.spatial().within()
-				.field( spatialContext.getCoordinatesField() )
-				.circle( Coordinates.toGeoPoint( spatialContext.getCoordinates() ),
-						spatialContext.getRadiusDistance(), DistanceUnit.KILOMETERS );
+    public ConnectedSpatialQueryBuilder(QueryBuildingContext queryContext, QueryCustomizer queryCustomizer, SpatialQueryContext spatialContext) {
+        this.queryContext = queryContext;
+        this.spatialContext = spatialContext;
+        this.queryCustomizer = queryCustomizer;
+    }
 
-		queryCustomizer.applyScoreOptions( optionsStep );
-		SearchPredicate predicate = optionsStep.toPredicate();
-		return queryCustomizer.applyFilter( factory, predicate );
-	}
+    @Override
+    public Query createQuery() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    private SearchPredicate createPredicate() {
+        SearchPredicateFactory factory = queryContext.getScope().predicate();
+        SpatialWithinPredicateOptionsStep<?> optionsStep = factory.spatial().within().field(spatialContext.getCoordinatesField()).circle(Coordinates.toGeoPoint(spatialContext.getCoordinates()), spatialContext.getRadiusDistance(), DistanceUnit.KILOMETERS);
+        queryCustomizer.applyScoreOptions(optionsStep);
+        SearchPredicate predicate = optionsStep.toPredicate();
+        return queryCustomizer.applyFilter(factory, predicate);
+    }
 }

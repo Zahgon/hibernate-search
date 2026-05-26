@@ -8,18 +8,14 @@ import org.hibernate.search.backend.elasticsearch.types.impl.ElasticsearchIndexV
 import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.util.common.pattern.spi.SimpleGlobPattern;
 
-public class ElasticsearchIndexValueFieldTemplate
-		extends AbstractElasticsearchIndexFieldTemplate<ElasticsearchIndexValueFieldType<?>> {
+public class ElasticsearchIndexValueFieldTemplate extends AbstractElasticsearchIndexFieldTemplate<ElasticsearchIndexValueFieldType<?>> {
 
-	public ElasticsearchIndexValueFieldTemplate(ElasticsearchIndexCompositeNode declaringParent,
-			SimpleGlobPattern absolutePathGlob, TreeNodeInclusion inclusion,
-			boolean multiValued, ElasticsearchIndexValueFieldType<?> type) {
-		super( declaringParent, absolutePathGlob, type, inclusion, multiValued );
-	}
+    public ElasticsearchIndexValueFieldTemplate(ElasticsearchIndexCompositeNode declaringParent, SimpleGlobPattern absolutePathGlob, TreeNodeInclusion inclusion, boolean multiValued, ElasticsearchIndexValueFieldType<?> type) {
+        super(declaringParent, absolutePathGlob, type, inclusion, multiValued);
+    }
 
-	@Override
-	protected ElasticsearchIndexField createNode(ElasticsearchIndexCompositeNode parent, String relativePath,
-			ElasticsearchIndexValueFieldType<?> type, TreeNodeInclusion inclusion, boolean multiValued) {
-		return new ElasticsearchIndexValueField<>( parent, relativePath, type, inclusion, multiValued );
-	}
+    @Override
+    protected ElasticsearchIndexField createNode(ElasticsearchIndexCompositeNode parent, String relativePath, ElasticsearchIndexValueFieldType<?> type, TreeNodeInclusion inclusion, boolean multiValued) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

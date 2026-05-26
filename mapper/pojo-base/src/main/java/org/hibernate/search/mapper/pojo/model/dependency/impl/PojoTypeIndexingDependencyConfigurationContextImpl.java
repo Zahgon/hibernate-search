@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.model.dependency.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorTypeNode;
 import org.hibernate.search.mapper.pojo.extractor.impl.ContainerExtractorBinder;
@@ -21,65 +20,35 @@ import org.hibernate.search.mapper.pojo.model.path.spi.PojoModelPathBinder;
 import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
-public class PojoTypeIndexingDependencyConfigurationContextImpl<T> extends AbstractPojoBridgedElementDependencyContext
-		implements PojoTypeIndexingDependencyConfigurationContext {
+public class PojoTypeIndexingDependencyConfigurationContextImpl<T> extends AbstractPojoBridgedElementDependencyContext implements PojoTypeIndexingDependencyConfigurationContext {
 
-	private final BoundPojoModelPathTypeNode<T> modelPath;
-	private final List<BoundPojoModelPathValueNode<?, ?, ?>> usedPaths = new ArrayList<>();
-	private final List<PojoOtherEntityIndexingDependencyConfigurationContextImpl<?>> otherEntityDependencyContexts =
-			new ArrayList<>();
+    private final BoundPojoModelPathTypeNode<T> modelPath;
 
-	public PojoTypeIndexingDependencyConfigurationContextImpl(
-			PojoBootstrapIntrospector introspector,
-			ContainerExtractorBinder containerExtractorBinder,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider,
-			PojoTypeModel<T> typeModel) {
-		super( introspector, containerExtractorBinder, typeAdditionalMetadataProvider );
-		this.modelPath = BoundPojoModelPath.root( typeModel );
-	}
+    private final List<BoundPojoModelPathValueNode<?, ?, ?>> usedPaths = new ArrayList<>();
 
-	@Override
-	public boolean hasNonRootDependency() {
-		return !usedPaths.isEmpty() || !otherEntityDependencyContexts.isEmpty();
-	}
+    private final List<PojoOtherEntityIndexingDependencyConfigurationContextImpl<?>> otherEntityDependencyContexts = new ArrayList<>();
 
-	@Override
-	public PojoTypeIndexingDependencyConfigurationContext use(PojoModelPathValueNode pathFromBridgedTypeToUsedValue) {
-		BoundPojoModelPathValueNode<?, ?, ?> boundPath = PojoModelPathBinder.bind(
-				modelPath, pathFromBridgedTypeToUsedValue, bindingPathWalker
-		);
-		usedPaths.add( boundPath );
-		return this;
-	}
+    public PojoTypeIndexingDependencyConfigurationContextImpl(PojoBootstrapIntrospector introspector, ContainerExtractorBinder containerExtractorBinder, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider, PojoTypeModel<T> typeModel) {
+        super(introspector, containerExtractorBinder, typeAdditionalMetadataProvider);
+        this.modelPath = BoundPojoModelPath.root(typeModel);
+    }
 
-	@Override
-	public PojoOtherEntityIndexingDependencyConfigurationContext fromOtherEntity(Class<?> otherEntityType,
-			PojoModelPathValueNode pathFromOtherEntityTypeToBridgedType) {
-		PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> otherEntityDependencyContext =
-				createOtherEntityDependencyContext(
-						modelPath.getTypeModel().rawType(),
-						otherEntityType, pathFromOtherEntityTypeToBridgedType
-				);
+    @Override
+    public boolean hasNonRootDependency() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// If we get here, the path is valid
+    @Override
+    public PojoTypeIndexingDependencyConfigurationContext use(PojoModelPathValueNode pathFromBridgedTypeToUsedValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		otherEntityDependencyContexts.add( otherEntityDependencyContext );
+    @Override
+    public PojoOtherEntityIndexingDependencyConfigurationContext fromOtherEntity(Class<?> otherEntityType, PojoModelPathValueNode pathFromOtherEntityTypeToBridgedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return otherEntityDependencyContext;
-	}
-
-	public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
-		for ( BoundPojoModelPathValueNode<?, ?, ?> usedPath : usedPaths ) {
-			PojoModelPathBinder.bind(
-					dependencyCollector,
-					usedPath.toUnboundPath(),
-					PojoIndexingDependencyCollectorNode.walker()
-			);
-		}
-		for ( PojoOtherEntityIndexingDependencyConfigurationContextImpl<
-				?> otherEntityDependencyContext : otherEntityDependencyContexts ) {
-			otherEntityDependencyContext.contributeDependencies( dependencyCollector );
-		}
-	}
-
+    public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

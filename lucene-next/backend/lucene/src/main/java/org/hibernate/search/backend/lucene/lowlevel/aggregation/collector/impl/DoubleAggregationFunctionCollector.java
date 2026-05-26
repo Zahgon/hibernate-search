@@ -6,59 +6,53 @@ package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 import java.io.IOException;
 import java.util.function.Function;
-
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.LongMultiValues;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.LongMultiValuesSource;
-
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.ScoreMode;
 import org.apache.lucene.search.SimpleCollector;
 
 public class DoubleAggregationFunctionCollector<AF extends DoubleAggregationFunction<?>> extends SimpleCollector {
 
-	private final LongMultiValuesSource valueSource;
-	private final DoubleAggregationFunction<AF> aggregationFunction;
-	private final Function<Long, Double> longToDouble;
+    private final LongMultiValuesSource valueSource;
 
-	private LongMultiValues values;
+    private final DoubleAggregationFunction<AF> aggregationFunction;
 
-	public DoubleAggregationFunctionCollector(LongMultiValuesSource valueSource,
-			DoubleAggregationFunction<AF> aggregationFunction, Function<Long, Double> longToDouble) {
-		this.valueSource = valueSource;
-		this.aggregationFunction = aggregationFunction;
-		this.longToDouble = longToDouble;
-	}
+    private final Function<Long, Double> longToDouble;
 
-	public void merge(DoubleAggregationFunctionCollector<AF> sibling) {
-		aggregationFunction.merge( sibling.aggregationFunction );
-	}
+    private LongMultiValues values;
 
-	public Double result() {
-		return aggregationFunction.result();
-	}
+    public DoubleAggregationFunctionCollector(LongMultiValuesSource valueSource, DoubleAggregationFunction<AF> aggregationFunction, Function<Long, Double> longToDouble) {
+        this.valueSource = valueSource;
+        this.aggregationFunction = aggregationFunction;
+        this.longToDouble = longToDouble;
+    }
 
-	@Override
-	public void collect(int doc) throws IOException {
-		if ( values.advanceExact( doc ) ) {
-			while ( values.hasNextValue() ) {
-				long value = values.nextValue();
-				aggregationFunction.apply( longToDouble.apply( value ) );
-			}
-		}
-	}
+    public void merge(DoubleAggregationFunctionCollector<AF> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ScoreMode scoreMode() {
-		return ScoreMode.COMPLETE_NO_SCORES;
-	}
+    public Double result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected void doSetNextReader(LeafReaderContext context) throws IOException {
-		values = valueSource.getValues( context );
-	}
+    @Override
+    public void collect(int doc) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void finish() throws IOException {
-		values = null;
-	}
+    @Override
+    public ScoreMode scoreMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected void doSetNextReader(LeafReaderContext context) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void finish() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

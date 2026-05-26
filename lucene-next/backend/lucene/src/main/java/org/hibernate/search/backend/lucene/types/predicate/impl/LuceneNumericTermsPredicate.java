@@ -7,7 +7,6 @@ package org.hibernate.search.backend.lucene.types.predicate.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.hibernate.search.backend.lucene.search.common.impl.AbstractLuceneCodecAwareSearchQueryElementFactory;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexValueFieldContext;
@@ -17,93 +16,76 @@ import org.hibernate.search.backend.lucene.types.codec.impl.AbstractLuceneNumeri
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.TermsPredicateBuilder;
-
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 
 public class LuceneNumericTermsPredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneNumericTermsPredicate(Builder<?, ?> builder) {
-		super( builder );
-	}
+    private LuceneNumericTermsPredicate(Builder<?, ?> builder) {
+        super(builder);
+    }
 
-	public static class Factory<F, E extends Number>
-			extends
-			AbstractLuceneCodecAwareSearchQueryElementFactory<TermsPredicateBuilder, F, AbstractLuceneNumericFieldCodec<F, E>> {
-		public Factory(AbstractLuceneNumericFieldCodec<F, E> codec) {
-			super( codec );
-		}
+    public static class Factory<F, E extends Number> extends AbstractLuceneCodecAwareSearchQueryElementFactory<TermsPredicateBuilder, F, AbstractLuceneNumericFieldCodec<F, E>> {
 
-		@Override
-		public Builder<F, E> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( codec, scope, field );
-		}
-	}
+        public Factory(AbstractLuceneNumericFieldCodec<F, E> codec) {
+            super(codec);
+        }
 
-	private static class Builder<F, E extends Number> extends AbstractBuilder<F> implements TermsPredicateBuilder {
-		private final AbstractLuceneNumericFieldCodec<F, E> codec;
+        @Override
+        public Builder<F, E> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private E term;
-		private List<E> terms;
-		private boolean allMatch;
+    private static class Builder<F, E extends Number> extends AbstractBuilder<F> implements TermsPredicateBuilder {
 
-		private Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			// Score is always constant for this query
-			constantScore();
+        private final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-			this.codec = codec;
-		}
+        private E term;
 
-		@Override
-		public void matchingAny(Collection<?> terms, ValueModel valueModel) {
-			allMatch = false;
-			fillTerms( terms, valueModel );
-		}
+        private List<E> terms;
 
-		@Override
-		public void matchingAll(Collection<?> terms, ValueModel valueModel) {
-			allMatch = true;
-			fillTerms( terms, valueModel );
-		}
+        private boolean allMatch;
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneNumericTermsPredicate( this );
-		}
+        private Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            // Score is always constant for this query
+            constantScore();
+            this.codec = codec;
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			if ( term != null ) {
-				return codec.getDomain().createExactQuery( absoluteFieldPath, term );
-			}
+        @Override
+        public void matchingAny(Collection<?> terms, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( !allMatch ) {
-				return codec.getDomain().createSetQuery( absoluteFieldPath, terms );
-			}
+        @Override
+        public void matchingAll(Collection<?> terms, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			BooleanQuery.Builder builder = new BooleanQuery.Builder();
-			for ( E termItem : terms ) {
-				Query query = codec.getDomain().createExactQuery( absoluteFieldPath, termItem );
-				builder.add( query, BooleanClause.Occur.MUST );
-			}
-			return builder.build();
-		}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private void fillTerms(Collection<?> terms, ValueModel valueModel) {
-			if ( terms.size() == 1 ) {
-				this.term = convertAndEncode( codec, terms.iterator().next(), valueModel );
-				this.terms = null;
-				return;
-			}
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			this.term = null;
-			this.terms = new ArrayList<>( terms.size() );
-			for ( Object termItem : terms ) {
-				this.terms.add( convertAndEncode( codec, termItem, valueModel ) );
-			}
-		}
-	}
+        private void fillTerms(Collection<?> terms, ValueModel valueModel) {
+            if (terms.size() == 1) {
+                this.term = convertAndEncode(codec, terms.iterator().next(), valueModel);
+                this.terms = null;
+                return;
+            }
+            this.term = null;
+            this.terms = new ArrayList<>(terms.size());
+            for (Object termItem : terms) {
+                this.terms.add(convertAndEncode(codec, termItem, valueModel));
+            }
+        }
+    }
 }

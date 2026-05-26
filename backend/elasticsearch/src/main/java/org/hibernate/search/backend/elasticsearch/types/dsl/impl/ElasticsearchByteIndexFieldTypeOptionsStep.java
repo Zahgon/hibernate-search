@@ -9,20 +9,19 @@ import org.hibernate.search.backend.elasticsearch.types.codec.impl.Elasticsearch
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchFieldCodec;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 
-class ElasticsearchByteIndexFieldTypeOptionsStep
-		extends AbstractElasticsearchNumericFieldTypeOptionsStep<ElasticsearchByteIndexFieldTypeOptionsStep, Byte> {
+class ElasticsearchByteIndexFieldTypeOptionsStep extends AbstractElasticsearchNumericFieldTypeOptionsStep<ElasticsearchByteIndexFieldTypeOptionsStep, Byte> {
 
-	ElasticsearchByteIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Byte.class, DataTypes.BYTE, DefaultStringConverters.BYTE );
-	}
+    ElasticsearchByteIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Byte.class, DataTypes.BYTE, DefaultStringConverters.BYTE);
+    }
 
-	@Override
-	protected ElasticsearchFieldCodec<Byte> completeCodec(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		return new ElasticsearchByteFieldCodec( buildContext.getUserFacingGson() );
-	}
+    @Override
+    protected ElasticsearchFieldCodec<Byte> completeCodec(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchByteIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchByteIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

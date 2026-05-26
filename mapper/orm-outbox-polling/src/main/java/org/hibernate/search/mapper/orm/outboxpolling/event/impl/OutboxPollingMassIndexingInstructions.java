@@ -8,21 +8,24 @@ import java.time.Clock;
 import java.time.Instant;
 
 public class OutboxPollingMassIndexingInstructions {
-	private final Clock clock;
-	final Instant expiration;
-	boolean considerEventProcessingSuspended;
 
-	public OutboxPollingMassIndexingInstructions(Clock clock, Instant expiration, boolean considerEventProcessingSuspended) {
-		this.clock = clock;
-		this.expiration = expiration;
-		this.considerEventProcessingSuspended = considerEventProcessingSuspended;
-	}
+    private final Clock clock;
 
-	boolean isStillValid() {
-		return timeInMillisecondsToExpiration() > 0;
-	}
+    final Instant expiration;
 
-	long timeInMillisecondsToExpiration() {
-		return Math.max( 0L, expiration.toEpochMilli() - clock.millis() );
-	}
+    boolean considerEventProcessingSuspended;
+
+    public OutboxPollingMassIndexingInstructions(Clock clock, Instant expiration, boolean considerEventProcessingSuspended) {
+        this.clock = clock;
+        this.expiration = expiration;
+        this.considerEventProcessingSuspended = considerEventProcessingSuspended;
+    }
+
+    boolean isStillValid() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    long timeInMillisecondsToExpiration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

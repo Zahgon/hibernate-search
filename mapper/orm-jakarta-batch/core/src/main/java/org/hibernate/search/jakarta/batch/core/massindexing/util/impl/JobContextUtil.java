@@ -8,10 +8,8 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import jakarta.batch.runtime.context.JobContext;
 import jakarta.persistence.EntityManagerFactory;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.search.jakarta.batch.core.context.jpa.impl.ActiveSessionFactoryRegistry;
 import org.hibernate.search.jakarta.batch.core.context.jpa.spi.EntityManagerFactoryRegistry;
@@ -34,66 +32,31 @@ import org.hibernate.search.util.common.impl.StringHelper;
  */
 public final class JobContextUtil {
 
-	private JobContextUtil() {
-		// Private constructor, do not use it.
-	}
+    private JobContextUtil() {
+        // Private constructor, do not use it.
+    }
 
-	public static JobContextData getOrCreateData(JobContext jobContext,
-			EntityManagerFactoryRegistry emfRegistry,
-			String entityManagerFactoryNamespace, String entityManagerFactoryReference,
-			String entityTypes) {
-		JobContextData data = (JobContextData) jobContext.getTransientUserData();
-		if ( data == null ) {
-			EntityManagerFactory emf =
-					getEntityManagerFactory( emfRegistry, entityManagerFactoryNamespace, entityManagerFactoryReference );
-			data = createData( emf, entityTypes );
-			jobContext.setTransientUserData( data );
-		}
-		return data;
-	}
+    public static JobContextData getOrCreateData(JobContext jobContext, EntityManagerFactoryRegistry emfRegistry, String entityManagerFactoryNamespace, String entityManagerFactoryReference, String entityTypes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static EntityManagerFactory getEntityManagerFactory(EntityManagerFactoryRegistry emfRegistry,
-			String entityManagerFactoryNamespace, String entityManagerFactoryReference) {
-		EntityManagerFactoryRegistry registry =
-				emfRegistry != null ? emfRegistry : ActiveSessionFactoryRegistry.getInstance();
+    static EntityManagerFactory getEntityManagerFactory(EntityManagerFactoryRegistry emfRegistry, String entityManagerFactoryNamespace, String entityManagerFactoryReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( StringHelper.isEmpty( entityManagerFactoryNamespace ) ) {
-			if ( StringHelper.isEmpty( entityManagerFactoryReference ) ) {
-				return registry.useDefault();
-			}
-			else {
-				return registry.get( entityManagerFactoryReference );
-			}
-		}
-		else {
-			if ( StringHelper.isEmpty( entityManagerFactoryReference ) ) {
-				throw JakartaBatchLog.INSTANCE.entityManagerFactoryReferenceIsEmpty();
-			}
-			else {
-				return registry.get( entityManagerFactoryNamespace, entityManagerFactoryReference );
-			}
-		}
-	}
-
-	private static JobContextData createData(EntityManagerFactory emf, String entityTypes) {
-		BatchMappingContext mapping = (BatchMappingContext) Search.mapping( emf );
-		List<String> entityNamesToIndex = Arrays.asList( entityTypes.split( "," ) );
-
-		Set<HibernateOrmLoadingTypeContext<?>> entityTypesToIndex = new LinkedHashSet<>();
-		for ( String s : entityNamesToIndex ) {
-			entityTypesToIndex.add( mapping.typeContextProvider().byEntityName().getOrFail( s ) );
-		}
-
-		List<EntityTypeDescriptor<?, ?>> descriptors = PersistenceUtil.createDescriptors(
-				emf.unwrap( SessionFactoryImplementor.class ),
-				entityTypesToIndex );
-
-		JobContextData jobContextData = new JobContextData();
-		jobContextData.setEntityManagerFactory( emf );
-		jobContextData.setEntityTypeDescriptors( descriptors );
-		jobContextData.setTenancyConfiguration( mapping.tenancyConfiguration() );
-		jobContextData.setMassIndexingDefaultCleanOperation( mapping.massIndexingDefaultCleanOperation() );
-		return jobContextData;
-	}
-
+    private static JobContextData createData(EntityManagerFactory emf, String entityTypes) {
+        BatchMappingContext mapping = (BatchMappingContext) Search.mapping(emf);
+        List<String> entityNamesToIndex = Arrays.asList(entityTypes.split(","));
+        Set<HibernateOrmLoadingTypeContext<?>> entityTypesToIndex = new LinkedHashSet<>();
+        for (String s : entityNamesToIndex) {
+            entityTypesToIndex.add(mapping.typeContextProvider().byEntityName().getOrFail(s));
+        }
+        List<EntityTypeDescriptor<?, ?>> descriptors = PersistenceUtil.createDescriptors(emf.unwrap(SessionFactoryImplementor.class), entityTypesToIndex);
+        JobContextData jobContextData = new JobContextData();
+        jobContextData.setEntityManagerFactory(emf);
+        jobContextData.setEntityTypeDescriptors(descriptors);
+        jobContextData.setTenancyConfiguration(mapping.tenancyConfiguration());
+        jobContextData.setMassIndexingDefaultCleanOperation(mapping.massIndexingDefaultCleanOperation());
+        return jobContextData;
+    }
 }

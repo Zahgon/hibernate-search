@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.hibernate.search.backend.elasticsearch.analysis.model.impl.ElasticsearchAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.AbstractElasticsearchIndexFieldTemplate;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexField;
@@ -49,193 +48,111 @@ import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.aggregation.spi.AggregationTypeKeys;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-public class ElasticsearchIndexRootBuilder extends AbstractElasticsearchIndexCompositeNodeBuilder
-		implements IndexRootBuilder {
+public class ElasticsearchIndexRootBuilder extends AbstractElasticsearchIndexCompositeNodeBuilder implements IndexRootBuilder {
 
-	private final ElasticsearchIndexFieldTypeFactoryProvider typeFactoryProvider;
-	private final EventContext indexEventContext;
-	private final BackendMapperContext backendMapperContext;
-	private final List<IndexSchemaRootContributor> schemaRootContributors = new ArrayList<>();
-	private final List<ImplicitFieldContributor> implicitFieldContributors = new ArrayList<>();
-	private final String hibernateSearchIndexName;
-	private final String mappedTypeName;
-	private final ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry;
-	private final IndexSettings customIndexSettings;
-	private final RootTypeMapping customIndexMapping;
-	private final DynamicType defaultDynamicType;
+    private final ElasticsearchIndexFieldTypeFactoryProvider typeFactoryProvider;
 
-	private RoutingType routing = null;
-	private DslConverter<?, String> idDslConverter;
-	private DslConverter<String, String> idParser;
-	private ProjectionConverter<String, ?> idProjectionConverter;
+    private final EventContext indexEventContext;
 
-	public ElasticsearchIndexRootBuilder(ElasticsearchIndexFieldTypeFactoryProvider typeFactoryProvider,
-			EventContext indexEventContext,
-			BackendMapperContext backendMapperContext, String hibernateSearchIndexName, String mappedTypeName,
-			ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry,
-			IndexSettings customIndexSettings, RootTypeMapping customIndexMapping,
-			DynamicMapping dynamicMapping) {
-		super( new ElasticsearchIndexCompositeNodeType.Builder( ObjectStructure.FLATTENED ) );
-		this.typeFactoryProvider = typeFactoryProvider;
-		this.indexEventContext = indexEventContext;
-		this.backendMapperContext = backendMapperContext;
-		this.hibernateSearchIndexName = hibernateSearchIndexName;
-		this.mappedTypeName = mappedTypeName;
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
-		this.customIndexSettings = customIndexSettings;
-		this.customIndexMapping = customIndexMapping;
-		this.defaultDynamicType = DynamicType.create( dynamicMapping );
+    private final BackendMapperContext backendMapperContext;
 
-		this.typeBuilder.queryElementFactory( AggregationTypeKeys.COUNT_DOCUMENTS,
-				ElasticsearchCountDocumentAggregation.factory() );
-		this.addDefaultImplicitFields();
-	}
+    private final List<IndexSchemaRootContributor> schemaRootContributors = new ArrayList<>();
 
-	@Override
-	public EventContext eventContext() {
-		return getIndexEventContext()
-				.append( EventContexts.indexSchemaRoot() );
-	}
+    private final List<ImplicitFieldContributor> implicitFieldContributors = new ArrayList<>();
 
-	@Override
-	public ElasticsearchIndexFieldTypeFactory createTypeFactory(IndexFieldTypeDefaultsProvider defaultsProvider) {
-		return typeFactoryProvider.create( indexEventContext, backendMapperContext, defaultsProvider );
-	}
+    private final String hibernateSearchIndexName;
 
-	@Override
-	public void explicitRouting() {
-		this.routing = RoutingType.REQUIRED;
-	}
+    private final String mappedTypeName;
 
-	@Override
-	public <I> void idDslConverter(Class<I> valueType, ToDocumentValueConverter<I, String> converter) {
-		this.idDslConverter = new DslConverter<>( valueType, converter );
-	}
+    private final ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	@Override
-	public void idParser(ToDocumentValueConverter<String, String> converter) {
-		this.idParser = new DslConverter<>( String.class, converter );
-	}
+    private final IndexSettings customIndexSettings;
 
-	@Override
-	public <I> void idProjectionConverter(Class<I> valueType, FromDocumentValueConverter<String, I> converter) {
-		this.idProjectionConverter = new ProjectionConverter<>( valueType, converter );
-	}
+    private final RootTypeMapping customIndexMapping;
 
-	public void addSchemaRootContributor(IndexSchemaRootContributor schemaRootContributor) {
-		schemaRootContributors.add( schemaRootContributor );
-	}
+    private final DynamicType defaultDynamicType;
 
-	public void addImplicitFieldContributor(ImplicitFieldContributor implicitFieldContributor) {
-		implicitFieldContributors.add( implicitFieldContributor );
-	}
+    private RoutingType routing = null;
 
-	public ElasticsearchIndexModel build() {
-		IndexIdentifier identifier = new IndexIdentifier( idDslConverter, idParser, idProjectionConverter );
+    private DslConverter<?, String> idDslConverter;
 
-		RootTypeMapping mapping = new RootTypeMapping();
-		if ( routing != null ) {
-			mapping.setRouting( routing );
-		}
+    private DslConverter<String, String> idParser;
 
-		for ( IndexSchemaRootContributor schemaRootContributor : schemaRootContributors ) {
-			schemaRootContributor.contribute( mapping );
-		}
+    private ProjectionConverter<String, ?> idProjectionConverter;
 
-		mapping.setDynamic( resolveSelfDynamicType( defaultDynamicType ) );
+    public ElasticsearchIndexRootBuilder(ElasticsearchIndexFieldTypeFactoryProvider typeFactoryProvider, EventContext indexEventContext, BackendMapperContext backendMapperContext, String hibernateSearchIndexName, String mappedTypeName, ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry, IndexSettings customIndexSettings, RootTypeMapping customIndexMapping, DynamicMapping dynamicMapping) {
+        super(new ElasticsearchIndexCompositeNodeType.Builder(ObjectStructure.FLATTENED));
+        this.typeFactoryProvider = typeFactoryProvider;
+        this.indexEventContext = indexEventContext;
+        this.backendMapperContext = backendMapperContext;
+        this.hibernateSearchIndexName = hibernateSearchIndexName;
+        this.mappedTypeName = mappedTypeName;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        this.customIndexSettings = customIndexSettings;
+        this.customIndexMapping = customIndexMapping;
+        this.defaultDynamicType = DynamicType.create(dynamicMapping);
+        this.typeBuilder.queryElementFactory(AggregationTypeKeys.COUNT_DOCUMENTS, ElasticsearchCountDocumentAggregation.factory());
+        this.addDefaultImplicitFields();
+    }
 
-		Map<String, ElasticsearchIndexField> staticFields = new HashMap<>();
-		List<AbstractElasticsearchIndexFieldTemplate<?>> fieldTemplates = new ArrayList<>();
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PropertyMappingIndexSettingsContributor propertyMappingIndexSettingsContributor =
-				new PropertyMappingIndexSettingsContributor();
-		ElasticsearchIndexNodeCollector collector = new ElasticsearchIndexNodeCollector() {
-			@Override
-			public void collect(String absolutePath, ElasticsearchIndexObjectField node) {
-				staticFields.put( absolutePath, node );
-			}
+    @Override
+    public ElasticsearchIndexFieldTypeFactory createTypeFactory(IndexFieldTypeDefaultsProvider defaultsProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(String absoluteFieldPath, ElasticsearchIndexValueField<?> node) {
-				staticFields.put( absoluteFieldPath, node );
-			}
+    @Override
+    public void explicitRouting() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(ElasticsearchIndexObjectFieldTemplate template) {
-				fieldTemplates.add( template );
-			}
+    @Override
+    public <I> void idDslConverter(Class<I> valueType, ToDocumentValueConverter<I, String> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(ElasticsearchIndexValueFieldTemplate template) {
-				fieldTemplates.add( template );
-			}
+    @Override
+    public void idParser(ToDocumentValueConverter<String, String> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(NamedDynamicTemplate templateForMapping) {
-				mapping.addDynamicTemplate( templateForMapping );
-			}
+    @Override
+    public <I> void idProjectionConverter(Class<I> valueType, FromDocumentValueConverter<String, I> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public PropertyMappingIndexSettingsContributor propertyMappingIndexSettingsContributor() {
-				return propertyMappingIndexSettingsContributor;
-			}
-		};
+    public void addSchemaRootContributor(IndexSchemaRootContributor schemaRootContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, ElasticsearchIndexField> staticChildrenByName = new TreeMap<>();
-		ElasticsearchIndexRoot rootNode = new ElasticsearchIndexRoot( typeBuilder.build(), staticChildrenByName );
-		contributeChildren( mapping, rootNode, collector, staticChildrenByName );
+    public void addImplicitFieldContributor(ImplicitFieldContributor implicitFieldContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ImplicitFieldCollector implicitFieldCollector = new ImplicitFieldCollector() {
+    public ElasticsearchIndexModel build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			private ElasticsearchIndexFieldTypeFactory typeFactory = typeFactoryProvider.create(
-					indexEventContext,
-					backendMapperContext, new IndexFieldTypeDefaultsProvider()
-			);
+    @Override
+    ElasticsearchIndexRootBuilder getRootNodeBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public IndexFieldTypeFactory indexFieldTypeFactory() {
-				return typeFactory;
-			}
+    @Override
+    String getAbsolutePath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public <F> void addImplicitField(String fieldName, IndexFieldType<F> indexFieldType) {
-				ElasticsearchIndexValueFieldType<F> fieldType = (ElasticsearchIndexValueFieldType<F>) indexFieldType;
+    EventContext getIndexEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				staticFields.put(
-						fieldName,
-						new ElasticsearchIndexValueField<>(
-								rootNode, fieldName, fieldType, TreeNodeInclusion.INCLUDED, false )
-				);
-			}
-		};
-		for ( ImplicitFieldContributor contributor : implicitFieldContributors ) {
-			contributor.contribute( implicitFieldCollector );
-		}
-
-		return new ElasticsearchIndexModel(
-				hibernateSearchIndexName,
-				mappedTypeName, identifier,
-				rootNode, staticFields, fieldTemplates,
-				analysisDefinitionRegistry, propertyMappingIndexSettingsContributor, customIndexSettings, mapping,
-				customIndexMapping );
-	}
-
-	@Override
-	ElasticsearchIndexRootBuilder getRootNodeBuilder() {
-		return this;
-	}
-
-	@Override
-	String getAbsolutePath() {
-		return null;
-	}
-
-	EventContext getIndexEventContext() {
-		return indexEventContext;
-	}
-
-	private void addDefaultImplicitFields() {
-		implicitFieldContributors.add( new ElasticsearchStringImplicitFieldContributor( "_id" ) );
-		implicitFieldContributors.add( new ElasticsearchStringImplicitFieldContributor( "_index" ) );
-	}
+    private void addDefaultImplicitFields() {
+        implicitFieldContributors.add(new ElasticsearchStringImplicitFieldContributor("_id"));
+        implicitFieldContributors.add(new ElasticsearchStringImplicitFieldContributor("_index"));
+    }
 }

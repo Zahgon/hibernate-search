@@ -9,25 +9,23 @@ import org.hibernate.search.mapper.pojo.extractor.ContainerExtractor;
 import org.hibernate.search.mapper.pojo.extractor.ValueProcessor;
 
 public final class ContainerExtractingProcessor<T, C, V, C2> implements ValueProcessor<T, C, C2> {
-	private final ContainerExtractor<? super C, V> extractor;
-	private final ValueProcessor<T, ? super V, C2> perValueProcessor;
 
-	public ContainerExtractingProcessor(ContainerExtractor<? super C, V> extractor,
-			ValueProcessor<T, ? super V, C2> perValueProcessor) {
-		this.extractor = extractor;
-		this.perValueProcessor = perValueProcessor;
-	}
+    private final ContainerExtractor<? super C, V> extractor;
 
-	@Override
-	public String toString() {
-		return "ContainerExtractingProcessor["
-				+ "extractor=" + extractor
-				+ ", perValueProcessor=" + perValueProcessor
-				+ "]";
-	}
+    private final ValueProcessor<T, ? super V, C2> perValueProcessor;
 
-	@Override
-	public void process(T target, C container, C2 context, ContainerExtractionContext extractionContext) {
-		extractor.extract( container, perValueProcessor, target, context, extractionContext );
-	}
+    public ContainerExtractingProcessor(ContainerExtractor<? super C, V> extractor, ValueProcessor<T, ? super V, C2> perValueProcessor) {
+        this.extractor = extractor;
+        this.perValueProcessor = perValueProcessor;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void process(T target, C container, C2 context, ContainerExtractionContext extractionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

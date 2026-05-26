@@ -8,19 +8,17 @@ import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.dsl.CompositeAggregationFromAsStep;
 import org.hibernate.search.engine.search.aggregation.spi.CompositeAggregationBuilder;
 
-class CompositeAggregationFromAnyNumberAsStep extends AbstractCompositeAggregationFromAsStep
-		implements CompositeAggregationFromAsStep {
+class CompositeAggregationFromAnyNumberAsStep extends AbstractCompositeAggregationFromAsStep implements CompositeAggregationFromAsStep {
 
-	final SearchAggregation<?>[] inner;
+    final SearchAggregation<?>[] inner;
 
-	public CompositeAggregationFromAnyNumberAsStep(CompositeAggregationBuilder<?> builder, SearchAggregation<?>[] inner) {
-		super( builder );
-		this.inner = inner;
-	}
+    public CompositeAggregationFromAnyNumberAsStep(CompositeAggregationBuilder<?> builder, SearchAggregation<?>[] inner) {
+        super(builder);
+        this.inner = inner;
+    }
 
-	@Override
-	SearchAggregation<?>[] toAggregationArray() {
-		return inner;
-	}
-
+    @Override
+    SearchAggregation<?>[] toAggregationArray() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

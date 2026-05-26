@@ -12,10 +12,8 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class AlternativeDiscriminatorProcessor implements PropertyMappingAnnotationProcessor<AlternativeDiscriminator> {
 
-	@Override
-	public void process(PropertyMappingStep mapping, AlternativeDiscriminator annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		mapping.marker( AlternativeBinder.alternativeDiscriminator()
-				.id( context.toNullIfDefault( annotation.id(), "" ) ) );
-	}
+    @Override
+    public void process(PropertyMappingStep mapping, AlternativeDiscriminator annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,13 +5,10 @@
 package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 import java.io.IOException;
-
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.TextMultiValues;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.TextMultiValuesSource;
-
 import com.carrotsearch.hppc.LongHashSet;
 import com.carrotsearch.hppc.cursors.LongCursor;
-
 import org.apache.lucene.index.IndexReaderContext;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.MultiDocValues;
@@ -21,63 +18,54 @@ import org.apache.lucene.search.SimpleCollector;
 
 public class CountDistinctTextValuesCollector extends SimpleCollector {
 
-	private final TextMultiValuesSource source;
-	private final String field;
-	private TextMultiValues values;
+    private final TextMultiValuesSource source;
 
-	private final LongHashSet globalOrds = new LongHashSet();
+    private final String field;
 
-	private LongHashSet leafOrds = new LongHashSet();
+    private TextMultiValues values;
 
-	private SortedSetDocValues sortedSetValues;
+    private final LongHashSet globalOrds = new LongHashSet();
 
-	public CountDistinctTextValuesCollector(TextMultiValuesSource source, String field) {
-		this.source = source;
-		this.field = field;
-	}
+    private LongHashSet leafOrds = new LongHashSet();
 
-	@Override
-	public void collect(int doc) throws IOException {
-		if ( values.advanceExact( doc ) ) {
-			while ( values.hasNextValue() ) {
-				long ord = values.nextOrd();
-				leafOrds.add( ord );
-			}
-		}
-	}
+    private SortedSetDocValues sortedSetValues;
 
-	@Override
-	public ScoreMode scoreMode() {
-		return ScoreMode.COMPLETE_NO_SCORES;
-	}
+    public CountDistinctTextValuesCollector(TextMultiValuesSource source, String field) {
+        this.source = source;
+        this.field = field;
+    }
 
-	@Override
-	protected void doSetNextReader(LeafReaderContext context) throws IOException {
-		initRootSortedSetDocValues( context );
-		this.values = source.getValues( context );
-	}
+    @Override
+    public void collect(int doc) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void finish() throws IOException {
-		for ( LongCursor value : leafOrds ) {
-			long globalOrd = sortedSetValues.lookupTerm( values.lookupOrd( value.value ) );
-			globalOrds.add( globalOrd );
-		}
-		values = null;
-		leafOrds.clear();
-	}
+    @Override
+    public ScoreMode scoreMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void initRootSortedSetDocValues(IndexReaderContext ctx) throws IOException {
-		if ( sortedSetValues != null || ctx == null ) {
-			return;
-		}
-		if ( ctx.isTopLevel ) {
-			this.sortedSetValues = MultiDocValues.getSortedSetValues( ctx.reader(), field );
-		}
-		initRootSortedSetDocValues( ctx.parent );
-	}
+    @Override
+    protected void doSetNextReader(LeafReaderContext context) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public LongHashSet globalOrds() {
-		return globalOrds;
-	}
+    @Override
+    public void finish() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private void initRootSortedSetDocValues(IndexReaderContext ctx) throws IOException {
+        if (sortedSetValues != null || ctx == null) {
+            return;
+        }
+        if (ctx.isTopLevel) {
+            this.sortedSetValues = MultiDocValues.getSortedSetValues(ctx.reader(), field);
+        }
+        initRootSortedSetDocValues(ctx.parent);
+    }
+
+    public LongHashSet globalOrds() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

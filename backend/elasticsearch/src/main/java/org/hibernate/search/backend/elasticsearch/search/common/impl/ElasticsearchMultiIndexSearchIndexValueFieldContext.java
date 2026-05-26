@@ -6,89 +6,69 @@ package org.hibernate.search.backend.elasticsearch.search.common.impl;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchFieldCodec;
 import org.hibernate.search.engine.search.common.spi.AbstractMultiIndexSearchIndexValueFieldContext;
 import org.hibernate.search.engine.search.common.spi.SearchIndexSchemaElementContextHelper;
-
 import com.google.gson.JsonPrimitive;
 
-public class ElasticsearchMultiIndexSearchIndexValueFieldContext<F>
-		extends AbstractMultiIndexSearchIndexValueFieldContext<
-				ElasticsearchSearchIndexValueFieldContext<F>,
-				ElasticsearchSearchIndexScope<?>,
-				ElasticsearchSearchIndexValueFieldTypeContext<F>,
-				F>
-		implements ElasticsearchSearchIndexValueFieldContext<F>, ElasticsearchSearchIndexValueFieldTypeContext<F> {
+public class ElasticsearchMultiIndexSearchIndexValueFieldContext<F> extends AbstractMultiIndexSearchIndexValueFieldContext<ElasticsearchSearchIndexValueFieldContext<F>, ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexValueFieldTypeContext<F>, F> implements ElasticsearchSearchIndexValueFieldContext<F>, ElasticsearchSearchIndexValueFieldTypeContext<F> {
 
-	public ElasticsearchMultiIndexSearchIndexValueFieldContext(ElasticsearchSearchIndexScope<?> scope, String absolutePath,
-			List<? extends ElasticsearchSearchIndexValueFieldContext<F>> fieldForEachIndex) {
-		super( scope, absolutePath, fieldForEachIndex );
-	}
+    public ElasticsearchMultiIndexSearchIndexValueFieldContext(ElasticsearchSearchIndexScope<?> scope, String absolutePath, List<? extends ElasticsearchSearchIndexValueFieldContext<F>> fieldForEachIndex) {
+        super(scope, absolutePath, fieldForEachIndex);
+    }
 
-	@Override
-	protected ElasticsearchSearchIndexValueFieldContext<F> self() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchSearchIndexValueFieldContext<F> self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchIndexValueFieldTypeContext<F> selfAsNodeType() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchSearchIndexValueFieldTypeContext<F> selfAsNodeType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchIndexValueFieldTypeContext<F> typeOf(
-			ElasticsearchSearchIndexValueFieldContext<F> indexElement) {
-		return indexElement.type();
-	}
+    @Override
+    protected ElasticsearchSearchIndexValueFieldTypeContext<F> typeOf(ElasticsearchSearchIndexValueFieldContext<F> indexElement) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchIndexCompositeNodeContext toComposite() {
-		return SearchIndexSchemaElementContextHelper.throwingToComposite( this );
-	}
+    @Override
+    public ElasticsearchSearchIndexCompositeNodeContext toComposite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchIndexCompositeNodeContext toObjectField() {
-		return SearchIndexSchemaElementContextHelper.throwingToObjectField( this );
-	}
+    @Override
+    public ElasticsearchSearchIndexCompositeNodeContext toObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonPrimitive elasticsearchTypeAsJson() {
-		return fromTypeIfCompatible( ElasticsearchSearchIndexValueFieldTypeContext::elasticsearchTypeAsJson, Object::equals,
-				"elasticsearchType" );
-	}
+    @Override
+    public JsonPrimitive elasticsearchTypeAsJson() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<String> searchAnalyzerName() {
-		return fromTypeIfCompatible( ElasticsearchSearchIndexValueFieldTypeContext::searchAnalyzerName, Object::equals,
-				"searchAnalyzer" );
-	}
+    @Override
+    public Optional<String> searchAnalyzerName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<String> normalizerName() {
-		return fromTypeIfCompatible( ElasticsearchSearchIndexValueFieldTypeContext::normalizerName, Object::equals,
-				"normalizer" );
-	}
+    @Override
+    public Optional<String> normalizerName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean hasNormalizerOnAtLeastOneIndex() {
-		for ( ElasticsearchSearchIndexValueFieldContext<F> indexElement : nodeForEachIndex ) {
-			if ( indexElement.type().hasNormalizerOnAtLeastOneIndex() ) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean hasNormalizerOnAtLeastOneIndex() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchFieldCodec<F> codec() {
-		return fromTypeIfCompatible( ElasticsearchSearchIndexValueFieldTypeContext::codec,
-				ElasticsearchFieldCodec::isCompatibleWith, "codec" );
-	}
+    @Override
+    public ElasticsearchFieldCodec<F> codec() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchEncodingContext<F> encodingContext() {
-		return fromNodeIfCompatible( ElasticsearchSearchIndexValueFieldContext::encodingContext,
-				ElasticsearchSearchEncodingContext::isCompatibleWith, "encodingContext" );
-	}
+    @Override
+    public ElasticsearchSearchEncodingContext<F> encodingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

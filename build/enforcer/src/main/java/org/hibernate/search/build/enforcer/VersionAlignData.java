@@ -6,41 +6,38 @@ package org.hibernate.search.build.enforcer;
 
 public class VersionAlignData {
 
-	private String property;
-	private String artifact;
-	private boolean failOnNotFound = false;
+    private String property;
 
-	public String getProperty() {
-		return property;
-	}
+    private String artifact;
 
-	public void setProperty(String property) {
-		this.property = property;
-	}
+    private boolean failOnNotFound = false;
 
-	public String getArtifact() {
-		return artifact;
-	}
+    public String getProperty() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setArtifact(String artifact) {
-		this.artifact = artifact;
-	}
+    public void setProperty(String property) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean isFailOnNotFound() {
-		return failOnNotFound;
-	}
+    public String getArtifact() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setFailOnNotFound(boolean failOnNotFound) {
-		this.failOnNotFound = failOnNotFound;
-	}
+    public void setArtifact(String artifact) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "{" +
-				"property='" + property + '\'' +
-				", artifact='" + artifact + '\'' +
-				", failOnNotFound=" + failOnNotFound +
-				'}';
-	}
+    public boolean isFailOnNotFound() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public void setFailOnNotFound(boolean failOnNotFound) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

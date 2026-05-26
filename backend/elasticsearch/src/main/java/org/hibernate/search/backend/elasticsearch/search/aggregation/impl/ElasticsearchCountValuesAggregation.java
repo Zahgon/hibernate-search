@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.search.aggregation.impl;
 
 import java.util.List;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonElementTypes;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
@@ -16,123 +15,101 @@ import org.hibernate.search.backend.elasticsearch.search.predicate.impl.Elastics
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.aggregation.spi.CountValuesAggregationBuilder;
 import org.hibernate.search.engine.search.common.spi.SearchQueryElementFactory;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class ElasticsearchCountValuesAggregation extends AbstractElasticsearchNestableAggregation<Long> {
 
-	private static final JsonAccessor<JsonObject> COUNT_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "value_count" ).asObject();
+    private static final JsonAccessor<JsonObject> COUNT_PROPERTY_ACCESSOR = JsonAccessor.root().property("value_count").asObject();
 
-	private static final JsonAccessor<JsonObject> COUNT_DISTINCT_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "cardinality" ).asObject();
+    private static final JsonAccessor<JsonObject> COUNT_DISTINCT_PROPERTY_ACCESSOR = JsonAccessor.root().property("cardinality").asObject();
 
-	private static final JsonAccessor<String> FIELD_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "field" ).asString();
+    private static final JsonAccessor<String> FIELD_PROPERTY_ACCESSOR = JsonAccessor.root().property("field").asString();
 
-	private final String absoluteFieldPath;
-	private final JsonAccessor<JsonObject> operation;
+    private final String absoluteFieldPath;
 
-	private ElasticsearchCountValuesAggregation(Builder builder) {
-		super( builder );
-		this.absoluteFieldPath = builder.field.absolutePath();
-		this.operation = builder.operation;
-	}
+    private final JsonAccessor<JsonObject> operation;
 
-	public static SearchQueryElementFactory<CountValuesAggregationBuilder.TypeSelector,
-			ElasticsearchSearchIndexScope<?>,
-			ElasticsearchSearchIndexNodeContext> factory() {
-		return new Factory();
-	}
+    private ElasticsearchCountValuesAggregation(Builder builder) {
+        super(builder);
+        this.absoluteFieldPath = builder.field.absolutePath();
+        this.operation = builder.operation;
+    }
 
-	private static class Factory
-			implements SearchQueryElementFactory<CountValuesAggregationBuilder.TypeSelector,
-					ElasticsearchSearchIndexScope<?>,
-					ElasticsearchSearchIndexNodeContext> {
+    public static SearchQueryElementFactory<CountValuesAggregationBuilder.TypeSelector, ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexNodeContext> factory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public CountValuesAggregationBuilder.TypeSelector create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexNodeContext node) {
-			return new TypeSelector( scope, node );
-		}
+    private static class Factory implements SearchQueryElementFactory<CountValuesAggregationBuilder.TypeSelector, ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexNodeContext> {
 
-		@Override
-		public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
-			if ( !getClass().equals( other.getClass() ) ) {
-				throw QueryLog.INSTANCE.differentImplementationClassForQueryElement( getClass(), other.getClass() );
-			}
-		}
-	}
+        @Override
+        public CountValuesAggregationBuilder.TypeSelector create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexNodeContext node) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static final class TypeSelector implements CountValuesAggregationBuilder.TypeSelector {
-		private final ElasticsearchSearchIndexScope<?> scope;
-		private final ElasticsearchSearchIndexNodeContext node;
+        @Override
+        public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private TypeSelector(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexNodeContext node) {
-			this.scope = scope;
-			this.node = node; // doesn't matter in this case
-		}
+    private static final class TypeSelector implements CountValuesAggregationBuilder.TypeSelector {
 
-		@Override
-		public CountValuesAggregationBuilder builder() {
-			return new ElasticsearchCountValuesAggregation.Builder( scope, node.toValueField() );
-		}
-	}
+        private final ElasticsearchSearchIndexScope<?> scope;
 
-	@Override
-	protected final JsonObject doRequest(AggregationRequestBuildingContextContext context) {
-		JsonObject outerObject = new JsonObject();
-		JsonObject innerObject = new JsonObject();
+        private final ElasticsearchSearchIndexNodeContext node;
 
-		operation.set( outerObject, innerObject );
-		FIELD_PROPERTY_ACCESSOR.set( innerObject, absoluteFieldPath );
-		return outerObject;
-	}
+        private TypeSelector(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexNodeContext node) {
+            this.scope = scope;
+            // doesn't matter in this case
+            this.node = node;
+        }
 
-	@Override
-	protected Extractor<Long> extractor(AggregationKey<?> key, AggregationRequestBuildingContextContext context) {
-		return new MetricLongExtractor( key, nestedPathHierarchy, filter );
-	}
+        @Override
+        public CountValuesAggregationBuilder builder() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private static class MetricLongExtractor extends AbstractExtractor<Long> {
-		protected MetricLongExtractor(
-				AggregationKey<?> key, List<String> nestedPathHierarchy,
-				ElasticsearchSearchPredicate filter
-		) {
-			super( key, nestedPathHierarchy, filter );
-		}
+    @Override
+    protected final JsonObject doRequest(AggregationRequestBuildingContextContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected Long doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
-			JsonElement value = aggregationResult.get( "value" );
-			return JsonElementTypes.LONG.fromElement( value );
-		}
-	}
+    @Override
+    protected Extractor<Long> extractor(AggregationKey<?> key, AggregationRequestBuildingContextContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class Builder extends AbstractBuilder<Long>
-			implements CountValuesAggregationBuilder {
-		private JsonAccessor<JsonObject> operation;
+    private static class MetricLongExtractor extends AbstractExtractor<Long> {
 
-		private Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<?> field) {
-			super( scope, field );
-			this.operation = COUNT_PROPERTY_ACCESSOR;
-		}
+        protected MetricLongExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy, ElasticsearchSearchPredicate filter) {
+            super(key, nestedPathHierarchy, filter);
+        }
 
-		@Override
-		public ElasticsearchCountValuesAggregation build() {
-			return new ElasticsearchCountValuesAggregation( this );
-		}
+        @Override
+        protected Long doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void distinct(boolean distinct) {
-			if ( distinct ) {
-				operation = COUNT_DISTINCT_PROPERTY_ACCESSOR;
-			}
-			else {
-				operation = COUNT_PROPERTY_ACCESSOR;
-			}
-		}
-	}
+    private static class Builder extends AbstractBuilder<Long> implements CountValuesAggregationBuilder {
+
+        private JsonAccessor<JsonObject> operation;
+
+        private Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<?> field) {
+            super(scope, field);
+            this.operation = COUNT_PROPERTY_ACCESSOR;
+        }
+
+        @Override
+        public ElasticsearchCountValuesAggregation build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void distinct(boolean distinct) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -10,9 +10,9 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface TypedAggregationFieldReference<SR, T> extends AggregationFieldReference<SR> {
 
-	Class<T> aggregationType();
+    Class<T> aggregationType();
 
-	default ValueModel valueModel() {
-		return ValueModel.MAPPING;
-	}
+    default ValueModel valueModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

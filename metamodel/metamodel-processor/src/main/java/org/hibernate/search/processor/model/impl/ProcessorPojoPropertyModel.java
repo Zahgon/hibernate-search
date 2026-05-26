@@ -6,12 +6,10 @@ package org.hibernate.search.processor.model.impl;
 
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-
 import org.hibernate.search.mapper.pojo.model.spi.PojoPropertyModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 import org.hibernate.search.processor.impl.HibernateSearchMetamodelProcessorContext;
@@ -20,63 +18,61 @@ import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
 
 public class ProcessorPojoPropertyModel<T> implements PojoPropertyModel<T> {
 
-	private final Element element;
-	private final HibernateSearchMetamodelProcessorContext context;
-	private final ProcessorPojoModelsBootstrapIntrospector introspector;
+    private final Element element;
 
-	private final String propertyName;
-	private final TypeMirror propertyType;
+    private final HibernateSearchMetamodelProcessorContext context;
 
-	public ProcessorPojoPropertyModel(VariableElement element, String propertyName,
-			HibernateSearchMetamodelProcessorContext context,
-			ProcessorPojoModelsBootstrapIntrospector introspector) {
-		this.element = element;
-		this.context = context;
-		this.introspector = introspector;
+    private final ProcessorPojoModelsBootstrapIntrospector introspector;
 
-		this.propertyName = propertyName;
-		this.propertyType = element.asType();
-	}
+    private final String propertyName;
 
-	public ProcessorPojoPropertyModel(ExecutableElement element, String propertyName,
-			HibernateSearchMetamodelProcessorContext context,
-			ProcessorPojoModelsBootstrapIntrospector introspector) {
-		this.element = element;
-		this.context = context;
-		this.introspector = introspector;
+    private final TypeMirror propertyType;
 
-		this.propertyName = propertyName;
-		this.propertyType = element.getReturnType();
-	}
+    public ProcessorPojoPropertyModel(VariableElement element, String propertyName, HibernateSearchMetamodelProcessorContext context, ProcessorPojoModelsBootstrapIntrospector introspector) {
+        this.element = element;
+        this.context = context;
+        this.introspector = introspector;
+        this.propertyName = propertyName;
+        this.propertyType = element.asType();
+    }
 
-	@Override
-	public String name() {
-		return propertyName;
-	}
+    public ProcessorPojoPropertyModel(ExecutableElement element, String propertyName, HibernateSearchMetamodelProcessorContext context, ProcessorPojoModelsBootstrapIntrospector introspector) {
+        this.element = element;
+        this.context = context;
+        this.introspector = introspector;
+        this.propertyName = propertyName;
+        this.propertyType = element.getReturnType();
+    }
 
-	@Override
-	public Stream<Annotation> annotations() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public PojoTypeModel<T> typeModel() {
-		return (PojoTypeModel<T>) introspector.typeModel( propertyType );
-	}
+    @Override
+    public Stream<Annotation> annotations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public ValueReadHandle<T> handle() {
-		return (ValueReadHandle<T>) ProcessorValueReadHandle.INSTANCE;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public PojoTypeModel<T> typeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class ProcessorValueReadHandle<T> implements ValueReadHandle<T> {
-		static final ProcessorValueReadHandle<?> INSTANCE = new ProcessorValueReadHandle<>();
+    @SuppressWarnings("unchecked")
+    @Override
+    public ValueReadHandle<T> handle() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public T get(Object thiz) {
-			throw new UnsupportedOperationException();
-		}
-	}
+    private static class ProcessorValueReadHandle<T> implements ValueReadHandle<T> {
+
+        static final ProcessorValueReadHandle<?> INSTANCE = new ProcessorValueReadHandle<>();
+
+        @Override
+        public T get(Object thiz) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

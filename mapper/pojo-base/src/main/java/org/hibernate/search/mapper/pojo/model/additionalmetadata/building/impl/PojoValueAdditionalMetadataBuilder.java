@@ -7,47 +7,49 @@ package org.hibernate.search.mapper.pojo.model.additionalmetadata.building.impl;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorValueNode;
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.impl.PojoValueAdditionalMetadata;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 
 class PojoValueAdditionalMetadataBuilder implements PojoAdditionalMetadataCollectorValueNode {
-	private PojoModelPathValueNode inverseSidePath;
-	private boolean associationEmbedded = false;
-	private Optional<ReindexOnUpdate> reindexOnUpdate = Optional.empty();
-	private Set<PojoModelPathValueNode> derivedFrom = Collections.emptySet();
-	private Integer decimalScale;
 
-	@Override
-	public void associationInverseSide(PojoModelPathValueNode inverseSidePath) {
-		this.inverseSidePath = inverseSidePath;
-	}
+    private PojoModelPathValueNode inverseSidePath;
 
-	@Override
-	public void associationEmbedded() {
-		this.associationEmbedded = true;
-	}
+    private boolean associationEmbedded = false;
 
-	@Override
-	public void reindexOnUpdate(ReindexOnUpdate reindexOnUpdate) {
-		this.reindexOnUpdate = Optional.of( reindexOnUpdate );
-	}
+    private Optional<ReindexOnUpdate> reindexOnUpdate = Optional.empty();
 
-	@Override
-	public void derivedFrom(Set<PojoModelPathValueNode> derivedFrom) {
-		this.derivedFrom = derivedFrom;
-	}
+    private Set<PojoModelPathValueNode> derivedFrom = Collections.emptySet();
 
-	@Override
-	public void decimalScale(int decimalScale) {
-		this.decimalScale = decimalScale;
-	}
+    private Integer decimalScale;
 
-	PojoValueAdditionalMetadata build() {
-		return new PojoValueAdditionalMetadata(
-				inverseSidePath, associationEmbedded, reindexOnUpdate, derivedFrom, decimalScale
-		);
-	}
+    @Override
+    public void associationInverseSide(PojoModelPathValueNode inverseSidePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void associationEmbedded() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void reindexOnUpdate(ReindexOnUpdate reindexOnUpdate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void derivedFrom(Set<PojoModelPathValueNode> derivedFrom) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void decimalScale(int decimalScale) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    PojoValueAdditionalMetadata build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

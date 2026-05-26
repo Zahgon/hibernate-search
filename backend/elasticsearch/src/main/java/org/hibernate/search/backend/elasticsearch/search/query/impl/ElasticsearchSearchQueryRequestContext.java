@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.search.query.impl;
 
 import java.util.Collections;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.syntax.search.impl.ElasticsearchSearchSyntax;
 import org.hibernate.search.backend.elasticsearch.search.aggregation.impl.AggregationRequestContext;
@@ -25,7 +24,6 @@ import org.hibernate.search.engine.search.loading.spi.SearchLoadingContext;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.query.spi.QueryParameters;
 import org.hibernate.search.engine.spatial.GeoPoint;
-
 import com.google.gson.JsonObject;
 
 /**
@@ -41,136 +39,109 @@ import com.google.gson.JsonObject;
  */
 class ElasticsearchSearchQueryRequestContext implements ProjectionRequestRootContext, AggregationRequestContext {
 
-	private final ElasticsearchSearchIndexScope<?> scope;
-	private final BackendSessionContext sessionContext;
-	private final SearchLoadingContext<?> loadingContext;
-	private final PredicateRequestContext rootPredicateContext;
-	private final Map<DistanceSortKey, Integer> distanceSorts;
-	private final Map<String, ElasticsearchSearchHighlighter> namedHighlighters;
-	private final ElasticsearchSearchHighlighter queryHighlighter;
-	private final QueryParameters parameters;
+    private final ElasticsearchSearchIndexScope<?> scope;
 
-	ElasticsearchSearchQueryRequestContext(
-			ElasticsearchSearchIndexScope<?> scope,
-			BackendSessionContext sessionContext,
-			SearchLoadingContext<?> loadingContext,
-			PredicateRequestContext rootPredicateContext,
-			Map<DistanceSortKey, Integer> distanceSorts,
-			Map<String, ElasticsearchSearchHighlighter> namedHighlighters,
-			ElasticsearchSearchHighlighter queryHighlighter, QueryParameters parameters) {
-		this.scope = scope;
-		this.sessionContext = sessionContext;
-		this.loadingContext = loadingContext;
-		this.rootPredicateContext = rootPredicateContext;
-		this.distanceSorts = distanceSorts != null ? Collections.unmodifiableMap( distanceSorts ) : null;
-		this.namedHighlighters = namedHighlighters;
-		this.queryHighlighter = queryHighlighter;
-		this.parameters = parameters;
-	}
+    private final BackendSessionContext sessionContext;
 
-	@Override
-	public PredicateRequestContext getRootPredicateContext() {
-		return rootPredicateContext;
-	}
+    private final SearchLoadingContext<?> loadingContext;
 
-	@Override
-	public boolean isRootContext() {
-		return true;
-	}
+    private final PredicateRequestContext rootPredicateContext;
 
-	@Override
-	public Integer getDistanceSortIndex(String absoluteFieldPath, GeoPoint location) {
-		if ( distanceSorts == null ) {
-			return null;
-		}
+    private final Map<DistanceSortKey, Integer> distanceSorts;
 
-		return distanceSorts.get( new DistanceSortKey( absoluteFieldPath, location ) );
-	}
+    private final Map<String, ElasticsearchSearchHighlighter> namedHighlighters;
 
-	@Override
-	public ElasticsearchSearchSyntax getSearchSyntax() {
-		return scope.searchSyntax();
-	}
+    private final ElasticsearchSearchHighlighter queryHighlighter;
 
-	@Override
-	public void checkValidField(String absoluteFieldPath) {
-		// All fields are valid at the root.
-	}
+    private final QueryParameters parameters;
 
-	@Override
-	public void checkNotNested(SearchQueryElementTypeKey<?> projectionKey, String hint) {
-		// root is not nested
-	}
+    ElasticsearchSearchQueryRequestContext(ElasticsearchSearchIndexScope<?> scope, BackendSessionContext sessionContext, SearchLoadingContext<?> loadingContext, PredicateRequestContext rootPredicateContext, Map<DistanceSortKey, Integer> distanceSorts, Map<String, ElasticsearchSearchHighlighter> namedHighlighters, ElasticsearchSearchHighlighter queryHighlighter, QueryParameters parameters) {
+        this.scope = scope;
+        this.sessionContext = sessionContext;
+        this.loadingContext = loadingContext;
+        this.rootPredicateContext = rootPredicateContext;
+        this.distanceSorts = distanceSorts != null ? Collections.unmodifiableMap(distanceSorts) : null;
+        this.namedHighlighters = namedHighlighters;
+        this.queryHighlighter = queryHighlighter;
+        this.parameters = parameters;
+    }
 
-	@Override
-	public ProjectionRequestRootContext root() {
-		return this;
-	}
+    @Override
+    public PredicateRequestContext getRootPredicateContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionRequestContext forField(String absoluteFieldPath, String[] absoluteFieldPathComponents) {
-		return new FieldProjectionRequestContext( this, absoluteFieldPath, absoluteFieldPathComponents );
-	}
+    @Override
+    public boolean isRootContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String absoluteCurrentFieldPath() {
-		return null;
-	}
+    @Override
+    public Integer getDistanceSortIndex(String absoluteFieldPath, GeoPoint location) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String[] relativeCurrentFieldPathComponents() {
-		return null;
-	}
+    @Override
+    public ElasticsearchSearchSyntax getSearchSyntax() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NamedValues queryParameters() {
-		return parameters;
-	}
+    @Override
+    public void checkValidField(String absoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean projectionCardinalityCorrectlyAddressed(String requiredContextAbsoluteFieldPath) {
-		return requiredContextAbsoluteFieldPath == null;
-	}
+    @Override
+    public void checkNotNested(SearchQueryElementTypeKey<?> projectionKey, String hint) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchHighlighter highlighter(String highlighterName) {
-		if ( highlighterName == null ) {
-			return ElasticsearchSearchHighlighterImpl.NO_OPTIONS_CONFIGURATION;
-		}
-		ElasticsearchSearchHighlighter highlighter = namedHighlighters.get( highlighterName );
-		if ( highlighter == null ) {
-			throw QueryLog.INSTANCE.cannotFindHighlighter( highlighterName, namedHighlighters.keySet() );
-		}
-		return highlighter;
-	}
+    @Override
+    public ProjectionRequestRootContext root() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchHighlighter queryHighlighter() {
-		return queryHighlighter;
-	}
+    @Override
+    public ProjectionRequestContext forField(String absoluteFieldPath, String[] absoluteFieldPathComponents) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleHighlighter(String highlighterName, ProjectionCollector.Provider<?, ?> collectorProvider) {
-		ElasticsearchSearchHighlighter highlighter = highlighter( highlighterName );
-		if ( ElasticsearchSearchHighlighterImpl.NO_OPTIONS_CONFIGURATION == highlighter ) {
-			// if there was no highlighter configured at all it means that the settings are default,
-			// and we assume that they are incompatible with the single-valued collector:
-			return queryHighlighter != null
-					? queryHighlighter.isCompatible( collectorProvider )
-					: !collectorProvider.isSingleValued();
-		}
-		else {
-			return highlighter.isCompatible( collectorProvider );
-		}
-	}
+    @Override
+    public String absoluteCurrentFieldPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ElasticsearchSearchQueryExtractContext createExtractContext(JsonObject responseBody) {
-		return new ElasticsearchSearchQueryExtractContext(
-				this,
-				sessionContext,
-				loadingContext.createProjectionHitMapper(),
-				responseBody
-		);
-	}
+    @Override
+    public String[] relativeCurrentFieldPathComponents() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public NamedValues queryParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean projectionCardinalityCorrectlyAddressed(String requiredContextAbsoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ElasticsearchSearchHighlighter highlighter(String highlighterName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ElasticsearchSearchHighlighter queryHighlighter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean isCompatibleHighlighter(String highlighterName, ProjectionCollector.Provider<?, ?> collectorProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    ElasticsearchSearchQueryExtractContext createExtractContext(JsonObject responseBody) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

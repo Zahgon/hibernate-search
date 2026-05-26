@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.aggregation.dsl.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.dsl.CountValuesAggregationOptionsStep;
 import org.hibernate.search.engine.search.aggregation.dsl.spi.SearchAggregationDslContext;
@@ -14,38 +13,34 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 
-class CountValuesAggregationOptionsStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>>
-		implements CountValuesAggregationOptionsStep<SR, CountValuesAggregationOptionsStepImpl<SR, PDF>, PDF> {
-	private final CountValuesAggregationBuilder builder;
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+class CountValuesAggregationOptionsStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>> implements CountValuesAggregationOptionsStep<SR, CountValuesAggregationOptionsStepImpl<SR, PDF>, PDF> {
 
-	CountValuesAggregationOptionsStepImpl(CountValuesAggregationBuilder builder,
-			SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.builder = builder;
-		this.dslContext = dslContext;
-	}
+    private final CountValuesAggregationBuilder builder;
 
-	@Override
-	public CountValuesAggregationOptionsStepImpl<SR, PDF> filter(
-			Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
-		SearchPredicate predicate = clauseContributor.apply( dslContext.predicateFactory() ).toPredicate();
-		return filter( predicate );
-	}
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-	@Override
-	public CountValuesAggregationOptionsStepImpl<SR, PDF> filter(SearchPredicate searchPredicate) {
-		builder.filter( searchPredicate );
-		return this;
-	}
+    CountValuesAggregationOptionsStepImpl(CountValuesAggregationBuilder builder, SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.builder = builder;
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public SearchAggregation<Long> toAggregation() {
-		return builder.build();
-	}
+    @Override
+    public CountValuesAggregationOptionsStepImpl<SR, PDF> filter(Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CountValuesAggregationOptionsStepImpl<SR, PDF> distinct(boolean distinct) {
-		builder.distinct( distinct );
-		return this;
-	}
+    @Override
+    public CountValuesAggregationOptionsStepImpl<SR, PDF> filter(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SearchAggregation<Long> toAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CountValuesAggregationOptionsStepImpl<SR, PDF> distinct(boolean distinct) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

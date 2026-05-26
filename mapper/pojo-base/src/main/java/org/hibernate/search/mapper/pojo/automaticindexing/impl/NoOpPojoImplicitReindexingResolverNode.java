@@ -8,27 +8,26 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
 class NoOpPojoImplicitReindexingResolverNode extends PojoImplicitReindexingResolverNode<Object> {
 
-	private static final NoOpPojoImplicitReindexingResolverNode INSTANCE = new NoOpPojoImplicitReindexingResolverNode();
+    private static final NoOpPojoImplicitReindexingResolverNode INSTANCE = new NoOpPojoImplicitReindexingResolverNode();
 
-	@SuppressWarnings("unchecked") // This instance works for any T
-	public static <T> PojoImplicitReindexingResolverNode<T> get() {
-		return (PojoImplicitReindexingResolverNode<T>) INSTANCE;
-	}
+    // This instance works for any T
+    @SuppressWarnings("unchecked")
+    public static <T> PojoImplicitReindexingResolverNode<T> get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		// No-op
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			Object dirty,
-			PojoImplicitReindexingResolverRootContext context) {
-		// No-op
-	}
+    @Override
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, Object dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "no op" );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

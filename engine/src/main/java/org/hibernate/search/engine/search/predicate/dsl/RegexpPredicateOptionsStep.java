@@ -13,25 +13,23 @@ import java.util.Set;
  *
  * @param <S> The "self" type (the actual exposed type of this step).
  */
-public interface RegexpPredicateOptionsStep<S extends RegexpPredicateOptionsStep<?>>
-		extends PredicateFinalStep, PredicateScoreStep<S> {
+public interface RegexpPredicateOptionsStep<S extends RegexpPredicateOptionsStep<?>> extends PredicateFinalStep, PredicateScoreStep<S> {
 
-	/**
-	 * Enable operation in the given flags.
-	 *
-	 * @param flags The operation flags.
-	 * @return {@code this}, for method chaining.
-	 */
-	default S flags(RegexpQueryFlag... flags) {
-		return flags( EnumSet.copyOf( Arrays.asList( flags ) ) );
-	}
+    /**
+     * Enable operation in the given flags.
+     *
+     * @param flags The operation flags.
+     * @return {@code this}, for method chaining.
+     */
+    default S flags(RegexpQueryFlag... flags) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Enable operation in the given flags.
-	 *
-	 * @param flags The operation flags.
-	 * @return {@code this}, for method chaining.
-	 */
-	S flags(Set<RegexpQueryFlag> flags);
-
+    /**
+     * Enable operation in the given flags.
+     *
+     * @param flags The operation flags.
+     * @return {@code this}, for method chaining.
+     */
+    S flags(Set<RegexpQueryFlag> flags);
 }

@@ -33,90 +33,31 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 
-abstract class AbstractLuceneNumericIndexFieldTypeOptionsStep<S extends AbstractLuceneNumericIndexFieldTypeOptionsStep<S, F>, F>
-		extends AbstractLuceneStandardIndexFieldTypeOptionsStep<S, F> {
+abstract class AbstractLuceneNumericIndexFieldTypeOptionsStep<S extends AbstractLuceneNumericIndexFieldTypeOptionsStep<S, F>, F> extends AbstractLuceneStandardIndexFieldTypeOptionsStep<S, F> {
 
-	private Sortable sortable = Sortable.DEFAULT;
+    private Sortable sortable = Sortable.DEFAULT;
 
-	AbstractLuceneNumericIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> fieldType,
-			DefaultStringConverters.Converter<F> defaultConverter) {
-		super( buildContext, fieldType, defaultConverter );
-	}
+    AbstractLuceneNumericIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> fieldType, DefaultStringConverters.Converter<F> defaultConverter) {
+        super(buildContext, fieldType, defaultConverter);
+    }
 
-	@Override
-	public S sortable(Sortable sortable) {
-		this.sortable = sortable;
-		return thisAsS();
-	}
+    @Override
+    public S sortable(Sortable sortable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexValueFieldType<F> toIndexFieldType() {
-		boolean resolvedSearchable = resolveDefault( searchable );
-		boolean resolvedSortable = resolveDefault( sortable );
-		boolean resolvedProjectable = resolveDefault( projectable );
-		boolean resolvedAggregable = resolveDefault( aggregable );
+    @Override
+    public LuceneIndexValueFieldType<F> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Indexing indexing = resolvedSearchable ? Indexing.ENABLED : Indexing.DISABLED;
-		DocValues docValues = resolvedSortable || resolvedAggregable ? DocValues.ENABLED : DocValues.DISABLED;
-		Storage storage = resolvedProjectable ? Storage.ENABLED : Storage.DISABLED;
+    protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, F, AbstractLuceneNumericFieldCodec<F, ?>> sumMetricAggregationFactory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		AbstractLuceneNumericFieldCodec<F, ?> codec = createCodec( indexing, docValues, storage, indexNullAsValue );
-		builder.codec( codec );
+    protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, F, AbstractLuceneNumericFieldCodec<F, ?>> avgMetricAggregationFactory(AbstractLuceneNumericFieldCodec<F, ?> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.MATCH, new LuceneNumericMatchPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.RANGE, new LuceneNumericRangePredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.TERMS, new LuceneNumericTermsPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS,
-					DocValues.ENABLED.equals( docValues )
-							? new LuceneExistsPredicate.DocValuesOrNormsBasedFactory<>()
-							: new LuceneExistsPredicate.DefaultFactory<>() );
-			builder.queryElementFactory( LucenePredicateTypeKeys.SIMPLE_QUERY_STRING,
-					new LuceneCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-			builder.queryElementFactory( LucenePredicateTypeKeys.QUERY_STRING,
-					new LuceneCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.FIELD, new LuceneStandardFieldSort.NumericFieldFactory<>( codec ) );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new LuceneFieldProjection.Factory<>( codec ) );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			builder.queryElementFactory( AggregationTypeKeys.TERMS, new LuceneNumericTermsAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.RANGE, new LuceneNumericRangeAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.SUM, sumMetricAggregationFactory( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.MIN, LuceneMinNumericFieldAggregation.factory( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.MAX, LuceneMaxNumericFieldAggregation.factory( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.COUNT, LuceneCountValuesAggregation.factory() );
-			builder.queryElementFactory( AggregationTypeKeys.AVG, avgMetricAggregationFactory( codec ) );
-		}
-
-		return builder.build();
-	}
-
-	protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector,
-			F,
-			AbstractLuceneNumericFieldCodec<F, ?>> sumMetricAggregationFactory(
-					AbstractLuceneNumericFieldCodec<F, ?> codec) {
-		return LuceneSumNumericFieldAggregation.factory( codec );
-	}
-
-	protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector,
-			F,
-			AbstractLuceneNumericFieldCodec<F, ?>> avgMetricAggregationFactory(
-					AbstractLuceneNumericFieldCodec<F, ?> codec) {
-		return LuceneAvgNumericFieldAggregation.factory( codec );
-	}
-
-	protected abstract AbstractLuceneNumericFieldCodec<F, ?> createCodec(Indexing indexing, DocValues docValues,
-			Storage storage, F indexNullAsValue);
-
+    protected abstract AbstractLuceneNumericFieldCodec<F, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, F indexNullAsValue);
 }

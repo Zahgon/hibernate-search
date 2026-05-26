@@ -9,39 +9,32 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public final class SearchQueryElementTypeKey<T> {
 
-	public static <T> SearchQueryElementTypeKey<T> of(String name) {
-		return new SearchQueryElementTypeKey<>( name );
-	}
+    public static <T> SearchQueryElementTypeKey<T> of(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String name;
+    private final String name;
 
-	private SearchQueryElementTypeKey(String name) {
-		this.name = name;
-	}
+    private SearchQueryElementTypeKey(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		SearchQueryElementTypeKey<?> that = (SearchQueryElementTypeKey<?>) o;
-		return Objects.equals( name, that.name );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( name );
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String name() {
-		return name;
-	}
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -13,16 +13,14 @@ import org.hibernate.search.util.common.impl.ToStringTreeBuilder;
  */
 public final class ToStringTreeMultilineFormatter {
 
-	private final Object object;
+    private final Object object;
 
-	public ToStringTreeMultilineFormatter(Object object) {
-		this.object = object;
-	}
+    public ToStringTreeMultilineFormatter(Object object) {
+        this.object = object;
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringTreeBuilder( ToStringStyle.multilineIndentStructure() )
-				.value( object )
-				.toString();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

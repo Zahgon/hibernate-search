@@ -8,91 +8,60 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.search.query.ElasticsearchSearchRequestTransformer;
 import org.hibernate.search.backend.elasticsearch.search.query.ElasticsearchSearchRequestTransformerContext;
 import org.hibernate.search.util.common.AssertionFailure;
 import org.hibernate.search.util.common.impl.Contracts;
-
 import com.google.gson.JsonObject;
 
-final class ElasticsearchSearchRequestTransformerContextImpl
-		implements ElasticsearchSearchRequestTransformerContext {
+final class ElasticsearchSearchRequestTransformerContextImpl implements ElasticsearchSearchRequestTransformerContext {
 
-	static Function<ElasticsearchRequest, ElasticsearchRequest> createTransformerFunction(
-			ElasticsearchSearchRequestTransformer transformer) {
-		if ( transformer == null ) {
-			return null;
-		}
-		return request -> new ElasticsearchSearchRequestTransformerContextImpl( request ).apply( transformer );
-	}
+    static Function<ElasticsearchRequest, ElasticsearchRequest> createTransformerFunction(ElasticsearchSearchRequestTransformer transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final ElasticsearchRequest originalRequest;
-	private final JsonObject originalBody;
+    private final ElasticsearchRequest originalRequest;
 
-	private String path;
-	private JsonObject potentiallyTransformedBody;
-	private Map<String, String> potentiallyTransformedParametersMap;
+    private final JsonObject originalBody;
 
-	private ElasticsearchSearchRequestTransformerContextImpl(ElasticsearchRequest originalRequest) {
-		this.originalRequest = originalRequest;
-		List<JsonObject> originalBodyParts = originalRequest.bodyParts();
-		if ( originalBodyParts.size() != 1 ) {
-			throw new AssertionFailure(
-					"Request transformation was applied to a request with no body part or more than one body parts."
-			);
-		}
-		this.originalBody = originalBodyParts.get( 0 );
-		this.path = originalRequest.path();
-	}
+    private String path;
 
-	@Override
-	public String path() {
-		return path;
-	}
+    private JsonObject potentiallyTransformedBody;
 
-	@Override
-	public void path(String newPath) {
-		Contracts.assertNotNullNorEmpty( newPath, "newPath" );
-		this.path = newPath;
-	}
+    private Map<String, String> potentiallyTransformedParametersMap;
 
-	@Override
-	public Map<String, String> parametersMap() {
-		// Avoid side-effects on the original request
-		if ( potentiallyTransformedParametersMap == null ) {
-			potentiallyTransformedParametersMap = new LinkedHashMap<>( originalRequest.parameters() );
-		}
-		return potentiallyTransformedParametersMap;
-	}
+    private ElasticsearchSearchRequestTransformerContextImpl(ElasticsearchRequest originalRequest) {
+        this.originalRequest = originalRequest;
+        List<JsonObject> originalBodyParts = originalRequest.bodyParts();
+        if (originalBodyParts.size() != 1) {
+            throw new AssertionFailure("Request transformation was applied to a request with no body part or more than one body parts.");
+        }
+        this.originalBody = originalBodyParts.get(0);
+        this.path = originalRequest.path();
+    }
 
-	@Override
-	public JsonObject body() {
-		// Avoid side-effects on the original request
-		if ( potentiallyTransformedBody == null ) {
-			potentiallyTransformedBody = originalBody.deepCopy();
-		}
-		return potentiallyTransformedBody;
-	}
+    @Override
+    public String path() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ElasticsearchRequest apply(ElasticsearchSearchRequestTransformer transformer) {
-		transformer.transform( this );
+    @Override
+    public void path(String newPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchRequest.Builder builder = ElasticsearchRequest.builder( originalRequest.method() );
+    @Override
+    public Map<String, String> parametersMap() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		builder.wholeEncodedPath( path );
+    @Override
+    public JsonObject body() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, String> parameters = potentiallyTransformedParametersMap != null
-				? potentiallyTransformedParametersMap
-				: originalRequest.parameters();
-		parameters.forEach( builder::param );
-
-		JsonObject body = potentiallyTransformedBody != null ? potentiallyTransformedBody : originalBody;
-		if ( body != null ) {
-			builder.body( body );
-		}
-
-		return builder.build();
-	}
+    public ElasticsearchRequest apply(ElasticsearchSearchRequestTransformer transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

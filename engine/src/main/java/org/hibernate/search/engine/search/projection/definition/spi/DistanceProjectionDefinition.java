@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.projection.definition.spi;
 
 import java.util.List;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.definition.ProjectionDefinitionContext;
@@ -17,97 +16,86 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 @Incubating
 public abstract class DistanceProjectionDefinition<F> extends AbstractProjectionDefinition<F> {
 
-	protected final String fieldPath;
-	protected final String parameterName;
-	protected final DistanceUnit unit;
+    protected final String fieldPath;
 
-	private DistanceProjectionDefinition(String fieldPath, String parameterName, DistanceUnit unit) {
-		this.fieldPath = fieldPath;
-		this.parameterName = parameterName;
-		this.unit = unit;
-	}
+    protected final String parameterName;
 
-	@Override
-	protected String type() {
-		return "distance";
-	}
+    protected final DistanceUnit unit;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		super.appendTo( appender );
-		appender.attribute( "fieldPath", fieldPath )
-				.attribute( "multi", multi() )
-				.attribute( "parameterName", parameterName );
-	}
+    private DistanceProjectionDefinition(String fieldPath, String parameterName, DistanceUnit unit) {
+        this.fieldPath = fieldPath;
+        this.parameterName = parameterName;
+        this.unit = unit;
+    }
 
-	protected abstract boolean multi();
+    @Override
+    protected String type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Deprecated(since = "8.0")
-	@Incubating
-	public static final class SingleValued extends DistanceProjectionDefinition<Double> {
-		public SingleValued(String fieldPath, String parameterName, DistanceUnit unit) {
-			super( fieldPath, parameterName, unit );
-		}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected boolean multi() {
-			return false;
-		}
+    protected abstract boolean multi();
 
-		@Override
-		public SearchProjection<Double> create(ProjectionDefinitionContext context) {
-			return context.projection().withParameters( params -> context.projection()
-					.distance( fieldPath, params.get( parameterName, GeoPoint.class ) )
-					.unit( unit )
-			).toProjection();
-		}
-	}
+    @Deprecated(since = "8.0")
+    @Incubating
+    public static final class SingleValued extends DistanceProjectionDefinition<Double> {
 
-	@Deprecated(since = "8.0")
-	@Incubating
-	public static final class MultiValued extends DistanceProjectionDefinition<List<Double>> {
+        public SingleValued(String fieldPath, String parameterName, DistanceUnit unit) {
+            super(fieldPath, parameterName, unit);
+        }
 
-		public MultiValued(String fieldPath, String parameterName, DistanceUnit unit) {
-			super( fieldPath, parameterName, unit );
-		}
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected boolean multi() {
-			return true;
-		}
+        @Override
+        public SearchProjection<Double> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public SearchProjection<List<Double>> create(ProjectionDefinitionContext context) {
-			return context.projection().withParameters( params -> context.projection()
-					.distance( fieldPath, params.get( parameterName, GeoPoint.class ) )
-					.collector( ProjectionCollector.list() )
-					.unit( unit )
-			).toProjection();
-		}
-	}
+    @Deprecated(since = "8.0")
+    @Incubating
+    public static final class MultiValued extends DistanceProjectionDefinition<List<Double>> {
 
-	@Incubating
-	public static final class WrappedValued<C> extends DistanceProjectionDefinition<C> {
-		private final ProjectionCollector.Provider<Double, C> collector;
+        public MultiValued(String fieldPath, String parameterName, DistanceUnit unit) {
+            super(fieldPath, parameterName, unit);
+        }
 
-		public WrappedValued(String fieldPath, String parameterName, DistanceUnit unit,
-				ProjectionCollector.Provider<Double, C> collector) {
-			super( fieldPath, parameterName, unit );
-			this.collector = collector;
-		}
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected boolean multi() {
-			return !collector.isSingleValued();
-		}
+        @Override
+        public SearchProjection<List<Double>> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public SearchProjection<C> create(ProjectionDefinitionContext context) {
-			return context.projection().withParameters( params -> context.projection()
-					.distance( fieldPath, params.get( parameterName, GeoPoint.class ) )
-					.collector( collector )
-					.unit( unit )
-			).toProjection();
-		}
-	}
+    @Incubating
+    public static final class WrappedValued<C> extends DistanceProjectionDefinition<C> {
+
+        private final ProjectionCollector.Provider<Double, C> collector;
+
+        public WrappedValued(String fieldPath, String parameterName, DistanceUnit unit, ProjectionCollector.Provider<Double, C> collector) {
+            super(fieldPath, parameterName, unit);
+            this.collector = collector;
+        }
+
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<C> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

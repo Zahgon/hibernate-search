@@ -21,35 +21,35 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.PropertyBridgeWriteContex
  */
 public interface PropertyBridge<P> extends AutoCloseable {
 
-	/**
-	 * Write to fields in the given {@link DocumentElement},
-	 * using the given {@code bridgedElement} as input and transforming it as necessary.
-	 * <p>
-	 * Writing to the {@link DocumentElement} should be done using
-	 * {@link org.hibernate.search.engine.backend.document.IndexFieldReference}s retrieved
-	 * when the bridge was {@link PropertyBinder#bind(PropertyBindingContext) bound}.
-	 * <p>
-	 * <strong>Warning:</strong> Reading from {@code bridgedElement} should be done with care.
-	 * Any read that was not declared during {@link PropertyBinder#bind(PropertyBindingContext) binding}
-	 * (by declaring dependencies using {@link PropertyBindingContext#dependencies()}
-	 * or (advanced use) creating an accessor using {@link PropertyBindingContext#bridgedElement()})
-	 * may lead to out-of-sync indexes,
-	 * because Hibernate Search will consider the read property irrelevant to indexing
-	 * and will not reindex entities when that property changes.
-	 *
-	 * @param target The {@link DocumentElement} to write to.
-	 * @param bridgedElement The element this bridge is applied to, from which data should be read.
-	 * @param context A context that can be
-	 * {@link PropertyBridgeWriteContext#extension(PropertyBridgeWriteContextExtension) extended}
-	 * to a more useful type, giving access to such things as a Hibernate ORM Session (if using the Hibernate ORM mapper).
-	 */
-	void write(DocumentElement target, P bridgedElement, PropertyBridgeWriteContext context);
+    /**
+     * Write to fields in the given {@link DocumentElement},
+     * using the given {@code bridgedElement} as input and transforming it as necessary.
+     * <p>
+     * Writing to the {@link DocumentElement} should be done using
+     * {@link org.hibernate.search.engine.backend.document.IndexFieldReference}s retrieved
+     * when the bridge was {@link PropertyBinder#bind(PropertyBindingContext) bound}.
+     * <p>
+     * <strong>Warning:</strong> Reading from {@code bridgedElement} should be done with care.
+     * Any read that was not declared during {@link PropertyBinder#bind(PropertyBindingContext) binding}
+     * (by declaring dependencies using {@link PropertyBindingContext#dependencies()}
+     * or (advanced use) creating an accessor using {@link PropertyBindingContext#bridgedElement()})
+     * may lead to out-of-sync indexes,
+     * because Hibernate Search will consider the read property irrelevant to indexing
+     * and will not reindex entities when that property changes.
+     *
+     * @param target The {@link DocumentElement} to write to.
+     * @param bridgedElement The element this bridge is applied to, from which data should be read.
+     * @param context A context that can be
+     * {@link PropertyBridgeWriteContext#extension(PropertyBridgeWriteContextExtension) extended}
+     * to a more useful type, giving access to such things as a Hibernate ORM Session (if using the Hibernate ORM mapper).
+     */
+    void write(DocumentElement target, P bridgedElement, PropertyBridgeWriteContext context);
 
-	/**
-	 * Close any resource before the bridge is discarded.
-	 */
-	@Override
-	default void close() {
-	}
-
+    /**
+     * Close any resource before the bridge is discarded.
+     */
+    @Override
+    default void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

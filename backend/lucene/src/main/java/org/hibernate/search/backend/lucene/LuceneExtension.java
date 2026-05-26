@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene;
 
 import java.util.Optional;
-
 import org.hibernate.search.backend.lucene.logging.impl.LuceneMiscLog;
 import org.hibernate.search.backend.lucene.schema.management.LuceneIndexSchemaExport;
 import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
@@ -63,171 +62,111 @@ import org.hibernate.search.engine.search.sort.dsl.SearchSortFactoryExtension;
  *
  * @see #get()
  */
-public final class LuceneExtension<SR, H, R, E, LOS>
-		implements SearchQueryDslExtension<SR, LuceneSearchQuerySelectStep<SR, R, E, LOS>, R, E, LOS>,
-		SearchQueryExtension<LuceneSearchQuery<H>, H>,
-		SearchPredicateFactoryExtension<LuceneSearchPredicateFactory<SR>>,
-		SearchSortFactoryExtension<LuceneSearchSortFactory<SR>>,
-		SearchProjectionFactoryExtension<LuceneSearchProjectionFactory<SR, R, E>, R, E>,
-		SearchAggregationFactoryExtension<LuceneSearchAggregationFactory<SR>>,
-		IndexFieldTypeFactoryExtension<LuceneIndexFieldTypeFactory>,
-		IndexScopeExtension<LuceneIndexScope>,
-		SchemaExportExtension<LuceneIndexSchemaExport> {
+public final class LuceneExtension<SR, H, R, E, LOS> implements SearchQueryDslExtension<SR, LuceneSearchQuerySelectStep<SR, R, E, LOS>, R, E, LOS>, SearchQueryExtension<LuceneSearchQuery<H>, H>, SearchPredicateFactoryExtension<LuceneSearchPredicateFactory<SR>>, SearchSortFactoryExtension<LuceneSearchSortFactory<SR>>, SearchProjectionFactoryExtension<LuceneSearchProjectionFactory<SR, R, E>, R, E>, SearchAggregationFactoryExtension<LuceneSearchAggregationFactory<SR>>, IndexFieldTypeFactoryExtension<LuceneIndexFieldTypeFactory>, IndexScopeExtension<LuceneIndexScope>, SchemaExportExtension<LuceneIndexSchemaExport> {
 
-	private static final LuceneExtension<Object, Object, Object, Object, Object> INSTANCE = new LuceneExtension<>();
+    private static final LuceneExtension<Object, Object, Object, Object, Object> INSTANCE = new LuceneExtension<>();
 
-	/**
-	 * Get the extension with generic parameters automatically set as appropriate for the context in which it's used.
-	 *
-	 * @param <SR> Scope root type.
-	 * @param <H> The type of query hits.
-	 * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
-	 * {@code .extension( LuceneExtension.get() }.
-	 * @param <R> The entity reference type for projections.
-	 * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
-	 * {@code .extension( LuceneExtension.get() }.
-	 * @param <E> entity type for projections.
-	 * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
-	 * {@code .extension( LuceneExtension.get() }.
-	 * @param <LOS> The type of the initial step of the loading options definition DSL.
-	 * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
-	 * {@code .extension( LuceneExtension.get() }.
-	 * @return The extension.
-	 */
-	@SuppressWarnings("unchecked") // The instance works for any H, R and E
-	public static <SR, H, R, E, LOS> LuceneExtension<SR, H, R, E, LOS> get() {
-		return (LuceneExtension<SR, H, R, E, LOS>) INSTANCE;
-	}
+    /**
+     * Get the extension with generic parameters automatically set as appropriate for the context in which it's used.
+     *
+     * @param <SR> Scope root type.
+     * @param <H> The type of query hits.
+     * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
+     * {@code .extension( LuceneExtension.get() }.
+     * @param <R> The entity reference type for projections.
+     * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
+     * {@code .extension( LuceneExtension.get() }.
+     * @param <E> entity type for projections.
+     * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
+     * {@code .extension( LuceneExtension.get() }.
+     * @param <LOS> The type of the initial step of the loading options definition DSL.
+     * Users should not have to care about this, as the parameter will automatically take the appropriate value when calling
+     * {@code .extension( LuceneExtension.get() }.
+     * @return The extension.
+     */
+    // The instance works for any H, R and E
+    @SuppressWarnings("unchecked")
+    public static <SR, H, R, E, LOS> LuceneExtension<SR, H, R, E, LOS> get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private LuceneExtension() {
-		// Private constructor, use get() instead.
-	}
+    private LuceneExtension() {
+        // Private constructor, use get() instead.
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<LuceneSearchQuerySelectStep<SR, R, E, LOS>> extendOptional(
-			SearchQuerySelectStep<SR, ?, R, E, LOS, ?, ?> original,
-			SearchQueryIndexScope<SR, ?> scope,
-			BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<E, LOS> loadingContextBuilder) {
-		if ( scope instanceof LuceneSearchQueryIndexScope ) {
-			return Optional.of( new LuceneSearchQuerySelectStepImpl<>(
-					(LuceneSearchQueryIndexScope<SR, ?>) scope, sessionContext, loadingContextBuilder
-			) );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<LuceneSearchQuerySelectStep<SR, R, E, LOS>> extendOptional(SearchQuerySelectStep<SR, ?, R, E, LOS, ?, ?> original, SearchQueryIndexScope<SR, ?> scope, BackendSessionContext sessionContext, SearchLoadingContextBuilder<E, LOS> loadingContextBuilder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<LuceneSearchQuery<H>> extendOptional(SearchQuery<H> original,
-			SearchLoadingContext<?> loadingContext) {
-		if ( original instanceof LuceneSearchQuery ) {
-			return Optional.of( (LuceneSearchQuery<H>) original );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<LuceneSearchQuery<H>> extendOptional(SearchQuery<H> original, SearchLoadingContext<?> loadingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Optional<LuceneSearchPredicateFactory<SR>> extendOptional(SearchPredicateFactory original) {
-		if ( original instanceof LuceneSearchPredicateFactory<?> f ) {
-			return Optional.of( (LuceneSearchPredicateFactory<SR>) f );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<LuceneSearchPredicateFactory<SR>> extendOptional(SearchPredicateFactory original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Optional<LuceneSearchSortFactory<SR>> extendOptional(SearchSortFactory original) {
-		if ( original instanceof LuceneSearchSortFactory ) {
-			return Optional.of( (LuceneSearchSortFactory<SR>) original );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<LuceneSearchSortFactory<SR>> extendOptional(SearchSortFactory original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Optional<LuceneSearchProjectionFactory<SR, R, E>> extendOptional(SearchProjectionFactory<R, E> original) {
-		if ( original instanceof LuceneSearchProjectionFactory ) {
-			return Optional.of( (LuceneSearchProjectionFactory<SR, R, E>) original );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<LuceneSearchProjectionFactory<SR, R, E>> extendOptional(SearchProjectionFactory<R, E> original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public Optional<LuceneSearchAggregationFactory<SR>> extendOptional(SearchAggregationFactory original) {
-		if ( original instanceof LuceneSearchAggregationFactory ) {
-			return Optional.of( (LuceneSearchAggregationFactory<SR>) original );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<LuceneSearchAggregationFactory<SR>> extendOptional(SearchAggregationFactory original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public LuceneIndexFieldTypeFactory extendOrFail(IndexFieldTypeFactory original) {
-		if ( original instanceof LuceneIndexFieldTypeFactory ) {
-			return (LuceneIndexFieldTypeFactory) original;
-		}
-		else {
-			throw LuceneMiscLog.INSTANCE.luceneExtensionOnUnknownType( original );
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LuceneIndexFieldTypeFactory extendOrFail(IndexFieldTypeFactory original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public LuceneIndexScope extendOrFail(IndexScope<?> original) {
-		if ( original instanceof LuceneIndexScope ) {
-			return (LuceneIndexScope) original;
-		}
-		else {
-			throw LuceneMiscLog.INSTANCE.luceneExtensionOnUnknownType( original );
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LuceneIndexScope extendOrFail(IndexScope<?> original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public LuceneIndexSchemaExport extendOrFail(SchemaExport original) {
-		if ( original instanceof LuceneIndexSchemaExport ) {
-			return (LuceneIndexSchemaExport) original;
-		}
-		else {
-			throw LuceneMiscLog.INSTANCE.luceneExtensionOnUnknownType( original );
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public LuceneIndexSchemaExport extendOrFail(SchemaExport original) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

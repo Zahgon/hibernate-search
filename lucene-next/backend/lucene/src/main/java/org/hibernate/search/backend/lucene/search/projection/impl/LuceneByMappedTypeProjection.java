@@ -7,133 +7,116 @@ package org.hibernate.search.backend.lucene.search.projection.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorExecutionContext;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.Values;
 import org.hibernate.search.backend.lucene.lowlevel.reader.impl.IndexReaderMetadataResolver;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
-
 import org.apache.lucene.index.LeafReaderContext;
 
-public class LuceneByMappedTypeProjection<P>
-		extends AbstractLuceneProjection<P> {
+public class LuceneByMappedTypeProjection<P> extends AbstractLuceneProjection<P> {
 
-	private final Map<String, LuceneSearchProjection<? extends P>> inners;
+    private final Map<String, LuceneSearchProjection<? extends P>> inners;
 
-	public LuceneByMappedTypeProjection(LuceneSearchIndexScope<?> scope,
-			Map<String, LuceneSearchProjection<? extends P>> inners) {
-		super( scope );
-		this.inners = inners;
-	}
+    public LuceneByMappedTypeProjection(LuceneSearchIndexScope<?> scope, Map<String, LuceneSearchProjection<? extends P>> inners) {
+        super(scope);
+        this.inners = inners;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "inners=" + inners
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, P> request(ProjectionRequestContext context) {
-		Map<String, Extractor<?, ? extends P>> innerExtractors = new HashMap<>();
-		for ( Map.Entry<String, LuceneSearchProjection<? extends P>> entry : inners.entrySet() ) {
-			innerExtractors.put( entry.getKey(), entry.getValue().request( context ) );
-		}
-		return new ByMappedTypeExtractor( innerExtractors );
-	}
+    @Override
+    public Extractor<?, P> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final class ByMappedTypeExtractor implements Extractor<DelegateAndExtractedValue<?, P>, P> {
-		private final Map<String, Extractor<?, ? extends P>> inners;
+    private final class ByMappedTypeExtractor implements Extractor<DelegateAndExtractedValue<?, P>, P> {
 
-		private ByMappedTypeExtractor(Map<String, Extractor<?, ? extends P>> inners) {
-			this.inners = inners;
-		}
+        private final Map<String, Extractor<?, ? extends P>> inners;
 
-		@Override
-		public String toString() {
-			return getClass().getSimpleName() + "["
-					+ "inners=" + inners
-					+ "]";
-		}
+        private ByMappedTypeExtractor(Map<String, Extractor<?, ? extends P>> inners) {
+            this.inners = inners;
+        }
 
-		@Override
-		public Values<DelegateAndExtractedValue<?, P>> values(ProjectionExtractContext context) {
-			Map<String, Values<? extends DelegateAndExtractedValue<?, P>>> innerValues = new HashMap<>();
-			for ( Map.Entry<String, Extractor<?, ? extends P>> entry : inners.entrySet() ) {
-				innerValues.put( entry.getKey(), new ValuesWrapper<>( entry.getValue(), context ) );
-			}
-			return new ByMappedTypeValues<>( context.collectorExecutionContext(), innerValues );
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public P transform(LoadingResult<?> loadingResult, DelegateAndExtractedValue<?, P> extracted,
-				ProjectionTransformContext context) {
-			return extracted.transform( loadingResult, context );
-		}
-	}
+        @Override
+        public Values<DelegateAndExtractedValue<?, P>> values(ProjectionExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static final class ValuesWrapper<E, P> implements Values<DelegateAndExtractedValue<E, P>> {
-		private final Extractor<E, ? extends P> extractor;
-		private final Values<E> values;
+        @Override
+        public P transform(LoadingResult<?> loadingResult, DelegateAndExtractedValue<?, P> extracted, ProjectionTransformContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private ValuesWrapper(Extractor<E, ? extends P> extractor, ProjectionExtractContext context) {
-			this.extractor = extractor;
-			this.values = extractor.values( context );
-		}
+    private static final class ValuesWrapper<E, P> implements Values<DelegateAndExtractedValue<E, P>> {
 
-		@Override
-		public void context(LeafReaderContext context) throws IOException {
-			values.context( context );
-		}
+        private final Extractor<E, ? extends P> extractor;
 
-		@Override
-		public DelegateAndExtractedValue<E, P> get(int doc) throws IOException {
-			return new DelegateAndExtractedValue<>( extractor, values.get( doc ) );
-		}
-	}
+        private final Values<E> values;
 
-	private static final class ByMappedTypeValues<P> implements Values<DelegateAndExtractedValue<?, P>> {
+        private ValuesWrapper(Extractor<E, ? extends P> extractor, ProjectionExtractContext context) {
+            this.extractor = extractor;
+            this.values = extractor.values(context);
+        }
 
-		private final IndexReaderMetadataResolver metadataResolver;
-		private final Map<String, Values<? extends DelegateAndExtractedValue<?, P>>> inners;
+        @Override
+        public void context(LeafReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private Values<? extends DelegateAndExtractedValue<?, P>> currentLeafInner;
+        @Override
+        public DelegateAndExtractedValue<E, P> get(int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		public ByMappedTypeValues(CollectorExecutionContext executionContext,
-				Map<String, Values<? extends DelegateAndExtractedValue<?, P>>> inners) {
-			this.metadataResolver = executionContext.getMetadataResolver();
-			this.inners = inners;
-		}
+    private static final class ByMappedTypeValues<P> implements Values<DelegateAndExtractedValue<?, P>> {
 
-		@Override
-		public void context(LeafReaderContext context) throws IOException {
-			String typeName = metadataResolver.resolveMappedTypeName( context );
-			currentLeafInner = inners.get( typeName );
-			if ( currentLeafInner == null ) {
-				throw QueryLog.INSTANCE.unexpectedMappedTypeNameForByMappedTypeProjection( typeName, inners.keySet() );
-			}
-			currentLeafInner.context( context );
-		}
+        private final IndexReaderMetadataResolver metadataResolver;
 
-		@Override
-		public DelegateAndExtractedValue<?, P> get(int doc) throws IOException {
-			return currentLeafInner.get( doc );
-		}
-	}
+        private final Map<String, Values<? extends DelegateAndExtractedValue<?, P>>> inners;
 
-	private static final class DelegateAndExtractedValue<E, P> {
-		private final Extractor<E, ? extends P> delegate;
-		private final E extractedValue;
+        private Values<? extends DelegateAndExtractedValue<?, P>> currentLeafInner;
 
-		private DelegateAndExtractedValue(Extractor<E, ? extends P> delegate, E extractedValue) {
-			this.delegate = delegate;
-			this.extractedValue = extractedValue;
-		}
+        public ByMappedTypeValues(CollectorExecutionContext executionContext, Map<String, Values<? extends DelegateAndExtractedValue<?, P>>> inners) {
+            this.metadataResolver = executionContext.getMetadataResolver();
+            this.inners = inners;
+        }
 
-		P transform(LoadingResult<?> loadingResult, ProjectionTransformContext context) {
-			return delegate.transform( loadingResult, extractedValue, context );
-		}
-	}
+        @Override
+        public void context(LeafReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public DelegateAndExtractedValue<?, P> get(int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static final class DelegateAndExtractedValue<E, P> {
+
+        private final Extractor<E, ? extends P> delegate;
+
+        private final E extractedValue;
+
+        private DelegateAndExtractedValue(Extractor<E, ? extends P> delegate, E extractedValue) {
+            this.delegate = delegate;
+            this.extractedValue = extractedValue;
+        }
+
+        P transform(LoadingResult<?> loadingResult, ProjectionTransformContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

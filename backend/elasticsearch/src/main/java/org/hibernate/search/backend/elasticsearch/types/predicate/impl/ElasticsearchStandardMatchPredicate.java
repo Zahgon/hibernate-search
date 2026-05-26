@@ -17,101 +17,86 @@ import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.MatchPredicateBuilder;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class ElasticsearchStandardMatchPredicate extends AbstractElasticsearchSingleFieldPredicate {
 
-	private static final JsonAccessor<JsonElement> QUERY_ACCESSOR = JsonAccessor.root().property( "query" );
+    private static final JsonAccessor<JsonElement> QUERY_ACCESSOR = JsonAccessor.root().property("query");
 
-	private static final JsonObjectAccessor MATCH_ACCESSOR = JsonAccessor.root().property( "match" ).asObject();
+    private static final JsonObjectAccessor MATCH_ACCESSOR = JsonAccessor.root().property("match").asObject();
 
-	private final JsonElement value;
+    private final JsonElement value;
 
-	ElasticsearchStandardMatchPredicate(Builder<?> builder) {
-		super( builder );
-		value = builder.value;
-	}
+    ElasticsearchStandardMatchPredicate(Builder<?> builder) {
+        super(builder);
+        value = builder.value;
+    }
 
-	@Override
-	protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject,
-			JsonObject innerObject) {
-		QUERY_ACCESSOR.set( innerObject, value );
+    @Override
+    protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JsonObject middleObject = new JsonObject();
-		middleObject.add( absoluteFieldPath, innerObject );
+    public static class Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<MatchPredicateBuilder, F> {
 
-		MATCH_ACCESSOR.set( outerObject, middleObject );
-		return outerObject;
-	}
+        public Factory(ElasticsearchFieldCodec<F> codec) {
+            super(codec);
+        }
 
-	public static class Factory<F>
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<MatchPredicateBuilder, F> {
-		public Factory(ElasticsearchFieldCodec<F> codec) {
-			super( codec );
-		}
+        @Override
+        public MatchPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public MatchPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( codec, scope, field );
-		}
-	}
+    static class Builder<F> extends AbstractBuilder implements MatchPredicateBuilder {
 
-	static class Builder<F> extends AbstractBuilder implements MatchPredicateBuilder {
+        protected final ElasticsearchSearchIndexValueFieldContext<F> field;
 
-		protected final ElasticsearchSearchIndexValueFieldContext<F> field;
-		private final ElasticsearchFieldCodec<F> codec;
+        private final ElasticsearchFieldCodec<F> codec;
 
-		private JsonElement value;
+        private JsonElement value;
 
-		Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			this.field = field;
-			this.codec = codec;
-		}
+        Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            this.field = field;
+            this.codec = codec;
+        }
 
-		@Override
-		public void fuzzy(int maxEditDistance, int exactPrefixLength) {
-			throw QueryLog.INSTANCE
-					.fullTextFeaturesNotSupportedByFieldType( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-		}
+        @Override
+        public void fuzzy(int maxEditDistance, int exactPrefixLength) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void analyzer(String analyzerName) {
-			throw QueryLog.INSTANCE
-					.fullTextFeaturesNotSupportedByFieldType( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-		}
+        @Override
+        public void analyzer(String analyzerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void skipAnalysis() {
-			throw QueryLog.INSTANCE
-					.fullTextFeaturesNotSupportedByFieldType( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-		}
+        @Override
+        public void skipAnalysis() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void value(Object value, ValueModel valueModel) {
-			this.value = field.encodingContext().convertAndEncode( scope, field, value, valueModel,
-					ElasticsearchFieldCodec::encode );
-		}
+        @Override
+        public void value(Object value, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void minimumShouldMatchNumber(int ignoreConstraintCeiling, int matchingClausesNumber) {
-			throw QueryLog.INSTANCE
-					.fullTextFeaturesNotSupportedByFieldType( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-		}
+        @Override
+        public void minimumShouldMatchNumber(int ignoreConstraintCeiling, int matchingClausesNumber) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void minimumShouldMatchPercent(int ignoreConstraintCeiling, int matchingClausesPercent) {
-			throw QueryLog.INSTANCE
-					.fullTextFeaturesNotSupportedByFieldType( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-		}
+        @Override
+        public void minimumShouldMatchPercent(int ignoreConstraintCeiling, int matchingClausesPercent) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public SearchPredicate build() {
-			return new ElasticsearchStandardMatchPredicate( this );
-		}
-	}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

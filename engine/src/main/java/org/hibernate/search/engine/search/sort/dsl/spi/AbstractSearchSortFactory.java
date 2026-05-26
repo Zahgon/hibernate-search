@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.sort.dsl.spi;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.common.dsl.spi.DslExtensionState;
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
@@ -32,83 +31,70 @@ import org.hibernate.search.engine.search.sort.dsl.impl.WithParametersSortFinalS
 import org.hibernate.search.engine.search.sort.spi.SearchSortIndexScope;
 import org.hibernate.search.engine.spatial.GeoPoint;
 
-public abstract class AbstractSearchSortFactory<
-		SR,
-		S extends ExtendedSearchSortFactory<SR, S, PDF>,
-		SC extends SearchSortIndexScope<?>,
-		PDF extends TypedSearchPredicateFactory<SR>>
-		implements ExtendedSearchSortFactory<SR, S, PDF> {
+public abstract class AbstractSearchSortFactory<SR, S extends ExtendedSearchSortFactory<SR, S, PDF>, SC extends SearchSortIndexScope<?>, PDF extends TypedSearchPredicateFactory<SR>> implements ExtendedSearchSortFactory<SR, S, PDF> {
 
-	protected final SearchSortDslContext<SR, SC, PDF> dslContext;
+    protected final SearchSortDslContext<SR, SC, PDF> dslContext;
 
-	public AbstractSearchSortFactory(SearchSortDslContext<SR, SC, PDF> dslContext) {
-		this.dslContext = dslContext;
-	}
+    public AbstractSearchSortFactory(SearchSortDslContext<SR, SC, PDF> dslContext) {
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public ScoreSortOptionsStep<SR, ?> score() {
-		return new ScoreSortOptionsStepImpl<>( dslContext );
-	}
+    @Override
+    public ScoreSortOptionsStep<SR, ?> score() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortThenStep<SR> indexOrder() {
-		return staticThenStep( dslContext.scope().sortBuilders().indexOrder() );
-	}
+    @Override
+    public SortThenStep<SR> indexOrder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FieldSortOptionsStep<SR, ?, PDF> field(String fieldPath) {
-		return AbstractFieldSortOptionsGenericStep.create( dslContext, fieldPath );
-	}
+    @Override
+    public FieldSortOptionsStep<SR, ?, PDF> field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> FieldSortOptionsGenericStep<SR, T, ?, ?, ? extends TypedSearchPredicateFactory<SR>> field(
-			FieldSortFieldReference<? super SR, T> fieldReference) {
-		return AbstractFieldSortOptionsGenericStep.create( dslContext, fieldReference );
-	}
+    @Override
+    public <T> FieldSortOptionsGenericStep<SR, T, ?, ?, ? extends TypedSearchPredicateFactory<SR>> field(FieldSortFieldReference<? super SR, T> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DistanceSortOptionsStep<SR, ?, PDF> distance(String fieldPath, GeoPoint location) {
-		return new DistanceSortOptionsStepImpl<>(
-				dslContext, fieldPath, location
-		);
-	}
+    @Override
+    public DistanceSortOptionsStep<SR, ?, PDF> distance(String fieldPath, GeoPoint location) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeSortComponentsStep<SR, ?> composite() {
-		return new CompositeSortComponentsStepImpl<>( dslContext );
-	}
+    @Override
+    public CompositeSortComponentsStep<SR, ?> composite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortThenStep<SR> composite(Consumer<? super CompositeSortOptionsCollector<?>> elementContributor) {
-		CompositeSortComponentsStep<SR, ?> next = composite();
-		elementContributor.accept( next );
-		return next;
-	}
+    @Override
+    public SortThenStep<SR> composite(Consumer<? super CompositeSortOptionsCollector<?>> elementContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortThenStep<SR> withParameters(Function<? super NamedValues, ? extends SortFinalStep> sortCreator) {
-		return new WithParametersSortFinalStep<>( dslContext, sortCreator );
-	}
+    @Override
+    public SortThenStep<SR> withParameters(Function<? super NamedValues, ? extends SortFinalStep> sortCreator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(SearchSortFactoryExtension<T> extension) {
-		return DslExtensionState.returnIfSupported(
-				extension, extension.extendOptional( this )
-		);
-	}
+    @Override
+    public <T> T extension(SearchSortFactoryExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSortFactoryExtensionIfSupportedStep<SR> extension() {
-		return new SearchSortFactoryExtensionStep<>( this, dslContext );
-	}
+    @Override
+    public SearchSortFactoryExtensionIfSupportedStep<SR> extension() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final String toAbsolutePath(String relativeFieldPath) {
-		return dslContext.scope().toAbsolutePath( relativeFieldPath );
-	}
+    @Override
+    public final String toAbsolutePath(String relativeFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected final SortThenStep<SR> staticThenStep(SearchSort sort) {
-		return new StaticSortThenStep<>( dslContext, sort );
-	}
-
+    protected final SortThenStep<SR> staticThenStep(SearchSort sort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

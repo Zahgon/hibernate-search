@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.types.impl;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.DataTypes;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.PropertyMapping;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.settings.impl.PropertyMappingIndexSettingsContributor;
@@ -21,156 +20,145 @@ import org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentVal
 import org.hibernate.search.engine.backend.types.converter.spi.DslConverter;
 import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConverter;
 import org.hibernate.search.engine.backend.types.spi.AbstractIndexValueFieldType;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
-public class ElasticsearchIndexValueFieldType<F>
-		extends AbstractIndexValueFieldType<
-				ElasticsearchSearchIndexScope<?>,
-				ElasticsearchSearchIndexValueFieldContext<F>,
-				F>
-		implements ElasticsearchSearchIndexValueFieldTypeContext<F> {
-	private final JsonPrimitive elasticsearchTypeAsJson;
-	private final ElasticsearchFieldCodec<F> codec;
-	private final PropertyMapping mapping;
+public class ElasticsearchIndexValueFieldType<F> extends AbstractIndexValueFieldType<ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexValueFieldContext<F>, F> implements ElasticsearchSearchIndexValueFieldTypeContext<F> {
 
-	private final Consumer<PropertyMappingIndexSettingsContributor> indexSettingsContributor;
-	private final ProjectionConverter<?, ?> rawProjectionConverter;
-	private final DslConverter<?, ?> rawDslConverter;
+    private final JsonPrimitive elasticsearchTypeAsJson;
 
+    private final ElasticsearchFieldCodec<F> codec;
 
-	public ElasticsearchIndexValueFieldType(Builder<F> builder) {
-		super( builder );
-		this.elasticsearchTypeAsJson = builder.elasticsearchTypeAsJson();
-		this.codec = builder.codec;
-		this.mapping = builder.mapping;
-		this.indexSettingsContributor = builder.indexSettingsContributor;
+    private final PropertyMapping mapping;
 
-		this.rawProjectionConverter = new ProjectionConverter<>( String.class, new RawProjectionConverter<>( codec ) );
-		this.rawDslConverter = new DslConverter<>( String.class, new RawDslConverter<>( codec ) );
-	}
+    private final Consumer<PropertyMappingIndexSettingsContributor> indexSettingsContributor;
 
-	@Override
-	public JsonPrimitive elasticsearchTypeAsJson() {
-		return elasticsearchTypeAsJson;
-	}
+    private final ProjectionConverter<?, ?> rawProjectionConverter;
 
-	@Override
-	public ElasticsearchFieldCodec<F> codec() {
-		return codec;
-	}
+    private final DslConverter<?, ?> rawDslConverter;
 
-	@Override
-	public boolean hasNormalizerOnAtLeastOneIndex() {
-		return normalizerName().isPresent();
-	}
+    public ElasticsearchIndexValueFieldType(Builder<F> builder) {
+        super(builder);
+        this.elasticsearchTypeAsJson = builder.elasticsearchTypeAsJson();
+        this.codec = builder.codec;
+        this.mapping = builder.mapping;
+        this.indexSettingsContributor = builder.indexSettingsContributor;
+        this.rawProjectionConverter = new ProjectionConverter<>(String.class, new RawProjectionConverter<>(codec));
+        this.rawDslConverter = new DslConverter<>(String.class, new RawDslConverter<>(codec));
+    }
 
-	public PropertyMapping mapping() {
-		return mapping;
-	}
+    @Override
+    public JsonPrimitive elasticsearchTypeAsJson() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Optional<Consumer<PropertyMappingIndexSettingsContributor>> additionalIndexSettings() {
-		return Optional.ofNullable( indexSettingsContributor );
-	}
+    @Override
+    public ElasticsearchFieldCodec<F> codec() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DslConverter<?, ?> rawDslConverter() {
-		return rawDslConverter;
-	}
+    @Override
+    public boolean hasNormalizerOnAtLeastOneIndex() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionConverter<?, ?> rawProjectionConverter() {
-		return rawProjectionConverter;
-	}
+    public PropertyMapping mapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder<F>
-			extends AbstractIndexValueFieldType.Builder<
-					ElasticsearchSearchIndexScope<?>,
-					ElasticsearchSearchIndexValueFieldContext<F>,
-					F> {
+    public Optional<Consumer<PropertyMappingIndexSettingsContributor>> additionalIndexSettings() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private ElasticsearchFieldCodec<F> codec;
-		private final PropertyMapping mapping;
-		private Consumer<PropertyMappingIndexSettingsContributor> indexSettingsContributor;
+    @Override
+    public DslConverter<?, ?> rawDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(Class<F> valueType, PropertyMapping mapping) {
-			super( valueType );
-			this.mapping = mapping;
-		}
+    @Override
+    public ProjectionConverter<?, ?> rawProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public void codec(ElasticsearchFieldCodec<F> codec) {
-			this.codec = codec;
-		}
+    public static class Builder<F> extends AbstractIndexValueFieldType.Builder<ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexValueFieldContext<F>, F> {
 
-		public ElasticsearchFieldCodec<F> codec() {
-			return codec;
-		}
+        private ElasticsearchFieldCodec<F> codec;
 
-		public PropertyMapping mapping() {
-			return mapping;
-		}
+        private final PropertyMapping mapping;
 
-		public void contributeAdditionalIndexSettings(
-				Consumer<PropertyMappingIndexSettingsContributor> indexSettingsContributor) {
-			this.indexSettingsContributor = indexSettingsContributor;
-		}
+        private Consumer<PropertyMappingIndexSettingsContributor> indexSettingsContributor;
 
-		@Override
-		public ElasticsearchIndexValueFieldType<F> build() {
-			return new ElasticsearchIndexValueFieldType<>( this );
-		}
+        public Builder(Class<F> valueType, PropertyMapping mapping) {
+            super(valueType);
+            this.mapping = mapping;
+        }
 
-		private JsonPrimitive elasticsearchTypeAsJson() {
-			String typeName = mapping.getType();
-			if ( typeName == null ) {
-				// Can happen with user-provided mappings
-				typeName = DataTypes.OBJECT;
-			}
-			return new JsonPrimitive( typeName );
-		}
-	}
+        public void codec(ElasticsearchFieldCodec<F> codec) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static class RawDslConverter<F> implements ToDocumentValueConverter<String, JsonElement> {
+        public ElasticsearchFieldCodec<F> codec() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final ElasticsearchFieldCodec<F> codec;
+        public PropertyMapping mapping() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private RawDslConverter(ElasticsearchFieldCodec<F> codec) {
-			this.codec = codec;
-		}
+        public void contributeAdditionalIndexSettings(Consumer<PropertyMappingIndexSettingsContributor> indexSettingsContributor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public JsonElement toDocumentValue(String value, ToDocumentValueConvertContext context) {
-			return codec.fromJsonStringToElement( value );
-		}
+        @Override
+        public ElasticsearchIndexValueFieldType<F> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean isCompatibleWith(ToDocumentValueConverter<?, ?> other) {
-			if ( !( other instanceof RawDslConverter ) ) {
-				return false;
-			}
-			return codec.isCompatibleWith( ( (RawDslConverter<?>) other ).codec );
-		}
-	}
+        private JsonPrimitive elasticsearchTypeAsJson() {
+            String typeName = mapping.getType();
+            if (typeName == null) {
+                // Can happen with user-provided mappings
+                typeName = DataTypes.OBJECT;
+            }
+            return new JsonPrimitive(typeName);
+        }
+    }
 
-	private static class RawProjectionConverter<F> implements FromDocumentValueConverter<JsonElement, String> {
-		private final ElasticsearchFieldCodec<F> codec;
+    private static class RawDslConverter<F> implements ToDocumentValueConverter<String, JsonElement> {
 
-		private RawProjectionConverter(ElasticsearchFieldCodec<F> codec) {
-			this.codec = codec;
-		}
+        private final ElasticsearchFieldCodec<F> codec;
 
-		@Override
-		public String fromDocumentValue(JsonElement value, FromDocumentValueConvertContext context) {
-			return codec.fromJsonElementToString( value );
-		}
+        private RawDslConverter(ElasticsearchFieldCodec<F> codec) {
+            this.codec = codec;
+        }
 
-		@Override
-		public boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
-			if ( !( other instanceof RawProjectionConverter ) ) {
-				return false;
-			}
-			return codec.isCompatibleWith( ( (RawProjectionConverter<?>) other ).codec );
-		}
-	}
+        @Override
+        public JsonElement toDocumentValue(String value, ToDocumentValueConvertContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public boolean isCompatibleWith(ToDocumentValueConverter<?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static class RawProjectionConverter<F> implements FromDocumentValueConverter<JsonElement, String> {
+
+        private final ElasticsearchFieldCodec<F> codec;
+
+        private RawProjectionConverter(ElasticsearchFieldCodec<F> codec) {
+            this.codec = codec;
+        }
+
+        @Override
+        public String fromDocumentValue(JsonElement value, FromDocumentValueConvertContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

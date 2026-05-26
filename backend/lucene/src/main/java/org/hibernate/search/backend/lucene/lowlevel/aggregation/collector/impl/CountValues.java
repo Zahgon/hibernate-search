@@ -8,30 +8,30 @@ import java.util.Locale;
 
 public class CountValues implements AggregationFunction<CountValues> {
 
-	private long count = 0L;
+    private long count = 0L;
 
-	@Override
-	public void apply(long value) {
-		count++;
-	}
+    @Override
+    public void apply(long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void merge(AggregationFunction<CountValues> sibling) {
-		count += sibling.implementation().count;
-	}
+    @Override
+    public void merge(AggregationFunction<CountValues> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long result() {
-		return count;
-	}
+    @Override
+    public Long result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CountValues implementation() {
-		return this;
-	}
+    @Override
+    public CountValues implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return String.format( Locale.ROOT, "CountValues{count=%d}", count );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

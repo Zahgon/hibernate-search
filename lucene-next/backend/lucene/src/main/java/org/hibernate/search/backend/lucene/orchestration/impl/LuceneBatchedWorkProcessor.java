@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.orchestration.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.lowlevel.index.impl.IndexAccessor;
 import org.hibernate.search.backend.lucene.work.impl.IndexingWork;
 import org.hibernate.search.engine.backend.orchestration.spi.BatchedWorkProcessor;
@@ -18,70 +17,41 @@ import org.hibernate.search.util.common.reporting.EventContext;
  */
 public class LuceneBatchedWorkProcessor implements BatchedWorkProcessor {
 
-	private final IndexAccessor indexAccessor;
-	private final IndexAccessorWorkExecutionContext context;
+    private final IndexAccessor indexAccessor;
 
-	public LuceneBatchedWorkProcessor(EventContext eventContext,
-			IndexAccessor indexAccessor) {
-		this.indexAccessor = indexAccessor;
-		this.context = new IndexAccessorWorkExecutionContext( eventContext, indexAccessor );
-	}
+    private final IndexAccessorWorkExecutionContext context;
 
-	@Override
-	public void beginBatch() {
-		// Nothing to do
-	}
+    public LuceneBatchedWorkProcessor(EventContext eventContext, IndexAccessor indexAccessor) {
+        this.indexAccessor = indexAccessor;
+        this.context = new IndexAccessorWorkExecutionContext(eventContext, indexAccessor);
+    }
 
-	@Override
-	public CompletableFuture<?> endBatch() {
-		try {
-			indexAccessor.commitOrDelay();
-		}
-		catch (RuntimeException e) {
-			indexAccessor.cleanUpAfterFailure( e, "Commit after a batch of index works" );
-			// The exception was reported to the failure handler, no need to propagate it.
-		}
-		// Everything was already executed, so just return a completed future.
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    public void beginBatch() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void complete() {
-		try {
-			indexAccessor.commitOrDelay();
-		}
-		catch (RuntimeException e) {
-			indexAccessor.cleanUpAfterFailure( e, "Commit after completion of all remaining index works" );
-			// The exception was reported to the failure handler, no need to propagate it.
-		}
-	}
+    @Override
+    public CompletableFuture<?> endBatch() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <T> T submit(IndexingWork<T> work) {
-		try {
-			return work.execute( context );
-		}
-		catch (RuntimeException e) {
-			indexAccessor.cleanUpAfterFailure( e, work.getInfo() );
-			throw e;
-		}
-	}
+    @Override
+    public void complete() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// Note this may be called outside of a batch
-	public void forceCommit() {
-		try {
-			indexAccessor.commit();
-		}
-		catch (RuntimeException e) {
-			indexAccessor.cleanUpAfterFailure( e, "Commit after a set of index works" );
-			throw e;
-		}
-	}
+    public <T> T submit(IndexingWork<T> work) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// Note this may be called outside of a batch
-	public void forceRefresh() {
-		// In case of failure, just propagate the exception:
-		// we don't expect a refresh failure to affect the writer and require a cleanup.
-		indexAccessor.refresh();
-	}
+    // Note this may be called outside of a batch
+    public void forceCommit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    // Note this may be called outside of a batch
+    public void forceRefresh() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

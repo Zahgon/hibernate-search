@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.model.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.model.PojoModelConstructorParameter;
 import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
 import org.hibernate.search.mapper.pojo.model.spi.PojoMethodParameterModel;
@@ -15,33 +14,32 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoMethodParameterModel;
  */
 public class PojoModelConstructorParameterRootElement<P> implements PojoModelConstructorParameter {
 
-	private final PojoBootstrapIntrospector introspector;
-	private final PojoMethodParameterModel<P> parameterModel;
+    private final PojoBootstrapIntrospector introspector;
 
-	public PojoModelConstructorParameterRootElement(PojoBootstrapIntrospector introspector,
-			PojoMethodParameterModel<P> parameterModel) {
-		this.introspector = introspector;
-		this.parameterModel = parameterModel;
-	}
+    private final PojoMethodParameterModel<P> parameterModel;
 
-	@Override
-	public String toString() {
-		return "PojoModelConstructorParameterElement[" + parameterModel.toString() + "]";
-	}
+    public PojoModelConstructorParameterRootElement(PojoBootstrapIntrospector introspector, PojoMethodParameterModel<P> parameterModel) {
+        this.introspector = introspector;
+        this.parameterModel = parameterModel;
+    }
 
-	@Override
-	public boolean isAssignableTo(Class<?> clazz) {
-		return parameterModel.typeModel().rawType().isSubTypeOf( introspector.typeModel( clazz ) );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<String> name() {
-		return parameterModel.name();
-	}
+    @Override
+    public boolean isAssignableTo(Class<?> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Class<?> rawType() {
-		return parameterModel.typeModel().rawType().typeIdentifier().javaClass();
-	}
+    @Override
+    public Optional<String> name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public Class<?> rawType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -7,7 +7,6 @@ package org.hibernate.search.backend.lucene.search.projection.impl;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.TopDocsDataCollectorExecutionContext;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.Values;
@@ -21,163 +20,127 @@ import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.spi.HighlightProjectionBuilder;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.LeafReaderContext;
 
 public class LuceneFieldHighlightProjection<T> implements LuceneSearchProjection<T> {
 
-	private final Set<String> indexNames;
-	private final Analyzer analyzer;
-	private final String absoluteFieldPath;
-	private final String highlighterName;
-	private final String nestedDocumentPath;
-	private final LuceneSearchIndexValueFieldTypeContext<?> typeContext;
-	private final ProjectionCollector.Provider<String, T> collectorProvider;
+    private final Set<String> indexNames;
 
-	private LuceneFieldHighlightProjection(Builder builder, ProjectionCollector.Provider<String, T> collectorProvider) {
-		this( builder.scope, builder.field, builder.highlighterName(), collectorProvider );
-	}
+    private final Analyzer analyzer;
 
-	LuceneFieldHighlightProjection(LuceneSearchIndexScope<?> scope,
-			LuceneSearchIndexValueFieldContext<?> field,
-			String highlighterName, ProjectionCollector.Provider<String, T> collectorProvider) {
-		this.indexNames = scope.hibernateSearchIndexNames();
-		this.analyzer = field.type().searchAnalyzerOrNormalizer();
-		this.absoluteFieldPath = field.absolutePath();
-		this.highlighterName = highlighterName;
-		this.nestedDocumentPath = field.nestedDocumentPath();
-		this.typeContext = field.type();
-		this.collectorProvider = collectorProvider;
-	}
+    private final String absoluteFieldPath;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "absoluteFieldPath=" + absoluteFieldPath
-				+ "highlighterName=" + highlighterName
-				+ "]";
-	}
+    private final String highlighterName;
 
-	@Override
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    private final String nestedDocumentPath;
 
-	@Override
-	public Extractor<?, T> request(ProjectionRequestContext context) {
-		if ( context.absoluteCurrentFieldPath() != null ) {
-			throw QueryLog.INSTANCE.cannotHighlightInNestedContext(
-					context.absoluteCurrentFieldPath(),
-					EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath )
-			);
-		}
-		context.checkValidField( absoluteFieldPath );
-		LuceneAbstractSearchHighlighter highlighter = context.highlighter( highlighterName );
-		if ( !typeContext.highlighterTypeSupported( highlighter.type() ) ) {
-			throw QueryLog.INSTANCE.highlighterTypeNotSupported( highlighter.type(), absoluteFieldPath );
-		}
-		highlighter.request( context, absoluteFieldPath );
-		if ( !highlighter.isCompatible( collectorProvider ) ) {
-			throw QueryLog.INSTANCE.highlighterIncompatibleCardinality();
-		}
+    private final LuceneSearchIndexValueFieldTypeContext<?> typeContext;
 
-		return new FieldHighlightExtractor<>( context.absoluteCurrentNestedFieldPath(), highlighter,
-				collectorProvider.get()
-		);
-	}
+    private final ProjectionCollector.Provider<String, T> collectorProvider;
 
+    private LuceneFieldHighlightProjection(Builder builder, ProjectionCollector.Provider<String, T> collectorProvider) {
+        this(builder.scope, builder.field, builder.highlighterName(), collectorProvider);
+    }
 
-	private class FieldHighlightExtractor<A> implements Extractor<A, T> {
-		private final String parentDocumentPath;
-		private final LuceneAbstractSearchHighlighter highlighter;
-		private final ProjectionCollector<String, String, A, T> collector;
+    LuceneFieldHighlightProjection(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field, String highlighterName, ProjectionCollector.Provider<String, T> collectorProvider) {
+        this.indexNames = scope.hibernateSearchIndexNames();
+        this.analyzer = field.type().searchAnalyzerOrNormalizer();
+        this.absoluteFieldPath = field.absolutePath();
+        this.highlighterName = highlighterName;
+        this.nestedDocumentPath = field.nestedDocumentPath();
+        this.typeContext = field.type();
+        this.collectorProvider = collectorProvider;
+    }
 
-		private FieldHighlightExtractor(String parentDocumentPath, LuceneAbstractSearchHighlighter highlighter,
-				ProjectionCollector<String, String, A, T> collector) {
-			this.parentDocumentPath = parentDocumentPath;
-			this.highlighter = highlighter;
-			this.collector = collector;
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public Values<A> values(ProjectionExtractContext context) {
-			return highlighter.createValues(
-					parentDocumentPath,
-					nestedDocumentPath,
-					absoluteFieldPath,
-					analyzer,
-					context,
-					collector
-			);
-		}
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public T transform(LoadingResult<?> loadingResult, A extractedData,
-				ProjectionTransformContext context) {
-			return collector.finish( extractedData );
-		}
-	}
+    @Override
+    public Extractor<?, T> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class HighlighterValues<A, T> extends AbstractNestingAwareAccumulatingValues<String, A> {
+    private class FieldHighlightExtractor<A> implements Extractor<A, T> {
 
-		protected LeafReaderContext leafReaderContext;
+        private final String parentDocumentPath;
 
-		protected HighlighterValues(String parentDocumentPath, String nestedDocumentPath,
-				TopDocsDataCollectorExecutionContext context,
-				ProjectionCollector<String, ?, A, T> collector) {
-			super( parentDocumentPath, nestedDocumentPath, collector, context );
-		}
+        private final LuceneAbstractSearchHighlighter highlighter;
 
-		@Override
-		public void context(LeafReaderContext context) throws IOException {
-			super.context( context );
-			// store the leaf reader so that we can pass it to highlighter later.
-			// using a global index searcher doesn't work as the docs passed to #get() do not match the TopDocs
-			// accessible through the ProjectionExtractContext.
-			leafReaderContext = context;
-		}
+        private final ProjectionCollector<String, String, A, T> collector;
 
-		@Override
-		protected A accumulate(A accumulated, int docId) throws IOException {
-			return collector.accumulateAll( accumulated, highlight( docId ) );
-		}
+        private FieldHighlightExtractor(String parentDocumentPath, LuceneAbstractSearchHighlighter highlighter, ProjectionCollector<String, String, A, T> collector) {
+            this.parentDocumentPath = parentDocumentPath;
+            this.highlighter = highlighter;
+            this.collector = collector;
+        }
 
-		protected abstract List<String> highlight(int doc) throws IOException;
-	}
+        @Override
+        public Values<A> values(ProjectionExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public static class Factory<F>
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<HighlightProjectionBuilder, F> {
-		@Override
-		public HighlightProjectionBuilder create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			if ( field.nestedDocumentPath() != null ) {
-				// see HSEARCH-4841 to remove this limitation.
-				throw QueryLog.INSTANCE.cannotHighlightFieldFromNestedObjectStructure(
-						EventContexts.fromIndexFieldAbsolutePath( field.absolutePath() )
-				);
-			}
-			return new Builder( scope, field );
-		}
-	}
+        @Override
+        public T transform(LoadingResult<?> loadingResult, A extractedData, ProjectionTransformContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	public static class Builder extends HighlightProjectionBuilder {
-		private final LuceneSearchIndexScope<?> scope;
-		private final LuceneSearchIndexValueFieldContext<?> field;
+    public abstract static class HighlighterValues<A, T> extends AbstractNestingAwareAccumulatingValues<String, A> {
 
-		public Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field) {
-			super( field.absolutePath() );
-			this.scope = scope;
-			this.field = field;
-		}
+        protected LeafReaderContext leafReaderContext;
 
-		protected String highlighterName() {
-			return highlighterName;
-		}
+        protected HighlighterValues(String parentDocumentPath, String nestedDocumentPath, TopDocsDataCollectorExecutionContext context, ProjectionCollector<String, ?, A, T> collector) {
+            super(parentDocumentPath, nestedDocumentPath, collector, context);
+        }
 
-		@Override
-		public <V> SearchProjection<V> build(ProjectionCollector.Provider<String, V> collectorProvider) {
-			return new LuceneFieldHighlightProjection<>( this, collectorProvider );
-		}
-	}
+        @Override
+        public void context(LeafReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected A accumulate(A accumulated, int docId) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        protected abstract List<String> highlight(int doc) throws IOException;
+    }
+
+    public static class Factory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<HighlightProjectionBuilder, F> {
+
+        @Override
+        public HighlightProjectionBuilder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    public static class Builder extends HighlightProjectionBuilder {
+
+        private final LuceneSearchIndexScope<?> scope;
+
+        private final LuceneSearchIndexValueFieldContext<?> field;
+
+        public Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field) {
+            super(field.absolutePath());
+            this.scope = scope;
+            this.field = field;
+        }
+
+        protected String highlighterName() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public <V> SearchProjection<V> build(ProjectionCollector.Provider<String, V> collectorProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

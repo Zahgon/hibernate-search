@@ -18,38 +18,39 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBind
  * @see org.hibernate.search.mapper.pojo.mapping.definition.annotation.ScoreProjection
  */
 public final class ScoreProjectionBinder implements ProjectionBinder {
-	private static final ScoreProjectionBinder INSTANCE = new ScoreProjectionBinder();
 
-	/**
-	 * Creates a {@link ScoreProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @return The binder.
-	 */
-	public static ScoreProjectionBinder create() {
-		return INSTANCE;
-	}
+    private static final ScoreProjectionBinder INSTANCE = new ScoreProjectionBinder();
 
-	private ScoreProjectionBinder() {
-	}
+    /**
+     * Creates a {@link ScoreProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @return The binder.
+     */
+    public static ScoreProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		context.definition( Float.class, Definition.INSTANCE );
-	}
+    private ScoreProjectionBinder() {
+    }
 
-	private static class Definition extends AbstractProjectionDefinition<Float> {
-		public static final Definition INSTANCE = new Definition();
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected String type() {
-			return "score";
-		}
+    private static class Definition extends AbstractProjectionDefinition<Float> {
 
-		@Override
-		public SearchProjection<Float> create(ProjectionDefinitionContext context) {
-			return context.projection().score().toProjection();
-		}
-	}
+        public static final Definition INSTANCE = new Definition();
 
+        @Override
+        protected String type() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<Float> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -7,7 +7,6 @@ package org.hibernate.search.backend.elasticsearch.search.aggregation.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.hibernate.search.backend.elasticsearch.search.predicate.impl.PredicateRequestContext;
 import org.hibernate.search.util.common.annotation.Incubating;
 
@@ -17,61 +16,58 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 @Incubating
 public final class AggregationRequestBuildingContextContext implements AggregationRequestContext {
-	private final AggregationRequestContext aggregationRequestContext;
-	private final Map<Key<?>, Object> buildingContext = new HashMap<>();
 
-	public AggregationRequestBuildingContextContext(AggregationRequestContext aggregationRequestContext) {
-		this.aggregationRequestContext = aggregationRequestContext;
-	}
+    private final AggregationRequestContext aggregationRequestContext;
 
-	public <T> T get(Key<T> key) {
-		Object value = buildingContext.get( key );
-		return key.cast( value );
-	}
+    private final Map<Key<?>, Object> buildingContext = new HashMap<>();
 
-	public void add(Key<?> key, Object value) {
-		buildingContext.put( key, value );
-	}
+    public AggregationRequestBuildingContextContext(AggregationRequestContext aggregationRequestContext) {
+        this.aggregationRequestContext = aggregationRequestContext;
+    }
 
-	@Override
-	public PredicateRequestContext getRootPredicateContext() {
-		return aggregationRequestContext.getRootPredicateContext();
-	}
+    public <T> T get(Key<T> key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isRootContext() {
-		return false;
-	}
+    public void add(Key<?> key, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <V> Key<V> buildingContextKey(String name) {
-		return new Key<>( name );
-	}
+    @Override
+    public PredicateRequestContext getRootPredicateContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Key<V> {
+    @Override
+    public boolean isRootContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final String name;
+    public static <V> Key<V> buildingContextKey(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Key(String name) {
-			this.name = name;
-		}
+    public static class Key<V> {
 
-		@SuppressWarnings("unchecked")
-		private V cast(Object value) {
-			return (V) value;
-		}
+        private final String name;
 
-		@Override
-		public boolean equals(Object o) {
-			if ( o == null || getClass() != o.getClass() ) {
-				return false;
-			}
-			Key<?> key = (Key<?>) o;
-			return Objects.equals( name, key.name );
-		}
+        private Key(String name) {
+            this.name = name;
+        }
 
-		@Override
-		public int hashCode() {
-			return Objects.hashCode( name );
-		}
-	}
+        @SuppressWarnings("unchecked")
+        private V cast(Object value) {
+            return (V) value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

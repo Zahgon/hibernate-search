@@ -5,7 +5,6 @@
 package org.hibernate.search.build.checkstyle.filters;
 
 import java.io.File;
-
 import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.Filter;
 
@@ -22,33 +21,27 @@ import com.puppycrawl.tools.checkstyle.api.Filter;
  */
 public class ExcludeTestPackages implements Filter {
 
-	private static final String UNIT_TESTS_SUB_PATH =
-			File.separator + "src" + File.separator + "test" + File.separator + "java";
-	private static final String COPIED_SOURCES_TESTS_SUB_PATH =
-			File.separator + "copied-sources" + File.separator + "test" + File.separator + "java";
-	private static final String INTEGRATION_TESTS_SUB_PATH = File.separator + "integrationtest" + File.separator;
-	private static final String TEST_UTIL_SUB_PATH =
-			File.separator + "util" + File.separator + "impl" + File.separator + "test" + File.separator;
-	private static final String MESSAGE_DISABLE_KEYWORD = "[not required for tests]";
+    private static final String UNIT_TESTS_SUB_PATH = File.separator + "src" + File.separator + "test" + File.separator + "java";
 
-	@Override
-	public boolean accept(AuditEvent aEvent) {
-		String fileName = aEvent.getFileName();
-		if ( fileName != null && isTestFile( fileName ) ) {
-			return acceptTestfileEvent( aEvent );
-		}
-		return true;
-	}
+    private static final String COPIED_SOURCES_TESTS_SUB_PATH = File.separator + "copied-sources" + File.separator + "test" + File.separator + "java";
 
-	private boolean isTestFile(String fileName) {
-		return fileName.contains( UNIT_TESTS_SUB_PATH )
-				|| fileName.contains( COPIED_SOURCES_TESTS_SUB_PATH )
-				|| fileName.contains( INTEGRATION_TESTS_SUB_PATH )
-				|| fileName.contains( TEST_UTIL_SUB_PATH );
-	}
+    private static final String INTEGRATION_TESTS_SUB_PATH = File.separator + "integrationtest" + File.separator;
 
-	private boolean acceptTestfileEvent(AuditEvent aEvent) {
-		String message = aEvent.getMessage();
-		return message == null || !message.contains( MESSAGE_DISABLE_KEYWORD );
-	}
+    private static final String TEST_UTIL_SUB_PATH = File.separator + "util" + File.separator + "impl" + File.separator + "test" + File.separator;
+
+    private static final String MESSAGE_DISABLE_KEYWORD = "[not required for tests]";
+
+    @Override
+    public boolean accept(AuditEvent aEvent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private boolean isTestFile(String fileName) {
+        return fileName.contains(UNIT_TESTS_SUB_PATH) || fileName.contains(COPIED_SOURCES_TESTS_SUB_PATH) || fileName.contains(INTEGRATION_TESTS_SUB_PATH) || fileName.contains(TEST_UTIL_SUB_PATH);
+    }
+
+    private boolean acceptTestfileEvent(AuditEvent aEvent) {
+        String message = aEvent.getMessage();
+        return message == null || !message.contains(MESSAGE_DISABLE_KEYWORD);
+    }
 }

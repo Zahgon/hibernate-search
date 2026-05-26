@@ -10,61 +10,53 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
 public class PojoImplicitReindexingResolverImpl<T> implements PojoImplicitReindexingResolver<T> {
 
-	private final PojoPathFilter dirtySelfFilter;
-	private final PojoPathFilter dirtySelfOrContainingFilter;
-	private final PojoImplicitReindexingResolverNode<T> containingEntitiesResolverRoot;
-	private final PojoImplicitReindexingAssociationInverseSideResolver associationInverseSideResolver;
+    private final PojoPathFilter dirtySelfFilter;
 
-	public PojoImplicitReindexingResolverImpl(PojoPathFilter dirtySelfFilter,
-			PojoPathFilter dirtySelfOrContainingFilter,
-			PojoImplicitReindexingResolverNode<T> containingEntitiesResolverRoot,
-			PojoImplicitReindexingAssociationInverseSideResolver associationInverseSideResolver) {
-		this.dirtySelfFilter = dirtySelfFilter;
-		this.dirtySelfOrContainingFilter = dirtySelfOrContainingFilter;
-		this.containingEntitiesResolverRoot = containingEntitiesResolverRoot;
-		this.associationInverseSideResolver = associationInverseSideResolver;
-	}
+    private final PojoPathFilter dirtySelfOrContainingFilter;
 
-	@Override
-	public String toString() {
-		return toStringTree();
-	}
+    private final PojoImplicitReindexingResolverNode<T> containingEntitiesResolverRoot;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoImplicitReindexingResolverNode::close, containingEntitiesResolverRoot );
-			closer.push( PojoImplicitReindexingAssociationInverseSideResolver::close, associationInverseSideResolver );
-		}
-	}
+    private final PojoImplicitReindexingAssociationInverseSideResolver associationInverseSideResolver;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "root" );
-		appender.attribute( "dirtyPathsTriggeringSelfReindexing", dirtySelfFilter );
-		appender.attribute( "associationPaths", associationInverseSideResolver );
-		appender.attribute( "containingEntitiesResolverRoot", containingEntitiesResolverRoot );
-	}
+    public PojoImplicitReindexingResolverImpl(PojoPathFilter dirtySelfFilter, PojoPathFilter dirtySelfOrContainingFilter, PojoImplicitReindexingResolverNode<T> containingEntitiesResolverRoot, PojoImplicitReindexingAssociationInverseSideResolver associationInverseSideResolver) {
+        this.dirtySelfFilter = dirtySelfFilter;
+        this.dirtySelfOrContainingFilter = dirtySelfOrContainingFilter;
+        this.containingEntitiesResolverRoot = containingEntitiesResolverRoot;
+        this.associationInverseSideResolver = associationInverseSideResolver;
+    }
 
-	@Override
-	public PojoPathFilter dirtySelfFilter() {
-		return dirtySelfFilter;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathFilter dirtySelfOrContainingFilter() {
-		return dirtySelfOrContainingFilter;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			T dirty, PojoImplicitReindexingResolverRootContext context) {
-		containingEntitiesResolverRoot.resolveEntitiesToReindex( collector, dirty, context );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoImplicitReindexingAssociationInverseSideResolver associationInverseSideResolver() {
-		return associationInverseSideResolver;
-	}
+    @Override
+    public PojoPathFilter dirtySelfFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public PojoPathFilter dirtySelfOrContainingFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, T dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoImplicitReindexingAssociationInverseSideResolver associationInverseSideResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

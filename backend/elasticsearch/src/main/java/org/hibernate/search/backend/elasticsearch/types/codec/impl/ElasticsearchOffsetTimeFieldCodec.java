@@ -8,24 +8,23 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.OffsetTime;
 import java.time.format.DateTimeFormatter;
-
 import com.google.gson.Gson;
 
 public class ElasticsearchOffsetTimeFieldCodec extends AbstractElasticsearchJavaTimeFieldCodec<OffsetTime> {
 
-	private static final LocalDate EPOCH_DATE = LocalDate.of( 1970, Month.JANUARY, 1 );
+    private static final LocalDate EPOCH_DATE = LocalDate.of(1970, Month.JANUARY, 1);
 
-	public ElasticsearchOffsetTimeFieldCodec(Gson gson, DateTimeFormatter delegate) {
-		super( gson, delegate );
-	}
+    public ElasticsearchOffsetTimeFieldCodec(Gson gson, DateTimeFormatter delegate) {
+        super(gson, delegate);
+    }
 
-	@Override
-	protected OffsetTime nullUnsafeParse(String stringValue) {
-		return OffsetTime.parse( stringValue, formatter );
-	}
+    @Override
+    protected OffsetTime nullUnsafeParse(String stringValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Long nullUnsafeScalar(OffsetTime value) {
-		return value.atDate( EPOCH_DATE ).toInstant().toEpochMilli();
-	}
+    @Override
+    protected Long nullUnsafeScalar(OffsetTime value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -26,63 +26,61 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericFie
  * @see #latitude()
  * @see #longitude()
  */
-public interface GeoPointBinder
-		extends TypeBinder, PropertyBinder {
+public interface GeoPointBinder extends TypeBinder, PropertyBinder {
 
-	/**
-	 * @param fieldName The name of the {@link GeoPoint} field.
-	 * If used on a property, this defaults to the name of that property.
-	 * Otherwise, the name must be defined explicitly.
-	 * @return {@code this}, for method chaining.
-	 */
-	GeoPointBinder fieldName(String fieldName);
+    /**
+     * @param fieldName The name of the {@link GeoPoint} field.
+     * If used on a property, this defaults to the name of that property.
+     * Otherwise, the name must be defined explicitly.
+     * @return {@code this}, for method chaining.
+     */
+    GeoPointBinder fieldName(String fieldName);
 
-	/**
-	 * @param projectable Whether projections are enabled for the {@link GeoPoint} field.
-	 * @return {@code this}, for method chaining.
-	 * @see GenericField#projectable()
-	 * @see Projectable
-	 */
-	GeoPointBinder projectable(Projectable projectable);
+    /**
+     * @param projectable Whether projections are enabled for the {@link GeoPoint} field.
+     * @return {@code this}, for method chaining.
+     * @see GenericField#projectable()
+     * @see Projectable
+     */
+    GeoPointBinder projectable(Projectable projectable);
 
-	/**
-	 * @param sortable Whether the {@link GeoPoint} field should be sortable by distance.
-	 * @return {@code this}, for method chaining.
-	 * @see GenericField#sortable()
-	 * @see Sortable
-	 */
-	GeoPointBinder sortable(Sortable sortable);
+    /**
+     * @param sortable Whether the {@link GeoPoint} field should be sortable by distance.
+     * @return {@code this}, for method chaining.
+     * @see GenericField#sortable()
+     * @see Sortable
+     */
+    GeoPointBinder sortable(Sortable sortable);
 
-	/**
-	 * @param markerSet The name of the "marker set".
-	 * This is used to discriminate between multiple pairs of latitude/longitude markers:
-	 * {@link LatitudeLongitudeMarkerBinder#markerSet(String) assign a marker set when building each marker},
-	 * then select the marker set here.
-	 * @return {@code this}, for method chaining.
-	 */
-	GeoPointBinder markerSet(String markerSet);
+    /**
+     * @param markerSet The name of the "marker set".
+     * This is used to discriminate between multiple pairs of latitude/longitude markers:
+     * {@link LatitudeLongitudeMarkerBinder#markerSet(String) assign a marker set when building each marker},
+     * then select the marker set here.
+     * @return {@code this}, for method chaining.
+     */
+    GeoPointBinder markerSet(String markerSet);
 
-	/**
-	 * @return A {@link GeoPointBinder}.
-	 */
-	static GeoPointBinder create() {
-		return new org.hibernate.search.mapper.pojo.bridge.builtin.spatial.impl.GeoPointBridge.Binder();
-	}
+    /**
+     * @return A {@link GeoPointBinder}.
+     */
+    static GeoPointBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A {@link MarkerBinder} for the latitude, to be applied on a property.
-	 * @see LatitudeLongitudeMarkerBinder
-	 */
-	static LatitudeLongitudeMarkerBinder latitude() {
-		return new LatitudeMarker.Binder();
-	}
+    /**
+     * @return A {@link MarkerBinder} for the latitude, to be applied on a property.
+     * @see LatitudeLongitudeMarkerBinder
+     */
+    static LatitudeLongitudeMarkerBinder latitude() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A {@link MarkerBinder} for the longitude, to be applied on a property.
-	 * @see LatitudeLongitudeMarkerBinder
-	 */
-	static LatitudeLongitudeMarkerBinder longitude() {
-		return new LongitudeMarker.Binder();
-	}
-
+    /**
+     * @return A {@link MarkerBinder} for the longitude, to be applied on a property.
+     * @see LatitudeLongitudeMarkerBinder
+     */
+    static LatitudeLongitudeMarkerBinder longitude() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

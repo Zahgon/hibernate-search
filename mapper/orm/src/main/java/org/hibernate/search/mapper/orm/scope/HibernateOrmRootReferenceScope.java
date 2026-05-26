@@ -12,11 +12,10 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface HibernateOrmRootReferenceScope<SR, T> extends RootReferenceScope<SR, T> {
 
-	TypedSearchScope<SR, T> scope(SearchScopeProvider scopeProvider);
+    TypedSearchScope<SR, T> scope(SearchScopeProvider scopeProvider);
 
-	@SuppressWarnings("deprecation")
-	default SearchQuerySelectStep<SR, ?, org.hibernate.search.mapper.orm.common.EntityReference, T, ?, ?, ?> search(
-			SearchSession session) {
-		return session.search( scope( session ) );
-	}
+    @SuppressWarnings("deprecation")
+    default SearchQuerySelectStep<SR, ?, org.hibernate.search.mapper.orm.common.EntityReference, T, ?, ?, ?> search(SearchSession session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

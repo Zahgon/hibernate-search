@@ -14,31 +14,25 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslCo
 import org.hibernate.search.engine.search.predicate.spi.NamedPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 
-public class NamedPredicateOptionsStepImpl
-		extends AbstractPredicateFinalStep
-		implements NamedPredicateOptionsStep {
+public class NamedPredicateOptionsStepImpl extends AbstractPredicateFinalStep implements NamedPredicateOptionsStep {
 
-	private final NamedPredicateBuilder builder;
+    private final NamedPredicateBuilder builder;
 
-	public NamedPredicateOptionsStepImpl(ExtendedSearchPredicateFactory<?, ?> predicateFactory,
-			SearchPredicateDslContext<?> dslContext, String fieldPath, String predicateName) {
-		super( dslContext );
-		SearchIndexScope<?> scope = dslContext.scope();
-		SearchQueryElementTypeKey<NamedPredicateBuilder> key = PredicateTypeKeys.named( predicateName );
-		this.builder = fieldPath == null
-				? scope.rootQueryElement( key )
-				: scope.fieldQueryElement( fieldPath, key );
-		builder.factory( fieldPath == null ? predicateFactory : predicateFactory.withRoot( fieldPath ) );
-	}
+    public NamedPredicateOptionsStepImpl(ExtendedSearchPredicateFactory<?, ?> predicateFactory, SearchPredicateDslContext<?> dslContext, String fieldPath, String predicateName) {
+        super(dslContext);
+        SearchIndexScope<?> scope = dslContext.scope();
+        SearchQueryElementTypeKey<NamedPredicateBuilder> key = PredicateTypeKeys.named(predicateName);
+        this.builder = fieldPath == null ? scope.rootQueryElement(key) : scope.fieldQueryElement(fieldPath, key);
+        builder.factory(fieldPath == null ? predicateFactory : predicateFactory.withRoot(fieldPath));
+    }
 
-	@Override
-	public NamedPredicateOptionsStep param(String name, Object value) {
-		builder.param( name, value );
-		return this;
-	}
+    @Override
+    public NamedPredicateOptionsStep param(String name, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		return builder.build();
-	}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

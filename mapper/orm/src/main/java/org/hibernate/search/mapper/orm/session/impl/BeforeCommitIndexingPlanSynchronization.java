@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.session.impl;
 
 import jakarta.transaction.Status;
 import jakarta.transaction.Synchronization;
-
 import org.hibernate.Transaction;
 import org.hibernate.search.mapper.orm.logging.impl.IndexingLog;
 import org.hibernate.search.mapper.pojo.work.spi.ConfiguredIndexingPlanSynchronizationStrategy;
@@ -17,37 +16,28 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoIndexingPlan;
  */
 class BeforeCommitIndexingPlanSynchronization implements Synchronization {
 
-	private final PojoIndexingPlan indexingPlan;
-	private final HibernateOrmSearchSessionExtension sessionExtension;
-	private final Transaction transactionIdentifier;
-	private final ConfiguredIndexingPlanSynchronizationStrategy synchronizationStrategy;
+    private final PojoIndexingPlan indexingPlan;
 
-	BeforeCommitIndexingPlanSynchronization(PojoIndexingPlan indexingPlan,
-			HibernateOrmSearchSessionExtension sessionExtension, Transaction transactionIdentifier,
-			ConfiguredIndexingPlanSynchronizationStrategy synchronizationStrategy) {
-		this.indexingPlan = indexingPlan;
-		this.sessionExtension = sessionExtension;
-		this.transactionIdentifier = transactionIdentifier;
-		this.synchronizationStrategy = synchronizationStrategy;
-	}
+    private final HibernateOrmSearchSessionExtension sessionExtension;
 
-	@Override
-	public void beforeCompletion() {
-		IndexingLog.INSTANCE.afterCompletionExecuting( transactionIdentifier );
-		synchronizationStrategy.executeAndSynchronize( indexingPlan );
-	}
+    private final Transaction transactionIdentifier;
 
-	@Override
-	public void afterCompletion(int i) {
-		try {
-			if ( Status.STATUS_COMMITTED != i ) {
-				IndexingLog.INSTANCE.afterCompletionCanceling( transactionIdentifier, i );
-				indexingPlan.discard();
-			}
-		}
-		finally {
-			//clean the Synchronization per Transaction
-			sessionExtension.clear( transactionIdentifier );
-		}
-	}
+    private final ConfiguredIndexingPlanSynchronizationStrategy synchronizationStrategy;
+
+    BeforeCommitIndexingPlanSynchronization(PojoIndexingPlan indexingPlan, HibernateOrmSearchSessionExtension sessionExtension, Transaction transactionIdentifier, ConfiguredIndexingPlanSynchronizationStrategy synchronizationStrategy) {
+        this.indexingPlan = indexingPlan;
+        this.sessionExtension = sessionExtension;
+        this.transactionIdentifier = transactionIdentifier;
+        this.synchronizationStrategy = synchronizationStrategy;
+    }
+
+    @Override
+    public void beforeCompletion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void afterCompletion(int i) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,52 +6,44 @@ package org.hibernate.search.backend.lucene.analysis.model.dsl.impl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.analysis.model.dsl.LuceneAnalysisComponentParametersStep;
 import org.hibernate.search.backend.lucene.analysis.model.dsl.LuceneAnalysisOptionalComponentsStep;
 import org.hibernate.search.backend.lucene.logging.impl.AnalysisLog;
-
 import org.apache.lucene.analysis.CharFilterFactory;
 import org.apache.lucene.analysis.TokenFilterFactory;
 
-abstract class AbstractLuceneAnalysisComponentParametersStep<T>
-		implements LuceneAnalysisComponentParametersStep, LuceneAnalysisComponentBuilder<T> {
+abstract class AbstractLuceneAnalysisComponentParametersStep<T> implements LuceneAnalysisComponentParametersStep, LuceneAnalysisComponentBuilder<T> {
 
-	private final LuceneAnalysisOptionalComponentsStep parentStep;
+    private final LuceneAnalysisOptionalComponentsStep parentStep;
 
-	final Map<String, String> params = new LinkedHashMap<>();
+    final Map<String, String> params = new LinkedHashMap<>();
 
-	AbstractLuceneAnalysisComponentParametersStep(LuceneAnalysisOptionalComponentsStep parentStep) {
-		this.parentStep = parentStep;
-	}
+    AbstractLuceneAnalysisComponentParametersStep(LuceneAnalysisOptionalComponentsStep parentStep) {
+        this.parentStep = parentStep;
+    }
 
-	@Override
-	public LuceneAnalysisComponentParametersStep param(String name, String value) {
-		String previous = params.putIfAbsent( name, value );
-		if ( previous != null ) {
-			throw AnalysisLog.INSTANCE.analysisComponentParameterConflict( name, previous, value );
-		}
-		return this;
-	}
+    @Override
+    public LuceneAnalysisComponentParametersStep param(String name, String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneAnalysisComponentParametersStep charFilter(String factoryName) {
-		return parentStep.charFilter( factoryName );
-	}
+    @Override
+    public LuceneAnalysisComponentParametersStep charFilter(String factoryName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneAnalysisComponentParametersStep charFilter(Class<? extends CharFilterFactory> factoryType) {
-		return parentStep.charFilter( factoryType );
-	}
+    @Override
+    public LuceneAnalysisComponentParametersStep charFilter(Class<? extends CharFilterFactory> factoryType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneAnalysisComponentParametersStep tokenFilter(String factoryName) {
-		return parentStep.tokenFilter( factoryName );
-	}
+    @Override
+    public LuceneAnalysisComponentParametersStep tokenFilter(String factoryName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneAnalysisComponentParametersStep tokenFilter(Class<? extends TokenFilterFactory> factoryType) {
-		return parentStep.tokenFilter( factoryType );
-	}
-
+    @Override
+    public LuceneAnalysisComponentParametersStep tokenFilter(Class<? extends TokenFilterFactory> factoryType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -16,23 +16,9 @@ import org.hibernate.search.engine.environment.bean.spi.BeanConfigurationContext
 import org.hibernate.search.engine.environment.bean.spi.BeanConfigurer;
 
 public class ElasticsearchBeanConfigurer implements BeanConfigurer {
-	@Override
-	public void configure(BeanConfigurationContext context) {
-		context.define(
-				BackendFactory.class, ElasticsearchBackendSettings.TYPE_NAME,
-				beanResolver -> BeanHolder.of( new ElasticsearchBackendFactory() )
-		);
-		context.define(
-				IndexLayoutStrategy.class, SimpleIndexLayoutStrategy.NAME,
-				beanResolver -> BeanHolder.of( new SimpleIndexLayoutStrategy() )
-		);
-		context.define(
-				IndexLayoutStrategy.class, NoAliasIndexLayoutStrategy.NAME,
-				beanResolver -> BeanHolder.of( new NoAliasIndexLayoutStrategy() )
-		);
-		context.define(
-				ElasticsearchWorkExecutorProvider.class, DefaultElasticsearchWorkExecutorProvider.DEFAULT_BEAN_NAME,
-				beanResolver -> BeanHolder.of( new DefaultElasticsearchWorkExecutorProvider() )
-		);
-	}
+
+    @Override
+    public void configure(BeanConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

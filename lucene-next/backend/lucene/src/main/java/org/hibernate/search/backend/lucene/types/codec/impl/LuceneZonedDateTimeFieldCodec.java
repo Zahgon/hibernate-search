@@ -11,71 +11,52 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
-
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneLongDomain;
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneNumericDomain;
 import org.hibernate.search.util.common.impl.TimeHelper;
-
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 
 public final class LuceneZonedDateTimeFieldCodec extends AbstractLuceneNumericFieldCodec<ZonedDateTime, Long> {
 
-	private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
-			.append( LuceneOffsetDateTimeFieldCodec.FORMATTER )
-			// ZoneRegionId is optional
-			.optionalStart()
-			.appendLiteral( '[' )
-			.parseCaseSensitive()
-			.appendZoneRegionId()
-			.appendLiteral( ']' )
-			.optionalEnd()
-			.toFormatter( Locale.ROOT )
-			.withResolverStyle( ResolverStyle.STRICT );
+    private static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder().append(LuceneOffsetDateTimeFieldCodec.FORMATTER).// ZoneRegionId is optional
+    optionalStart().appendLiteral('[').parseCaseSensitive().appendZoneRegionId().appendLiteral(']').optionalEnd().toFormatter(Locale.ROOT).withResolverStyle(ResolverStyle.STRICT);
 
-	public LuceneZonedDateTimeFieldCodec(Indexing indexing, DocValues docValues, Storage storage,
-			ZonedDateTime indexNullAsValue) {
-		super( indexing, docValues, storage, indexNullAsValue );
-	}
+    public LuceneZonedDateTimeFieldCodec(Indexing indexing, DocValues docValues, Storage storage, ZonedDateTime indexNullAsValue) {
+        super(indexing, docValues, storage, indexNullAsValue);
+    }
 
-	@Override
-	void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, ZonedDateTime value,
-			Long encodedValue) {
-		documentBuilder.addField( new StoredField( absoluteFieldPath, FORMATTER.format( value ) ) );
-	}
+    @Override
+    void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, ZonedDateTime value, Long encodedValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ZonedDateTime decode(IndexableField field) {
-		String value = field.stringValue();
+    @Override
+    public ZonedDateTime decode(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( value == null ) {
-			return null;
-		}
+    @Override
+    public Long raw(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return TimeHelper.parseZoneDateTime( value, FORMATTER );
-	}
+    @Override
+    public Long encode(ZonedDateTime value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long raw(IndexableField field) {
-		return encode( decode( field ) );
-	}
+    @Override
+    public ZonedDateTime decode(Long encoded) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long encode(ZonedDateTime value) {
-		return value == null ? null : value.toInstant().toEpochMilli();
-	}
+    @Override
+    public LuceneNumericDomain<Long> getDomain() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ZonedDateTime decode(Long encoded) {
-		return Instant.ofEpochMilli( encoded ).atZone( ZoneOffset.UTC );
-	}
-
-	@Override
-	public LuceneNumericDomain<Long> getDomain() {
-		return LuceneLongDomain.get();
-	}
-
-	public Class<Long> encodedType() {
-		return Long.class;
-	}
+    public Class<Long> encodedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

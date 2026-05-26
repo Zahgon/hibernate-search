@@ -21,49 +21,44 @@ import java.util.function.Function;
  */
 public final class InsertionOrder<T> {
 
-	private final AtomicInteger indexProvider = new AtomicInteger();
-	private final Map<T, Key<T>> keys = new ConcurrentHashMap<>();
-	private final Function<? super T, Key<T>> createNewKey =
-			key -> new Key<>( indexProvider.getAndIncrement(), key );
+    private final AtomicInteger indexProvider = new AtomicInteger();
 
-	public Key<T> wrapKey(T key) {
-		return keys.computeIfAbsent( key, createNewKey );
-	}
+    private final Map<T, Key<T>> keys = new ConcurrentHashMap<>();
 
-	public static final class Key<T> implements Comparable<Key<?>> {
-		private final int index;
-		private final T wrapped;
+    private final Function<? super T, Key<T>> createNewKey = key -> new Key<>(indexProvider.getAndIncrement(), key);
 
-		private Key(int index, T wrapped) {
-			this.index = index;
-			this.wrapped = wrapped;
-		}
+    public Key<T> wrapKey(T key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public boolean equals(Object o) {
-			if ( this == o ) {
-				return true;
-			}
-			if ( o == null || getClass() != o.getClass() ) {
-				return false;
-			}
-			Key<?> key = (Key<?>) o;
-			return index == key.index;
-		}
+    public static final class Key<T> implements Comparable<Key<?>> {
 
-		@Override
-		public int hashCode() {
-			return Objects.hash( index );
-		}
+        private final int index;
 
-		@Override
-		public int compareTo(Key<?> o) {
-			return Integer.compare( index, o.index );
-		}
+        private final T wrapped;
 
-		public T get() {
-			return wrapped;
-		}
-	}
+        private Key(int index, T wrapped) {
+            this.index = index;
+            this.wrapped = wrapped;
+        }
 
+        @Override
+        public boolean equals(Object o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public int compareTo(Key<?> o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public T get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

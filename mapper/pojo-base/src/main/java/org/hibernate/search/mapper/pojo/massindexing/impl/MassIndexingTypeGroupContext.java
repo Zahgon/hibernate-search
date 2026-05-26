@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.mapper.pojo.loading.spi.PojoLoadingTypeContext;
 import org.hibernate.search.mapper.pojo.loading.spi.PojoMassIdentifierLoader;
 import org.hibernate.search.mapper.pojo.loading.spi.PojoMassIdentifierLoadingContext;
@@ -20,94 +19,78 @@ import org.hibernate.search.mapper.pojo.massindexing.MassIndexingTypeGroupMonito
 import org.hibernate.search.mapper.pojo.massindexing.spi.PojoMassIndexingContext;
 import org.hibernate.search.util.common.AssertionFailure;
 
-class MassIndexingTypeGroupContext<E>
-		implements MassIndexingTypeGroupMonitorCreateContext, MassIndexingTypeGroupMonitorContext {
+class MassIndexingTypeGroupContext<E> implements MassIndexingTypeGroupMonitorCreateContext, MassIndexingTypeGroupMonitorContext {
 
-	private final Set<MassIndexingType> includedTypes;
-	private final PojoMassIndexingIndexedTypeGroup<E> typeGroup;
-	private final PojoMassIndexingContext massIndexingContext;
-	private final String tenantId;
+    private final Set<MassIndexingType> includedTypes;
 
-	public MassIndexingTypeGroupContext(PojoMassIndexingIndexedTypeGroup<E> typeGroup,
-			PojoMassIndexingContext massIndexingContext, String tenantId) {
-		this.includedTypes = typeGroup.includedTypes().stream().map( PojoLoadingTypeContext::entityName )
-				.map( MassIndexingTypeImpl::new )
-				.collect( Collectors.toSet() );
-		this.typeGroup = typeGroup;
-		this.massIndexingContext = massIndexingContext;
-		this.tenantId = tenantId;
-	}
+    private final PojoMassIndexingIndexedTypeGroup<E> typeGroup;
 
-	PojoMassIndexingContext massIndexingContext() {
-		return massIndexingContext;
-	}
+    private final PojoMassIndexingContext massIndexingContext;
 
-	@Override
-	public Set<MassIndexingType> includedTypes() {
-		return includedTypes;
-	}
+    private final String tenantId;
 
-	@Override
-	public OptionalLong totalCount() {
-		try ( PojoMassIdentifierLoader loader = createLoader() ) {
-			return loader.totalCount();
-		}
-	}
+    public MassIndexingTypeGroupContext(PojoMassIndexingIndexedTypeGroup<E> typeGroup, PojoMassIndexingContext massIndexingContext, String tenantId) {
+        this.includedTypes = typeGroup.includedTypes().stream().map(PojoLoadingTypeContext::entityName).map(MassIndexingTypeImpl::new).collect(Collectors.toSet());
+        this.typeGroup = typeGroup;
+        this.massIndexingContext = massIndexingContext;
+        this.tenantId = tenantId;
+    }
 
-	private PojoMassIdentifierLoader createLoader() {
-		return typeGroup.loadingStrategy().createIdentifierLoader(
-				typeGroup.includedTypes(),
-				new DummyIdentifierLoadingContext<>()
-		);
-	}
+    PojoMassIndexingContext massIndexingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String tenantIdentifier() {
-		return tenantId;
-	}
+    @Override
+    public Set<MassIndexingType> includedTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public MassIndexingTypeGroupMonitorContext withIdentifierLoader(PojoMassIdentifierLoader loader) {
-		return loader::totalCount;
-	}
+    @Override
+    public OptionalLong totalCount() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class MassIndexingTypeImpl implements MassIndexingType {
-		private final String entityName;
+    private PojoMassIdentifierLoader createLoader() {
+        return typeGroup.loadingStrategy().createIdentifierLoader(typeGroup.includedTypes(), new DummyIdentifierLoadingContext<>());
+    }
 
-		private MassIndexingTypeImpl(String entityName) {
-			this.entityName = entityName;
-		}
+    public String tenantIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public String entityName() {
-			return entityName;
-		}
-	}
+    public MassIndexingTypeGroupMonitorContext withIdentifierLoader(PojoMassIdentifierLoader loader) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private class DummyIdentifierLoadingContext<I> implements PojoMassIdentifierLoadingContext<I> {
+    private static class MassIndexingTypeImpl implements MassIndexingType {
 
-		@Override
-		public PojoMassLoadingContext parent() {
-			return massIndexingContext;
-		}
+        private final String entityName;
 
-		@Override
-		public PojoMassIdentifierSink<I> createSink() {
-			// this sink should never be called by Hibernate Search, or anyone else for that matter:
-			return new PojoMassIdentifierSink<>() {
-				@Override
-				public void accept(List<? extends I> batch) throws InterruptedException {
-					throw new AssertionFailure( "An unexpected call to a sink method." );
-				}
+        private MassIndexingTypeImpl(String entityName) {
+            this.entityName = entityName;
+        }
 
-				@Override
-				public void complete() {
-					throw new AssertionFailure( "An unexpected call to a sink method." );
-				}
-			};
-		}
+        @Override
+        public String entityName() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public String tenantIdentifier() {
-			return tenantId;
-		}
-	}
+    private class DummyIdentifierLoadingContext<I> implements PojoMassIdentifierLoadingContext<I> {
+
+        @Override
+        public PojoMassLoadingContext parent() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public PojoMassIdentifierSink<I> createSink() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public String tenantIdentifier() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -22,23 +22,22 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValue
  */
 abstract class AbstractConvertingDefaultBridge<V, F> extends AbstractSimpleDefaultBridge<V, F> {
 
-	@Override
-	public final F toIndexedValue(V value, ValueBridgeToIndexedValueContext context) {
-		return value == null ? null : toConvertedValue( value );
-	}
+    @Override
+    public final F toIndexedValue(V value, ValueBridgeToIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final V fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
-		return value == null ? null : fromConvertedValue( value );
-	}
+    @Override
+    public final V fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final F parse(String value) {
-		return value == null ? null : toConvertedValue( fromString( value ) );
-	}
+    @Override
+    public final F parse(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract F toConvertedValue(V value);
+    protected abstract F toConvertedValue(V value);
 
-	protected abstract V fromConvertedValue(F value);
-
+    protected abstract V fromConvertedValue(F value);
 }

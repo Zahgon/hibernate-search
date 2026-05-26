@@ -7,19 +7,20 @@ package org.hibernate.search.mapper.pojo.model.typepattern.impl;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 class NegatingTypePatternMatcher implements TypePatternMatcher {
-	private final TypePatternMatcher delegate;
 
-	NegatingTypePatternMatcher(TypePatternMatcher delegate) {
-		this.delegate = delegate;
-	}
+    private final TypePatternMatcher delegate;
 
-	@Override
-	public String toString() {
-		return "not(" + delegate.toString() + ")";
-	}
+    NegatingTypePatternMatcher(TypePatternMatcher delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public boolean matches(PojoTypeModel<?> typeToInspect) {
-		return !delegate.matches( typeToInspect );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean matches(PojoTypeModel<?> typeToInspect) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

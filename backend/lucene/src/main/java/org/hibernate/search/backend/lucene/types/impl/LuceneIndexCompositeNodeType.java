@@ -15,32 +15,26 @@ import org.hibernate.search.engine.backend.types.spi.AbstractIndexCompositeNodeT
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public class LuceneIndexCompositeNodeType
-		extends AbstractIndexCompositeNodeType<
-				LuceneSearchIndexScope<?>,
-				LuceneSearchIndexCompositeNodeContext>
-		implements LuceneSearchIndexCompositeNodeTypeContext {
+public class LuceneIndexCompositeNodeType extends AbstractIndexCompositeNodeType<LuceneSearchIndexScope<?>, LuceneSearchIndexCompositeNodeContext> implements LuceneSearchIndexCompositeNodeTypeContext {
 
-	private LuceneIndexCompositeNodeType(Builder builder) {
-		super( builder );
-	}
+    private LuceneIndexCompositeNodeType(Builder builder) {
+        super(builder);
+    }
 
-	public static class Builder
-			extends AbstractIndexCompositeNodeType.Builder<
-					LuceneSearchIndexScope<?>,
-					LuceneSearchIndexCompositeNodeContext> {
-		public Builder(ObjectStructure objectStructure) {
-			super( objectStructure );
-			queryElementFactory( PredicateTypeKeys.EXISTS, LuceneObjectExistsPredicate.Factory.INSTANCE );
-			queryElementFactory( ProjectionTypeKeys.OBJECT, new LuceneObjectProjection.Factory() );
-			if ( ObjectStructure.NESTED.equals( objectStructure ) ) {
-				queryElementFactory( PredicateTypeKeys.NESTED, LuceneNestedPredicate.Factory.INSTANCE );
-			}
-		}
+    public static class Builder extends AbstractIndexCompositeNodeType.Builder<LuceneSearchIndexScope<?>, LuceneSearchIndexCompositeNodeContext> {
 
-		@Override
-		public LuceneIndexCompositeNodeType build() {
-			return new LuceneIndexCompositeNodeType( this );
-		}
-	}
+        public Builder(ObjectStructure objectStructure) {
+            super(objectStructure);
+            queryElementFactory(PredicateTypeKeys.EXISTS, LuceneObjectExistsPredicate.Factory.INSTANCE);
+            queryElementFactory(ProjectionTypeKeys.OBJECT, new LuceneObjectProjection.Factory());
+            if (ObjectStructure.NESTED.equals(objectStructure)) {
+                queryElementFactory(PredicateTypeKeys.NESTED, LuceneNestedPredicate.Factory.INSTANCE);
+            }
+        }
+
+        @Override
+        public LuceneIndexCompositeNodeType build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

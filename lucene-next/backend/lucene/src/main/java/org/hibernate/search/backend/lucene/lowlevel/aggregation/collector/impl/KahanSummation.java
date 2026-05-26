@@ -13,81 +13,69 @@ import java.util.Locale;
  */
 public class KahanSummation {
 
-	private static final double NO_CORRECTION = 0.0;
+    private static final double NO_CORRECTION = 0.0;
 
-	private double value;
-	private double delta;
-	private boolean initialized;
+    private double value;
 
-	/**
-	 * Used to calculate sums using the Kahan summation algorithm.
-	 *
-	 * @param value the sum
-	 * @param delta correction term
-	 */
-	public KahanSummation(double value, double delta) {
-		this.value = value;
-		this.delta = delta;
-	}
+    private double delta;
 
-	/**
-	 * The value of the sum.
-	 */
-	public double value() {
-		return value;
-	}
+    private boolean initialized;
 
-	/**
-	 * The correction term.
-	 */
-	public double delta() {
-		return delta;
-	}
+    /**
+     * Used to calculate sums using the Kahan summation algorithm.
+     *
+     * @param value the sum
+     * @param delta correction term
+     */
+    public KahanSummation(double value, double delta) {
+        this.value = value;
+        this.delta = delta;
+    }
 
-	/**
-	 * Whether anything was actually added to this sum or is the result is supposed to be `null`.
-	 */
-	public boolean initialized() {
-		return initialized;
-	}
+    /**
+     * The value of the sum.
+     */
+    public double value() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Increments the Kahan sum by adding a value without a correction term.
-	 */
-	public KahanSummation add(double value) {
-		return add( value, NO_CORRECTION );
-	}
+    /**
+     * The correction term.
+     */
+    public double delta() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Resets the internal state to use the new value and compensation delta
-	 */
-	public void reset(double value, double delta) {
-		this.value = value;
-		this.delta = delta;
-	}
+    /**
+     * Whether anything was actually added to this sum or is the result is supposed to be `null`.
+     */
+    public boolean initialized() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Increments the Kahan sum by adding two sums, and updating the correction term for reducing numeric errors.
-	 */
-	public KahanSummation add(double value, double delta) {
-		initialized = true;
-		// If the value is Inf or NaN, just add it to the running tally to "convert" to
-		// Inf/NaN. This keeps the behavior bwc from before kahan summing
-		if ( Double.isFinite( value ) ) {
-			this.value = value + this.value;
-		}
-		else {
-			double correctedSum = value + ( this.delta + delta );
-			double updatedValue = this.value + correctedSum;
-			this.delta = correctedSum - ( updatedValue - this.value );
-			this.value = updatedValue;
-		}
+    /**
+     * Increments the Kahan sum by adding a value without a correction term.
+     */
+    public KahanSummation add(double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return this;
-	}
+    /**
+     * Resets the internal state to use the new value and compensation delta
+     */
+    public void reset(double value, double delta) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return String.format( Locale.ROOT, "{value=%s, delta=%s, initialized=%s}", value, delta, initialized );
-	}
+    /**
+     * Increments the Kahan sum by adding two sums, and updating the correction term for reducing numeric errors.
+     */
+    public KahanSummation add(double value, double delta) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -14,32 +14,10 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class IndexedEmbeddedProcessor implements PropertyMappingAnnotationProcessor<IndexedEmbedded> {
 
-	@Override
-	@SuppressWarnings("deprecation") // For IndexedEmbedded.prefix
-	public void process(PropertyMappingStep mappingContext, IndexedEmbedded annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		String cleanedUpPrefix = context.toNullIfDefault( annotation.prefix(), "" );
-
-		String cleanedUpName = context.toNullIfDefault( annotation.name(), "" );
-
-		String[] includePathsArray = annotation.includePaths();
-		String[] excludePathsArray = annotation.excludePaths();
-
-		ContainerExtractorPath extractorPath = context.toContainerExtractorPath( annotation.extraction() );
-
-		Class<?> cleanedUpTargetType = context.toNullIfDefault( annotation.targetType(), void.class );
-
-		ObjectStructure structure = annotation.structure();
-
-		mappingContext.indexedEmbedded( cleanedUpName )
-				.extractors( extractorPath )
-				.prefix( cleanedUpPrefix )
-				.structure( structure )
-				.includeDepth( context.toNullIfDefault( annotation.includeDepth(), -1 ) )
-				.includePaths( MappingAnnotationProcessorUtils.cleanUpPaths( includePathsArray ) )
-				.excludePaths( MappingAnnotationProcessorUtils.cleanUpPaths( excludePathsArray ) )
-				.includeEmbeddedObjectId( annotation.includeEmbeddedObjectId() )
-				.targetType( cleanedUpTargetType );
-	}
-
+    @Override
+    // For IndexedEmbedded.prefix
+    @SuppressWarnings("deprecation")
+    public void process(PropertyMappingStep mappingContext, IndexedEmbedded annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

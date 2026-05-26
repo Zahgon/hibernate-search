@@ -14,25 +14,24 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 public interface ExistsPredicateFieldStep<SR, N extends ExistsPredicateOptionsStep<?>> {
 
-	/**
-	 * Target the given field in the "exists" predicate.
-	 *
-	 * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the index field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 */
-	N field(String fieldPath);
+    /**
+     * Target the given field in the "exists" predicate.
+     *
+     * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the index field
+     * to apply the predicate on.
+     * @return The next step.
+     */
+    N field(String fieldPath);
 
-	/**
-	 * Target the given field in the "exists" predicate.
-	 *
-	 * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the index field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 */
-	@Incubating
-	default N field(ExistsPredicateFieldReference<? super SR> fieldReference) {
-		return field( fieldReference.absolutePath() );
-	}
-
+    /**
+     * Target the given field in the "exists" predicate.
+     *
+     * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the index field
+     * to apply the predicate on.
+     * @return The next step.
+     */
+    @Incubating
+    default N field(ExistsPredicateFieldReference<? super SR> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.model.path;
 
 import java.util.Objects;
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.extractor.mapping.programmatic.ContainerExtractorPath;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 import org.hibernate.search.util.common.impl.Contracts;
@@ -21,97 +20,79 @@ import org.hibernate.search.util.common.impl.Contracts;
  */
 public final class PojoModelPathPropertyNode extends PojoModelPath {
 
-	private final PojoModelPathValueNode parent;
-	private final String propertyName;
+    private final PojoModelPathValueNode parent;
 
-	PojoModelPathPropertyNode(PojoModelPathValueNode parent, String propertyName) {
-		Contracts.assertNotNullNorEmpty( propertyName, "propertyName" );
-		if ( DOT_PATTERN.matcher( propertyName ).find() ) {
-			throw MappingLog.INSTANCE.propertyNameCannotContainDots( propertyName );
-		}
+    private final String propertyName;
 
-		this.parent = parent;
-		this.propertyName = propertyName;
-	}
+    PojoModelPathPropertyNode(PojoModelPathValueNode parent, String propertyName) {
+        Contracts.assertNotNullNorEmpty(propertyName, "propertyName");
+        if (DOT_PATTERN.matcher(propertyName).find()) {
+            throw MappingLog.INSTANCE.propertyNameCannotContainDots(propertyName);
+        }
+        this.parent = parent;
+        this.propertyName = propertyName;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		PojoModelPathPropertyNode that = (PojoModelPathPropertyNode) o;
-		return Objects.equals( parent, that.parent ) && Objects.equals( propertyName, that.propertyName );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( parent, propertyName );
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The model path to the value from which the property represented by this node is extracted.
-	 * May be {@code null}.
-	 */
-	@Override
-	public PojoModelPathValueNode parent() {
-		return parent;
-	}
+    /**
+     * @return The model path to the value from which the property represented by this node is extracted.
+     * May be {@code null}.
+     */
+    @Override
+    public PojoModelPathValueNode parent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param extractorPath The extractor path allowing extraction of a value from this property.
-	 * The extractor path may be invalid: no check will be performed.
-	 * @return A new path representing the current path, with an additional access to the given property at the end.
-	 */
-	public PojoModelPathValueNode value(ContainerExtractorPath extractorPath) {
-		return new PojoModelPathValueNode( this, extractorPath );
-	}
+    /**
+     * @param extractorPath The extractor path allowing extraction of a value from this property.
+     * The extractor path may be invalid: no check will be performed.
+     * @return A new path representing the current path, with an additional access to the given property at the end.
+     */
+    public PojoModelPathValueNode value(ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The name of this property.
-	 */
-	public String propertyName() {
-		return propertyName;
-	}
+    /**
+     * @return The name of this property.
+     */
+    public String propertyName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A simple string representation of this path taking into account property nodes only,
-	 * in the form {@code propertyA.propertyB.propertyC}.
-	 * <p>
-	 * Completely ignores container extractors.
-	 */
-	public String toPropertyString() {
-		StringBuilder builder = new StringBuilder();
-		addPropertyPathsRecursively( builder, this );
-		return builder.toString();
-	}
+    /**
+     * @return A simple string representation of this path taking into account property nodes only,
+     * in the form {@code propertyA.propertyB.propertyC}.
+     * <p>
+     * Completely ignores container extractors.
+     */
+    public String toPropertyString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Optional<PojoModelPathPropertyNode> relativize(PojoModelPathValueNode other) {
-		if ( parent == null ) {
-			return Optional.empty();
-		}
-		else if ( other.equals( parent ) ) {
-			return Optional.of( new PojoModelPathPropertyNode( null, propertyName ) );
-		}
-		else {
-			return parent.relativize( other )
-					.map( newParent -> new PojoModelPathPropertyNode( newParent, propertyName ) );
-		}
-	}
+    public Optional<PojoModelPathPropertyNode> relativize(PojoModelPathValueNode other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(StringBuilder builder) {
-		builder.append( "." ).append( propertyName );
-	}
+    @Override
+    void appendSelfPath(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static void addPropertyPathsRecursively(StringBuilder builder, PojoModelPathPropertyNode propertyNode) {
-		PojoModelPathValueNode parentValueNode = propertyNode.parent();
-		if ( parentValueNode != null ) {
-			addPropertyPathsRecursively( builder, parentValueNode.parent() );
-			builder.append( '.' );
-		}
-		builder.append( propertyNode.propertyName() );
-	}
+    private static void addPropertyPathsRecursively(StringBuilder builder, PojoModelPathPropertyNode propertyNode) {
+        PojoModelPathValueNode parentValueNode = propertyNode.parent();
+        if (parentValueNode != null) {
+            addPropertyPathsRecursively(builder, parentValueNode.parent());
+            builder.append('.');
+        }
+        builder.append(propertyNode.propertyName());
+    }
 }

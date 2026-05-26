@@ -7,7 +7,6 @@ package org.hibernate.search.query.dsl.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.engine.search.aggregation.dsl.AggregationFinalStep;
 import org.hibernate.search.engine.search.aggregation.dsl.RangeAggregationRangeMoreStep;
 import org.hibernate.search.engine.search.aggregation.dsl.RangeAggregationRangeStep;
@@ -21,71 +20,49 @@ import org.hibernate.search.util.common.data.Range;
  * @author Hardy Ferentschik
  */
 public class RangeFacetRequest<T> extends FacetingRequestImpl<Map<Range<T>, Long>> {
-	private final List<FacetRange<T>> facetRangeList;
 
-	RangeFacetRequest(String name, String fieldName, List<FacetRange<T>> facetRanges) {
-		super( name, fieldName );
-		if ( facetRanges == null || facetRanges.isEmpty() ) {
-			throw new IllegalArgumentException( "At least one facet range must be specified" );
-		}
-		this.facetRangeList = facetRanges;
-	}
+    private final List<FacetRange<T>> facetRangeList;
 
-	@Override
-	public AggregationFinalStep<Map<Range<T>, Long>> requestAggregation(TypedSearchAggregationFactory<?> factory) {
-		RangeAggregationRangeStep<?, ?, ?, T, Long> rangeStep = factory
-				.range().field( getFieldName(), getFacetValueType() );
-		RangeAggregationRangeMoreStep<?, ?, ?, ?, T, Long> rangeMoreStep = null;
-		for ( FacetRange<T> facetRange : facetRangeList ) {
-			rangeMoreStep = rangeStep.range( facetRange.range() );
-			rangeStep = rangeMoreStep;
-		}
-		return rangeMoreStep;
-	}
+    RangeFacetRequest(String name, String fieldName, List<FacetRange<T>> facetRanges) {
+        super(name, fieldName);
+        if (facetRanges == null || facetRanges.isEmpty()) {
+            throw new IllegalArgumentException("At least one facet range must be specified");
+        }
+        this.facetRangeList = facetRanges;
+    }
 
-	@Override
-	public List<Facet> toFacets(Map<Range<T>, Long> aggregation) {
-		List<Facet> result = new ArrayList<>( aggregation.size() );
-		for ( Map.Entry<Range<T>, Long> entry : aggregation.entrySet() ) {
-			int facetIndex = findFacetRangeIndex( entry.getKey() );
-			int count = Math.toIntExact( entry.getValue() );
-			if ( count == 0 && !includeZeroCounts ) {
-				continue;
-			}
-			FacetRange<T> range = facetRangeList.get( facetIndex );
-			result.add( new RangeFacetImpl<>( getFacetingName(), getFieldName(), range, count ) );
-		}
-		if ( !sort.equals( FacetSortOrder.RANGE_DEFINITION_ORDER ) ) {
-			result.sort( FacetComparators.get( sort ) );
-		}
-		return result;
-	}
+    @Override
+    public AggregationFinalStep<Map<Range<T>, Long>> requestAggregation(TypedSearchAggregationFactory<?> factory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "RangeFacetRequest{" +
-				"facetRangeList=" + facetRangeList +
-				"} " + super.toString();
-	}
+    @Override
+    public List<Facet> toFacets(Map<Range<T>, Long> aggregation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private Class<T> getFacetValueType() {
-		// safe since we have at least one facet range set
-		T o = facetRangeList.get( 0 ).getMin();
-		if ( o == null ) {
-			o = facetRangeList.get( 0 ).getMax();
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return (Class<T>) o.getClass();
-	}
+    private Class<T> getFacetValueType() {
+        // safe since we have at least one facet range set
+        T o = facetRangeList.get(0).getMin();
+        if (o == null) {
+            o = facetRangeList.get(0).getMax();
+        }
+        return (Class<T>) o.getClass();
+    }
 
-	private int findFacetRangeIndex(Range<T> range) {
-		int index = 0;
-		for ( FacetRange<T> facetRange : facetRangeList ) {
-			if ( facetRange.range().equals( range ) ) {
-				return index;
-			}
-			index++;
-		}
-		return -1;
-	}
+    private int findFacetRangeIndex(Range<T> range) {
+        int index = 0;
+        for (FacetRange<T> facetRange : facetRangeList) {
+            if (facetRange.range().equals(range)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
 }

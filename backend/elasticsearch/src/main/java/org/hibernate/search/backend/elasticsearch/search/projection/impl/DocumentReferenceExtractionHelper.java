@@ -6,30 +6,26 @@ package org.hibernate.search.backend.elasticsearch.search.projection.impl;
 
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchDocumentReference;
 import org.hibernate.search.engine.backend.common.DocumentReference;
-
 import com.google.gson.JsonObject;
 
 public final class DocumentReferenceExtractionHelper implements ProjectionExtractionHelper<DocumentReference> {
 
-	private final ProjectionExtractionHelper<String> mappedTypeNameHelper;
-	private final ProjectionExtractionHelper<String> idHelper;
+    private final ProjectionExtractionHelper<String> mappedTypeNameHelper;
 
-	public DocumentReferenceExtractionHelper(ProjectionExtractionHelper<String> mappedTypeNameHelper,
-			ProjectionExtractionHelper<String> idHelper) {
-		this.mappedTypeNameHelper = mappedTypeNameHelper;
-		this.idHelper = idHelper;
-	}
+    private final ProjectionExtractionHelper<String> idHelper;
 
-	@Override
-	public void request(JsonObject requestBody, ProjectionRequestContext context) {
-		mappedTypeNameHelper.request( requestBody, context );
-		idHelper.request( requestBody, context );
-	}
+    public DocumentReferenceExtractionHelper(ProjectionExtractionHelper<String> mappedTypeNameHelper, ProjectionExtractionHelper<String> idHelper) {
+        this.mappedTypeNameHelper = mappedTypeNameHelper;
+        this.idHelper = idHelper;
+    }
 
-	@Override
-	public DocumentReference extract(JsonObject hit, ProjectionExtractContext context) {
-		String mappedTypeName = mappedTypeNameHelper.extract( hit, context );
-		String id = idHelper.extract( hit, context );
-		return new ElasticsearchDocumentReference( mappedTypeName, id );
-	}
+    @Override
+    public void request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public DocumentReference extract(JsonObject hit, ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

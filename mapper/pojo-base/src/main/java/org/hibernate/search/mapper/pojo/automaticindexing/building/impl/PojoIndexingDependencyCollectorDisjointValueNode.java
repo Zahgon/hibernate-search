@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.automaticindexing.building.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
@@ -25,102 +24,49 @@ import org.hibernate.search.util.common.AssertionFailure;
  *
  * @param <V> The extracted value type
  */
-public class PojoIndexingDependencyCollectorDisjointValueNode<V>
-		extends AbstractPojoIndexingDependencyCollectorValueNode {
+public class PojoIndexingDependencyCollectorDisjointValueNode<V> extends AbstractPojoIndexingDependencyCollectorValueNode {
 
-	private final PojoIndexingDependencyCollectorTypeNode<?> parentNode;
-	private final PojoRawTypeModel<V> inverseSideEntityTypeModel;
-	private final BoundPojoModelPathValueNode<?, ?, ?> inverseAssociationPath;
+    private final PojoIndexingDependencyCollectorTypeNode<?> parentNode;
 
-	PojoIndexingDependencyCollectorDisjointValueNode(PojoIndexingDependencyCollectorTypeNode<?> parentNode,
-			PojoRawTypeModel<V> inverseSideEntityTypeModel,
-			BoundPojoModelPathValueNode<?, ?, ?> inverseAssociationPath,
-			PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
-		super( buildingHelper );
-		this.parentNode = parentNode;
-		this.inverseSideEntityTypeModel = inverseSideEntityTypeModel;
-		this.inverseAssociationPath = inverseAssociationPath;
-		if ( !buildingHelper.isEntity( inverseSideEntityTypeModel ) ) {
-			throw new AssertionFailure(
-					"Encountered a type node whose parent is a disjoint value node, but does not represent an entity type?"
-			);
-		}
-		if ( !inverseAssociationPath.getRootType().equals( inverseSideEntityTypeModel ) ) {
-			throw new AssertionFailure(
-					"Inconsistent root type for " + inverseAssociationPath + "; expected " + inverseSideEntityTypeModel
-			);
-		}
-	}
+    private final PojoRawTypeModel<V> inverseSideEntityTypeModel;
 
-	@Override
-	public PojoIndexingDependencyCollectorTypeNode<?> type() {
-		return new PojoIndexingDependencyCollectorTypeNode<>( this,
-				BoundPojoModelPath.root( inverseSideEntityTypeModel ), buildingHelper );
-	}
+    private final BoundPojoModelPathValueNode<?, ?, ?> inverseAssociationPath;
 
-	@Override
-	PojoIndexingDependencyCollectorTypeNode<?> lastEntityNode() {
-		return parentNode.lastEntityNode();
-	}
+    PojoIndexingDependencyCollectorDisjointValueNode(PojoIndexingDependencyCollectorTypeNode<?> parentNode, PojoRawTypeModel<V> inverseSideEntityTypeModel, BoundPojoModelPathValueNode<?, ?, ?> inverseAssociationPath, PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
+        super(buildingHelper);
+        this.parentNode = parentNode;
+        this.inverseSideEntityTypeModel = inverseSideEntityTypeModel;
+        this.inverseAssociationPath = inverseAssociationPath;
+        if (!buildingHelper.isEntity(inverseSideEntityTypeModel)) {
+            throw new AssertionFailure("Encountered a type node whose parent is a disjoint value node, but does not represent an entity type?");
+        }
+        if (!inverseAssociationPath.getRootType().equals(inverseSideEntityTypeModel)) {
+            throw new AssertionFailure("Inconsistent root type for " + inverseAssociationPath + "; expected " + inverseSideEntityTypeModel);
+        }
+    }
 
-	@Override
-	ReindexOnUpdate reindexOnUpdate() {
-		return parentNode.reindexOnUpdate();
-	}
+    @Override
+    public PojoIndexingDependencyCollectorTypeNode<?> type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void collectDependency(BoundPojoModelPathValueNode<?, ?, ?> dirtyPathFromEntityType) {
-		parentNode.collectDependency( dirtyPathFromEntityType );
-	}
+    @Override
+    PojoIndexingDependencyCollectorTypeNode<?> lastEntityNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void markForReindexing(AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?> inverseSideEntityTypeNodeBuilder,
-			BoundPojoModelPathValueNode<?, ?, ?> dependencyPathFromInverseSideEntityTypeNode) {
-		PojoTypeModel<?> inverseSideEntityType = inverseSideEntityTypeNodeBuilder.getTypeModel();
-		PojoRawTypeModel<?> inverseSideRawEntityType = inverseSideEntityType.rawType();
-		PojoRawTypeModel<?> originalSideRawConcreteEntityType = parentNode.typeModel().rawType();
+    @Override
+    ReindexOnUpdate reindexOnUpdate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PojoModelPathValueNode inverseAssociationUnboundPath = inverseAssociationPath.toUnboundPath();
+    @Override
+    void collectDependency(BoundPojoModelPathValueNode<?, ?, ?> dirtyPathFromEntityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		/*
-		 * This node represents an entity (B) with an association to another entity (A), modeled by "inverseAssociationPath".
-		 * Also, the current method being called means that a bridged applied to entity A uses some value
-		 * from entity B when it is indexed. We don't know how the bridge accesses B,
-		 * but we now the inverse side of that association is "inverseAssociationPath".
-		 * The value from entity B used during indexing is represented by "dependencyPathFromInverseSideEntityTypeNode".
-		 * Thus we must make sure that whenever "dependencyPathFromInverseSideEntityTypeNode" changes in entity B,
-		 * entity A (or its containing indexed entity) gets reindexed.
-		 * This is what the calls below achieve.
-		 */
-
-		// Attempt to apply the inverse path to the given builder
-		PojoImplicitReindexingResolverValueNodeBuilderDelegate<?> valueNodeBuilderDelegate;
-		Set<? extends PojoRawTypeModel<?>> valueNodeTypeConcreteEntitySubTypes;
-		try {
-			valueNodeBuilderDelegate = PojoModelPathBinder.bind(
-					inverseSideEntityTypeNodeBuilder, inverseAssociationUnboundPath,
-					PojoImplicitReindexingResolverBuilder.walker()
-			);
-
-			PojoRawTypeModel<?> inverseSideRawType = valueNodeBuilderDelegate.getTypeModel().rawType();
-			valueNodeTypeConcreteEntitySubTypes = parentNode.getConcreteEntitySubTypesForTypeToReindex(
-					originalSideRawConcreteEntityType, inverseSideRawType
-			);
-		}
-		// Note: this should catch errors related to properties not found, among others.
-		catch (RuntimeException e) {
-			throw MappingLog.INSTANCE.cannotApplyExplicitInverseAssociationPath(
-					inverseSideRawEntityType, inverseAssociationUnboundPath,
-					originalSideRawConcreteEntityType,
-					e.getMessage(), e
-			);
-		}
-
-		parentNode.markForReindexing(
-				valueNodeBuilderDelegate,
-				valueNodeTypeConcreteEntitySubTypes,
-				dependencyPathFromInverseSideEntityTypeNode
-		);
-	}
-
+    @Override
+    void markForReindexing(AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?> inverseSideEntityTypeNodeBuilder, BoundPojoModelPathValueNode<?, ?, ?> dependencyPathFromInverseSideEntityTypeNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

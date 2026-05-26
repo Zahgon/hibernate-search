@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.bridge.binding.impl;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaElement;
 import org.hibernate.search.engine.backend.types.dsl.IndexFieldTypeFactory;
 import org.hibernate.search.engine.environment.bean.BeanHolder;
@@ -27,133 +26,95 @@ import org.hibernate.search.util.common.impl.AbstractCloser;
 import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
 
-public class PropertyBindingContextImpl<P> extends AbstractCompositeBindingContext
-		implements PropertyBindingContext {
+public class PropertyBindingContextImpl<P> extends AbstractCompositeBindingContext implements PropertyBindingContext {
 
-	private final PojoBootstrapIntrospector introspector;
-	private final PojoTypeModel<?> propertyTypeModel;
-	private final PojoModelPropertyRootElement<P> bridgedElement;
-	private final PojoPropertyIndexingDependencyConfigurationContextImpl<P> dependencyContext;
-	private final IndexFieldTypeFactory indexFieldTypeFactory;
-	private final PojoTreeContributionListener listener;
-	private final IndexSchemaElement indexSchemaElement;
+    private final PojoBootstrapIntrospector introspector;
 
-	private PartialBinding<P> partialBinding;
+    private final PojoTypeModel<?> propertyTypeModel;
 
-	public PropertyBindingContextImpl(BeanResolver beanResolver,
-			PojoBootstrapIntrospector introspector,
-			PojoTypeModel<P> propertyTypeModel,
-			IndexBindingContext indexBindingContext,
-			PojoModelPropertyRootElement<P> bridgedElement,
-			PojoPropertyIndexingDependencyConfigurationContextImpl<P> dependencyContext,
-			Map<String, Object> params) {
-		super( beanResolver, params );
-		this.introspector = introspector;
-		this.propertyTypeModel = propertyTypeModel;
-		this.bridgedElement = bridgedElement;
-		this.dependencyContext = dependencyContext;
-		this.indexFieldTypeFactory = indexBindingContext.createTypeFactory();
-		this.listener = new PojoTreeContributionListener();
-		this.indexSchemaElement = indexBindingContext.schemaElement( listener );
-	}
+    private final PojoModelPropertyRootElement<P> bridgedElement;
 
-	@Override
-	public <P2> void bridge(Class<P2> expectedPropertyType, PropertyBridge<P2> bridge) {
-		bridge( expectedPropertyType, BeanHolder.of( bridge ) );
-	}
+    private final PojoPropertyIndexingDependencyConfigurationContextImpl<P> dependencyContext;
 
-	@Override
-	public <P2> void bridge(Class<P2> expectedPropertyType, BeanHolder<? extends PropertyBridge<P2>> bridgeHolder) {
-		checkAndBind( bridgeHolder, introspector.typeModel( expectedPropertyType ) );
-	}
+    private final IndexFieldTypeFactory indexFieldTypeFactory;
 
-	@Override
-	public PojoModelProperty bridgedElement() {
-		return bridgedElement;
-	}
+    private final PojoTreeContributionListener listener;
 
-	@Override
-	public PojoPropertyIndexingDependencyConfigurationContext dependencies() {
-		return dependencyContext;
-	}
+    private final IndexSchemaElement indexSchemaElement;
 
-	@Override
-	public IndexFieldTypeFactory typeFactory() {
-		return indexFieldTypeFactory;
-	}
+    private PartialBinding<P> partialBinding;
 
-	@Override
-	public IndexSchemaElement indexSchemaElement() {
-		return indexSchemaElement;
-	}
+    public PropertyBindingContextImpl(BeanResolver beanResolver, PojoBootstrapIntrospector introspector, PojoTypeModel<P> propertyTypeModel, IndexBindingContext indexBindingContext, PojoModelPropertyRootElement<P> bridgedElement, PojoPropertyIndexingDependencyConfigurationContextImpl<P> dependencyContext, Map<String, Object> params) {
+        super(beanResolver, params);
+        this.introspector = introspector;
+        this.propertyTypeModel = propertyTypeModel;
+        this.bridgedElement = bridgedElement;
+        this.dependencyContext = dependencyContext;
+        this.indexFieldTypeFactory = indexBindingContext.createTypeFactory();
+        this.listener = new PojoTreeContributionListener();
+        this.indexSchemaElement = indexBindingContext.schemaElement(listener);
+    }
 
-	public Optional<BoundPropertyBridge<P>> applyBinder(PropertyBinder binder) {
-		try {
-			// This call should set the partial binding
-			binder.bind( this );
-			if ( partialBinding == null ) {
-				throw MappingLog.INSTANCE.missingBridgeForBinder( binder );
-			}
+    @Override
+    public <P2> void bridge(Class<P2> expectedPropertyType, PropertyBridge<P2> bridge) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			checkBridgeDependencies( bridgedElement, dependencyContext );
+    @Override
+    public <P2> void bridge(Class<P2> expectedPropertyType, BeanHolder<? extends PropertyBridge<P2>> bridgeHolder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			// If all fields are filtered out, we should ignore the bridge
-			if ( !listener.isAnySchemaContributed() ) {
-				try ( Closer<RuntimeException> closer = new Closer<>() ) {
-					partialBinding.abort( closer );
-				}
-				return Optional.empty();
-			}
+    @Override
+    public PojoModelProperty bridgedElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			return Optional.of( partialBinding.complete(
-					bridgedElement, dependencyContext
-			) );
-		}
-		catch (RuntimeException e) {
-			if ( partialBinding != null ) {
-				partialBinding.abort( new SuppressingCloser( e ) );
-			}
-			throw e;
-		}
-		finally {
-			partialBinding = null;
-		}
-	}
+    @Override
+    public PojoPropertyIndexingDependencyConfigurationContext dependencies() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("resource") // For the eclipse-compiler: complains on bridge not bing closed
-	private <P2> void checkAndBind(BeanHolder<? extends PropertyBridge<P2>> bridgeHolder,
-			PojoRawTypeModel<?> expectedPropertyTypeModel) {
-		if ( !propertyTypeModel.rawType().isSubTypeOf( expectedPropertyTypeModel ) ) {
-			throw MappingLog.INSTANCE.invalidInputTypeForBridge( bridgeHolder.get(), propertyTypeModel,
-					expectedPropertyTypeModel );
-		}
+    @Override
+    public IndexFieldTypeFactory typeFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@SuppressWarnings("unchecked") // We check that P extends P2 explicitly using reflection (see above)
-		BeanHolder<? extends PropertyBridge<? super P>> castedBridgeHolder =
-				(BeanHolder<? extends PropertyBridge<? super P>>) bridgeHolder;
+    @Override
+    public IndexSchemaElement indexSchemaElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		this.partialBinding = new PartialBinding<>( castedBridgeHolder );
-	}
+    public Optional<BoundPropertyBridge<P>> applyBinder(PropertyBinder binder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class PartialBinding<P> {
-		private final BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder;
+    // For the eclipse-compiler: complains on bridge not bing closed
+    @SuppressWarnings("resource")
+    private <P2> void checkAndBind(BeanHolder<? extends PropertyBridge<P2>> bridgeHolder, PojoRawTypeModel<?> expectedPropertyTypeModel) {
+        if (!propertyTypeModel.rawType().isSubTypeOf(expectedPropertyTypeModel)) {
+            throw MappingLog.INSTANCE.invalidInputTypeForBridge(bridgeHolder.get(), propertyTypeModel, expectedPropertyTypeModel);
+        }
+        // We check that P extends P2 explicitly using reflection (see above)
+        @SuppressWarnings("unchecked")
+        BeanHolder<? extends PropertyBridge<? super P>> castedBridgeHolder = (BeanHolder<? extends PropertyBridge<? super P>>) bridgeHolder;
+        this.partialBinding = new PartialBinding<>(castedBridgeHolder);
+    }
 
-		private PartialBinding(BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder) {
-			this.bridgeHolder = bridgeHolder;
-		}
+    private static class PartialBinding<P> {
 
-		void abort(AbstractCloser<?, ?> closer) {
-			closer.push( PropertyBridge::close, bridgeHolder, BeanHolder::get );
-			closer.push( BeanHolder::close, bridgeHolder );
-		}
+        private final BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder;
 
-		BoundPropertyBridge<P> complete(PojoModelPropertyRootElement<P> bridgedElement,
-				PojoPropertyIndexingDependencyConfigurationContextImpl<P> dependencyContext) {
-			return new BoundPropertyBridge<>(
-					bridgeHolder,
-					bridgedElement,
-					dependencyContext
-			);
-		}
-	}
+        private PartialBinding(BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder) {
+            this.bridgeHolder = bridgeHolder;
+        }
+
+        void abort(AbstractCloser<?, ?> closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        BoundPropertyBridge<P> complete(PojoModelPropertyRootElement<P> bridgedElement, PojoPropertyIndexingDependencyConfigurationContextImpl<P> dependencyContext) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

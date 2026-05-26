@@ -12,16 +12,15 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 @Incubating
 public abstract class AbstractProjectionDefinition<P> implements ProjectionDefinition<P>, ToStringTreeAppendable {
 
-	@Override
-	public String toString() {
-		return toStringTree();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "type", type() );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract String type();
-
+    protected abstract String type();
 }

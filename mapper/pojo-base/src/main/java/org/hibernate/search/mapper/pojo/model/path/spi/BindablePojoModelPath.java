@@ -8,19 +8,21 @@ import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 public final class BindablePojoModelPath {
-	private final PojoTypeModel<?> rootType;
-	private final PojoModelPathValueNode path;
 
-	public BindablePojoModelPath(PojoTypeModel<?> rootType, PojoModelPathValueNode path) {
-		this.rootType = rootType;
-		this.path = path;
-	}
+    private final PojoTypeModel<?> rootType;
 
-	public PojoTypeModel<?> rootType() {
-		return rootType;
-	}
+    private final PojoModelPathValueNode path;
 
-	public PojoModelPathValueNode path() {
-		return path;
-	}
+    public BindablePojoModelPath(PojoTypeModel<?> rootType, PojoModelPathValueNode path) {
+        this.rootType = rootType;
+        this.path = path;
+    }
+
+    public PojoTypeModel<?> rootType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PojoModelPathValueNode path() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

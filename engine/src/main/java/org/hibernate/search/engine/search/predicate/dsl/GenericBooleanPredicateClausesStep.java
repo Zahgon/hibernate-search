@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.predicate.dsl;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 
 /**
@@ -20,77 +19,68 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
  * @param <S> The "self" type (the actual exposed type of this collector).
  * @param <C> The "collector" type (the type of collector passed to the consumer in {@link #with(Consumer)}.
  */
-public interface GenericBooleanPredicateClausesStep<
-		SR,
-		S extends C,
-		C extends BooleanPredicateOptionsCollector<SR, ?>>
-		extends BooleanPredicateOptionsCollector<SR, C>, PredicateScoreStep<S>, PredicateFinalStep {
+public interface GenericBooleanPredicateClausesStep<SR, S extends C, C extends BooleanPredicateOptionsCollector<SR, ?>> extends BooleanPredicateOptionsCollector<SR, C>, PredicateScoreStep<S>, PredicateFinalStep {
 
-	@Override
-	S with(Consumer<? super C> contributor);
+    @Override
+    S with(Consumer<? super C> contributor);
 
-	@Override
-	S must(SearchPredicate searchPredicate);
+    @Override
+    S must(SearchPredicate searchPredicate);
 
-	@Override
-	S mustNot(SearchPredicate searchPredicate);
+    @Override
+    S mustNot(SearchPredicate searchPredicate);
 
-	@Override
-	S should(SearchPredicate searchPredicate);
+    @Override
+    S should(SearchPredicate searchPredicate);
 
-	@Override
-	S filter(SearchPredicate searchPredicate);
+    @Override
+    S filter(SearchPredicate searchPredicate);
 
-	@Override
-	default S must(PredicateFinalStep dslFinalStep) {
-		return must( dslFinalStep.toPredicate() );
-	}
+    @Override
+    default S must(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default S mustNot(PredicateFinalStep dslFinalStep) {
-		return mustNot( dslFinalStep.toPredicate() );
-	}
+    @Override
+    default S mustNot(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default S should(PredicateFinalStep dslFinalStep) {
-		return should( dslFinalStep.toPredicate() );
-	}
+    @Override
+    default S should(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default S filter(PredicateFinalStep dslFinalStep) {
-		return filter( dslFinalStep.toPredicate() );
-	}
+    @Override
+    default S filter(PredicateFinalStep dslFinalStep) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	S must(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    @Override
+    S must(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	@Override
-	S mustNot(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    @Override
+    S mustNot(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	@Override
-	S should(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    @Override
+    S should(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	@Override
-	S filter(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
+    @Override
+    S filter(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor);
 
-	@Override
-	default S minimumShouldMatchNumber(int matchingClausesNumber) {
-		return minimumShouldMatch()
-				.ifMoreThan( 0 ).thenRequireNumber( matchingClausesNumber )
-				.end();
-	}
+    @Override
+    default S minimumShouldMatchNumber(int matchingClausesNumber) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default S minimumShouldMatchPercent(int matchingClausesPercent) {
-		return minimumShouldMatch()
-				.ifMoreThan( 0 ).thenRequirePercent( matchingClausesPercent )
-				.end();
-	}
+    @Override
+    default S minimumShouldMatchPercent(int matchingClausesPercent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	MinimumShouldMatchConditionStep<S> minimumShouldMatch();
+    @Override
+    MinimumShouldMatchConditionStep<S> minimumShouldMatch();
 
-	@Override
-	S minimumShouldMatch(Consumer<? super MinimumShouldMatchConditionStep<?>> constraintContributor);
-
+    @Override
+    S minimumShouldMatch(Consumer<? super MinimumShouldMatchConditionStep<?>> constraintContributor);
 }

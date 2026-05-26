@@ -13,38 +13,35 @@ import org.hibernate.search.mapper.pojo.bridge.binding.ValueBindingContext;
 import org.hibernate.search.mapper.pojo.model.PojoModelValue;
 
 final class ValueBindingContextToIdentifierBindingContextAdapter<I> implements IdentifierBindingContext<I> {
-	private final ValueBindingContext<I> delegate;
 
-	public ValueBindingContextToIdentifierBindingContextAdapter(ValueBindingContext<I> delegate) {
-		this.delegate = delegate;
-	}
+    private final ValueBindingContext<I> delegate;
 
-	@Override
-	public <I2> void bridge(Class<I2> expectedIdentifierType, IdentifierBridge<I2> bridge) {
-		delegate.bridge( expectedIdentifierType, new IdentifierBridgeToValueBridgeAdapter<>( bridge ),
-				delegate.typeFactory().asString() );
-	}
+    public ValueBindingContextToIdentifierBindingContextAdapter(ValueBindingContext<I> delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public <I2> void bridge(Class<I2> expectedIdentifierType, BeanHolder<? extends IdentifierBridge<I2>> bridgeHolder) {
-		delegate.bridge( expectedIdentifierType,
-				BeanHolder.of( new IdentifierBridgeToValueBridgeAdapter<>( bridgeHolder.get() ) )
-						.withDependencyAutoClosing( bridgeHolder ),
-				delegate.typeFactory().asString() );
-	}
+    @Override
+    public <I2> void bridge(Class<I2> expectedIdentifierType, IdentifierBridge<I2> bridge) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoModelValue<I> bridgedElement() {
-		return delegate.bridgedElement();
-	}
+    @Override
+    public <I2> void bridge(Class<I2> expectedIdentifierType, BeanHolder<? extends IdentifierBridge<I2>> bridgeHolder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NamedValues params() {
-		return delegate.params();
-	}
+    @Override
+    public PojoModelValue<I> bridgedElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BeanResolver beanResolver() {
-		return delegate.beanResolver();
-	}
+    @Override
+    public NamedValues params() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

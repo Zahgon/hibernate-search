@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import org.hibernate.search.query.facet.Facet;
@@ -13,81 +12,54 @@ import org.hibernate.search.query.facet.Facet;
  * @author Hardy Ferentschik
  */
 public abstract class AbstractFacet implements Facet {
-	private final String facetingName;
-	private final String absoluteFieldPath;
-	private final String value;
-	private final int count;
 
-	public AbstractFacet(String facetingName, String absoluteFieldPath, String value, int count) {
-		this.facetingName = facetingName;
-		this.absoluteFieldPath = absoluteFieldPath;
-		this.count = count;
-		this.value = value;
-	}
+    private final String facetingName;
 
-	@Override
-	public int getCount() {
-		return count;
-	}
+    private final String absoluteFieldPath;
 
-	@Override
-	public String getValue() {
-		return value;
-	}
+    private final String value;
 
-	@Override
-	public String getFieldName() {
-		return absoluteFieldPath;
-	}
+    private final int count;
 
-	@Override
-	public String getFacetingName() {
-		return facetingName;
-	}
+    public AbstractFacet(String facetingName, String absoluteFieldPath, String value, int count) {
+        this.facetingName = facetingName;
+        this.absoluteFieldPath = absoluteFieldPath;
+        this.count = count;
+        this.value = value;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
+    @Override
+    public int getCount() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		AbstractFacet that = (AbstractFacet) o;
+    @Override
+    public String getValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( facetingName != null ? !facetingName.equals( that.facetingName ) : that.facetingName != null ) {
-			return false;
-		}
-		if ( absoluteFieldPath != null
-				? !absoluteFieldPath.equals( that.absoluteFieldPath )
-				: that.absoluteFieldPath != null ) {
-			return false;
-		}
-		if ( value != null ? !value.equals( that.value ) : that.value != null ) {
-			return false;
-		}
+    @Override
+    public String getFieldName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return true;
-	}
+    @Override
+    public String getFacetingName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		int result = facetingName != null ? facetingName.hashCode() : 0;
-		result = 31 * result + ( absoluteFieldPath != null ? absoluteFieldPath.hashCode() : 0 );
-		result = 31 * result + ( value != null ? value.hashCode() : 0 );
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append( "AbstractFacet" );
-		sb.append( "{facetingName='" ).append( facetingName ).append( '\'' );
-		sb.append( ", absoluteFieldPath='" ).append( absoluteFieldPath ).append( '\'' );
-		sb.append( ", value='" ).append( value ).append( '\'' );
-		sb.append( ", count=" ).append( count );
-		sb.append( '}' );
-		return sb.toString();
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

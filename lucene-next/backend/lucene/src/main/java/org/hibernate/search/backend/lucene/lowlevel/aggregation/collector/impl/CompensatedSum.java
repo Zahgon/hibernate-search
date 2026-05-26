@@ -13,38 +13,30 @@ import java.util.Locale;
  */
 public class CompensatedSum implements DoubleAggregationFunction<CompensatedSum> {
 
-	private final KahanSummation kahanSummation = new KahanSummation( 0, 0 );
+    private final KahanSummation kahanSummation = new KahanSummation(0, 0);
 
-	@Override
-	public void apply(double value) {
-		kahanSummation.add( value );
-	}
+    @Override
+    public void apply(double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void merge(DoubleAggregationFunction<CompensatedSum> sibling) {
-		KahanSummation other = sibling.implementation().kahanSummation;
-		if ( other.initialized() ) {
-			kahanSummation.add( other.value(), other.delta() );
-		}
-	}
+    @Override
+    public void merge(DoubleAggregationFunction<CompensatedSum> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Double result() {
-		if ( kahanSummation.initialized() ) {
-			return kahanSummation.value();
-		}
-		else {
-			return null;
-		}
-	}
+    @Override
+    public Double result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompensatedSum implementation() {
-		return this;
-	}
+    @Override
+    public CompensatedSum implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return String.format( Locale.ROOT, "CompensatedSum{kahanSummation=%s}", kahanSummation );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

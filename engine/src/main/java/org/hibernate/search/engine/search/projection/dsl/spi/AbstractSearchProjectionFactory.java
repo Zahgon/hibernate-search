@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.projection.dsl.spi;
 
 import java.util.List;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.common.dsl.spi.DslExtensionState;
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.engine.search.common.ValueModel;
@@ -41,116 +40,101 @@ import org.hibernate.search.engine.search.spi.ResultsCompositor;
 import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.util.common.impl.Contracts;
 
-public abstract class AbstractSearchProjectionFactory<
-		SR,
-		S extends ExtendedSearchProjectionFactory<SR, S, R, E>,
-		SC extends SearchProjectionIndexScope<?>,
-		R,
-		E>
-		implements ExtendedSearchProjectionFactory<SR, S, R, E> {
+public abstract class AbstractSearchProjectionFactory<SR, S extends ExtendedSearchProjectionFactory<SR, S, R, E>, SC extends SearchProjectionIndexScope<?>, R, E> implements ExtendedSearchProjectionFactory<SR, S, R, E> {
 
-	protected final SearchProjectionDslContext<SC> dslContext;
+    protected final SearchProjectionDslContext<SC> dslContext;
 
-	public AbstractSearchProjectionFactory(SearchProjectionDslContext<SC> dslContext) {
-		this.dslContext = dslContext;
-	}
+    public AbstractSearchProjectionFactory(SearchProjectionDslContext<SC> dslContext) {
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public DocumentReferenceProjectionOptionsStep<?> documentReference() {
-		return new DocumentReferenceProjectionOptionsStepImpl( dslContext );
-	}
+    @Override
+    public DocumentReferenceProjectionOptionsStep<?> documentReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> FieldProjectionValueStep<?, T> field(String fieldPath, Class<T> clazz, ValueModel valueModel) {
-		Contracts.assertNotNull( clazz, "clazz" );
-		return new FieldProjectionValueStepImpl<>( dslContext, fieldPath, clazz, valueModel );
-	}
+    @Override
+    public <T> FieldProjectionValueStep<?, T> field(String fieldPath, Class<T> clazz, ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FieldProjectionValueStep<?, Object> field(String fieldPath, ValueModel valueModel) {
-		return field( fieldPath, Object.class, valueModel );
-	}
+    @Override
+    public FieldProjectionValueStep<?, Object> field(String fieldPath, ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EntityReferenceProjectionOptionsStep<?, R> entityReference() {
-		return new EntityReferenceProjectionOptionsStepImpl<>( dslContext );
-	}
+    @Override
+    public EntityReferenceProjectionOptionsStep<?, R> entityReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <I> IdProjectionOptionsStep<?, I> id(Class<I> requestedIdentifierType) {
-		Contracts.assertNotNull( requestedIdentifierType, "requestedIdentifierType" );
-		return new IdProjectionOptionsStepImpl<>( dslContext, requestedIdentifierType );
-	}
+    @Override
+    public <I> IdProjectionOptionsStep<?, I> id(Class<I> requestedIdentifierType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EntityProjectionOptionsStep<?, E> entity() {
-		return new EntityProjectionOptionsStepImpl<>( dslContext, this, null );
-	}
+    @Override
+    public EntityProjectionOptionsStep<?, E> entity() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> EntityProjectionOptionsStep<?, T> entity(Class<T> requestedEntityType) {
-		Contracts.assertNotNull( requestedEntityType, "requestedEntityType" );
-		return new EntityProjectionOptionsStepImpl<>( dslContext, this, requestedEntityType );
-	}
+    @Override
+    public <T> EntityProjectionOptionsStep<?, T> entity(Class<T> requestedEntityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ScoreProjectionOptionsStep<?> score() {
-		return new ScoreProjectionOptionsStepImpl( dslContext );
-	}
+    @Override
+    public ScoreProjectionOptionsStep<?> score() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DistanceToFieldProjectionValueStep<?, Double> distance(String fieldPath, GeoPoint center) {
-		Contracts.assertNotNull( center, "center" );
-		return new DistanceToFieldProjectionValueStepImpl( dslContext, fieldPath, center );
-	}
+    @Override
+    public DistanceToFieldProjectionValueStep<?, Double> distance(String fieldPath, GeoPoint center) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeProjectionInnerStep object(String objectFieldPath) {
-		Contracts.assertNotNull( objectFieldPath, "objectFieldPath" );
-		return new CompositeProjectionInnerStepImpl<>( dslContext, this, objectFieldPath );
-	}
+    @Override
+    public CompositeProjectionInnerStep object(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeProjectionInnerStep composite() {
-		return new CompositeProjectionInnerStepImpl<>( dslContext, this );
-	}
+    @Override
+    public CompositeProjectionInnerStep composite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeProjectionValueStep<?, List<?>> composite(SearchProjection<?>... projections) {
-		return new CompositeProjectionValueStepImpl<>( dslContext.scope().projectionBuilders().composite(),
-				projections, ResultsCompositor.fromList( projections.length ) );
-	}
+    @Override
+    public CompositeProjectionValueStep<?, List<?>> composite(SearchProjection<?>... projections) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> ProjectionFinalStep<T> constant(T value) {
-		return new StaticProjectionFinalStep<>( dslContext.scope().projectionBuilders().constant( value ) );
-	}
+    @Override
+    public <T> ProjectionFinalStep<T> constant(T value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> ProjectionFinalStep<T> withParameters(
-			Function<? super NamedValues, ? extends ProjectionFinalStep<T>> projectionCreator) {
-		return new StaticProjectionFinalStep<>( dslContext.scope().projectionBuilders().withParameters( projectionCreator ) );
-	}
+    @Override
+    public <T> ProjectionFinalStep<T> withParameters(Function<? super NamedValues, ? extends ProjectionFinalStep<T>> projectionCreator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(SearchProjectionFactoryExtension<T, R, E> extension) {
-		return DslExtensionState.returnIfSupported(
-				extension, extension.extendOptional( this )
-		);
-	}
+    @Override
+    public <T> T extension(SearchProjectionFactoryExtension<T, R, E> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchProjectionFactoryExtensionIfSupportedStep<SR, T, R, E> extension() {
-		return new SearchProjectionFactoryExtensionStep<>( this );
-	}
+    @Override
+    public <T> SearchProjectionFactoryExtensionIfSupportedStep<SR, T, R, E> extension() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final String toAbsolutePath(String relativeFieldPath) {
-		return dslContext.scope().toAbsolutePath( relativeFieldPath );
-	}
+    @Override
+    public final String toAbsolutePath(String relativeFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public HighlightProjectionOptionsStep highlight(String fieldPath) {
-		return new HighlightProjectionOptionsStepImpl( dslContext, fieldPath );
-	}
+    @Override
+    public HighlightProjectionOptionsStep highlight(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

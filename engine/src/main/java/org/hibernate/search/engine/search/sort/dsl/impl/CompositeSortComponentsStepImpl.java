@@ -9,29 +9,26 @@ import org.hibernate.search.engine.search.sort.dsl.CompositeSortComponentsStep;
 import org.hibernate.search.engine.search.sort.dsl.TypedSearchSortFactory;
 import org.hibernate.search.engine.search.sort.dsl.spi.SearchSortDslContext;
 
-public final class CompositeSortComponentsStepImpl<SR>
-		implements CompositeSortComponentsStep<SR, CompositeSortComponentsStepImpl<SR>> {
+public final class CompositeSortComponentsStepImpl<SR> implements CompositeSortComponentsStep<SR, CompositeSortComponentsStepImpl<SR>> {
 
-	private SearchSortDslContext<SR, ?, ?> dslContext;
+    private SearchSortDslContext<SR, ?, ?> dslContext;
 
-	public CompositeSortComponentsStepImpl(SearchSortDslContext<SR, ?, ?> dslContext) {
-		this.dslContext = dslContext;
-	}
+    public CompositeSortComponentsStepImpl(SearchSortDslContext<SR, ?, ?> dslContext) {
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public CompositeSortComponentsStepImpl<SR> add(SearchSort searchSort) {
-		dslContext = dslContext.append( searchSort );
-		return this;
-	}
+    @Override
+    public CompositeSortComponentsStepImpl<SR> add(SearchSort searchSort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchSortFactory<SR> then() {
-		return dslContext.then();
-	}
+    @Override
+    public TypedSearchSortFactory<SR> then() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSort toSort() {
-		return dslContext.toSort();
-	}
-
+    @Override
+    public SearchSort toSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

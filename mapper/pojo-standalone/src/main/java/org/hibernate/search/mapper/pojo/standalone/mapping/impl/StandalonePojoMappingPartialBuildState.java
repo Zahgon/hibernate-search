@@ -15,38 +15,25 @@ import org.hibernate.search.mapper.pojo.standalone.schema.management.impl.Schema
 
 public class StandalonePojoMappingPartialBuildState implements MappingPartialBuildState {
 
-	private static final ConfigurationProperty<SchemaManagementStrategyName> SCHEMA_MANAGEMENT_STRATEGY =
-			ConfigurationProperty.forKey( StandalonePojoMapperSettings.Radicals.SCHEMA_MANAGEMENT_STRATEGY )
-					.as( SchemaManagementStrategyName.class, SchemaManagementStrategyName::of )
-					.withDefault( StandalonePojoMapperSettings.Defaults.SCHEMA_MANAGEMENT_STRATEGY )
-					.build();
+    private static final ConfigurationProperty<SchemaManagementStrategyName> SCHEMA_MANAGEMENT_STRATEGY = ConfigurationProperty.forKey(StandalonePojoMapperSettings.Radicals.SCHEMA_MANAGEMENT_STRATEGY).as(SchemaManagementStrategyName.class, SchemaManagementStrategyName::of).withDefault(StandalonePojoMapperSettings.Defaults.SCHEMA_MANAGEMENT_STRATEGY).build();
 
-	private static final ConfigurationProperty<MassIndexingDefaultCleanOperation> INDEXING_MASS_DEFAULT_CLEAN_OPERATION =
-			ConfigurationProperty.forKey( StandalonePojoMapperSettings.Radicals.INDEXING_MASS_DEFAULT_CLEAN_OPERATION )
-					.as( MassIndexingDefaultCleanOperation.class, MassIndexingDefaultCleanOperation::of )
-					.withDefault( StandalonePojoMapperSettings.Defaults.INDEXING_MASS_DEFAULT_CLEAN_OPERATION )
-					.build();
+    private static final ConfigurationProperty<MassIndexingDefaultCleanOperation> INDEXING_MASS_DEFAULT_CLEAN_OPERATION = ConfigurationProperty.forKey(StandalonePojoMapperSettings.Radicals.INDEXING_MASS_DEFAULT_CLEAN_OPERATION).as(MassIndexingDefaultCleanOperation.class, MassIndexingDefaultCleanOperation::of).withDefault(StandalonePojoMapperSettings.Defaults.INDEXING_MASS_DEFAULT_CLEAN_OPERATION).build();
 
-	private final PojoMappingDelegate mappingDelegate;
-	private final StandalonePojoTypeContextContainer typeContextContainer;
+    private final PojoMappingDelegate mappingDelegate;
 
-	StandalonePojoMappingPartialBuildState(PojoMappingDelegate mappingDelegate,
-			StandalonePojoTypeContextContainer typeContextContainer) {
-		this.mappingDelegate = mappingDelegate;
-		this.typeContextContainer = typeContextContainer;
-	}
+    private final StandalonePojoTypeContextContainer typeContextContainer;
 
-	@Override
-	public void closeOnFailure() {
-		mappingDelegate.close();
-	}
+    StandalonePojoMappingPartialBuildState(PojoMappingDelegate mappingDelegate, StandalonePojoTypeContextContainer typeContextContainer) {
+        this.mappingDelegate = mappingDelegate;
+        this.typeContextContainer = typeContextContainer;
+    }
 
-	public StandalonePojoMapping finalizeMapping(MappingFinalizationContext context) {
-		SchemaManagementStrategyName schemaManagementStrategyName = SCHEMA_MANAGEMENT_STRATEGY.get(
-				context.configurationPropertySource() );
-		SchemaManagementListener schemaManagementListener = new SchemaManagementListener( schemaManagementStrategyName );
-		return new StandalonePojoMapping( mappingDelegate, typeContextContainer, schemaManagementListener,
-				INDEXING_MASS_DEFAULT_CLEAN_OPERATION.get( context.configurationPropertySource() ) );
-	}
+    @Override
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public StandalonePojoMapping finalizeMapping(MappingFinalizationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

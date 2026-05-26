@@ -8,63 +8,36 @@ import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneNumericDoma
 
 public abstract class AbstractLuceneNumericFieldCodec<F, E extends Number> implements LuceneFieldCodec<F, E> {
 
-	private final Indexing indexing;
-	private final DocValues docValues;
-	private final Storage storage;
-	private final F indexNullAsValue;
+    private final Indexing indexing;
 
-	public AbstractLuceneNumericFieldCodec(Indexing indexing, DocValues docValues, Storage storage, F indexNullAsValue) {
-		this.indexing = indexing;
-		this.docValues = docValues;
-		this.storage = storage;
-		this.indexNullAsValue = indexNullAsValue;
-	}
+    private final DocValues docValues;
 
-	@Override
-	public final void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value) {
-		if ( value == null && indexNullAsValue != null ) {
-			value = indexNullAsValue;
-		}
+    private final Storage storage;
 
-		if ( value == null ) {
-			return;
-		}
+    private final F indexNullAsValue;
 
-		E encodedValue = encode( value );
+    public AbstractLuceneNumericFieldCodec(Indexing indexing, DocValues docValues, Storage storage, F indexNullAsValue) {
+        this.indexing = indexing;
+        this.docValues = docValues;
+        this.storage = storage;
+        this.indexNullAsValue = indexNullAsValue;
+    }
 
-		LuceneNumericDomain<E> domain = getDomain();
+    @Override
+    public final void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( Indexing.ENABLED == indexing ) {
-			documentBuilder.addField( domain.createIndexField( absoluteFieldPath, encodedValue ) );
-		}
+    @Override
+    public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( DocValues.ENABLED == docValues ) {
-			documentBuilder.addField( domain.createSortedDocValuesField( absoluteFieldPath, encodedValue ) );
-		}
-		else {
-			// For the "exists" predicate
-			documentBuilder.addFieldName( absoluteFieldPath );
-		}
+    public abstract LuceneNumericDomain<E> getDomain();
 
-		if ( Storage.ENABLED == storage ) {
-			addStoredToDocument( documentBuilder, absoluteFieldPath, value, encodedValue );
-		}
-	}
+    abstract void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value, E encodedValue);
 
-	@Override
-	public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		return getClass() == obj.getClass();
-	}
-
-	public abstract LuceneNumericDomain<E> getDomain();
-
-	abstract void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath,
-			F value, E encodedValue);
-
-	public Double sortedDocValueToDouble(Long value) {
-		return getDomain().sortedDocValueToDouble( value );
-	}
+    public Double sortedDocValueToDouble(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

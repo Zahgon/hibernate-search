@@ -5,37 +5,33 @@
 package org.hibernate.search.backend.elasticsearch.search.projection.impl;
 
 import java.util.function.Supplier;
-
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.util.common.SearchException;
-
 import com.google.gson.JsonObject;
 
-public class ElasticsearchThrowingProjection<T> extends AbstractElasticsearchProjection<T>
-		implements ElasticsearchSearchProjection.Extractor<Object, T> {
-	private final Supplier<SearchException> exceptionSupplier;
+public class ElasticsearchThrowingProjection<T> extends AbstractElasticsearchProjection<T> implements ElasticsearchSearchProjection.Extractor<Object, T> {
 
-	public ElasticsearchThrowingProjection(ElasticsearchSearchIndexScope<?> scope,
-			Supplier<SearchException> exceptionSupplier) {
-		super( scope );
-		this.exceptionSupplier = exceptionSupplier;
-	}
+    private final Supplier<SearchException> exceptionSupplier;
 
-	@Override
-	public Extractor<?, T> request(JsonObject requestBody, ProjectionRequestContext context) {
-		return this;
-	}
+    public ElasticsearchThrowingProjection(ElasticsearchSearchIndexScope<?> scope, Supplier<SearchException> exceptionSupplier) {
+        super(scope);
+        this.exceptionSupplier = exceptionSupplier;
+    }
 
-	@Override
-	public Object extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonObject source,
-			ProjectionExtractContext context) {
-		throw exceptionSupplier.get();
-	}
+    @Override
+    public Extractor<?, T> request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T transform(LoadingResult<?> loadingResult, Object extractedData, ProjectionTransformContext context) {
-		throw exceptionSupplier.get();
-	}
+    @Override
+    public Object extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonObject source, ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public T transform(LoadingResult<?> loadingResult, Object extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.aggregation.dsl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.util.common.annotation.Incubating;
 
@@ -17,25 +16,21 @@ import org.hibernate.search.util.common.annotation.Incubating;
  * @param <PDF> The type of factory used to create predicates in {@link #filter(Function)}.
  */
 @Incubating
-public interface CountValuesAggregationOptionsStep<
-		SR,
-		S extends CountValuesAggregationOptionsStep<SR, ?, PDF>,
-		PDF extends TypedSearchPredicateFactory<SR>>
-		extends AggregationFinalStep<Long>, AggregationFilterStep<SR, S, PDF> {
+public interface CountValuesAggregationOptionsStep<SR, S extends CountValuesAggregationOptionsStep<SR, ?, PDF>, PDF extends TypedSearchPredicateFactory<SR>> extends AggregationFinalStep<Long>, AggregationFilterStep<SR, S, PDF> {
 
-	/**
-	 * Count only distinct field values.
-	 *
-	 * @return The next step.
-	 */
-	default S distinct() {
-		return distinct( true );
-	}
+    /**
+     * Count only distinct field values.
+     *
+     * @return The next step.
+     */
+    default S distinct() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Specify whether to count distinct or all field values.
-	 * @param distinct Use {@code true} if only distinct field values should be counted, {@code false} otherwise.
-	 * @return The next step.
-	 */
-	S distinct(boolean distinct);
+    /**
+     * Specify whether to count distinct or all field values.
+     * @param distinct Use {@code true} if only distinct field values should be counted, {@code false} otherwise.
+     * @return The next step.
+     */
+    S distinct(boolean distinct);
 }

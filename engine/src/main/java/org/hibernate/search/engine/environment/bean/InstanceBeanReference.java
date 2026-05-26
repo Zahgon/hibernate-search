@@ -8,29 +8,27 @@ import org.hibernate.search.util.common.impl.Contracts;
 
 final class InstanceBeanReference<T> implements BeanReference<T> {
 
-	private final T instance;
+    private final T instance;
 
-	InstanceBeanReference(T instance) {
-		Contracts.assertNotNull( instance, "instance" );
-		this.instance = instance;
-	}
+    InstanceBeanReference(T instance) {
+        Contracts.assertNotNull(instance, "instance");
+        this.instance = instance;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[instance=" + instance + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BeanHolder<T> resolve(BeanResolver beanResolver) {
-		return BeanHolder.of( instance );
-	}
+    @Override
+    public BeanHolder<T> resolve(BeanResolver beanResolver) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // Checked using reflection
-	public <U> BeanReference<? extends U> asSubTypeOf(Class<U> expectedType) {
-		// Let the type itself throw a ClassCastException if something is wrong
-		expectedType.cast( instance );
-		// The cast above worked, so we can do this safely:
-		return (BeanReference<? extends U>) this;
-	}
+    @Override
+    // Checked using reflection
+    @SuppressWarnings("unchecked")
+    public <U> BeanReference<? extends U> asSubTypeOf(Class<U> expectedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

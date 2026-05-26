@@ -8,38 +8,30 @@ import java.util.Locale;
 
 public class Min implements AggregationFunction<Min> {
 
-	private Long min;
+    private Long min;
 
-	@Override
-	public void apply(long value) {
-		if ( min == null ) {
-			min = value;
-			return;
-		}
+    @Override
+    public void apply(long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		min = Math.min( min, value );
-	}
+    @Override
+    public void merge(AggregationFunction<Min> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void merge(AggregationFunction<Min> sibling) {
-		Long other = sibling.implementation().min;
-		if ( other != null ) {
-			apply( other );
-		}
-	}
+    @Override
+    public Long result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long result() {
-		return min;
-	}
+    @Override
+    public Min implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Min implementation() {
-		return this;
-	}
-
-	@Override
-	public String toString() {
-		return String.format( Locale.ROOT, "Min{min=%d}", min );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.document.model.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.lowlevel.codec.impl.HibernateSearchLuceneCodec;
 import org.hibernate.search.backend.lucene.lowlevel.common.impl.AnalyzerConstants;
 import org.hibernate.search.engine.backend.analysis.spi.AnalysisDescriptorRegistry;
@@ -14,111 +13,87 @@ import org.hibernate.search.engine.backend.document.model.spi.AbstractIndexModel
 import org.hibernate.search.engine.backend.document.model.spi.IndexFieldFilter;
 import org.hibernate.search.engine.backend.document.model.spi.IndexIdentifier;
 import org.hibernate.search.engine.backend.metamodel.IndexDescriptor;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.DelegatingAnalyzerWrapper;
 import org.apache.lucene.codecs.Codec;
 
-public class LuceneIndexModel extends AbstractIndexModel<LuceneIndexModel, LuceneIndexRoot, LuceneIndexField>
-		implements AutoCloseable, IndexDescriptor {
+public class LuceneIndexModel extends AbstractIndexModel<LuceneIndexModel, LuceneIndexRoot, LuceneIndexField> implements AutoCloseable, IndexDescriptor {
 
-	private final boolean hasNestedDocuments;
+    private final boolean hasNestedDocuments;
 
-	private final IndexingScopedAnalyzer indexingAnalyzer;
-	private final SearchScopedAnalyzer searchAnalyzer;
-	private final Codec codec;
+    private final IndexingScopedAnalyzer indexingAnalyzer;
 
-	public LuceneIndexModel(AnalysisDescriptorRegistry analysisDescriptorRegistry, String hibernateSearchName,
-			String mappedTypeName,
-			IndexIdentifier identifier,
-			LuceneIndexRoot rootNode, Map<String, LuceneIndexField> staticFields,
-			List<? extends AbstractLuceneIndexFieldTemplate<?>> fieldTemplates,
-			boolean hasNestedDocuments) {
-		super( analysisDescriptorRegistry, hibernateSearchName, mappedTypeName, identifier, rootNode, staticFields,
-				fieldTemplates );
-		this.indexingAnalyzer = new IndexingScopedAnalyzer();
-		this.searchAnalyzer = new SearchScopedAnalyzer();
-		this.hasNestedDocuments = hasNestedDocuments;
-		this.codec = new HibernateSearchLuceneCodec( this );
-	}
+    private final SearchScopedAnalyzer searchAnalyzer;
 
-	@Override
-	public void close() {
-		indexingAnalyzer.close();
-	}
+    private final Codec codec;
 
-	@Override
-	protected LuceneIndexModel self() {
-		return this;
-	}
+    public LuceneIndexModel(AnalysisDescriptorRegistry analysisDescriptorRegistry, String hibernateSearchName, String mappedTypeName, IndexIdentifier identifier, LuceneIndexRoot rootNode, Map<String, LuceneIndexField> staticFields, List<? extends AbstractLuceneIndexFieldTemplate<?>> fieldTemplates, boolean hasNestedDocuments) {
+        super(analysisDescriptorRegistry, hibernateSearchName, mappedTypeName, identifier, rootNode, staticFields, fieldTemplates);
+        this.indexingAnalyzer = new IndexingScopedAnalyzer();
+        this.searchAnalyzer = new SearchScopedAnalyzer();
+        this.hasNestedDocuments = hasNestedDocuments;
+        this.codec = new HibernateSearchLuceneCodec(this);
+    }
 
-	public boolean hasNestedDocuments() {
-		return hasNestedDocuments;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Analyzer getIndexingAnalyzer() {
-		return indexingAnalyzer;
-	}
+    @Override
+    protected LuceneIndexModel self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Analyzer getSearchAnalyzer() {
-		return searchAnalyzer;
-	}
+    public boolean hasNestedDocuments() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Codec codec() {
-		return codec;
-	}
+    public Analyzer getIndexingAnalyzer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * An analyzer similar to {@link org.hibernate.search.backend.lucene.analysis.impl.ScopedAnalyzer},
-	 * except the field &rarr; analyzer map is implemented by querying the model
-	 * and retrieving the indexing analyzer.
-	 * This allows taking into account dynamic fields created through templates.
-	 */
-	private class IndexingScopedAnalyzer extends DelegatingAnalyzerWrapper {
-		protected IndexingScopedAnalyzer() {
-			super( PER_FIELD_REUSE_STRATEGY );
-		}
+    public Analyzer getSearchAnalyzer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected Analyzer getWrappedAnalyzer(String fieldName) {
-			LuceneIndexField field = fieldOrNull( fieldName, IndexFieldFilter.ALL );
-			if ( field == null ) {
-				return AnalyzerConstants.KEYWORD_ANALYZER;
-			}
+    public Codec codec() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			Analyzer analyzer = field.toValueField().type().indexingAnalyzerOrNormalizer();
-			if ( analyzer == null ) {
-				return AnalyzerConstants.KEYWORD_ANALYZER;
-			}
+    /**
+     * An analyzer similar to {@link org.hibernate.search.backend.lucene.analysis.impl.ScopedAnalyzer},
+     * except the field &rarr; analyzer map is implemented by querying the model
+     * and retrieving the indexing analyzer.
+     * This allows taking into account dynamic fields created through templates.
+     */
+    private class IndexingScopedAnalyzer extends DelegatingAnalyzerWrapper {
 
-			return analyzer;
-		}
-	}
+        protected IndexingScopedAnalyzer() {
+            super(PER_FIELD_REUSE_STRATEGY);
+        }
 
-	/**
-	 * An analyzer similar to {@link org.hibernate.search.backend.lucene.analysis.impl.ScopedAnalyzer},
-	 * except the field &rarr; analyzer map is implemented by querying the model
-	 * and retrieving the search analyzer.
-	 * This allows taking into account dynamic fields created through templates.
-	 */
-	private class SearchScopedAnalyzer extends DelegatingAnalyzerWrapper {
-		protected SearchScopedAnalyzer() {
-			super( PER_FIELD_REUSE_STRATEGY );
-		}
+        @Override
+        protected Analyzer getWrappedAnalyzer(String fieldName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		protected Analyzer getWrappedAnalyzer(String fieldName) {
-			LuceneIndexField field = fieldOrNull( fieldName, IndexFieldFilter.ALL );
-			if ( field == null ) {
-				return AnalyzerConstants.KEYWORD_ANALYZER;
-			}
+    /**
+     * An analyzer similar to {@link org.hibernate.search.backend.lucene.analysis.impl.ScopedAnalyzer},
+     * except the field &rarr; analyzer map is implemented by querying the model
+     * and retrieving the search analyzer.
+     * This allows taking into account dynamic fields created through templates.
+     */
+    private class SearchScopedAnalyzer extends DelegatingAnalyzerWrapper {
 
-			Analyzer analyzer = field.toValueField().type().searchAnalyzerOrNormalizer();
-			if ( analyzer == null ) {
-				return AnalyzerConstants.KEYWORD_ANALYZER;
-			}
+        protected SearchScopedAnalyzer() {
+            super(PER_FIELD_REUSE_STRATEGY);
+        }
 
-			return analyzer;
-		}
-	}
+        @Override
+        protected Analyzer getWrappedAnalyzer(String fieldName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

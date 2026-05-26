@@ -5,22 +5,20 @@
 package org.hibernate.search.engine.search.predicate.dsl.impl;
 
 import java.util.Arrays;
-
 import org.hibernate.search.engine.search.predicate.dsl.PhrasePredicateFieldMoreStep;
 import org.hibernate.search.engine.search.predicate.dsl.PhrasePredicateFieldStep;
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 
-public final class PhrasePredicateFieldStepImpl<SR>
-		implements PhrasePredicateFieldStep<SR, PhrasePredicateFieldMoreStep<SR, ?, ?>> {
+public final class PhrasePredicateFieldStepImpl<SR> implements PhrasePredicateFieldStep<SR, PhrasePredicateFieldMoreStep<SR, ?, ?>> {
 
-	private final PhrasePredicateFieldMoreStepImpl.CommonState<SR> commonState;
+    private final PhrasePredicateFieldMoreStepImpl.CommonState<SR> commonState;
 
-	public PhrasePredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
-		this.commonState = new PhrasePredicateFieldMoreStepImpl.CommonState<>( dslContext );
-	}
+    public PhrasePredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
+        this.commonState = new PhrasePredicateFieldMoreStepImpl.CommonState<>(dslContext);
+    }
 
-	@Override
-	public PhrasePredicateFieldMoreStep<SR, ?, ?> fields(String... fieldPaths) {
-		return new PhrasePredicateFieldMoreStepImpl<>( commonState, Arrays.asList( fieldPaths ) );
-	}
+    @Override
+    public PhrasePredicateFieldMoreStep<SR, ?, ?> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.mapper.pojo.extractor.ContainerExtractor;
@@ -57,305 +56,215 @@ import org.hibernate.search.util.common.reflect.impl.GenericTypeContext;
  */
 public class ContainerExtractorBinder {
 
-	private final BeanResolver beanResolver;
-	private final ContainerExtractorRegistry containerExtractorRegistry;
-	private final TypePatternMatcherFactory typePatternMatcherFactory;
-	private final FirstMatchingExtractorContributor defaultExtractorContributor =
-			new FirstMatchingExtractorContributor();
-	private final Map<String, SingleExtractorContributor> extractorContributorCache = new HashMap<>();
+    private final BeanResolver beanResolver;
 
-	public ContainerExtractorBinder(BeanResolver beanResolver,
-			ContainerExtractorRegistry containerExtractorRegistry,
-			TypePatternMatcherFactory typePatternMatcherFactory) {
-		this.beanResolver = beanResolver;
-		this.containerExtractorRegistry = containerExtractorRegistry;
-		this.typePatternMatcherFactory = typePatternMatcherFactory;
-		for ( String extractorName : containerExtractorRegistry.defaults() ) {
-			addDefaultExtractor( extractorName );
-		}
-	}
+    private final ContainerExtractorRegistry containerExtractorRegistry;
 
-	/**
-	 * Try to bind a container extractor path to a given source type,
-	 * i.e. to resolve the possibly implicit extractor path ({@link ContainerExtractorPath#defaultExtractors()})
-	 * and to validate that all extractors in the path can be applied.
-	 *
-	 * @param sourceType A model of the source type to apply extractors to.
-	 * @param extractorPath The list of extractors to apply.
-	 * @param <C> The source type.
-	 * @return The resolved extractor path, or an empty optional if
-	 * one of the extractors in the path cannot be applied.
-	 */
-	public <C> Optional<BoundContainerExtractorPath<C, ?>> tryBindPath(PojoTypeModel<C> sourceType,
-			ContainerExtractorPath extractorPath) {
-		ExtractorResolutionState<C> state = new ExtractorResolutionState<>( sourceType );
-		if ( extractorPath.isDefault() ) {
-			defaultExtractorContributor.tryAppend( state );
-		}
-		else {
-			for ( String extractorName : extractorPath.explicitExtractorNames() ) {
-				ExtractorContributor extractorContributor = getExtractorContributorForName( extractorName );
-				if ( !extractorContributor.tryAppend( state ) ) {
-					/*
-					 * Assume failure, even if a previous extractor was applied successfully:
-					 * we want either every extractor to be applied, or none.
-					 */
-					return Optional.empty();
-				}
-			}
-		}
-		return Optional.of( state.build() );
-	}
+    private final TypePatternMatcherFactory typePatternMatcherFactory;
 
-	/**
-	 * Bind a container extractor path to a given source type,
-	 * i.e. resolve the possibly implicit extractor path ({@link ContainerExtractorPath#defaultExtractors()})
-	 * and validate that all extractors in the path can be applied,
-	 * or fail.
-	 *
-	 * @param sourceType A model of the source type to apply extractors to.
-	 * @param extractorPath The list of extractors to apply.
-	 * @param <C> The source type.
-	 * @return The bound extractor path.
-	 * @throws SearchException if
-	 * one of the extractors in the path cannot be applied.
-	 */
-	public <C> BoundContainerExtractorPath<C, ?> bindPath(PojoTypeModel<C> sourceType,
-			ContainerExtractorPath extractorPath) {
-		ExtractorResolutionState<C> state = new ExtractorResolutionState<>( sourceType );
-		if ( extractorPath.isDefault() ) {
-			defaultExtractorContributor.tryAppend( state );
-		}
-		else {
-			for ( String extractorName : extractorPath.explicitExtractorNames() ) {
-				SingleExtractorContributor extractorContributor = getExtractorContributorForName( extractorName );
-				extractorContributor.append( state );
-			}
-		}
-		return state.build();
-	}
+    private final FirstMatchingExtractorContributor defaultExtractorContributor = new FirstMatchingExtractorContributor();
 
-	/**
-	 * Create a container value extractor from a bound path, or fail.
-	 *
-	 * @param boundPath The bound path to create the extractor from.
-	 * @param <C> The source type.
-	 * @param <V> The extracted value type.
-	 * @return The extractor.
-	 * @throws AssertionFailure if the bound path was empty
-	 */
-	// Checks are performed using reflection when building the resolved path
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public <C, V> ContainerExtractorHolder<C, V> create(BoundContainerExtractorPath<C, V> boundPath) {
-		if ( boundPath.getExtractorPath().isEmpty() ) {
-			throw new AssertionFailure(
-					"Received a request to create extractors, but the extractor path was empty."
-			);
-		}
-		ContainerExtractorHolder<C, ?> extractorHolder = null;
-		List<BeanHolder<?>> beanHolders = new ArrayList<>();
-		try {
-			for ( String extractorName : boundPath.getExtractorPath().explicitExtractorNames() ) {
-				ContainerExtractorDefinition<?> extractorDefinition =
-						containerExtractorRegistry.forName( extractorName );
-				BeanHolder<? extends ContainerExtractor> newExtractorHolder = extractorDefinition.reference()
-						.resolve( beanResolver );
-				beanHolders.add( newExtractorHolder );
-				if ( extractorHolder == null ) {
-					// The use of a raw type is fine here:
-					// - This is the first extractor, so we know from previous reflection checks that it accepts type C
-					// - The BeanHolder's get() method, by contract, always returns the same instance,
-					//   so we know the returned extractor will always return values of the same type V.
-					extractorHolder = new SingleContainerExtractorHolder<>( (BeanHolder) newExtractorHolder );
-				}
-				else {
-					// The use of a raw type is fine here:
-					// - The BeanHolder's get() method, by contract, always returns the same instance,
-					//   so we know the returned extractor will always return values of the same type V.
-					extractorHolder = new ChainingContainerExtractorHolder<>( extractorHolder,
-							(BeanHolder) newExtractorHolder );
-				}
-			}
-			// Final extractor: must return values of type V
-			return (ContainerExtractorHolder<C, V>) extractorHolder;
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e ).pushAll( BeanHolder::close, beanHolders );
-			throw e;
-		}
-	}
+    private final Map<String, SingleExtractorContributor> extractorContributorCache = new HashMap<>();
 
-	public <C> boolean isDefaultExtractorPath(PojoTypeModel<C> sourceType, ContainerExtractorPath extractorPath) {
-		if ( extractorPath.isDefault() ) {
-			return true;
-		}
-		else {
-			ExtractorResolutionState<C> state = new ExtractorResolutionState<>( sourceType );
-			return defaultExtractorContributor.tryMatch( state, extractorPath.explicitExtractorNames() );
-		}
-	}
+    public ContainerExtractorBinder(BeanResolver beanResolver, ContainerExtractorRegistry containerExtractorRegistry, TypePatternMatcherFactory typePatternMatcherFactory) {
+        this.beanResolver = beanResolver;
+        this.containerExtractorRegistry = containerExtractorRegistry;
+        this.typePatternMatcherFactory = typePatternMatcherFactory;
+        for (String extractorName : containerExtractorRegistry.defaults()) {
+            addDefaultExtractor(extractorName);
+        }
+    }
 
-	private void addDefaultExtractor(String extractorName) {
-		ExtractorContributor extractorContributor = getExtractorContributorForName( extractorName );
-		defaultExtractorContributor.addCandidate( extractorContributor );
-	}
+    /**
+     * Try to bind a container extractor path to a given source type,
+     * i.e. to resolve the possibly implicit extractor path ({@link ContainerExtractorPath#defaultExtractors()})
+     * and to validate that all extractors in the path can be applied.
+     *
+     * @param sourceType A model of the source type to apply extractors to.
+     * @param extractorPath The list of extractors to apply.
+     * @param <C> The source type.
+     * @return The resolved extractor path, or an empty optional if
+     * one of the extractors in the path cannot be applied.
+     */
+    public <C> Optional<BoundContainerExtractorPath<C, ?>> tryBindPath(PojoTypeModel<C> sourceType, ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SingleExtractorContributor getExtractorContributorForName(String extractorName) {
-		return extractorContributorCache.computeIfAbsent( extractorName, this::createExtractorContributorForName );
-	}
+    /**
+     * Bind a container extractor path to a given source type,
+     * i.e. resolve the possibly implicit extractor path ({@link ContainerExtractorPath#defaultExtractors()})
+     * and validate that all extractors in the path can be applied,
+     * or fail.
+     *
+     * @param sourceType A model of the source type to apply extractors to.
+     * @param extractorPath The list of extractors to apply.
+     * @param <C> The source type.
+     * @return The bound extractor path.
+     * @throws SearchException if
+     * one of the extractors in the path cannot be applied.
+     */
+    public <C> BoundContainerExtractorPath<C, ?> bindPath(PojoTypeModel<C> sourceType, ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("rawtypes") // Checks are implemented using reflection
-	private SingleExtractorContributor createExtractorContributorForName(String extractorName) {
-		Class<? extends ContainerExtractor> extractorClass = containerExtractorRegistry.forName( extractorName ).type();
-		GenericTypeContext typeContext = new GenericTypeContext( extractorClass );
-		Type typePattern = typeContext.resolveTypeArgument( ContainerExtractor.class, 0 )
-				.orElseThrow( () -> MappingLog.INSTANCE.cannotInferContainerExtractorClassTypePattern( extractorClass, null ) );
-		Type typeToExtract = typeContext.resolveTypeArgument( ContainerExtractor.class, 1 )
-				.orElseThrow( () -> MappingLog.INSTANCE.cannotInferContainerExtractorClassTypePattern( extractorClass, null ) );
-		ExtractingTypePatternMatcher typePatternMatcher;
-		try {
-			typePatternMatcher = typePatternMatcherFactory.createExtractingMatcher( typePattern, typeToExtract );
-		}
-		catch (UnsupportedOperationException e) {
-			throw MappingLog.INSTANCE.cannotInferContainerExtractorClassTypePattern( extractorClass, e );
-		}
-		return new SingleExtractorContributor( typePatternMatcher, extractorName, extractorClass );
-	}
+    /**
+     * Create a container value extractor from a bound path, or fail.
+     *
+     * @param boundPath The bound path to create the extractor from.
+     * @param <C> The source type.
+     * @param <V> The extracted value type.
+     * @return The extractor.
+     * @throws AssertionFailure if the bound path was empty
+     */
+    // Checks are performed using reflection when building the resolved path
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public <C, V> ContainerExtractorHolder<C, V> create(BoundContainerExtractorPath<C, V> boundPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private interface ExtractorContributor {
+    public <C> boolean isDefaultExtractorPath(PojoTypeModel<C> sourceType, ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		/**
-		 * @param state The state to append an extractor to
-		 * @return {@code true} if the current type was accepted by this contributor and an extractor was added,
-		 * {@code false} if the type was rejected and no extractor was added.
-		 */
-		boolean tryAppend(ExtractorResolutionState<?> state);
+    private void addDefaultExtractor(String extractorName) {
+        ExtractorContributor extractorContributor = getExtractorContributorForName(extractorName);
+        defaultExtractorContributor.addCandidate(extractorContributor);
+    }
 
-	}
+    private SingleExtractorContributor getExtractorContributorForName(String extractorName) {
+        return extractorContributorCache.computeIfAbsent(extractorName, this::createExtractorContributorForName);
+    }
 
-	@SuppressWarnings("rawtypes") // Checks are implemented using reflection
-	private static class SingleExtractorContributor implements ExtractorContributor {
-		private final ExtractingTypePatternMatcher typePatternMatcher;
-		private final String extractorName;
-		private final Class<? extends ContainerExtractor> extractorClass;
+    // Checks are implemented using reflection
+    @SuppressWarnings("rawtypes")
+    private SingleExtractorContributor createExtractorContributorForName(String extractorName) {
+        Class<? extends ContainerExtractor> extractorClass = containerExtractorRegistry.forName(extractorName).type();
+        GenericTypeContext typeContext = new GenericTypeContext(extractorClass);
+        Type typePattern = typeContext.resolveTypeArgument(ContainerExtractor.class, 0).orElseThrow(() -> MappingLog.INSTANCE.cannotInferContainerExtractorClassTypePattern(extractorClass, null));
+        Type typeToExtract = typeContext.resolveTypeArgument(ContainerExtractor.class, 1).orElseThrow(() -> MappingLog.INSTANCE.cannotInferContainerExtractorClassTypePattern(extractorClass, null));
+        ExtractingTypePatternMatcher typePatternMatcher;
+        try {
+            typePatternMatcher = typePatternMatcherFactory.createExtractingMatcher(typePattern, typeToExtract);
+        } catch (UnsupportedOperationException e) {
+            throw MappingLog.INSTANCE.cannotInferContainerExtractorClassTypePattern(extractorClass, e);
+        }
+        return new SingleExtractorContributor(typePatternMatcher, extractorName, extractorClass);
+    }
 
-		SingleExtractorContributor(ExtractingTypePatternMatcher typePatternMatcher,
-				String extractorName,
-				Class<? extends ContainerExtractor> extractorClass) {
-			this.typePatternMatcher = typePatternMatcher;
-			this.extractorName = extractorName;
-			this.extractorClass = extractorClass;
-		}
+    private interface ExtractorContributor {
 
-		@Override
-		public String toString() {
-			return "SingleExtractorContributor[" + extractorName + " (" + typePatternMatcher + ")]";
-		}
+        /**
+         * @param state The state to append an extractor to
+         * @return {@code true} if the current type was accepted by this contributor and an extractor was added,
+         * {@code false} if the type was rejected and no extractor was added.
+         */
+        boolean tryAppend(ExtractorResolutionState<?> state);
+    }
 
-		@Override
-		public boolean tryAppend(ExtractorResolutionState<?> state) {
-			Optional<? extends PojoTypeModel<?>> resultTypeOptional =
-					typePatternMatcher.extract( state.extractedType );
-			if ( resultTypeOptional.isPresent() ) {
-				state.append( extractorName, resultTypeOptional.get() );
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
+    // Checks are implemented using reflection
+    @SuppressWarnings("rawtypes")
+    private static class SingleExtractorContributor implements ExtractorContributor {
 
-		void append(ExtractorResolutionState<?> state) {
-			if ( !tryAppend( state ) ) {
-				throw MappingLog.INSTANCE.invalidContainerExtractorForType( extractorName, extractorClass,
-						state.extractedType );
-			}
-		}
-	}
+        private final ExtractingTypePatternMatcher typePatternMatcher;
 
-	private static class FirstMatchingExtractorContributor implements ExtractorContributor {
-		private final List<ExtractorContributor> candidates = new ArrayList<>();
+        private final String extractorName;
 
-		void addCandidate(ExtractorContributor contributor) {
-			candidates.add( contributor );
-		}
+        private final Class<? extends ContainerExtractor> extractorClass;
 
-		@Override
-		public boolean tryAppend(ExtractorResolutionState<?> state) {
-			Set<PojoTypeModel<?>> encounteredTypes = new HashSet<>();
-			encounteredTypes.add( state.extractedType );
-			return tryAppend( state, state.extractedType, encounteredTypes );
-		}
+        SingleExtractorContributor(ExtractingTypePatternMatcher typePatternMatcher, String extractorName, Class<? extends ContainerExtractor> extractorClass) {
+            this.typePatternMatcher = typePatternMatcher;
+            this.extractorName = extractorName;
+            this.extractorClass = extractorClass;
+        }
 
-		private boolean tryAppend(ExtractorResolutionState<?> state, PojoTypeModel<?> initialType,
-				Set<PojoTypeModel<?>> encounteredTypes) {
-			for ( ExtractorContributor extractorContributor : candidates ) {
-				if ( extractorContributor.tryAppend( state ) ) {
-					if ( !encounteredTypes.add( state.extractedType ) ) {
-						throw MappingLog.INSTANCE.defaultContainerExtractorCyclicRecursion( initialType, state.extractorNames );
-					}
-					// Recurse as much as possible
-					tryAppend( state );
-					return true;
-				}
-			}
-			return false;
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public boolean tryMatch(ExtractorResolutionState<?> state, List<String> toMatch) {
-			return tryMatch( state, toMatch, 0 );
-		}
+        @Override
+        public boolean tryAppend(ExtractorResolutionState<?> state) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private boolean tryMatch(ExtractorResolutionState<?> state, List<String> toMatch, int toMatchIndex) {
-			for ( ExtractorContributor extractorContributor : candidates ) {
-				if ( extractorContributor.tryAppend( state ) ) {
-					// There is a resolved path from this point.
-					if ( toMatchIndex >= toMatch.size() ) {
-						// The path to match is empty,
-						// so the resolved path is longer than the one to match:
-						// it doesn't match.
-						return false;
-					}
-					else if ( !toMatch.get( toMatchIndex )
-							.equals( state.extractorNames.get( state.extractorNames.size() - 1 ) ) ) {
-						// The resolved path has a different extractor
-						// than the path to match at this point:
-						// it doesn't match.
-						return false;
-					}
-					else {
-						// The resolved path matches at this point.
-						// Try to match the rest of the path to match.
-						return tryMatch( state, toMatch, toMatchIndex + 1 );
-					}
-				}
-			}
+        void append(ExtractorResolutionState<?> state) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-			// No resolved path from this point: we'll only match if the path to match is empty.
-			return toMatchIndex >= toMatch.size();
-		}
-	}
+    private static class FirstMatchingExtractorContributor implements ExtractorContributor {
 
-	private static class ExtractorResolutionState<C> {
+        private final List<ExtractorContributor> candidates = new ArrayList<>();
 
-		private final List<String> extractorNames = new ArrayList<>();
-		private PojoTypeModel<?> extractedType;
+        void addCandidate(ExtractorContributor contributor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		ExtractorResolutionState(PojoTypeModel<C> sourceType) {
-			this.extractedType = sourceType;
-		}
+        @Override
+        public boolean tryAppend(ExtractorResolutionState<?> state) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void append(String extractorName, PojoTypeModel<?> extractedType) {
-			extractorNames.add( extractorName );
-			this.extractedType = extractedType;
-		}
+        private boolean tryAppend(ExtractorResolutionState<?> state, PojoTypeModel<?> initialType, Set<PojoTypeModel<?>> encounteredTypes) {
+            for (ExtractorContributor extractorContributor : candidates) {
+                if (extractorContributor.tryAppend(state)) {
+                    if (!encounteredTypes.add(state.extractedType)) {
+                        throw MappingLog.INSTANCE.defaultContainerExtractorCyclicRecursion(initialType, state.extractorNames);
+                    }
+                    // Recurse as much as possible
+                    tryAppend(state);
+                    return true;
+                }
+            }
+            return false;
+        }
 
-		BoundContainerExtractorPath<C, ?> build() {
-			return new BoundContainerExtractorPath<>(
-					ContainerExtractorPath.explicitExtractors( extractorNames ),
-					extractedType
-			);
-		}
+        public boolean tryMatch(ExtractorResolutionState<?> state, List<String> toMatch) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	}
+        private boolean tryMatch(ExtractorResolutionState<?> state, List<String> toMatch, int toMatchIndex) {
+            for (ExtractorContributor extractorContributor : candidates) {
+                if (extractorContributor.tryAppend(state)) {
+                    // There is a resolved path from this point.
+                    if (toMatchIndex >= toMatch.size()) {
+                        // The path to match is empty,
+                        // so the resolved path is longer than the one to match:
+                        // it doesn't match.
+                        return false;
+                    } else if (!toMatch.get(toMatchIndex).equals(state.extractorNames.get(state.extractorNames.size() - 1))) {
+                        // The resolved path has a different extractor
+                        // than the path to match at this point:
+                        // it doesn't match.
+                        return false;
+                    } else {
+                        // The resolved path matches at this point.
+                        // Try to match the rest of the path to match.
+                        return tryMatch(state, toMatch, toMatchIndex + 1);
+                    }
+                }
+            }
+            // No resolved path from this point: we'll only match if the path to match is empty.
+            return toMatchIndex >= toMatch.size();
+        }
+    }
+
+    private static class ExtractorResolutionState<C> {
+
+        private final List<String> extractorNames = new ArrayList<>();
+
+        private PojoTypeModel<?> extractedType;
+
+        ExtractorResolutionState(PojoTypeModel<C> sourceType) {
+            this.extractedType = sourceType;
+        }
+
+        void append(String extractorName, PojoTypeModel<?> extractedType) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        BoundContainerExtractorPath<C, ?> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -10,28 +10,24 @@ import org.hibernate.search.engine.environment.bean.BeanHolder;
 
 final class HibernateOrmContainedBeanBeanHolderAdapter<T> implements BeanHolder<T> {
 
-	private final ContainedBean<T> containedBean;
+    private final ContainedBean<T> containedBean;
 
-	HibernateOrmContainedBeanBeanHolderAdapter(ContainedBean<T> containedBean) {
-		this.containedBean = containedBean;
-	}
+    HibernateOrmContainedBeanBeanHolderAdapter(ContainedBean<T> containedBean) {
+        this.containedBean = containedBean;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "containedBean=" + containedBean
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T get() {
-		return containedBean.getBeanInstance();
-	}
+    @Override
+    public T get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		if ( containedBean instanceof ContainedBeanImplementor ) {
-			( (ContainedBeanImplementor<?>) containedBean ).release();
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

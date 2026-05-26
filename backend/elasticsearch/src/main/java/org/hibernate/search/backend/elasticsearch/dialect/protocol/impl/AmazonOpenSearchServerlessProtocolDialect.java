@@ -17,8 +17,8 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public class AmazonOpenSearchServerlessProtocolDialect extends Elasticsearch70ProtocolDialect {
 
-	@Override
-	public ElasticsearchWorkFactory createWorkFactory(GsonProvider gsonProvider, Boolean ignoreShardFailures) {
-		return new AmazonOpenSearchServerlessWorkFactory( gsonProvider, ignoreShardFailures );
-	}
+    @Override
+    public ElasticsearchWorkFactory createWorkFactory(GsonProvider gsonProvider, Boolean ignoreShardFailures) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

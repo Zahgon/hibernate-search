@@ -7,23 +7,24 @@ package org.hibernate.search.mapper.pojo.massindexing.spi;
 import java.util.concurrent.CompletableFuture;
 
 class NoOpPojoMassIndexerAgent implements PojoMassIndexerAgent {
-	public static final NoOpPojoMassIndexerAgent INSTANCE = new NoOpPojoMassIndexerAgent();
 
-	private NoOpPojoMassIndexerAgent() {
-	}
+    public static final NoOpPojoMassIndexerAgent INSTANCE = new NoOpPojoMassIndexerAgent();
 
-	@Override
-	public CompletableFuture<?> start(PojoMassIndexerAgentStartContext context) {
-		return CompletableFuture.completedFuture( null );
-	}
+    private NoOpPojoMassIndexerAgent() {
+    }
 
-	@Override
-	public CompletableFuture<?> preStop() {
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    public CompletableFuture<?> start(PojoMassIndexerAgentStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void stop() {
-		// Nothing to do
-	}
+    @Override
+    public CompletableFuture<?> preStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -7,7 +7,6 @@ package org.hibernate.search.util.common.data;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-
 import org.hibernate.search.util.common.impl.Contracts;
 
 /**
@@ -25,209 +24,159 @@ import org.hibernate.search.util.common.impl.Contracts;
  */
 public final class Range<T> {
 
-	/**
-	 * Create a canonical range, i.e. a range in the form
-	 * {@code [lowerBoundValue, upperBoundValue)} (lower bound included, upper bound excluded),
-	 * or {@code [lowerBoundValue, +Infinity]} (both bounds included) if the upper bound is {@code +Infinity}.
-	 * <p>
-	 * This is mostly useful when creating multiple, contiguous ranges,
-	 * like for example in range aggregations.
-	 *
-	 * @param lowerBoundValue The lower bound of the range.
-	 * May be {@code null} to represent {@code -Infinity} (no lower bound),
-	 * @param upperBoundValue The upper bound of the range.
-	 * May be {@code null} to represent {@code +Infinity} (no upper bound).
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code [lowerBoundValue, upperBoundValue)} (lower bound included, upper bound excluded),
-	 * or {@code [lowerBoundValue, +Infinity]} (both bounds included) if the upper bound is {@code +Infinity}.
-	 */
-	public static <T> Range<T> canonical(T lowerBoundValue, T upperBoundValue) {
-		return new Range<>( lowerBoundValue, RangeBoundInclusion.INCLUDED,
-				upperBoundValue, upperBoundValue == null ? RangeBoundInclusion.INCLUDED : RangeBoundInclusion.EXCLUDED );
-	}
+    /**
+     * Create a canonical range, i.e. a range in the form
+     * {@code [lowerBoundValue, upperBoundValue)} (lower bound included, upper bound excluded),
+     * or {@code [lowerBoundValue, +Infinity]} (both bounds included) if the upper bound is {@code +Infinity}.
+     * <p>
+     * This is mostly useful when creating multiple, contiguous ranges,
+     * like for example in range aggregations.
+     *
+     * @param lowerBoundValue The lower bound of the range.
+     * May be {@code null} to represent {@code -Infinity} (no lower bound),
+     * @param upperBoundValue The upper bound of the range.
+     * May be {@code null} to represent {@code +Infinity} (no upper bound).
+     * @param <T> The type of range bounds.
+     * @return The range {@code [lowerBoundValue, upperBoundValue)} (lower bound included, upper bound excluded),
+     * or {@code [lowerBoundValue, +Infinity]} (both bounds included) if the upper bound is {@code +Infinity}.
+     */
+    public static <T> Range<T> canonical(T lowerBoundValue, T upperBoundValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code [-Infinity, +Infinity]} (both bounds included).
-	 */
-	public static <T> Range<T> all() {
-		return between( null, RangeBoundInclusion.INCLUDED, null, RangeBoundInclusion.INCLUDED );
-	}
+    /**
+     * @param <T> The type of range bounds.
+     * @return The range {@code [-Infinity, +Infinity]} (both bounds included).
+     */
+    public static <T> Range<T> all() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param lowerBoundValue The lower bound of the range.
-	 * May be {@code null} to represent {@code -Infinity} (no lower bound),
-	 * @param upperBoundValue The upper bound of the range.
-	 * May be {@code null} to represent {@code +Infinity} (no upper bound).
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code [lowerBoundValue, upperBoundValue]} (both bounds included).
-	 */
-	public static <T> Range<T> between(T lowerBoundValue, T upperBoundValue) {
-		return between( lowerBoundValue, RangeBoundInclusion.INCLUDED, upperBoundValue, RangeBoundInclusion.INCLUDED );
-	}
+    /**
+     * @param lowerBoundValue The lower bound of the range.
+     * May be {@code null} to represent {@code -Infinity} (no lower bound),
+     * @param upperBoundValue The upper bound of the range.
+     * May be {@code null} to represent {@code +Infinity} (no upper bound).
+     * @param <T> The type of range bounds.
+     * @return The range {@code [lowerBoundValue, upperBoundValue]} (both bounds included).
+     */
+    public static <T> Range<T> between(T lowerBoundValue, T upperBoundValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param lowerBoundValue The value of the lower bound of the range.
-	 * May be {@code null} to represent {@code -Infinity} (no lower bound).
-	 * @param lowerBoundInclusion Whether the lower bound is included in the range or excluded.
-	 * @param upperBoundValue The value of the upper bound of the range.
-	 * May be {@code null} to represent {@code +Infinity} (no upper bound).
-	 * @param upperBoundInclusion Whether the upper bound is included in the range or excluded.
-	 * @param <T> The type of range bounds.
-	 * @return A {@link Range}.
-	 */
-	public static <T> Range<T> between(T lowerBoundValue, RangeBoundInclusion lowerBoundInclusion,
-			T upperBoundValue, RangeBoundInclusion upperBoundInclusion) {
-		return new Range<>( lowerBoundValue, lowerBoundInclusion, upperBoundValue, upperBoundInclusion );
-	}
+    /**
+     * @param lowerBoundValue The value of the lower bound of the range.
+     * May be {@code null} to represent {@code -Infinity} (no lower bound).
+     * @param lowerBoundInclusion Whether the lower bound is included in the range or excluded.
+     * @param upperBoundValue The value of the upper bound of the range.
+     * May be {@code null} to represent {@code +Infinity} (no upper bound).
+     * @param upperBoundInclusion Whether the upper bound is included in the range or excluded.
+     * @param <T> The type of range bounds.
+     * @return A {@link Range}.
+     */
+    public static <T> Range<T> between(T lowerBoundValue, RangeBoundInclusion lowerBoundInclusion, T upperBoundValue, RangeBoundInclusion upperBoundInclusion) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param lowerBoundValue The value of the lower bound of the range. Must not be {@code null}.
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code [lowerBoundValue, +Infinity]} (both bounds included).
-	 */
-	public static <T> Range<T> atLeast(T lowerBoundValue) {
-		Contracts.assertNotNull( lowerBoundValue, "lowerBoundValue" );
-		return between( lowerBoundValue, RangeBoundInclusion.INCLUDED, null, RangeBoundInclusion.INCLUDED );
-	}
+    /**
+     * @param lowerBoundValue The value of the lower bound of the range. Must not be {@code null}.
+     * @param <T> The type of range bounds.
+     * @return The range {@code [lowerBoundValue, +Infinity]} (both bounds included).
+     */
+    public static <T> Range<T> atLeast(T lowerBoundValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param lowerBoundValue The value of the lower bound of the range. Must not be {@code null}.
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code (lowerBoundValue, +Infinity]} (lower bound excluded, upper bound included).
-	 */
-	public static <T> Range<T> greaterThan(T lowerBoundValue) {
-		Contracts.assertNotNull( lowerBoundValue, "lowerBoundValue" );
-		return between( lowerBoundValue, RangeBoundInclusion.EXCLUDED, null, RangeBoundInclusion.INCLUDED );
-	}
+    /**
+     * @param lowerBoundValue The value of the lower bound of the range. Must not be {@code null}.
+     * @param <T> The type of range bounds.
+     * @return The range {@code (lowerBoundValue, +Infinity]} (lower bound excluded, upper bound included).
+     */
+    public static <T> Range<T> greaterThan(T lowerBoundValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param upperBoundValue The value of the upper bound of the range. Must not be {@code null}.
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code [-Infinity, upperBoundValue]} (both bounds included).
-	 */
-	public static <T> Range<T> atMost(T upperBoundValue) {
-		Contracts.assertNotNull( upperBoundValue, "upperBoundValue" );
-		return between( null, RangeBoundInclusion.INCLUDED, upperBoundValue, RangeBoundInclusion.INCLUDED );
-	}
+    /**
+     * @param upperBoundValue The value of the upper bound of the range. Must not be {@code null}.
+     * @param <T> The type of range bounds.
+     * @return The range {@code [-Infinity, upperBoundValue]} (both bounds included).
+     */
+    public static <T> Range<T> atMost(T upperBoundValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param upperBoundValue The value of the upper bound of the range. Must not be {@code null}.
-	 * @param <T> The type of range bounds.
-	 * @return The range {@code [-Infinity, upperBoundValue)} (lower bound included, upper bound excluded).
-	 */
-	public static <T> Range<T> lessThan(T upperBoundValue) {
-		Contracts.assertNotNull( upperBoundValue, "upperBoundValue" );
-		return between( null, RangeBoundInclusion.INCLUDED, upperBoundValue, RangeBoundInclusion.EXCLUDED );
-	}
+    /**
+     * @param upperBoundValue The value of the upper bound of the range. Must not be {@code null}.
+     * @param <T> The type of range bounds.
+     * @return The range {@code [-Infinity, upperBoundValue)} (lower bound included, upper bound excluded).
+     */
+    public static <T> Range<T> lessThan(T upperBoundValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final Optional<T> lowerBoundValue;
-	private final RangeBoundInclusion lowerBoundInclusion;
-	private final Optional<T> upperBoundValue;
-	private final RangeBoundInclusion upperBoundInclusion;
+    private final Optional<T> lowerBoundValue;
 
-	private Range(T lowerBoundValue, RangeBoundInclusion lowerBoundInclusion,
-			T upperBoundValue, RangeBoundInclusion upperBoundInclusion) {
-		Contracts.assertNotNull( lowerBoundInclusion, "lowerBoundInclusion" );
-		Contracts.assertNotNull( upperBoundInclusion, "upperBoundInclusion" );
-		this.lowerBoundValue = Optional.ofNullable( lowerBoundValue );
-		this.lowerBoundInclusion = lowerBoundInclusion;
-		this.upperBoundValue = Optional.ofNullable( upperBoundValue );
-		this.upperBoundInclusion = upperBoundInclusion;
-	}
+    private final RangeBoundInclusion lowerBoundInclusion;
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		switch ( lowerBoundInclusion ) {
-			case INCLUDED:
-				builder.append( '[' );
-				break;
-			case EXCLUDED:
-				builder.append( '(' );
-				break;
-		}
-		if ( lowerBoundValue.isPresent() ) {
-			builder.append( lowerBoundValue.get() );
-		}
-		else {
-			builder.append( "-Infinity" );
-		}
-		builder.append( "," );
-		if ( upperBoundValue.isPresent() ) {
-			builder.append( upperBoundValue.get() );
-		}
-		else {
-			builder.append( "+Infinity" );
-		}
-		switch ( upperBoundInclusion ) {
-			case INCLUDED:
-				builder.append( ']' );
-				break;
-			case EXCLUDED:
-				builder.append( ')' );
-				break;
-		}
-		return builder.toString();
-	}
+    private final Optional<T> upperBoundValue;
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		if ( obj == null || getClass() != obj.getClass() ) {
-			return false;
-		}
-		Range<?> other = (Range<?>) obj;
-		return lowerBoundValue.equals( other.lowerBoundValue )
-				&& lowerBoundInclusion == other.lowerBoundInclusion
-				&& upperBoundValue.equals( other.upperBoundValue )
-				&& upperBoundInclusion == other.upperBoundInclusion;
-	}
+    private final RangeBoundInclusion upperBoundInclusion;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( lowerBoundValue, lowerBoundInclusion, upperBoundValue, upperBoundInclusion );
-	}
+    private Range(T lowerBoundValue, RangeBoundInclusion lowerBoundInclusion, T upperBoundValue, RangeBoundInclusion upperBoundInclusion) {
+        Contracts.assertNotNull(lowerBoundInclusion, "lowerBoundInclusion");
+        Contracts.assertNotNull(upperBoundInclusion, "upperBoundInclusion");
+        this.lowerBoundValue = Optional.ofNullable(lowerBoundValue);
+        this.lowerBoundInclusion = lowerBoundInclusion;
+        this.upperBoundValue = Optional.ofNullable(upperBoundValue);
+        this.upperBoundInclusion = upperBoundInclusion;
+    }
 
-	/**
-	 * @return The value of the lower bound, or an empty optional to represent {-Infinity} (no lower bound).
-	 */
-	public Optional<T> lowerBoundValue() {
-		return lowerBoundValue;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return Whether the lower bound is included in the range or excluded.
-	 * Always {@link RangeBoundInclusion#EXCLUDED} if there is no lower bound.
-	 */
-	public RangeBoundInclusion lowerBoundInclusion() {
-		return lowerBoundInclusion;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The value of the lower bound, or an empty optional to represent {+Infinity} (no upper bound).
-	 */
-	public Optional<T> upperBoundValue() {
-		return upperBoundValue;
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return Whether the upper bound is included in the range or excluded.
-	 * Always {@link RangeBoundInclusion#EXCLUDED} if there is no upper bound.
-	 */
-	public RangeBoundInclusion upperBoundInclusion() {
-		return upperBoundInclusion;
-	}
+    /**
+     * @return The value of the lower bound, or an empty optional to represent {-Infinity} (no lower bound).
+     */
+    public Optional<T> lowerBoundValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <R> Range<R> map(Function<? super T, ? extends R> function) {
-		return Range.between(
-				lowerBoundValue.map( function ).orElse( null ),
-				lowerBoundInclusion,
-				upperBoundValue.map( function ).orElse( null ),
-				upperBoundInclusion
-		);
-	}
+    /**
+     * @return Whether the lower bound is included in the range or excluded.
+     * Always {@link RangeBoundInclusion#EXCLUDED} if there is no lower bound.
+     */
+    public RangeBoundInclusion lowerBoundInclusion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    /**
+     * @return The value of the lower bound, or an empty optional to represent {+Infinity} (no upper bound).
+     */
+    public Optional<T> upperBoundValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return Whether the upper bound is included in the range or excluded.
+     * Always {@link RangeBoundInclusion#EXCLUDED} if there is no upper bound.
+     */
+    public RangeBoundInclusion upperBoundInclusion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public <R> Range<R> map(Function<? super T, ? extends R> function) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

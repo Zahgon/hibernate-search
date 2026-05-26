@@ -8,19 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultIntegerBridge extends AbstractPassThroughDefaultBridge<Integer> {
 
-	public static final DefaultIntegerBridge INSTANCE = new DefaultIntegerBridge();
+    public static final DefaultIntegerBridge INSTANCE = new DefaultIntegerBridge();
 
-	private DefaultIntegerBridge() {
-	}
+    private DefaultIntegerBridge() {
+    }
 
-	@Override
-	protected String toString(Integer value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Integer value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Integer fromString(String value) {
-		return ParseUtils.parseInteger( value );
-	}
-
+    @Override
+    protected Integer fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

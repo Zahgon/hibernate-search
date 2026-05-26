@@ -9,24 +9,23 @@ import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorFact
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningTextMultiValuesSource;
 
-public class CountTextValuesCollectorFactory
-		implements
-		CollectorFactory<CountTextValuesCollector, Long, CountTextValuesCollectorManager> {
+public class CountTextValuesCollectorFactory implements CollectorFactory<CountTextValuesCollector, Long, CountTextValuesCollectorManager> {
 
-	private final JoiningTextMultiValuesSource source;
-	private final CollectorKey<CountTextValuesCollector, Long> key = CollectorKey.create();
+    private final JoiningTextMultiValuesSource source;
 
-	public CountTextValuesCollectorFactory(JoiningTextMultiValuesSource source, String field) {
-		this.source = source;
-	}
+    private final CollectorKey<CountTextValuesCollector, Long> key = CollectorKey.create();
 
-	@Override
-	public CountTextValuesCollectorManager createCollectorManager(CollectorExecutionContext context) {
-		return new CountTextValuesCollectorManager( source );
-	}
+    public CountTextValuesCollectorFactory(JoiningTextMultiValuesSource source, String field) {
+        this.source = source;
+    }
 
-	@Override
-	public CollectorKey<CountTextValuesCollector, Long> getCollectorKey() {
-		return key;
-	}
+    @Override
+    public CountTextValuesCollectorManager createCollectorManager(CollectorExecutionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CollectorKey<CountTextValuesCollector, Long> getCollectorKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

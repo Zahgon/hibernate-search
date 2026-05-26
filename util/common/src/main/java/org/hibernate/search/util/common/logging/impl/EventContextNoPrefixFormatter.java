@@ -8,14 +8,14 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 public final class EventContextNoPrefixFormatter {
 
-	private final EventContext eventContext;
+    private final EventContext eventContext;
 
-	public EventContextNoPrefixFormatter(EventContext eventContext) {
-		this.eventContext = eventContext;
-	}
+    public EventContextNoPrefixFormatter(EventContext eventContext) {
+        this.eventContext = eventContext;
+    }
 
-	@Override
-	public String toString() {
-		return eventContext.render();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

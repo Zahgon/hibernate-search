@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.aggregation.dsl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.engine.search.reference.aggregation.MaxAggregationFieldReference;
@@ -20,39 +19,39 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface MaxAggregationFieldStep<SR, PDF extends TypedSearchPredicateFactory<SR>> {
 
-	/**
-	 * Target the given field in the min aggregation.
-	 *
-	 * @param fieldPath The <a href="SearchAggregationFactory.html#field-paths">path</a> to the index field to aggregate.
-	 * @param type The type of field values.
-	 * @param <F> The type of field values.
-	 * @return The next step.
-	 */
-	default <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(String fieldPath, Class<F> type) {
-		return field( fieldPath, type, ValueModel.MAPPING );
-	}
+    /**
+     * Target the given field in the min aggregation.
+     *
+     * @param fieldPath The <a href="SearchAggregationFactory.html#field-paths">path</a> to the index field to aggregate.
+     * @param type The type of field values.
+     * @param <F> The type of field values.
+     * @return The next step.
+     */
+    default <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(String fieldPath, Class<F> type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Target the given field in the min aggregation.
-	 *
-	 * @param fieldPath The <a href="SearchAggregationFactory.html#field-paths">path</a> to the index field to aggregate.
-	 * @param type The type of field values.
-	 * @param <F> The type of field values.
-	 * @param valueModel The model of aggregation values, used to determine how computed aggregation value should be converted.
-	 * See {@link ValueModel}.
-	 * @return The next step.
-	 */
-	<F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(String fieldPath, Class<F> type, ValueModel valueModel);
+    /**
+     * Target the given field in the min aggregation.
+     *
+     * @param fieldPath The <a href="SearchAggregationFactory.html#field-paths">path</a> to the index field to aggregate.
+     * @param type The type of field values.
+     * @param <F> The type of field values.
+     * @param valueModel The model of aggregation values, used to determine how computed aggregation value should be converted.
+     * See {@link ValueModel}.
+     * @return The next step.
+     */
+    <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(String fieldPath, Class<F> type, ValueModel valueModel);
 
-	/**
-	 * Target the given field in the max aggregation.
-	 *
-	 * @param fieldReference The field reference representing a <a href="SearchAggregationFactory.html#field-references">definition</a> of the index field to aggregate.
-	 * @param <F> The type of field values.
-	 * @return The next step.
-	 */
-	@Incubating
-	default <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(MaxAggregationFieldReference<SR, F> fieldReference) {
-		return field( fieldReference.absolutePath(), fieldReference.aggregationType(), fieldReference.valueModel() );
-	}
+    /**
+     * Target the given field in the max aggregation.
+     *
+     * @param fieldReference The field reference representing a <a href="SearchAggregationFactory.html#field-references">definition</a> of the index field to aggregate.
+     * @param <F> The type of field values.
+     * @return The next step.
+     */
+    @Incubating
+    default <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(MaxAggregationFieldReference<SR, F> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

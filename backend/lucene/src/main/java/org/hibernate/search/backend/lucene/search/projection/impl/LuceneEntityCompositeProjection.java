@@ -9,19 +9,16 @@ import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexS
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
 public class LuceneEntityCompositeProjection<E> extends AbstractLuceneProjection<E> {
-	private final LuceneSearchProjection<E> delegate;
 
-	public LuceneEntityCompositeProjection(LuceneSearchIndexScope<?> scope, LuceneSearchProjection<E> delegate) {
-		super( scope );
-		this.delegate = delegate;
-	}
+    private final LuceneSearchProjection<E> delegate;
 
-	@Override
-	public Extractor<?, E> request(ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.ENTITY,
-				LuceneSearchHints.INSTANCE.entityProjectionNestingNotSupportedHint()
-		);
-		return delegate.request( context );
-	}
+    public LuceneEntityCompositeProjection(LuceneSearchIndexScope<?> scope, LuceneSearchProjection<E> delegate) {
+        super(scope);
+        this.delegate = delegate;
+    }
+
+    @Override
+    public Extractor<?, E> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

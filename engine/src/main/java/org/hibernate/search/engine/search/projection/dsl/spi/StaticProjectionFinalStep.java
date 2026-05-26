@@ -8,14 +8,15 @@ import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.ProjectionFinalStep;
 
 public final class StaticProjectionFinalStep<T> implements ProjectionFinalStep<T> {
-	private final SearchProjection<T> projection;
 
-	public StaticProjectionFinalStep(SearchProjection<T> projection) {
-		this.projection = projection;
-	}
+    private final SearchProjection<T> projection;
 
-	@Override
-	public SearchProjection<T> toProjection() {
-		return projection;
-	}
+    public StaticProjectionFinalStep(SearchProjection<T> projection) {
+        this.projection = projection;
+    }
+
+    @Override
+    public SearchProjection<T> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

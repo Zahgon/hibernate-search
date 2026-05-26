@@ -11,35 +11,32 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.AbstractPredicateFin
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 import org.hibernate.search.engine.search.predicate.spi.BooleanPredicateBuilder;
 
-public final class NotPredicateFinalStepImpl extends AbstractPredicateFinalStep
-		implements NotPredicateFinalStep {
+public final class NotPredicateFinalStepImpl extends AbstractPredicateFinalStep implements NotPredicateFinalStep {
 
-	private final BooleanPredicateBuilder builder;
+    private final BooleanPredicateBuilder builder;
 
-	public NotPredicateFinalStepImpl(SearchPredicateDslContext<?> dslContext, SearchPredicate searchPredicate) {
-		super( dslContext );
-		this.builder = dslContext.scope().predicateBuilders().bool();
-		this.builder.mustNot( searchPredicate );
-	}
+    public NotPredicateFinalStepImpl(SearchPredicateDslContext<?> dslContext, SearchPredicate searchPredicate) {
+        super(dslContext);
+        this.builder = dslContext.scope().predicateBuilders().bool();
+        this.builder.mustNot(searchPredicate);
+    }
 
-	public NotPredicateFinalStepImpl(SearchPredicateDslContext<?> dslContext, PredicateFinalStep searchPredicate) {
-		this( dslContext, searchPredicate.toPredicate() );
-	}
+    public NotPredicateFinalStepImpl(SearchPredicateDslContext<?> dslContext, PredicateFinalStep searchPredicate) {
+        this(dslContext, searchPredicate.toPredicate());
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		return builder.build();
-	}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NotPredicateFinalStep boost(float boost) {
-		builder.boost( boost );
-		return this;
-	}
+    @Override
+    public NotPredicateFinalStep boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public NotPredicateFinalStep constantScore() {
-		builder.constantScore();
-		return this;
-	}
+    @Override
+    public NotPredicateFinalStep constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

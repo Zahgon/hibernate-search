@@ -8,20 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultCharacterBridge extends AbstractStringBasedDefaultBridge<Character> {
 
-	public static final DefaultCharacterBridge INSTANCE = new DefaultCharacterBridge();
+    public static final DefaultCharacterBridge INSTANCE = new DefaultCharacterBridge();
 
-	private DefaultCharacterBridge() {
-	}
+    private DefaultCharacterBridge() {
+    }
 
-	@Override
-	protected String toString(Character value) {
-		// The character is turned into a one character String
-		return value.toString();
-	}
+    @Override
+    protected String toString(Character value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Character fromString(String value) {
-		return ParseUtils.parseCharacter( value );
-	}
-
+    @Override
+    protected Character fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

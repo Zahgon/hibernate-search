@@ -5,39 +5,22 @@
 package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing.impl;
 
 import java.lang.annotation.Annotation;
-
 import org.hibernate.search.engine.backend.types.Projectable;
 import org.hibernate.search.engine.backend.types.Searchable;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingFieldOptionsStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStandardFieldOptionsStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStep;
 
-abstract class AbstractStandardFieldAnnotationProcessor<A extends Annotation>
-		extends AbstractFieldAnnotationProcessor<A> {
+abstract class AbstractStandardFieldAnnotationProcessor<A extends Annotation> extends AbstractFieldAnnotationProcessor<A> {
 
-	@Override
-	PropertyMappingFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext,
-			A annotation, String fieldName) {
-		PropertyMappingStandardFieldOptionsStep<?> fieldContext =
-				initStandardFieldMappingContext( mappingContext, annotation, fieldName );
+    @Override
+    PropertyMappingFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext, A annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Projectable projectable = getProjectable( annotation );
-		if ( !Projectable.DEFAULT.equals( projectable ) ) {
-			fieldContext.projectable( projectable );
-		}
+    abstract PropertyMappingStandardFieldOptionsStep<?> initStandardFieldMappingContext(PropertyMappingStep mappingContext, A annotation, String fieldName);
 
-		Searchable searchable = getSearchable( annotation );
-		if ( !Searchable.DEFAULT.equals( searchable ) ) {
-			fieldContext.searchable( searchable );
-		}
+    abstract Projectable getProjectable(A annotation);
 
-		return fieldContext;
-	}
-
-	abstract PropertyMappingStandardFieldOptionsStep<?> initStandardFieldMappingContext(
-			PropertyMappingStep mappingContext, A annotation, String fieldName);
-
-	abstract Projectable getProjectable(A annotation);
-
-	abstract Searchable getSearchable(A annotation);
+    abstract Searchable getSearchable(A annotation);
 }

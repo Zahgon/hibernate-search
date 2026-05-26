@@ -12,30 +12,26 @@ import org.hibernate.search.backend.lucene.types.codec.impl.Indexing;
 import org.hibernate.search.backend.lucene.types.codec.impl.LuceneFloatVectorCodec;
 import org.hibernate.search.backend.lucene.types.codec.impl.Storage;
 import org.hibernate.search.engine.search.predicate.spi.KnnPredicateBuilder;
-
 import org.apache.lucene.index.VectorSimilarityFunction;
 
-class LuceneFloatVectorFieldTypeOptionsStep
-		extends AbstractLuceneVectorFieldTypeOptionsStep<LuceneFloatVectorFieldTypeOptionsStep, float[]> {
+class LuceneFloatVectorFieldTypeOptionsStep extends AbstractLuceneVectorFieldTypeOptionsStep<LuceneFloatVectorFieldTypeOptionsStep, float[]> {
 
-	LuceneFloatVectorFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, float[].class );
-	}
+    LuceneFloatVectorFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, float[].class);
+    }
 
-	@Override
-	protected LuceneFloatVectorFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneFloatVectorFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneValueFieldSearchQueryElementFactory<KnnPredicateBuilder, float[]> knnPredicateFactory() {
-		return new LuceneKnnPredicate.FloatFactory();
-	}
+    @Override
+    protected AbstractLuceneValueFieldSearchQueryElementFactory<KnnPredicateBuilder, float[]> knnPredicateFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneVectorFieldCodec<float[]> createCodec(VectorSimilarityFunction vectorSimilarity, int dimension,
-			Storage storage, Indexing indexing, float[] indexNullAsValue, HibernateSearchKnnVectorsFormat knnVectorsFormat) {
-		return new LuceneFloatVectorCodec( vectorSimilarity, dimension, storage, indexing, indexNullAsValue, knnVectorsFormat );
-	}
-
+    @Override
+    protected AbstractLuceneVectorFieldCodec<float[]> createCodec(VectorSimilarityFunction vectorSimilarity, int dimension, Storage storage, Indexing indexing, float[] indexNullAsValue, HibernateSearchKnnVectorsFormat knnVectorsFormat) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

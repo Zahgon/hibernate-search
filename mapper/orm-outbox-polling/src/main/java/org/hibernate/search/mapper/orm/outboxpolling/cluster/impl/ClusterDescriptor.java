@@ -9,31 +9,25 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class ClusterDescriptor {
-	public final List<UUID> memberIdsInShardOrder;
 
-	public ClusterDescriptor(List<UUID> memberIdsInShardOrder) {
-		this.memberIdsInShardOrder = memberIdsInShardOrder;
-	}
+    public final List<UUID> memberIdsInShardOrder;
 
-	@Override
-	public String toString() {
-		return memberIdsInShardOrder.toString();
-	}
+    public ClusterDescriptor(List<UUID> memberIdsInShardOrder) {
+        this.memberIdsInShardOrder = memberIdsInShardOrder;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		ClusterDescriptor that = (ClusterDescriptor) o;
-		return Objects.equals( memberIdsInShardOrder, that.memberIdsInShardOrder );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( memberIdsInShardOrder );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

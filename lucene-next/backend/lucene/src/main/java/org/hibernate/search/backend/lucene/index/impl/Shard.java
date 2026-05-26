@@ -7,7 +7,6 @@ package org.hibernate.search.backend.lucene.index.impl;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.cfg.LuceneIndexSettings;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexModel;
 import org.hibernate.search.backend.lucene.logging.impl.LuceneMiscLog;
@@ -30,127 +29,69 @@ import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import org.apache.lucene.index.DirectoryReader;
 
 public final class Shard {
 
-	private static final ConfigurationProperty<BeanReference<? extends DirectoryProvider>> DIRECTORY_TYPE =
-			ConfigurationProperty.forKey( LuceneIndexSettings.DIRECTORY_TYPE )
-					.asBeanReference( DirectoryProvider.class )
-					.withDefault( BeanReference.of( DirectoryProvider.class, LuceneIndexSettings.Defaults.DIRECTORY_TYPE ) )
-					.build();
+    private static final ConfigurationProperty<BeanReference<? extends DirectoryProvider>> DIRECTORY_TYPE = ConfigurationProperty.forKey(LuceneIndexSettings.DIRECTORY_TYPE).asBeanReference(DirectoryProvider.class).withDefault(BeanReference.of(DirectoryProvider.class, LuceneIndexSettings.Defaults.DIRECTORY_TYPE)).build();
 
-	private static final SavedState.Key<DirectoryHolder> DIRECTORY_HOLDER_KEY = SavedState.key( "directory_holder" );
+    private static final SavedState.Key<DirectoryHolder> DIRECTORY_HOLDER_KEY = SavedState.key("directory_holder");
 
-	private final Optional<String> shardId;
-	private final IndexManagerBackendContext backendContext;
-	private final LuceneIndexModel model;
+    private final Optional<String> shardId;
 
-	private DirectoryHolder directoryHolder;
-	private IndexAccessorImpl indexAccessor;
-	private LuceneParallelWorkOrchestratorImpl managementOrchestrator;
-	private LuceneSerialWorkOrchestratorImpl indexingOrchestrator;
+    private final IndexManagerBackendContext backendContext;
 
-	private boolean savedForRestart = false;
+    private final LuceneIndexModel model;
 
-	Shard(Optional<String> shardId, IndexManagerBackendContext backendContext, LuceneIndexModel model) {
-		this.shardId = shardId;
-		this.backendContext = backendContext;
-		this.model = model;
-	}
+    private DirectoryHolder directoryHolder;
 
-	public SavedState saveForRestart() {
-		try {
-			return SavedState.builder()
-					.put( DIRECTORY_HOLDER_KEY, directoryHolder, DirectoryHolder::close )
-					.build();
-		}
-		finally {
-			savedForRestart = true;
-		}
-	}
+    private IndexAccessorImpl indexAccessor;
 
-	void preStart(ConfigurationPropertySource propertySource, BeanResolver beanResolver, SavedState savedState) {
-		Optional<DirectoryHolder> savedDirectoryHolder = savedState.get( Shard.DIRECTORY_HOLDER_KEY );
-		try {
-			if ( savedDirectoryHolder.isPresent() ) {
-				directoryHolder = savedDirectoryHolder.get();
-			}
-			else {
-				try ( BeanHolder<? extends DirectoryProvider> directoryProviderHolder =
-						DIRECTORY_TYPE.getAndTransform( propertySource, beanResolver::resolve ) ) {
-					String indexName = model.hibernateSearchName();
-					EventContext indexAndShardEventContext = EventContexts.fromIndexNameAndShardId( indexName, shardId );
-					DirectoryCreationContext context = new DirectoryCreationContextImpl( indexAndShardEventContext,
-							indexName, shardId, beanResolver,
-							propertySource.withMask( "directory" ) );
-					directoryHolder = directoryProviderHolder.get().createDirectoryHolder( context );
-				}
-				directoryHolder.start();
-			}
-		}
-		catch (IOException | RuntimeException e) {
-			throw LuceneMiscLog.INSTANCE.unableToStartShard( e.getMessage(), e );
-		}
-	}
+    private LuceneParallelWorkOrchestratorImpl managementOrchestrator;
 
-	void start(ConfigurationPropertySource propertySource) {
-		String indexName = model.hibernateSearchName();
-		EventContext indexAndShardEventContext = EventContexts.fromIndexNameAndShardId( indexName, shardId );
-		try {
-			IOStrategy ioStrategy = backendContext.createIOStrategy( propertySource );
-			indexAccessor = backendContext.createIndexAccessor( model, indexAndShardEventContext, directoryHolder,
-					ioStrategy, propertySource );
-			managementOrchestrator =
-					backendContext.createIndexManagementOrchestrator( indexAndShardEventContext, indexAccessor );
-			indexingOrchestrator =
-					backendContext.createIndexingOrchestrator( indexAndShardEventContext, indexAccessor );
+    private LuceneSerialWorkOrchestratorImpl indexingOrchestrator;
 
-			managementOrchestrator.start( propertySource );
-			indexingOrchestrator.start( propertySource );
-		}
-		catch (RuntimeException e) {
-			throw LuceneMiscLog.INSTANCE.unableToStartShard( e.getMessage(), e );
-		}
-	}
+    private boolean savedForRestart = false;
 
-	CompletableFuture<?> preStop() {
-		return indexingOrchestrator.preStop();
-	}
+    Shard(Optional<String> shardId, IndexManagerBackendContext backendContext, LuceneIndexModel model) {
+        this.shardId = shardId;
+        this.backendContext = backendContext;
+        this.model = model;
+    }
 
-	void stop() {
-		try ( Closer<IOException> closer = new Closer<>() ) {
-			closer.push( LuceneSerialWorkOrchestratorImpl::stop, indexingOrchestrator );
-			closer.push( LuceneParallelWorkOrchestratorImpl::stop, managementOrchestrator );
-			// Close the index writer after the orchestrators, when we're sure all works have been performed
-			closer.push( IndexAccessorImpl::close, indexAccessor );
-			if ( !savedForRestart ) {
-				closer.push( DirectoryHolder::close, directoryHolder );
-			}
-		}
-		catch (RuntimeException | IOException e) {
-			throw LuceneMiscLog.INSTANCE.unableToShutdownShard(
-					e.getMessage(),
-					shardId.map( EventContexts::fromShardId ).orElse( null ),
-					e
-			);
-		}
-	}
+    public SavedState saveForRestart() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	DirectoryReader openReader() throws IOException {
-		return indexAccessor.getIndexReader();
-	}
+    void preStart(ConfigurationPropertySource propertySource, BeanResolver beanResolver, SavedState savedState) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneSerialWorkOrchestrator indexingOrchestrator() {
-		return indexingOrchestrator;
-	}
+    void start(ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneParallelWorkOrchestrator managementOrchestrator() {
-		return managementOrchestrator;
-	}
+    CompletableFuture<?> preStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public IndexAccessorImpl indexAccessorForTests() {
-		return indexAccessor;
-	}
+    void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    DirectoryReader openReader() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    LuceneSerialWorkOrchestrator indexingOrchestrator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    LuceneParallelWorkOrchestrator managementOrchestrator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public IndexAccessorImpl indexAccessorForTests() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

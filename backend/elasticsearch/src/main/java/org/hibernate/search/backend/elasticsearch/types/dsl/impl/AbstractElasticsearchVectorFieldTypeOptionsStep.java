@@ -19,157 +19,104 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.util.common.AssertionFailure;
 
-abstract class AbstractElasticsearchVectorFieldTypeOptionsStep<
-		S extends AbstractElasticsearchVectorFieldTypeOptionsStep<?, F>,
-		F> extends AbstractElasticsearchIndexFieldTypeOptionsStep<S, F>
-		implements VectorFieldTypeOptionsStep<S, F>, ElasticsearchVectorFieldTypeMappingContributor.Context {
+abstract class AbstractElasticsearchVectorFieldTypeOptionsStep<S extends AbstractElasticsearchVectorFieldTypeOptionsStep<?, F>, F> extends AbstractElasticsearchIndexFieldTypeOptionsStep<S, F> implements VectorFieldTypeOptionsStep<S, F>, ElasticsearchVectorFieldTypeMappingContributor.Context {
 
-	private final ElasticsearchVectorFieldTypeMappingContributor mappingContributor;
+    private final ElasticsearchVectorFieldTypeMappingContributor mappingContributor;
 
-	protected VectorSimilarity vectorSimilarity = VectorSimilarity.DEFAULT;
-	protected Integer dimension;
-	protected Integer efConstruction;
-	protected Integer m;
-	protected F indexNullAs;
-	private Projectable projectable = Projectable.DEFAULT;
-	private Searchable searchable = Searchable.DEFAULT;
+    protected VectorSimilarity vectorSimilarity = VectorSimilarity.DEFAULT;
 
-	AbstractElasticsearchVectorFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext,
-			Class<F> fieldType, ElasticsearchVectorFieldTypeMappingContributor mappingContributor) {
-		super( buildContext, fieldType, new PropertyMapping() );
-		this.mappingContributor = mappingContributor;
-	}
+    protected Integer dimension;
 
-	@Override
-	public S searchable(Searchable searchable) {
-		this.searchable = searchable;
-		return thisAsS();
-	}
+    protected Integer efConstruction;
 
-	@Override
-	public S projectable(Projectable projectable) {
-		this.projectable = projectable;
-		return thisAsS();
-	}
+    protected Integer m;
 
-	@Override
-	public S indexNullAs(F indexNullAs) {
-		this.indexNullAs = indexNullAs;
-		return thisAsS();
-	}
+    protected F indexNullAs;
 
-	@Override
-	public S vectorSimilarity(VectorSimilarity vectorSimilarity) {
-		this.vectorSimilarity = vectorSimilarity;
-		return thisAsS();
-	}
+    private Projectable projectable = Projectable.DEFAULT;
 
-	@Override
-	public S efConstruction(int efConstruction) {
-		this.efConstruction = efConstruction;
-		return thisAsS();
-	}
+    private Searchable searchable = Searchable.DEFAULT;
 
-	@Override
-	public S m(int m) {
-		this.m = m;
-		return thisAsS();
-	}
+    AbstractElasticsearchVectorFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext, Class<F> fieldType, ElasticsearchVectorFieldTypeMappingContributor mappingContributor) {
+        super(buildContext, fieldType, new PropertyMapping());
+        this.mappingContributor = mappingContributor;
+    }
 
+    @Override
+    public S searchable(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S dimension(int dimension) {
-		this.dimension = dimension;
-		return thisAsS();
-	}
+    @Override
+    public S projectable(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchIndexValueFieldType<F> toIndexFieldType() {
-		if ( dimension == null ) {
-			throw MappingLog.INSTANCE.nullVectorDimension( buildContext.hints().missingVectorDimension(),
-					buildContext.getEventContext() );
-		}
-		PropertyMapping mapping = builder.mapping();
+    @Override
+    public S indexNullAs(F indexNullAs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		boolean resolvedProjectable = resolveDefault( projectable );
-		boolean resolvedSearchable = resolveDefault( searchable );
+    @Override
+    public S vectorSimilarity(VectorSimilarity vectorSimilarity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		mapping.setIndex( resolvedSearchable );
-		mappingContributor.contribute( mapping, this );
+    @Override
+    public S efConstruction(int efConstruction) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		AbstractElasticsearchVectorFieldCodec<F> codec =
-				createCodec( vectorSimilarity, dimension, m, efConstruction, indexNullAs );
-		builder.codec( codec );
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.Factory<>() );
-		}
+    @Override
+    public S m(int m) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new ElasticsearchFieldProjection.Factory<>( codec ) );
-		}
+    @Override
+    public S dimension(int dimension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		builder.multivaluable( false );
+    @Override
+    public ElasticsearchIndexValueFieldType<F> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// NOTE: we make additional contribution at the end of the configuration to make sure that
-		//  the context we pass (this) is fully configured:
-		mappingContributor.contribute( builder, this );
-		return builder.build();
-	}
+    protected abstract AbstractElasticsearchVectorFieldCodec<F> createCodec(VectorSimilarity vectorSimilarity, int dimension, Integer m, Integer efConstruction, F indexNullAs);
 
-	protected abstract AbstractElasticsearchVectorFieldCodec<F> createCodec(VectorSimilarity vectorSimilarity, int dimension,
-			Integer m, Integer efConstruction, F indexNullAs);
+    protected static boolean resolveDefault(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected static boolean resolveDefault(Projectable projectable) {
-		switch ( projectable ) {
-			case DEFAULT:
-			case YES:
-				return true;
-			case NO:
-				return false;
-			default:
-				throw new AssertionFailure( "Unexpected value for Projectable: " + projectable );
-		}
-	}
+    protected static boolean resolveDefault(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected static boolean resolveDefault(Searchable searchable) {
-		switch ( searchable ) {
-			case DEFAULT:
-			case YES:
-				return true;
-			case NO:
-				return false;
-			default:
-				throw new AssertionFailure( "Unexpected value for Searchable: " + searchable );
-		}
-	}
+    @Override
+    public abstract String type();
 
-	@Override
-	public abstract String type();
+    @Override
+    public boolean searchable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean searchable() {
-		return resolveDefault( searchable );
-	}
+    @Override
+    public VectorSimilarity vectorSimilarity() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public VectorSimilarity vectorSimilarity() {
-		return vectorSimilarity;
-	}
+    @Override
+    public int dimension() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int dimension() {
-		return dimension;
-	}
+    @Override
+    public Integer efConstruction() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Integer efConstruction() {
-		return efConstruction;
-	}
-
-	@Override
-	public Integer m() {
-		return m;
-	}
+    @Override
+    public Integer m() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

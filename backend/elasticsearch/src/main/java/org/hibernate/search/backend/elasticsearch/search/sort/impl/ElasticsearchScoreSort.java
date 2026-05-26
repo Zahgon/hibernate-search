@@ -7,40 +7,33 @@ package org.hibernate.search.backend.elasticsearch.search.sort.impl;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 import org.hibernate.search.engine.search.sort.SearchSort;
 import org.hibernate.search.engine.search.sort.spi.ScoreSortBuilder;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 class ElasticsearchScoreSort extends AbstractElasticsearchReversibleSort {
 
-	private static final String SCORE_SORT_KEYWORD = "_score";
-	private static final JsonPrimitive SCORE_SORT_KEYWORD_JSON = new JsonPrimitive( SCORE_SORT_KEYWORD );
+    private static final String SCORE_SORT_KEYWORD = "_score";
 
-	ElasticsearchScoreSort(Builder builder) {
-		super( builder );
-	}
+    private static final JsonPrimitive SCORE_SORT_KEYWORD_JSON = new JsonPrimitive(SCORE_SORT_KEYWORD);
 
-	@Override
-	public void doToJsonSorts(ElasticsearchSearchSortCollector collector, JsonObject innerObject) {
-		if ( innerObject.size() == 0 ) {
-			collector.collectSort( SCORE_SORT_KEYWORD_JSON );
-		}
-		else {
-			JsonObject outerObject = new JsonObject();
-			outerObject.add( SCORE_SORT_KEYWORD, innerObject );
-			collector.collectSort( outerObject );
-		}
-	}
+    ElasticsearchScoreSort(Builder builder) {
+        super(builder);
+    }
 
-	static class Builder extends AbstractBuilder implements ScoreSortBuilder {
+    @Override
+    public void doToJsonSorts(ElasticsearchSearchSortCollector collector, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Builder(ElasticsearchSearchIndexScope<?> scope) {
-			super( scope );
-		}
+    static class Builder extends AbstractBuilder implements ScoreSortBuilder {
 
-		@Override
-		public SearchSort build() {
-			return new ElasticsearchScoreSort( this );
-		}
-	}
+        Builder(ElasticsearchSearchIndexScope<?> scope) {
+            super(scope);
+        }
+
+        @Override
+        public SearchSort build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

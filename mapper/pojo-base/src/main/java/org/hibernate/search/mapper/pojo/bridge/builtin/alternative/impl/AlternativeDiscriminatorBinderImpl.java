@@ -9,30 +9,28 @@ import org.hibernate.search.mapper.pojo.bridge.builtin.programmatic.AlternativeD
 
 public final class AlternativeDiscriminatorBinderImpl implements AlternativeDiscriminatorBinder {
 
-	private String id;
+    private String id;
 
-	@Override
-	public AlternativeDiscriminatorBinder id(String id) {
-		this.id = id;
-		return this;
-	}
+    @Override
+    public AlternativeDiscriminatorBinder id(String id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(MarkerBindingContext context) {
-		context.marker( new Marker( id ) );
-	}
+    @Override
+    public void bind(MarkerBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static final class Marker {
+    public static final class Marker {
 
-		private final String id;
+        private final String id;
 
-		private Marker(String id) {
-			this.id = id;
-		}
+        private Marker(String id) {
+            this.id = id;
+        }
 
-		public String id() {
-			return id;
-		}
-
-	}
+        public String id() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

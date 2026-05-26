@@ -11,18 +11,18 @@ import org.hibernate.search.mapper.pojo.model.PojoElementAccessor;
  */
 class PojoRootElementAccessor<T> implements PojoElementAccessor<T> {
 
-	PojoRootElementAccessor() {
-	}
+    PojoRootElementAccessor() {
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // By construction, this accessor will only be passed PojoElement returning type T
-	public T read(Object parentElement) {
-		return (T) parentElement;
-	}
-
+    @Override
+    // By construction, this accessor will only be passed PojoElement returning type T
+    @SuppressWarnings("unchecked")
+    public T read(Object parentElement) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

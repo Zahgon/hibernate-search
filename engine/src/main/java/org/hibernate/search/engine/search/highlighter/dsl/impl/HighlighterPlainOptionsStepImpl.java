@@ -9,17 +9,15 @@ import org.hibernate.search.engine.search.highlighter.dsl.HighlighterPlainOption
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterBuilder;
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterType;
 
-public class HighlighterPlainOptionsStepImpl
-		extends HighlighterOptionsStepImpl<HighlighterPlainOptionsStep>
-		implements HighlighterPlainOptionsStep {
-	public HighlighterPlainOptionsStepImpl(SearchHighlighterBuilder highlightBuilder) {
-		super( highlightBuilder );
-		this.highlighterBuilder.type( SearchHighlighterType.PLAIN );
-	}
+public class HighlighterPlainOptionsStepImpl extends HighlighterOptionsStepImpl<HighlighterPlainOptionsStep> implements HighlighterPlainOptionsStep {
 
-	@Override
-	public HighlighterPlainOptionsStep fragmenter(HighlighterFragmenter type) {
-		this.highlighterBuilder.fragmenter( type );
-		return this;
-	}
+    public HighlighterPlainOptionsStepImpl(SearchHighlighterBuilder highlightBuilder) {
+        super(highlightBuilder);
+        this.highlighterBuilder.type(SearchHighlighterType.PLAIN);
+    }
+
+    @Override
+    public HighlighterPlainOptionsStep fragmenter(HighlighterFragmenter type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

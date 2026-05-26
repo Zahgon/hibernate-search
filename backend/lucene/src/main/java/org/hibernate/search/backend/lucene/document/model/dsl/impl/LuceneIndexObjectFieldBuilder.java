@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.document.model.dsl.impl;
 
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.hibernate.search.backend.lucene.document.impl.LuceneIndexObjectFieldReference;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexCompositeNode;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexField;
@@ -21,74 +20,55 @@ import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-class LuceneIndexObjectFieldBuilder extends AbstractLuceneIndexCompositeNodeBuilder
-		implements IndexObjectFieldBuilder, LuceneIndexNodeContributor {
+class LuceneIndexObjectFieldBuilder extends AbstractLuceneIndexCompositeNodeBuilder implements IndexObjectFieldBuilder, LuceneIndexNodeContributor {
 
-	private final AbstractLuceneIndexCompositeNodeBuilder parent;
-	private final String absoluteFieldPath;
-	private final String relativeFieldName;
-	private final TreeNodeInclusion inclusion;
-	private boolean multiValued = false;
+    private final AbstractLuceneIndexCompositeNodeBuilder parent;
 
-	private LuceneIndexObjectFieldReference reference;
+    private final String absoluteFieldPath;
 
-	LuceneIndexObjectFieldBuilder(AbstractLuceneIndexCompositeNodeBuilder parent,
-			String relativeFieldName, TreeNodeInclusion inclusion, ObjectStructure structure) {
-		super( new LuceneIndexCompositeNodeType.Builder( structure ) );
-		this.parent = parent;
-		this.absoluteFieldPath = FieldPaths.compose( parent.getAbsolutePath(), relativeFieldName );
-		this.relativeFieldName = relativeFieldName;
-		this.inclusion = inclusion;
-	}
+    private final String relativeFieldName;
 
-	@Override
-	public EventContext eventContext() {
-		return getRootNodeBuilder().getIndexEventContext()
-				.append( EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-	}
+    private final TreeNodeInclusion inclusion;
 
-	@Override
-	public void multiValued() {
-		this.multiValued = true;
-	}
+    private boolean multiValued = false;
 
-	@Override
-	public IndexObjectFieldReference toReference() {
-		if ( reference != null ) {
-			throw MappingLog.INSTANCE.cannotCreateReferenceMultipleTimes( eventContext() );
-		}
-		this.reference = new LuceneIndexObjectFieldReference();
-		return reference;
-	}
+    private LuceneIndexObjectFieldReference reference;
 
-	@Override
-	public void contribute(LuceneIndexNodeCollector collector, LuceneIndexCompositeNode parentNode,
-			Map<String, LuceneIndexField> staticChildrenByNameForParent) {
-		if ( reference == null ) {
-			throw MappingLog.INSTANCE.incompleteFieldDefinition( eventContext() );
-		}
+    LuceneIndexObjectFieldBuilder(AbstractLuceneIndexCompositeNodeBuilder parent, String relativeFieldName, TreeNodeInclusion inclusion, ObjectStructure structure) {
+        super(new LuceneIndexCompositeNodeType.Builder(structure));
+        this.parent = parent;
+        this.absoluteFieldPath = FieldPaths.compose(parent.getAbsolutePath(), relativeFieldName);
+        this.relativeFieldName = relativeFieldName;
+        this.inclusion = inclusion;
+    }
 
-		Map<String, LuceneIndexField> staticChildrenByName = new TreeMap<>();
-		LuceneIndexObjectField node = new LuceneIndexObjectField(
-				parentNode, relativeFieldName, typeBuilder.build(), inclusion, multiValued,
-				staticChildrenByName, false
-		);
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		staticChildrenByNameForParent.put( relativeFieldName, node );
-		collector.collect( absoluteFieldPath, node );
+    @Override
+    public void multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		reference.setSchemaNode( node );
+    @Override
+    public IndexObjectFieldReference toReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		contributeChildren( node, collector, staticChildrenByName );
-	}
+    @Override
+    public void contribute(LuceneIndexNodeCollector collector, LuceneIndexCompositeNode parentNode, Map<String, LuceneIndexField> staticChildrenByNameForParent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexRootBuilder getRootNodeBuilder() {
-		return parent.getRootNodeBuilder();
-	}
+    @Override
+    public LuceneIndexRootBuilder getRootNodeBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getAbsolutePath() {
-		return absoluteFieldPath;
-	}
+    @Override
+    String getAbsolutePath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

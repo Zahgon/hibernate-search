@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.document.model.dsl.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.document.model.impl.AbstractElasticsearchIndexFieldTemplate;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexCompositeNode;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexField;
@@ -18,66 +17,48 @@ import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.pattern.spi.SimpleGlobPattern;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-abstract class AbstractElasticsearchIndexFieldTemplateBuilder<
-		S extends AbstractElasticsearchIndexFieldTemplateBuilder<S, T>,
-		T extends AbstractElasticsearchIndexFieldTemplate<?>>
-		implements IndexSchemaFieldTemplateOptionsStep<S>,
-		ElasticsearchIndexNodeContributor, IndexSchemaBuildContext {
+abstract class AbstractElasticsearchIndexFieldTemplateBuilder<S extends AbstractElasticsearchIndexFieldTemplateBuilder<S, T>, T extends AbstractElasticsearchIndexFieldTemplate<?>> implements IndexSchemaFieldTemplateOptionsStep<S>, ElasticsearchIndexNodeContributor, IndexSchemaBuildContext {
 
-	private final AbstractElasticsearchIndexCompositeNodeBuilder parent;
-	protected final String absolutePath;
-	private final TreeNodeInclusion inclusion;
-	private final String prefix;
+    private final AbstractElasticsearchIndexCompositeNodeBuilder parent;
 
-	private SimpleGlobPattern relativePathGlob;
-	private boolean multiValued = false;
+    protected final String absolutePath;
 
-	AbstractElasticsearchIndexFieldTemplateBuilder(AbstractElasticsearchIndexCompositeNodeBuilder parent,
-			String templateName, TreeNodeInclusion inclusion, String prefix) {
-		this.parent = parent;
-		this.absolutePath = FieldPaths.compose( parent.getAbsolutePath(), templateName );
-		this.inclusion = inclusion;
-		this.prefix = prefix;
-	}
+    private final TreeNodeInclusion inclusion;
 
-	@Override
-	public EventContext eventContext() {
-		return parent.getRootNodeBuilder().getIndexEventContext()
-				.append( EventContexts.fromIndexFieldAbsolutePath( parent.getAbsolutePath() ) )
-				.append( EventContexts.fromFieldTemplateAbsolutePath( absolutePath ) );
-	}
+    private final String prefix;
 
-	@Override
-	public S matchingPathGlob(String pathGlob) {
-		relativePathGlob = SimpleGlobPattern.compile( pathGlob );
-		return thisAsS();
-	}
+    private SimpleGlobPattern relativePathGlob;
 
-	@Override
-	public S multiValued() {
-		this.multiValued = true;
-		return thisAsS();
-	}
+    private boolean multiValued = false;
 
-	@Override
-	public void contribute(ElasticsearchIndexNodeCollector collector,
-			ElasticsearchIndexCompositeNode parentNode,
-			Map<String, ElasticsearchIndexField> staticChildrenByNameForParent,
-			AbstractTypeMapping parentMapping) {
-		SimpleGlobPattern absolutePathGlob = FieldPaths.absolutize(
-				parent.getAbsolutePath(),
-				prefix,
-				relativePathGlob != null ? relativePathGlob : SimpleGlobPattern.compile( "*" )
-		);
-		doContribute( collector, parentNode, inclusion, absolutePathGlob, multiValued );
-	}
+    AbstractElasticsearchIndexFieldTemplateBuilder(AbstractElasticsearchIndexCompositeNodeBuilder parent, String templateName, TreeNodeInclusion inclusion, String prefix) {
+        this.parent = parent;
+        this.absolutePath = FieldPaths.compose(parent.getAbsolutePath(), templateName);
+        this.inclusion = inclusion;
+        this.prefix = prefix;
+    }
 
-	protected abstract S thisAsS();
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract void doContribute(ElasticsearchIndexNodeCollector collector,
-			ElasticsearchIndexCompositeNode parentNode,
-			TreeNodeInclusion inclusion,
-			SimpleGlobPattern absolutePathGlob,
-			boolean multiValued);
+    @Override
+    public S matchingPathGlob(String pathGlob) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public S multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void contribute(ElasticsearchIndexNodeCollector collector, ElasticsearchIndexCompositeNode parentNode, Map<String, ElasticsearchIndexField> staticChildrenByNameForParent, AbstractTypeMapping parentMapping) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected abstract S thisAsS();
+
+    protected abstract void doContribute(ElasticsearchIndexNodeCollector collector, ElasticsearchIndexCompositeNode parentNode, TreeNodeInclusion inclusion, SimpleGlobPattern absolutePathGlob, boolean multiValued);
 }

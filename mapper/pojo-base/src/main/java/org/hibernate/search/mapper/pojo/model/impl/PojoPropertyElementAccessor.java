@@ -13,33 +13,25 @@ import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
  */
 class PojoPropertyElementAccessor<P> implements PojoElementAccessor<P> {
 
-	private final PojoElementAccessor<?> parent;
-	private final ValueReadHandle<P> handle;
-	private final PojoModelPathValueNode path;
+    private final PojoElementAccessor<?> parent;
 
-	PojoPropertyElementAccessor(PojoElementAccessor<?> parent, ValueReadHandle<P> handle,
-			PojoModelPathValueNode path) {
-		this.parent = parent;
-		this.handle = handle;
-		this.path = path;
-	}
+    private final ValueReadHandle<P> handle;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "path=" + path
-				+ "]";
-	}
+    private final PojoModelPathValueNode path;
 
-	@Override
-	public P read(Object parentElement) {
-		Object parentValue = parent.read( parentElement );
-		if ( parentValue != null ) {
-			return handle.get( parentValue );
-		}
-		else {
-			return null;
-		}
-	}
+    PojoPropertyElementAccessor(PojoElementAccessor<?> parent, ValueReadHandle<P> handle, PojoModelPathValueNode path) {
+        this.parent = parent;
+        this.handle = handle;
+        this.path = path;
+    }
 
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public P read(Object parentElement) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

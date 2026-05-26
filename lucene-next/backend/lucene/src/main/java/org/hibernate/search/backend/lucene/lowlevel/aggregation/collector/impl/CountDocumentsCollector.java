@@ -5,25 +5,24 @@
 package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 import java.io.IOException;
-
 import org.apache.lucene.search.ScoreMode;
 import org.apache.lucene.search.SimpleCollector;
 
 public class CountDocumentsCollector extends SimpleCollector {
 
-	private long count = 0L;
+    private long count = 0L;
 
-	@Override
-	public void collect(int doc) throws IOException {
-		count++;
-	}
+    @Override
+    public void collect(int doc) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ScoreMode scoreMode() {
-		return ScoreMode.COMPLETE;
-	}
+    @Override
+    public ScoreMode scoreMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public long count() {
-		return count;
-	}
+    public long count() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -9,19 +9,14 @@ import org.hibernate.search.engine.search.predicate.dsl.BooleanPredicateOptionsC
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 
-public final class BooleanPredicateClausesStepImpl<SR>
-		extends
-		AbstractBooleanPredicateClausesStep<SR, BooleanPredicateClausesStepImpl<SR>, BooleanPredicateOptionsCollector<SR, ?>>
-		implements BooleanPredicateClausesStep<SR, BooleanPredicateClausesStepImpl<SR>> {
+public final class BooleanPredicateClausesStepImpl<SR> extends AbstractBooleanPredicateClausesStep<SR, BooleanPredicateClausesStepImpl<SR>, BooleanPredicateOptionsCollector<SR, ?>> implements BooleanPredicateClausesStep<SR, BooleanPredicateClausesStepImpl<SR>> {
 
-	public BooleanPredicateClausesStepImpl(SearchPredicateDslContext<?> dslContext,
-			TypedSearchPredicateFactory<SR> factory) {
-		super( dslContext, factory );
-	}
+    public BooleanPredicateClausesStepImpl(SearchPredicateDslContext<?> dslContext, TypedSearchPredicateFactory<SR> factory) {
+        super(dslContext, factory);
+    }
 
-	@Override
-	protected BooleanPredicateClausesStepImpl<SR> self() {
-		return this;
-	}
-
+    @Override
+    protected BooleanPredicateClausesStepImpl<SR> self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

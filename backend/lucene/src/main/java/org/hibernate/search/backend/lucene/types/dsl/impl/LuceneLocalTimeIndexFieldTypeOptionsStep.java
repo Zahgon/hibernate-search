@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.dsl.impl;
 
 import java.time.LocalTime;
-
 import org.hibernate.search.backend.lucene.types.codec.impl.AbstractLuceneNumericFieldCodec;
 import org.hibernate.search.backend.lucene.types.codec.impl.DocValues;
 import org.hibernate.search.backend.lucene.types.codec.impl.Indexing;
@@ -13,21 +12,19 @@ import org.hibernate.search.backend.lucene.types.codec.impl.LuceneLocalTimeField
 import org.hibernate.search.backend.lucene.types.codec.impl.Storage;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 
-class LuceneLocalTimeIndexFieldTypeOptionsStep
-		extends AbstractLuceneTemporalIndexFieldTypeOptionsStep<LuceneLocalTimeIndexFieldTypeOptionsStep, LocalTime> {
+class LuceneLocalTimeIndexFieldTypeOptionsStep extends AbstractLuceneTemporalIndexFieldTypeOptionsStep<LuceneLocalTimeIndexFieldTypeOptionsStep, LocalTime> {
 
-	LuceneLocalTimeIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, LocalTime.class, DefaultStringConverters.LOCAL_TIME );
-	}
+    LuceneLocalTimeIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, LocalTime.class, DefaultStringConverters.LOCAL_TIME);
+    }
 
-	@Override
-	protected LuceneLocalTimeIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneLocalTimeIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneNumericFieldCodec<LocalTime, ?> createCodec(Indexing indexing, DocValues docValues,
-			Storage storage, LocalTime indexNullAsValue) {
-		return new LuceneLocalTimeFieldCodec( indexing, docValues, storage, indexNullAsValue );
-	}
+    @Override
+    protected AbstractLuceneNumericFieldCodec<LocalTime, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, LocalTime indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

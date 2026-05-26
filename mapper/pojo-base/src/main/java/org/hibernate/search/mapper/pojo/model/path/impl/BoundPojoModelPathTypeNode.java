@@ -15,47 +15,36 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public abstract class BoundPojoModelPathTypeNode<T> extends BoundPojoModelPath {
 
-	BoundPojoModelPathTypeNode() {
-	}
+    BoundPojoModelPathTypeNode() {
+    }
 
-	@Override
-	public PojoTypeModel<?> getRootType() {
-		BoundPojoModelPathValueNode<?, ?, ?> parent = getParent();
-		if ( parent == null ) {
-			return getTypeModel();
-		}
-		else {
-			return parent.getRootType();
-		}
-	}
+    @Override
+    public PojoTypeModel<?> getRootType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// TODO HSEARCH-3318 This is an approximation, ideally we should pass a name AND access type
-	public BoundPojoModelPathPropertyNode<T, ?> property(String propertyName) {
-		PojoPropertyModel<?> propertyModel = getTypeModel().property( propertyName );
-		return new BoundPojoModelPathPropertyNode<>(
-				this, propertyModel
-		);
-	}
+    // TODO HSEARCH-3318 This is an approximation, ideally we should pass a name AND access type
+    public BoundPojoModelPathPropertyNode<T, ?> property(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public abstract BoundPojoModelPathValueNode<?, ?, ?> getParent();
+    @Override
+    public abstract BoundPojoModelPathValueNode<?, ?, ?> getParent();
 
-	@Override
-	public PojoModelPathValueNode toUnboundPath() {
-		PojoModelPath.Builder builder = PojoModelPath.builder();
-		appendPath( builder );
-		return builder.toValuePathOrNull();
-	}
+    @Override
+    public PojoModelPathValueNode toUnboundPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A sibling path node representing this type, cast to the given type.
-	 */
-	public abstract <U> BoundPojoModelPathCastedTypeNode<?, ? extends U> castTo(PojoRawTypeModel<U> typeModel);
+    /**
+     * @return A sibling path node representing this type, cast to the given type.
+     */
+    public abstract <U> BoundPojoModelPathCastedTypeNode<?, ? extends U> castTo(PojoRawTypeModel<U> typeModel);
 
-	@Override
-	void appendSelfPath(PojoModelPath.Builder builder) {
-		// Nothing to do
-	}
+    @Override
+    void appendSelfPath(PojoModelPath.Builder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract PojoTypeModel<T> getTypeModel();
+    public abstract PojoTypeModel<T> getTypeModel();
 }

@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverNode;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 import org.hibernate.search.mapper.pojo.model.path.impl.BoundPojoModelPathTypeNode;
@@ -19,99 +18,56 @@ import org.hibernate.search.mapper.pojo.model.path.impl.PojoRuntimePathsBuilding
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 import org.hibernate.search.util.common.impl.Closer;
 
-abstract class AbstractPojoImplicitReindexingResolverTypeNodeBuilder<T, U>
-		extends AbstractPojoImplicitReindexingResolverNodeBuilder<T> {
+abstract class AbstractPojoImplicitReindexingResolverTypeNodeBuilder<T, U> extends AbstractPojoImplicitReindexingResolverNodeBuilder<T> {
 
-	private final PojoImplicitReindexingResolverMarkingNodeBuilder<U> markingNodeBuilder;
+    private final PojoImplicitReindexingResolverMarkingNodeBuilder<U> markingNodeBuilder;
 
-	// Use a LinkedHashMap for deterministic iteration
-	private final Map<String, PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?>> propertyNodeBuilders =
-			new LinkedHashMap<>();
+    // Use a LinkedHashMap for deterministic iteration
+    private final Map<String, PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?>> propertyNodeBuilders = new LinkedHashMap<>();
 
-	AbstractPojoImplicitReindexingResolverTypeNodeBuilder(BoundPojoModelPathTypeNode<U> modelPath,
-			PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
-		super( buildingHelper );
-		this.markingNodeBuilder = new PojoImplicitReindexingResolverMarkingNodeBuilder<>( modelPath, buildingHelper );
-	}
+    AbstractPojoImplicitReindexingResolverTypeNodeBuilder(BoundPojoModelPathTypeNode<U> modelPath, PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
+        super(buildingHelper);
+        this.markingNodeBuilder = new PojoImplicitReindexingResolverMarkingNodeBuilder<>(modelPath, buildingHelper);
+    }
 
-	@Override
-	void closeOnFailure() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoImplicitReindexingResolverMarkingNodeBuilder::closeOnFailure, markingNodeBuilder );
-			closer.pushAll(
-					AbstractPojoImplicitReindexingResolverNodeBuilder::closeOnFailure,
-					propertyNodeBuilders.values()
-			);
-		}
-	}
+    @Override
+    void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	abstract BoundPojoModelPathTypeNode<U> getModelPath();
+    @Override
+    abstract BoundPojoModelPathTypeNode<U> getModelPath();
 
-	PojoTypeModel<U> getTypeModel() {
-		return getModelPath().getTypeModel();
-	}
+    PojoTypeModel<U> getTypeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?> property(String propertyName) {
-		return getOrCreatePropertyBuilder( propertyName );
-	}
+    PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?> property(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void addDirtyPathTriggeringReindexing(BoundPojoModelPathValueNode<?, ?, ?> dirtyPathFromEntityType) {
-		checkNotFrozen();
-		markingNodeBuilder.addDirtyPathTriggeringReindexing( dirtyPathFromEntityType );
-	}
+    void addDirtyPathTriggeringReindexing(BoundPojoModelPathValueNode<?, ?, ?> dirtyPathFromEntityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void onFreeze(Set<PojoModelPathValueNode> dirtyPathsTriggeringReindexingCollector) {
-		markingNodeBuilder.freeze();
-		dirtyPathsTriggeringReindexingCollector.addAll(
-				markingNodeBuilder.getDirtyPathsTriggeringReindexingIncludingNestedNodes()
-		);
-		for ( PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?> builder : propertyNodeBuilders.values() ) {
-			builder.freeze();
-			dirtyPathsTriggeringReindexingCollector.addAll(
-					builder.getDirtyPathsTriggeringReindexingIncludingNestedNodes()
-			);
-		}
-	}
+    @Override
+    void onFreeze(Set<PojoModelPathValueNode> dirtyPathsTriggeringReindexingCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	final Optional<PojoImplicitReindexingResolverNode<T>> doBuild(PojoRuntimePathsBuildingHelper pathsBuildingHelper,
-			Set<PojoModelPathValueNode> allPotentialDirtyPaths) {
-		checkFrozen();
+    @Override
+    final Optional<PojoImplicitReindexingResolverNode<T>> doBuild(PojoRuntimePathsBuildingHelper pathsBuildingHelper, Set<PojoModelPathValueNode> allPotentialDirtyPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Collection<PojoImplicitReindexingResolverNode<? super U>> immutableNestedNodes = new ArrayList<>();
-		markingNodeBuilder.build( pathsBuildingHelper, allPotentialDirtyPaths )
-				.ifPresent( immutableNestedNodes::add );
-		propertyNodeBuilders.values().stream()
-				.map( builder -> builder.build( pathsBuildingHelper, allPotentialDirtyPaths ) )
-				.filter( Optional::isPresent )
-				.map( Optional::get )
-				.forEach( immutableNestedNodes::add );
+    abstract PojoImplicitReindexingResolverNode<T> doBuild(PojoImplicitReindexingResolverNode<? super U> nestedNode);
 
-		if ( immutableNestedNodes.isEmpty() ) {
-			/*
-			 * If this resolver doesn't delegate to anything, it won't resolve to anything,
-			 * thus it is useless and we don't need to build it
-			 */
-			return Optional.empty();
-		}
-		else {
-			return Optional.of( doBuild( createNested( immutableNestedNodes ) ) );
-		}
-	}
+    private PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?> getOrCreatePropertyBuilder(String propertyName) {
+        return propertyNodeBuilders.computeIfAbsent(propertyName, this::createPropertyBuilder);
+    }
 
-	abstract PojoImplicitReindexingResolverNode<T> doBuild(
-			PojoImplicitReindexingResolverNode<? super U> nestedNode);
-
-	private PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?> getOrCreatePropertyBuilder(String propertyName) {
-		return propertyNodeBuilders.computeIfAbsent( propertyName, this::createPropertyBuilder );
-	}
-
-	private PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?> createPropertyBuilder(String propertyName) {
-		checkNotFrozen();
-		return new PojoImplicitReindexingResolverPropertyNodeBuilder<>(
-				getModelPath().property( propertyName ), buildingHelper
-		);
-	}
+    private PojoImplicitReindexingResolverPropertyNodeBuilder<U, ?> createPropertyBuilder(String propertyName) {
+        checkNotFrozen();
+        return new PojoImplicitReindexingResolverPropertyNodeBuilder<>(getModelPath().property(propertyName), buildingHelper);
+    }
 }

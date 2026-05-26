@@ -14,21 +14,20 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public interface TypePatternMatcher {
 
-	/**
-	 * Attempts to match a given type against this pattern,
-	 * and return the result as a {@code boolean}.
-	 *
-	 * @param typeToInspect A type that may, or may not, match the pattern.
-	 * @return {@code true} in the event of a match, {@code false} otherwise.
-	 */
-	boolean matches(PojoTypeModel<?> typeToInspect);
+    /**
+     * Attempts to match a given type against this pattern,
+     * and return the result as a {@code boolean}.
+     *
+     * @param typeToInspect A type that may, or may not, match the pattern.
+     * @return {@code true} in the event of a match, {@code false} otherwise.
+     */
+    boolean matches(PojoTypeModel<?> typeToInspect);
 
-	default TypePatternMatcher negate() {
-		return new NegatingTypePatternMatcher( this );
-	}
+    default TypePatternMatcher negate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default TypePatternMatcher and(TypePatternMatcher other) {
-		return new AndTypePatternMatcher( this, other );
-	}
-
+    default TypePatternMatcher and(TypePatternMatcher other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

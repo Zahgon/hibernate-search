@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.engine.search.common.RewriteMethod;
 import org.hibernate.search.engine.search.predicate.dsl.QueryStringPredicateFieldMoreStep;
@@ -18,101 +17,75 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslCo
 import org.hibernate.search.engine.search.predicate.spi.CommonQueryStringPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.QueryStringPredicateBuilder;
 
-class QueryStringPredicateFieldMoreStepImpl<SR>
-		implements
-		QueryStringPredicateFieldMoreStep<SR, QueryStringPredicateFieldMoreStepImpl<SR>, QueryStringPredicateOptionsStep<?>> {
+class QueryStringPredicateFieldMoreStepImpl<SR> implements QueryStringPredicateFieldMoreStep<SR, QueryStringPredicateFieldMoreStepImpl<SR>, QueryStringPredicateOptionsStep<?>> {
 
-	private final CommonState commonState;
+    private final CommonState commonState;
 
-	private final List<CommonQueryStringPredicateBuilder.FieldState> fieldStates = new ArrayList<>();
+    private final List<CommonQueryStringPredicateBuilder.FieldState> fieldStates = new ArrayList<>();
 
-	QueryStringPredicateFieldMoreStepImpl(CommonState commonState, List<String> fieldPaths) {
-		this.commonState = commonState;
-		for ( String fieldPath : fieldPaths ) {
-			fieldStates.add( commonState.field( fieldPath ) );
-		}
-	}
+    QueryStringPredicateFieldMoreStepImpl(CommonState commonState, List<String> fieldPaths) {
+        this.commonState = commonState;
+        for (String fieldPath : fieldPaths) {
+            fieldStates.add(commonState.field(fieldPath));
+        }
+    }
 
-	@Override
-	public QueryStringPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
-		return new QueryStringPredicateFieldMoreStepImpl<>( commonState, Arrays.asList( fieldPaths ) );
-	}
+    @Override
+    public QueryStringPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public QueryStringPredicateFieldMoreStepImpl<SR> boost(float boost) {
-		fieldStates.forEach( c -> c.boost( boost ) );
-		return this;
-	}
+    @Override
+    public QueryStringPredicateFieldMoreStepImpl<SR> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public QueryStringPredicateOptionsStep<?> matching(String queryString) {
-		return commonState.matching( queryString );
-	}
+    @Override
+    public QueryStringPredicateOptionsStep<?> matching(String queryString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    static class CommonState extends AbstractStringQueryPredicateCommonState<CommonState, QueryStringPredicateOptionsStep<CommonState>, QueryStringPredicateBuilder> implements QueryStringPredicateOptionsStep<CommonState> {
 
-	static class CommonState
-			extends
-			AbstractStringQueryPredicateCommonState<CommonState,
-					QueryStringPredicateOptionsStep<CommonState>,
-					QueryStringPredicateBuilder>
-			implements QueryStringPredicateOptionsStep<CommonState> {
+        private static final Set<RewriteMethod> PARAMETERIZED_REWRITE_METHODS = EnumSet.of(RewriteMethod.TOP_TERMS_BOOST_N, RewriteMethod.TOP_TERMS_BLENDED_FREQS_N, RewriteMethod.TOP_TERMS_N);
 
-		private static final Set<RewriteMethod> PARAMETERIZED_REWRITE_METHODS = EnumSet.of(
-				RewriteMethod.TOP_TERMS_BOOST_N,
-				RewriteMethod.TOP_TERMS_BLENDED_FREQS_N,
-				RewriteMethod.TOP_TERMS_N
-		);
+        CommonState(SearchPredicateDslContext<?> dslContext) {
+            super(dslContext);
+        }
 
+        @Override
+        protected QueryStringPredicateBuilder createBuilder(SearchPredicateDslContext<?> dslContext) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		CommonState(SearchPredicateDslContext<?> dslContext) {
-			super( dslContext );
-		}
+        @Override
+        public CommonState allowLeadingWildcard(boolean allowLeadingWildcard) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected QueryStringPredicateBuilder createBuilder(SearchPredicateDslContext<?> dslContext) {
-			return dslContext.scope().predicateBuilders().queryString();
-		}
+        @Override
+        public CommonState enablePositionIncrements(boolean enablePositionIncrements) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState allowLeadingWildcard(boolean allowLeadingWildcard) {
-			builder.allowLeadingWildcard( allowLeadingWildcard );
-			return this;
-		}
+        @Override
+        public CommonState phraseSlop(Integer phraseSlop) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState enablePositionIncrements(boolean enablePositionIncrements) {
-			builder.enablePositionIncrements( enablePositionIncrements );
-			return this;
-		}
+        @Override
+        public CommonState rewriteMethod(RewriteMethod rewriteMethod) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState phraseSlop(Integer phraseSlop) {
-			builder.phraseSlop( phraseSlop );
-			return this;
-		}
+        @Override
+        public CommonState rewriteMethod(RewriteMethod rewriteMethod, int n) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState rewriteMethod(RewriteMethod rewriteMethod) {
-			if ( PARAMETERIZED_REWRITE_METHODS.contains( rewriteMethod ) ) {
-				throw QueryLog.INSTANCE.parameterizedRewriteMethodWithoutParameter( rewriteMethod );
-			}
-			builder.rewriteMethod( rewriteMethod, null );
-			return this;
-		}
-
-		@Override
-		public CommonState rewriteMethod(RewriteMethod rewriteMethod, int n) {
-			if ( !PARAMETERIZED_REWRITE_METHODS.contains( rewriteMethod ) ) {
-				throw QueryLog.INSTANCE.nonParameterizedRewriteMethodWithParameter( rewriteMethod );
-			}
-			builder.rewriteMethod( rewriteMethod, n );
-			return this;
-		}
-
-		@Override
-		protected CommonState thisAsT() {
-			return this;
-		}
-
-	}
+        @Override
+        protected CommonState thisAsT() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -19,23 +19,23 @@ import org.hibernate.search.backend.elasticsearch.work.factory.impl.Elasticsearc
  */
 public class Elasticsearch81ProtocolDialect implements ElasticsearchProtocolDialect {
 
-	@Override
-	public ElasticsearchIndexMetadataSyntax createIndexMetadataSyntax() {
-		return new Elasticsearch7IndexMetadataSyntax();
-	}
+    @Override
+    public ElasticsearchIndexMetadataSyntax createIndexMetadataSyntax() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchSyntax createSearchSyntax() {
-		return new Elasticsearch81SearchSyntax();
-	}
+    @Override
+    public ElasticsearchSearchSyntax createSearchSyntax() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchWorkFactory createWorkFactory(GsonProvider gsonProvider, Boolean ignoreShardFailures) {
-		return new Elasticsearch7WorkFactory( gsonProvider, ignoreShardFailures );
-	}
+    @Override
+    public ElasticsearchWorkFactory createWorkFactory(GsonProvider gsonProvider, Boolean ignoreShardFailures) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchResultExtractorFactory createSearchResultExtractorFactory() {
-		return new Elasticsearch7SearchResultExtractorFactory();
-	}
+    @Override
+    public ElasticsearchSearchResultExtractorFactory createSearchResultExtractorFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

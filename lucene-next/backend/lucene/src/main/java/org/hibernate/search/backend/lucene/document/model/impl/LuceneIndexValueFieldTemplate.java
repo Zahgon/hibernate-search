@@ -8,18 +8,14 @@ import org.hibernate.search.backend.lucene.types.impl.LuceneIndexValueFieldType;
 import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.util.common.pattern.spi.SimpleGlobPattern;
 
-public class LuceneIndexValueFieldTemplate
-		extends AbstractLuceneIndexFieldTemplate<LuceneIndexValueFieldType<?>> {
+public class LuceneIndexValueFieldTemplate extends AbstractLuceneIndexFieldTemplate<LuceneIndexValueFieldType<?>> {
 
-	public LuceneIndexValueFieldTemplate(LuceneIndexCompositeNode declaringParent,
-			SimpleGlobPattern absolutePathGlob, LuceneIndexValueFieldType<?> type, TreeNodeInclusion inclusion,
-			boolean multiValued) {
-		super( declaringParent, absolutePathGlob, type, inclusion, multiValued );
-	}
+    public LuceneIndexValueFieldTemplate(LuceneIndexCompositeNode declaringParent, SimpleGlobPattern absolutePathGlob, LuceneIndexValueFieldType<?> type, TreeNodeInclusion inclusion, boolean multiValued) {
+        super(declaringParent, absolutePathGlob, type, inclusion, multiValued);
+    }
 
-	@Override
-	protected LuceneIndexField createNode(LuceneIndexCompositeNode parent, String relativePath,
-			LuceneIndexValueFieldType<?> type, TreeNodeInclusion inclusion, boolean multiValued) {
-		return new LuceneIndexValueField<>( parent, relativePath, type, inclusion, multiValued, true );
-	}
+    @Override
+    protected LuceneIndexField createNode(LuceneIndexCompositeNode parent, String relativePath, LuceneIndexValueFieldType<?> type, TreeNodeInclusion inclusion, boolean multiValued) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

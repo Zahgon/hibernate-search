@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.search.aggregation.impl;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.AbstractElasticsearchCodecAwareSearchQueryElementFactory;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
@@ -18,7 +17,6 @@ import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConvert
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.aggregation.spi.FieldMetricAggregationBuilder;
 import org.hibernate.search.engine.search.common.ValueModel;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -29,257 +27,212 @@ import com.google.gson.JsonObject;
  */
 public class ElasticsearchMetricFieldAggregation<F, K> extends AbstractElasticsearchNestableAggregation<K> {
 
-	private static final JsonAccessor<JsonObject> SUM_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "sum" ).asObject();
+    private static final JsonAccessor<JsonObject> SUM_PROPERTY_ACCESSOR = JsonAccessor.root().property("sum").asObject();
 
-	private static final JsonAccessor<JsonObject> MIN_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "min" ).asObject();
+    private static final JsonAccessor<JsonObject> MIN_PROPERTY_ACCESSOR = JsonAccessor.root().property("min").asObject();
 
-	private static final JsonAccessor<JsonObject> MAX_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "max" ).asObject();
+    private static final JsonAccessor<JsonObject> MAX_PROPERTY_ACCESSOR = JsonAccessor.root().property("max").asObject();
 
-	private static final JsonAccessor<JsonObject> AVG_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "avg" ).asObject();
+    private static final JsonAccessor<JsonObject> AVG_PROPERTY_ACCESSOR = JsonAccessor.root().property("avg").asObject();
 
-	private static final JsonAccessor<String> FIELD_PROPERTY_ACCESSOR =
-			JsonAccessor.root().property( "field" ).asString();
+    private static final JsonAccessor<String> FIELD_PROPERTY_ACCESSOR = JsonAccessor.root().property("field").asString();
 
-	private static final JsonAccessor<Double> VALUE_ACCESSOR =
-			JsonAccessor.root().property( "value" ).asDouble();
+    private static final JsonAccessor<Double> VALUE_ACCESSOR = JsonAccessor.root().property("value").asDouble();
 
-	public static <F> ElasticsearchMetricFieldAggregation.Factory<F> sum(ElasticsearchFieldCodec<F> codec) {
-		return new ElasticsearchMetricFieldAggregation.Factory<>( codec, SUM_PROPERTY_ACCESSOR );
-	}
+    public static <F> ElasticsearchMetricFieldAggregation.Factory<F> sum(ElasticsearchFieldCodec<F> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <F> ElasticsearchMetricFieldAggregation.Factory<F> min(ElasticsearchFieldCodec<F> codec) {
-		return new ElasticsearchMetricFieldAggregation.Factory<>( codec, MIN_PROPERTY_ACCESSOR );
-	}
+    public static <F> ElasticsearchMetricFieldAggregation.Factory<F> min(ElasticsearchFieldCodec<F> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <F> ElasticsearchMetricFieldAggregation.Factory<F> max(ElasticsearchFieldCodec<F> codec) {
-		return new ElasticsearchMetricFieldAggregation.Factory<>( codec, MAX_PROPERTY_ACCESSOR );
-	}
+    public static <F> ElasticsearchMetricFieldAggregation.Factory<F> max(ElasticsearchFieldCodec<F> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <F> ElasticsearchMetricFieldAggregation.Factory<F> avg(ElasticsearchFieldCodec<F> codec) {
-		return new ElasticsearchMetricFieldAggregation.Factory<>( codec, AVG_PROPERTY_ACCESSOR );
-	}
+    public static <F> ElasticsearchMetricFieldAggregation.Factory<F> avg(ElasticsearchFieldCodec<F> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String absoluteFieldPath;
-	private final AggregationExtractorBuilder<K> metricFieldExtractorCreator;
-	private final JsonAccessor<JsonObject> operation;
+    private final String absoluteFieldPath;
 
-	private ElasticsearchMetricFieldAggregation(Builder<F, K> builder) {
-		super( builder );
-		this.absoluteFieldPath = builder.field.absolutePath();
-		this.metricFieldExtractorCreator = builder.metricFieldExtractorCreator;
-		this.operation = builder.operation;
-	}
+    private final AggregationExtractorBuilder<K> metricFieldExtractorCreator;
 
-	@Override
-	protected final JsonObject doRequest(AggregationRequestBuildingContextContext context) {
-		JsonObject outerObject = new JsonObject();
-		JsonObject innerObject = new JsonObject();
+    private final JsonAccessor<JsonObject> operation;
 
-		operation.set( outerObject, innerObject );
-		FIELD_PROPERTY_ACCESSOR.set( innerObject, absoluteFieldPath );
-		return outerObject;
-	}
+    private ElasticsearchMetricFieldAggregation(Builder<F, K> builder) {
+        super(builder);
+        this.absoluteFieldPath = builder.field.absolutePath();
+        this.metricFieldExtractorCreator = builder.metricFieldExtractorCreator;
+        this.operation = builder.operation;
+    }
 
-	@Override
-	protected Extractor<K> extractor(AggregationKey<?> key, AggregationRequestBuildingContextContext context) {
-		return metricFieldExtractorCreator.extractor( key, filter );
-	}
+    @Override
+    protected final JsonObject doRequest(AggregationRequestBuildingContextContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class Factory<F>
-			extends
-			AbstractElasticsearchCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, F> {
+    @Override
+    protected Extractor<K> extractor(AggregationKey<?> key, AggregationRequestBuildingContextContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final JsonAccessor<JsonObject> operation;
+    private static class Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, F> {
 
-		private Factory(ElasticsearchFieldCodec<F> codec, JsonAccessor<JsonObject> operation) {
-			super( codec );
-			this.operation = operation;
-		}
+        private final JsonAccessor<JsonObject> operation;
 
-		@Override
-		public FieldMetricAggregationBuilder.TypeSelector create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new ElasticsearchMetricFieldAggregation.TypeSelector<>( codec, scope, field, operation );
-		}
-	}
+        private Factory(ElasticsearchFieldCodec<F> codec, JsonAccessor<JsonObject> operation) {
+            super(codec);
+            this.operation = operation;
+        }
 
-	private static class TypeSelector<F> implements FieldMetricAggregationBuilder.TypeSelector {
-		private final ElasticsearchFieldCodec<F> codec;
-		private final ElasticsearchSearchIndexScope<?> scope;
-		private final ElasticsearchSearchIndexValueFieldContext<F> field;
-		private final JsonAccessor<JsonObject> operation;
+        @Override
+        public FieldMetricAggregationBuilder.TypeSelector create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private TypeSelector(ElasticsearchFieldCodec<F> codec,
-				ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field,
-				JsonAccessor<JsonObject> operation) {
-			this.codec = codec;
-			this.scope = scope;
-			this.field = field;
-			this.operation = operation;
-		}
+    private static class TypeSelector<F> implements FieldMetricAggregationBuilder.TypeSelector {
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public <T> Builder<F, T> type(Class<T> expectedType, ValueModel valueModel) {
-			AggregationExtractorBuilder<T> metricFieldExtractorCreator;
+        private final ElasticsearchFieldCodec<F> codec;
 
-			if ( ValueModel.RAW.equals( valueModel ) ) {
-				if ( Double.class.isAssignableFrom( expectedType ) ) {
-					metricFieldExtractorCreator = (AggregationExtractorBuilder<
-							T>) new DoubleMetricFieldExtractor.Builder( field.nestedPathHierarchy() );
-				}
-				else {
-					var projectionConverter = (ProjectionConverter<JsonElement, ? extends T>) field.type()
-							.rawProjectionConverter().withConvertedType( expectedType, field );
-					metricFieldExtractorCreator = (AggregationExtractorBuilder<T>) new RawMetricFieldExtractor.Builder<>(
-							field.nestedPathHierarchy(),
-							projectionConverter );
-				}
-			}
-			else {
-				var projectionConverter = field.type()
-						.projectionConverter( valueModel ).withConvertedType( expectedType, field );
-				metricFieldExtractorCreator =
-						new MetricFieldExtractor.Builder<>( field.nestedPathHierarchy(), projectionConverter, codec );
-			}
+        private final ElasticsearchSearchIndexScope<?> scope;
 
-			return new Builder<>( scope, field, metricFieldExtractorCreator, operation );
-		}
-	}
+        private final ElasticsearchSearchIndexValueFieldContext<F> field;
 
-	private static class MetricFieldExtractor<F, K> extends AbstractExtractor<K> {
+        private final JsonAccessor<JsonObject> operation;
 
-		private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
-		private final ElasticsearchFieldCodec<F> codec;
+        private TypeSelector(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field, JsonAccessor<JsonObject> operation) {
+            this.codec = codec;
+            this.scope = scope;
+            this.field = field;
+            this.operation = operation;
+        }
 
-		protected MetricFieldExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy,
-				ElasticsearchSearchPredicate filter,
-				ProjectionConverter<F, ? extends K> fromFieldValueConverter, ElasticsearchFieldCodec<F> codec) {
-			super( key, nestedPathHierarchy, filter );
-			this.fromFieldValueConverter = fromFieldValueConverter;
-			this.codec = codec;
-		}
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T> Builder<F, T> type(Class<T> expectedType, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		protected K doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
-			FromDocumentValueConvertContext convertContext = context.fromDocumentValueConvertContext();
-			Optional<Double> value = VALUE_ACCESSOR.get( aggregationResult );
-			JsonElement valueAsString = aggregationResult.get( "value_as_string" );
+    private static class MetricFieldExtractor<F, K> extends AbstractExtractor<K> {
 
+        private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
 
-			return fromFieldValueConverter.fromDocumentValue(
-					codec.decodeAggregationValue( value, valueAsString ),
-					convertContext
-			);
-		}
+        private final ElasticsearchFieldCodec<F> codec;
 
-		private static class Builder<F, K> extends AggregationExtractorBuilder<K> {
-			private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
-			private final ElasticsearchFieldCodec<F> codec;
+        protected MetricFieldExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy, ElasticsearchSearchPredicate filter, ProjectionConverter<F, ? extends K> fromFieldValueConverter, ElasticsearchFieldCodec<F> codec) {
+            super(key, nestedPathHierarchy, filter);
+            this.fromFieldValueConverter = fromFieldValueConverter;
+            this.codec = codec;
+        }
 
-			private Builder(List<String> nestedPathHierarchy, ProjectionConverter<F, ? extends K> fromFieldValueConverter,
-					ElasticsearchFieldCodec<F> codec) {
-				super( nestedPathHierarchy );
-				this.fromFieldValueConverter = fromFieldValueConverter;
-				this.codec = codec;
-			}
+        @Override
+        protected K doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			@Override
-			AbstractExtractor<K> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter) {
-				return new MetricFieldExtractor<>( key, nestedPathHierarchy, filter, fromFieldValueConverter, codec );
-			}
-		}
-	}
+        private static class Builder<F, K> extends AggregationExtractorBuilder<K> {
 
-	private static class DoubleMetricFieldExtractor extends AbstractExtractor<Double> {
-		protected DoubleMetricFieldExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy,
-				ElasticsearchSearchPredicate filter) {
-			super( key, nestedPathHierarchy, filter );
-		}
+            private final ProjectionConverter<F, ? extends K> fromFieldValueConverter;
 
-		@Override
-		protected Double doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
-			Optional<Double> value = VALUE_ACCESSOR.get( aggregationResult );
-			return value.orElse( null );
-		}
+            private final ElasticsearchFieldCodec<F> codec;
 
-		private static class Builder extends AggregationExtractorBuilder<Double> {
+            private Builder(List<String> nestedPathHierarchy, ProjectionConverter<F, ? extends K> fromFieldValueConverter, ElasticsearchFieldCodec<F> codec) {
+                super(nestedPathHierarchy);
+                this.fromFieldValueConverter = fromFieldValueConverter;
+                this.codec = codec;
+            }
 
-			private Builder(List<String> nestedPathHierarchy) {
-				super( nestedPathHierarchy );
-			}
+            @Override
+            AbstractExtractor<K> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-			@Override
-			AbstractExtractor<Double> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter) {
-				return new DoubleMetricFieldExtractor( key, nestedPathHierarchy, filter );
-			}
-		}
-	}
+    private static class DoubleMetricFieldExtractor extends AbstractExtractor<Double> {
 
-	private static class RawMetricFieldExtractor<K> extends AbstractExtractor<K> {
+        protected DoubleMetricFieldExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy, ElasticsearchSearchPredicate filter) {
+            super(key, nestedPathHierarchy, filter);
+        }
 
-		private final ProjectionConverter<JsonElement, K> projectionConverter;
+        @Override
+        protected Double doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected RawMetricFieldExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy,
-				ElasticsearchSearchPredicate filter,
-				ProjectionConverter<JsonElement, K> projectionConverter) {
-			super( key, nestedPathHierarchy, filter );
-			this.projectionConverter = projectionConverter;
-		}
+        private static class Builder extends AggregationExtractorBuilder<Double> {
 
-		@Override
-		protected K doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
-			FromDocumentValueConvertContext convertContext = context.fromDocumentValueConvertContext();
-			return projectionConverter.fromDocumentValue( aggregationResult, convertContext );
-		}
+            private Builder(List<String> nestedPathHierarchy) {
+                super(nestedPathHierarchy);
+            }
 
-		private static class Builder<K> extends AggregationExtractorBuilder<K> {
-			private final ProjectionConverter<JsonElement, K> projectionConverter;
+            @Override
+            AbstractExtractor<Double> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-			private Builder(List<String> nestedPathHierarchy, ProjectionConverter<JsonElement, K> projectionConverter) {
-				super( nestedPathHierarchy );
-				this.projectionConverter = projectionConverter;
-			}
+    private static class RawMetricFieldExtractor<K> extends AbstractExtractor<K> {
 
-			@Override
-			AbstractExtractor<K> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter) {
-				return new RawMetricFieldExtractor<>( key, nestedPathHierarchy, filter, projectionConverter );
-			}
-		}
-	}
+        private final ProjectionConverter<JsonElement, K> projectionConverter;
 
-	private abstract static class AggregationExtractorBuilder<K> {
-		protected final List<String> nestedPathHierarchy;
+        protected RawMetricFieldExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy, ElasticsearchSearchPredicate filter, ProjectionConverter<JsonElement, K> projectionConverter) {
+            super(key, nestedPathHierarchy, filter);
+            this.projectionConverter = projectionConverter;
+        }
 
-		protected AggregationExtractorBuilder(List<String> nestedPathHierarchy) {
-			this.nestedPathHierarchy = nestedPathHierarchy;
-		}
+        @Override
+        protected K doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		abstract AbstractExtractor<K> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter);
-	}
+        private static class Builder<K> extends AggregationExtractorBuilder<K> {
 
-	private static class Builder<F, K> extends AbstractBuilder<K>
-			implements FieldMetricAggregationBuilder<K> {
+            private final ProjectionConverter<JsonElement, K> projectionConverter;
 
-		private final AggregationExtractorBuilder<K> metricFieldExtractorCreator;
-		private final JsonAccessor<JsonObject> operation;
+            private Builder(List<String> nestedPathHierarchy, ProjectionConverter<JsonElement, K> projectionConverter) {
+                super(nestedPathHierarchy);
+                this.projectionConverter = projectionConverter;
+            }
 
-		private Builder(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field,
-				AggregationExtractorBuilder<K> metricFieldExtractorCreator,
-				JsonAccessor<JsonObject> operation) {
-			super( scope, field );
-			this.metricFieldExtractorCreator = metricFieldExtractorCreator;
-			this.operation = operation;
-		}
+            @Override
+            AbstractExtractor<K> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-		@Override
-		public ElasticsearchMetricFieldAggregation<F, K> build() {
-			return new ElasticsearchMetricFieldAggregation<>( this );
-		}
-	}
+    private abstract static class AggregationExtractorBuilder<K> {
+
+        protected final List<String> nestedPathHierarchy;
+
+        protected AggregationExtractorBuilder(List<String> nestedPathHierarchy) {
+            this.nestedPathHierarchy = nestedPathHierarchy;
+        }
+
+        abstract AbstractExtractor<K> extractor(AggregationKey<?> key, ElasticsearchSearchPredicate filter);
+    }
+
+    private static class Builder<F, K> extends AbstractBuilder<K> implements FieldMetricAggregationBuilder<K> {
+
+        private final AggregationExtractorBuilder<K> metricFieldExtractorCreator;
+
+        private final JsonAccessor<JsonObject> operation;
+
+        private Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field, AggregationExtractorBuilder<K> metricFieldExtractorCreator, JsonAccessor<JsonObject> operation) {
+            super(scope, field);
+            this.metricFieldExtractorCreator = metricFieldExtractorCreator;
+            this.operation = operation;
+        }
+
+        @Override
+        public ElasticsearchMetricFieldAggregation<F, K> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

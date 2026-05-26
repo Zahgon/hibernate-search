@@ -14,26 +14,17 @@ import org.hibernate.search.mapper.pojo.standalone.mapping.metadata.EntityConfig
 @SuppressWarnings("deprecation")
 public final class EntityConfigurerLoadingBinder<E> implements EntityLoadingBinder {
 
-	private final Class<E> entityType;
-	private final EntityConfigurer<E> delegate;
+    private final Class<E> entityType;
 
-	public EntityConfigurerLoadingBinder(Class<E> entityType, EntityConfigurer<E> delegate) {
-		this.entityType = entityType;
-		this.delegate = delegate;
-	}
+    private final EntityConfigurer<E> delegate;
 
-	@Override
-	public void bind(EntityLoadingBindingContext context) {
-		delegate.configure( new EntityConfigurationContext<>() {
-			@Override
-			public void selectionLoadingStrategy(SelectionLoadingStrategy<? super E> strategy) {
-				context.selectionLoadingStrategy( entityType, strategy );
-			}
+    public EntityConfigurerLoadingBinder(Class<E> entityType, EntityConfigurer<E> delegate) {
+        this.entityType = entityType;
+        this.delegate = delegate;
+    }
 
-			@Override
-			public void massLoadingStrategy(MassLoadingStrategy<? super E, ?> strategy) {
-				context.massLoadingStrategy( entityType, strategy );
-			}
-		} );
-	}
+    @Override
+    public void bind(EntityLoadingBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

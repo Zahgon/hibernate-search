@@ -5,49 +5,38 @@
 package org.hibernate.search.backend.lucene.document.model.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.backend.lucene.types.impl.LuceneIndexCompositeNodeType;
 import org.hibernate.search.engine.backend.document.model.spi.AbstractIndexObjectField;
 import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.engine.search.common.spi.SearchIndexSchemaElementContextHelper;
 
-public final class LuceneIndexObjectField
-		extends AbstractIndexObjectField<
-				LuceneIndexObjectField,
-				LuceneSearchIndexScope<?>,
-				LuceneIndexCompositeNodeType,
-				LuceneIndexCompositeNode,
-				LuceneIndexField>
-		implements LuceneIndexCompositeNode, LuceneIndexField {
+public final class LuceneIndexObjectField extends AbstractIndexObjectField<LuceneIndexObjectField, LuceneSearchIndexScope<?>, LuceneIndexCompositeNodeType, LuceneIndexCompositeNode, LuceneIndexField> implements LuceneIndexCompositeNode, LuceneIndexField {
 
-	private final boolean dynamic;
+    private final boolean dynamic;
 
-	public LuceneIndexObjectField(LuceneIndexCompositeNode parent, String relativeFieldName,
-			LuceneIndexCompositeNodeType type, TreeNodeInclusion inclusion, boolean multiValued,
-			Map<String, LuceneIndexField> notYetInitializedStaticChildren,
-			boolean dynamic) {
-		super( parent, relativeFieldName, type, inclusion, multiValued, notYetInitializedStaticChildren );
-		this.dynamic = dynamic;
-	}
+    public LuceneIndexObjectField(LuceneIndexCompositeNode parent, String relativeFieldName, LuceneIndexCompositeNodeType type, TreeNodeInclusion inclusion, boolean multiValued, Map<String, LuceneIndexField> notYetInitializedStaticChildren, boolean dynamic) {
+        super(parent, relativeFieldName, type, inclusion, multiValued, notYetInitializedStaticChildren);
+        this.dynamic = dynamic;
+    }
 
-	@Override
-	protected LuceneIndexObjectField self() {
-		return this;
-	}
+    @Override
+    protected LuceneIndexObjectField self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexCompositeNode toComposite() {
-		return this;
-	}
+    @Override
+    public LuceneIndexCompositeNode toComposite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexValueField<?> toValueField() {
-		return SearchIndexSchemaElementContextHelper.throwingToValueField( this );
-	}
+    @Override
+    public LuceneIndexValueField<?> toValueField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean dynamic() {
-		return dynamic;
-	}
+    @Override
+    public boolean dynamic() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

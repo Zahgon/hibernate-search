@@ -2,11 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import java.util.List;
-
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.aggregation.dsl.AggregationFinalStep;
 import org.hibernate.search.engine.search.aggregation.dsl.TypedSearchAggregationFactory;
@@ -21,98 +19,91 @@ import org.hibernate.search.query.facet.FacetingRequest;
  * @param <A> The type of aggregations
  */
 public abstract class FacetingRequestImpl<A> implements FacetingRequest {
-	/**
-	 * A user specified key for the facet request
-	 */
-	private final AggregationKey<A> key;
 
-	/**
-	 * The document facet name to facet on (@Facet.name)
-	 */
-	private final String fieldName;
+    /**
+     * A user specified key for the facet request
+     */
+    private final AggregationKey<A> key;
 
-	/**
-	 * Specified in which order the facets will be returned
-	 */
-	protected FacetSortOrder sort = FacetSortOrder.COUNT_DESC;
+    /**
+     * The document facet name to facet on (@Facet.name)
+     */
+    private final String fieldName;
 
-	/**
-	 * Whether a facet value with 0 occurrences
-	 */
-	protected boolean includeZeroCounts = false;
+    /**
+     * Specified in which order the facets will be returned
+     */
+    protected FacetSortOrder sort = FacetSortOrder.COUNT_DESC;
 
-	/**
-	 * The maximum number of {@link Facet}s to return for this request. A negative value means that all
-	 * facets will be included
-	 */
-	protected int maxNumberOfFacets = 1;
+    /**
+     * Whether a facet value with 0 occurrences
+     */
+    protected boolean includeZeroCounts = false;
 
-	public FacetingRequestImpl(String name, String fieldName) {
-		if ( name == null ) {
-			throw new IllegalArgumentException( "The request name name cannot be null" );
-		}
-		if ( fieldName == null ) {
-			throw new IllegalArgumentException( "The field name cannot be null" );
-		}
-		this.key = AggregationKey.of( name );
-		this.fieldName = fieldName;
-	}
+    /**
+     * The maximum number of {@link Facet}s to return for this request. A negative value means that all
+     * facets will be included
+     */
+    protected int maxNumberOfFacets = 1;
 
-	@Override
-	public String getFacetingName() {
-		return key.name();
-	}
+    public FacetingRequestImpl(String name, String fieldName) {
+        if (name == null) {
+            throw new IllegalArgumentException("The request name name cannot be null");
+        }
+        if (fieldName == null) {
+            throw new IllegalArgumentException("The field name cannot be null");
+        }
+        this.key = AggregationKey.of(name);
+        this.fieldName = fieldName;
+    }
 
-	public AggregationKey<A> getKey() {
-		return key;
-	}
+    @Override
+    public String getFacetingName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String getFieldName() {
-		return fieldName;
-	}
+    public AggregationKey<A> getKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setSort(FacetSortOrder sort) {
-		this.sort = sort;
-	}
+    @Override
+    public String getFieldName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FacetSortOrder getSort() {
-		return sort;
-	}
+    public void setSort(FacetSortOrder sort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int getMaxNumberOfFacets() {
-		return maxNumberOfFacets;
-	}
+    @Override
+    public FacetSortOrder getSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setMaxNumberOfFacets(int maxNumberOfFacets) {
-		this.maxNumberOfFacets = maxNumberOfFacets;
-	}
+    @Override
+    public int getMaxNumberOfFacets() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract AggregationFinalStep<A> requestAggregation(TypedSearchAggregationFactory<?> factory);
+    public void setMaxNumberOfFacets(int maxNumberOfFacets) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract List<Facet> toFacets(A aggregation);
+    public abstract AggregationFinalStep<A> requestAggregation(TypedSearchAggregationFactory<?> factory);
 
-	@Override
-	public boolean hasZeroCountsIncluded() {
-		return includeZeroCounts;
-	}
+    public abstract List<Facet> toFacets(A aggregation);
 
-	public void setIncludeZeroCounts(boolean includeZeroCounts) {
-		this.includeZeroCounts = includeZeroCounts;
-	}
+    @Override
+    public boolean hasZeroCountsIncluded() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append( "FacetingRequest" );
-		sb.append( "{name='" ).append( key.name() ).append( '\'' );
-		sb.append( ", fieldName='" ).append( fieldName ).append( '\'' );
-		sb.append( ", sort=" ).append( sort );
-		sb.append( ", includeZeroCounts=" ).append( includeZeroCounts );
-		sb.append( ", maxNumberOfFacets=" ).append( maxNumberOfFacets );
-		sb.append( '}' );
-		return sb.toString();
-	}
+    public void setIncludeZeroCounts(boolean includeZeroCounts) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

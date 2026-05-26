@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.lowlevel.query.impl.Queries;
-
 import org.apache.lucene.index.IndexReaderContext;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.ReaderUtil;
@@ -33,63 +31,40 @@ import org.apache.lucene.util.BitSet;
  */
 public class NestedDocsProvider {
 
-	private final BitSetProducer parentFilter;
-	private final Query childQuery;
+    private final BitSetProducer parentFilter;
 
-	public NestedDocsProvider(String parentDocumentPath, String nestedDocumentPath) {
-		this( parentDocumentPath, Collections.singleton( nestedDocumentPath ), null );
-	}
+    private final Query childQuery;
 
-	public NestedDocsProvider(String nestedDocumentPath, Query nestedFilter) {
-		this( null, Collections.singleton( nestedDocumentPath ), nestedFilter );
-	}
+    public NestedDocsProvider(String parentDocumentPath, String nestedDocumentPath) {
+        this(parentDocumentPath, Collections.singleton(nestedDocumentPath), null);
+    }
 
-	public NestedDocsProvider(Set<String> nestedDocumentPaths) {
-		this( null, nestedDocumentPaths, null );
-	}
+    public NestedDocsProvider(String nestedDocumentPath, Query nestedFilter) {
+        this(null, Collections.singleton(nestedDocumentPath), nestedFilter);
+    }
 
-	public NestedDocsProvider(String parentDocumentPath, Set<String> nestedDocumentPaths, Query nestedFilter) {
-		Query parentsFilterQuery = Queries.parentsFilterQuery( parentDocumentPath );
-		// Note: this filter should include *all* parents, not just the matched ones.
-		// Otherwise we will not "see" non-matched parents,
-		// and we will consider its matching children as children of the next matching parent.
-		this.parentFilter = new QueryBitSetProducer( parentsFilterQuery );
-		this.childQuery = Queries.childDocumentsQuery( nestedDocumentPaths, nestedFilter );
-	}
+    public NestedDocsProvider(Set<String> nestedDocumentPaths) {
+        this(null, nestedDocumentPaths, null);
+    }
 
-	public ChildDocIds childDocs(LeafReaderContext context, DocIdSetIterator childFilter) throws IOException {
-		final IndexReaderContext topLevelCtx = ReaderUtil.getTopLevelContext( context );
-		// See HSEARCH-4514; ideally we would use the calling searcher here,
-		// but it's not easy to pass it to this method
-		// and it hasn't been proven that creating a new searcher has a performance impact.
-		IndexSearcher indexSearcher = new IndexSearcher( topLevelCtx );
-		Weight childDocsWeight = childDocsWeight( indexSearcher );
-		return childDocs( childDocsWeight, context, childFilter );
-	}
+    public NestedDocsProvider(String parentDocumentPath, Set<String> nestedDocumentPaths, Query nestedFilter) {
+        Query parentsFilterQuery = Queries.parentsFilterQuery(parentDocumentPath);
+        // Note: this filter should include *all* parents, not just the matched ones.
+        // Otherwise we will not "see" non-matched parents,
+        // and we will consider its matching children as children of the next matching parent.
+        this.parentFilter = new QueryBitSetProducer(parentsFilterQuery);
+        this.childQuery = Queries.childDocumentsQuery(nestedDocumentPaths, nestedFilter);
+    }
 
-	public ChildDocIds childDocs(Weight childDocsWeight, LeafReaderContext context,
-			DocIdSetIterator childFilter)
-			throws IOException {
-		BitSet parentDocs = parentFilter.getBitSet( context );
-		if ( parentDocs == null ) {
-			return null;
-		}
+    public ChildDocIds childDocs(LeafReaderContext context, DocIdSetIterator childFilter) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Scorer s = childDocsWeight.scorer( context );
-		DocIdSetIterator childDocs = s == null ? null : s.iterator();
-		if ( childDocs == null ) {
-			return null;
-		}
+    public ChildDocIds childDocs(Weight childDocsWeight, LeafReaderContext context, DocIdSetIterator childFilter) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( childFilter != null ) {
-			childDocs = ConjunctionUtils.intersectIterators( Arrays.asList( childDocs, childFilter ) );
-		}
-
-		return new ChildDocIds( parentDocs, childDocs );
-	}
-
-	public Weight childDocsWeight(IndexSearcher indexSearcher) throws IOException {
-		return indexSearcher.createWeight( indexSearcher.rewrite( childQuery ), ScoreMode.COMPLETE_NO_SCORES, 1f );
-	}
-
+    public Weight childDocsWeight(IndexSearcher indexSearcher) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

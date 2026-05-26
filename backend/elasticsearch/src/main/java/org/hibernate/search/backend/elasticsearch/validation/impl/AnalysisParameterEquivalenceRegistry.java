@@ -10,87 +10,77 @@ import java.util.Map;
 /**
  * Stores the knowledge of how to compare values for a given parameter
  * for a given analysis type (analyzer type, char filter type, etc.).
- *
  */
 class AnalysisParameterEquivalenceRegistry {
 
-	private static final JsonElementEquivalence DEFAULT_ELEMENT_EQUIVALENCE =
-			new JsonElementEquivalence();
+    private static final JsonElementEquivalence DEFAULT_ELEMENT_EQUIVALENCE = new JsonElementEquivalence();
 
-	// Nested arrays are not considered unordered.
-	private static final JsonElementEquivalence UNORDERED_ARRAY_EQUIVALENCE =
-			new JsonElementUnorderedArrayEquivalence( DEFAULT_ELEMENT_EQUIVALENCE );
+    // Nested arrays are not considered unordered.
+    private static final JsonElementEquivalence UNORDERED_ARRAY_EQUIVALENCE = new JsonElementUnorderedArrayEquivalence(DEFAULT_ELEMENT_EQUIVALENCE);
 
-	private final Map<String, Map<String, JsonElementEquivalence>> equivalences;
+    private final Map<String, Map<String, JsonElementEquivalence>> equivalences;
 
-	private AnalysisParameterEquivalenceRegistry(
-			Map<String, Map<String, JsonElementEquivalence>> equivalences) {
-		super();
-		this.equivalences = equivalences;
-	}
+    private AnalysisParameterEquivalenceRegistry(Map<String, Map<String, JsonElementEquivalence>> equivalences) {
+        super();
+        this.equivalences = equivalences;
+    }
 
-	public JsonElementEquivalence get(String type, String parameter) {
-		Map<String, JsonElementEquivalence> mapForType = equivalences.get( type );
-		JsonElementEquivalence result = mapForType == null ? null : mapForType.get( parameter );
-		return result == null ? DEFAULT_ELEMENT_EQUIVALENCE : result;
-	}
+    public JsonElementEquivalence get(String type, String parameter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder {
+    public static class Builder {
 
-		private final Map<String, Map<String, JsonElementEquivalence>> equivalences = new HashMap<>();
+        private final Map<String, Map<String, JsonElementEquivalence>> equivalences = new HashMap<>();
 
-		public TypeBuilder type(String name) {
-			Map<String, JsonElementEquivalence> mapForType = equivalences.get( name );
-			if ( mapForType == null ) {
-				mapForType = new HashMap<>();
-				equivalences.put( name, mapForType );
-			}
-			return new TypeBuilder( this, mapForType );
-		}
+        public TypeBuilder type(String name) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public AnalysisParameterEquivalenceRegistry build() {
-			return new AnalysisParameterEquivalenceRegistry( equivalences );
-		}
-	}
+        public AnalysisParameterEquivalenceRegistry build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	public static class TypeBuilder {
+    public static class TypeBuilder {
 
-		private final Builder parent;
-		private final Map<String, JsonElementEquivalence> equivalences;
+        private final Builder parent;
 
-		private TypeBuilder(Builder parent, Map<String, JsonElementEquivalence> equivalences) {
-			super();
-			this.parent = parent;
-			this.equivalences = equivalences;
-		}
+        private final Map<String, JsonElementEquivalence> equivalences;
 
-		public ParameterBuilder param(String name) {
-			return new ParameterBuilder( this, name );
-		}
+        private TypeBuilder(Builder parent, Map<String, JsonElementEquivalence> equivalences) {
+            super();
+            this.parent = parent;
+            this.equivalences = equivalences;
+        }
 
-		private void add(String parameterName, JsonElementEquivalence equivalence) {
-			equivalences.put( parameterName, equivalence );
-		}
+        public ParameterBuilder param(String name) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public Builder end() {
-			return parent;
-		}
-	}
+        private void add(String parameterName, JsonElementEquivalence equivalence) {
+            equivalences.put(parameterName, equivalence);
+        }
 
-	public static class ParameterBuilder {
+        public Builder end() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private final TypeBuilder parent;
-		private final String parameterName;
+    public static class ParameterBuilder {
 
-		private ParameterBuilder(TypeBuilder parent, String parameterName) {
-			super();
-			this.parent = parent;
-			this.parameterName = parameterName;
-		}
+        private final TypeBuilder parent;
 
-		public TypeBuilder unorderedArray() {
-			parent.add( parameterName, UNORDERED_ARRAY_EQUIVALENCE );
-			return parent;
-		}
-	}
+        private final String parameterName;
+
+        private ParameterBuilder(TypeBuilder parent, String parameterName) {
+            super();
+            this.parent = parent;
+            this.parameterName = parameterName;
+        }
+
+        public TypeBuilder unorderedArray() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

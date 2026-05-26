@@ -11,21 +11,14 @@ import org.apache.http.protocol.HttpContext;
 
 final class CustomConnectionKeepAliveStrategy implements ConnectionKeepAliveStrategy {
 
-	private final long maxKeepAlive;
+    private final long maxKeepAlive;
 
-	CustomConnectionKeepAliveStrategy(long maxKeepAlive) {
-		this.maxKeepAlive = maxKeepAlive;
-	}
+    CustomConnectionKeepAliveStrategy(long maxKeepAlive) {
+        this.maxKeepAlive = maxKeepAlive;
+    }
 
-	@Override
-	public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
-		// get a keep alive from a request header if one is present
-		long keepAliveDuration = DefaultConnectionKeepAliveStrategy.INSTANCE.getKeepAliveDuration( response, context );
-
-		// if the keep alive timeout from a request is less than configured one - let's honor it:
-		if ( keepAliveDuration > 0 && keepAliveDuration < maxKeepAlive ) {
-			return keepAliveDuration;
-		}
-		return maxKeepAlive;
-	}
+    @Override
+    public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

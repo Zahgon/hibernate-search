@@ -10,21 +10,16 @@ import org.hibernate.search.engine.backend.work.execution.spi.DocumentContributo
 
 public class LuceneIndexEntryFactory {
 
-	private final LuceneIndexModel model;
-	private final MultiTenancyStrategy multiTenancyStrategy;
+    private final LuceneIndexModel model;
 
-	public LuceneIndexEntryFactory(LuceneIndexModel model, MultiTenancyStrategy multiTenancyStrategy) {
-		this.model = model;
-		this.multiTenancyStrategy = multiTenancyStrategy;
-	}
+    private final MultiTenancyStrategy multiTenancyStrategy;
 
-	public LuceneIndexEntry create(String tenantId, String id, String routingKey,
-			DocumentContributor documentContributor) {
-		LuceneRootDocumentBuilder builder = new LuceneRootDocumentBuilder(
-				model, multiTenancyStrategy
-		);
-		documentContributor.contribute( builder );
-		return builder.build( tenantId, id, routingKey );
-	}
+    public LuceneIndexEntryFactory(LuceneIndexModel model, MultiTenancyStrategy multiTenancyStrategy) {
+        this.model = model;
+        this.multiTenancyStrategy = multiTenancyStrategy;
+    }
 
+    public LuceneIndexEntry create(String tenantId, String id, String routingKey, DocumentContributor documentContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

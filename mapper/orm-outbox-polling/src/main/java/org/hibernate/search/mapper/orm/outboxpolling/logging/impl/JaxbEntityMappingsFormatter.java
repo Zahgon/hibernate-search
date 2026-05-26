@@ -13,14 +13,14 @@ import org.hibernate.search.mapper.orm.outboxpolling.mapping.impl.JaxbMappingHel
  */
 public final class JaxbEntityMappingsFormatter {
 
-	private final JaxbEntityMappingsImpl mappings;
+    private final JaxbEntityMappingsImpl mappings;
 
-	public JaxbEntityMappingsFormatter(JaxbEntityMappingsImpl mappings) {
-		this.mappings = mappings;
-	}
+    public JaxbEntityMappingsFormatter(JaxbEntityMappingsImpl mappings) {
+        this.mappings = mappings;
+    }
 
-	@Override
-	public String toString() {
-		return JaxbMappingHelper.marshall( mappings );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

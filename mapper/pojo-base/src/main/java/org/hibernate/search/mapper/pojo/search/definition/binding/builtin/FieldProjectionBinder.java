@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.search.definition.binding.builtin;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.projection.definition.spi.ConstantProjectionDefinition;
@@ -24,103 +23,84 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBind
  */
 public final class FieldProjectionBinder implements ProjectionBinder {
 
-	/**
-	 * Creates a {@link FieldProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 * <p>
-	 * This method requires the projection constructor class to be compiled with the {@code -parameters} flag
-	 * to infer the field path from the name of the constructor parameter being bound.
-	 * If this compiler flag is not used,
-	 * use {@link #create(String)} instead and pass the field path explicitly.
-	 *
-	 * @return The binder.
-	 */
-	public static FieldProjectionBinder create() {
-		return create( null );
-	}
+    /**
+     * Creates a {@link FieldProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     * <p>
+     * This method requires the projection constructor class to be compiled with the {@code -parameters} flag
+     * to infer the field path from the name of the constructor parameter being bound.
+     * If this compiler flag is not used,
+     * use {@link #create(String)} instead and pass the field path explicitly.
+     *
+     * @return The binder.
+     */
+    public static FieldProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates a {@link FieldProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @param fieldPath The <a href="../../../../../../engine/search/projection/dsl/SearchProjectionFactory.html#field-paths">path</a>
-	 * to the index field whose value will be extracted.
-	 * When {@code null}, defaults to the name of the constructor parameter being bound,
-	 * if it can be retrieved (requires the class to be compiled with the {@code -parameters} flag;
-	 * otherwise a null {@code fieldPath} will lead to a failure).
-	 * @return The binder.
-	 */
-	public static FieldProjectionBinder create(String fieldPath) {
-		return new FieldProjectionBinder( fieldPath );
-	}
+    /**
+     * Creates a {@link FieldProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @param fieldPath The <a href="../../../../../../engine/search/projection/dsl/SearchProjectionFactory.html#field-paths">path</a>
+     * to the index field whose value will be extracted.
+     * When {@code null}, defaults to the name of the constructor parameter being bound,
+     * if it can be retrieved (requires the class to be compiled with the {@code -parameters} flag;
+     * otherwise a null {@code fieldPath} will lead to a failure).
+     * @return The binder.
+     */
+    public static FieldProjectionBinder create(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String fieldPathOrNull;
-	private ValueModel valueModel = ValueModel.MAPPING;
+    private final String fieldPathOrNull;
 
-	private FieldProjectionBinder(String fieldPathOrNull) {
-		this.fieldPathOrNull = fieldPathOrNull;
-	}
+    private ValueModel valueModel = ValueModel.MAPPING;
 
-	/**
-	 * @param valueConvert Controls how the data fetched from the backend should be converted.
-	 * See {@link org.hibernate.search.engine.search.common.ValueConvert}.
-	 * @return {@code this}, for method chaining.
-	 * @see TypedSearchProjectionFactory#field(String, Class, org.hibernate.search.engine.search.common.ValueConvert)
-	 * @deprecated Use {@link #valueModel(ValueModel)} instead.
-	 */
-	@Deprecated(since = "7.2")
-	public FieldProjectionBinder valueConvert(org.hibernate.search.engine.search.common.ValueConvert valueConvert) {
-		return valueModel( org.hibernate.search.engine.search.common.ValueConvert.toValueModel( valueConvert ) );
-	}
+    private FieldProjectionBinder(String fieldPathOrNull) {
+        this.fieldPathOrNull = fieldPathOrNull;
+    }
 
-	/**
-	 * @param valueModel Controls how the data fetched from the backend should be converted.
-	 * See {@link ValueModel}.
-	 * @return {@code this}, for method chaining.
-	 * @see TypedSearchProjectionFactory#field(String, Class, ValueModel)
-	 */
-	public FieldProjectionBinder valueModel(ValueModel valueModel) {
-		this.valueModel = valueModel;
-		return this;
-	}
+    /**
+     * @param valueConvert Controls how the data fetched from the backend should be converted.
+     * See {@link org.hibernate.search.engine.search.common.ValueConvert}.
+     * @return {@code this}, for method chaining.
+     * @see TypedSearchProjectionFactory#field(String, Class, org.hibernate.search.engine.search.common.ValueConvert)
+     * @deprecated Use {@link #valueModel(ValueModel)} instead.
+     */
+    @Deprecated(since = "7.2")
+    public FieldProjectionBinder valueConvert(org.hibernate.search.engine.search.common.ValueConvert valueConvert) {
+        return valueModel(org.hibernate.search.engine.search.common.ValueConvert.toValueModel(valueConvert));
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		Optional<PojoModelValue<?>> containerElementOptional = context.containerElement();
-		String fieldPath = fieldPathOrFail( context );
-		Class<?> containerClass;
-		Class<?> containerElementClass;
-		if ( containerElementOptional.isPresent() ) {
-			PojoModelValue<?> containerElement = containerElementOptional.get();
-			containerElementClass = containerElement.rawType();
-			containerClass = context.constructorParameter().rawType();
-		}
-		else {
-			containerElementClass = context.constructorParameter().rawType();
-			containerClass = null;
-		}
-		bind( context, fieldPath, containerClass, containerElementClass );
-	}
+    /**
+     * @param valueModel Controls how the data fetched from the backend should be converted.
+     * See {@link ValueModel}.
+     * @return {@code this}, for method chaining.
+     * @see TypedSearchProjectionFactory#field(String, Class, ValueModel)
+     */
+    public FieldProjectionBinder valueModel(ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <T, C> void bind(ProjectionBindingContext context, String fieldPath,
-			Class<C> containerType, Class<T> containerElementType) {
-		var collector = context.projectionCollectorProviderFactory()
-				.projectionCollectorProvider( containerType, containerElementType );
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		context.definition( containerElementType, context.isIncluded( fieldPath )
-				? BeanHolder.of( new FieldProjectionDefinition.AccumulatedValued<>( fieldPath, containerElementType,
-						collector, valueModel ) )
-				: ConstantProjectionDefinition.empty( collector ) );
-	}
+    private <T, C> void bind(ProjectionBindingContext context, String fieldPath, Class<C> containerType, Class<T> containerElementType) {
+        var collector = context.projectionCollectorProviderFactory().projectionCollectorProvider(containerType, containerElementType);
+        context.definition(containerElementType, context.isIncluded(fieldPath) ? BeanHolder.of(new FieldProjectionDefinition.AccumulatedValued<>(fieldPath, containerElementType, collector, valueModel)) : ConstantProjectionDefinition.empty(collector));
+    }
 
-	private String fieldPathOrFail(ProjectionBindingContext context) {
-		if ( fieldPathOrNull != null ) {
-			return fieldPathOrNull;
-		}
-		Optional<String> paramName = context.constructorParameter().name();
-		if ( !paramName.isPresent() ) {
-			throw ProjectionLog.INSTANCE.missingParameterNameForFieldProjectionInProjectionConstructor();
-		}
-		return paramName.get();
-	}
+    private String fieldPathOrFail(ProjectionBindingContext context) {
+        if (fieldPathOrNull != null) {
+            return fieldPathOrNull;
+        }
+        Optional<String> paramName = context.constructorParameter().name();
+        if (!paramName.isPresent()) {
+            throw ProjectionLog.INSTANCE.missingParameterNameForFieldProjectionInProjectionConstructor();
+        }
+        return paramName.get();
+    }
 }

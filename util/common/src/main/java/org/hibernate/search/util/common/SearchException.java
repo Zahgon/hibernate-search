@@ -8,57 +8,57 @@ import org.hibernate.search.util.common.annotation.impl.SuppressForbiddenApis;
 import org.hibernate.search.util.common.reporting.EventContext;
 
 public class SearchException extends RuntimeException {
-	protected static final String SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR =
-			"SearchException and its subclasses are allowed to use SearchException constructors"
-					+ " without delegating to Jboss-Logging.";
 
-	private final String messageWithoutContext;
-	private final EventContext context;
+    protected static final String SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR = "SearchException and its subclasses are allowed to use SearchException constructors" + " without delegating to Jboss-Logging.";
 
-	public SearchException(String message, Throwable cause) {
-		super( message, cause );
-		this.messageWithoutContext = message;
-		this.context = null;
-	}
+    private final String messageWithoutContext;
 
-	@SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
-	public SearchException(String message) {
-		this( message, (Throwable) null );
-	}
+    private final EventContext context;
 
-	@SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
-	public SearchException(Throwable cause) {
-		this( null, cause );
-	}
+    public SearchException(String message, Throwable cause) {
+        super(message, cause);
+        this.messageWithoutContext = message;
+        this.context = null;
+    }
 
-	@SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
-	public SearchException(String message, Throwable cause, EventContext context) {
-		super( context == null ? message : message + "\n" + context.renderWithPrefix(), cause );
-		this.messageWithoutContext = message;
-		this.context = context;
-	}
+    @SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
+    public SearchException(String message) {
+        this(message, (Throwable) null);
+    }
 
-	@SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
-	public SearchException(String message, EventContext context) {
-		this( message, null, context );
-	}
+    @SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
+    public SearchException(Throwable cause) {
+        this(null, cause);
+    }
 
-	@SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
-	public SearchException(Throwable cause, EventContext context) {
-		this( null, cause, context );
-	}
+    @SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
+    public SearchException(String message, Throwable cause, EventContext context) {
+        super(context == null ? message : message + "\n" + context.renderWithPrefix(), cause);
+        this.messageWithoutContext = message;
+        this.context = context;
+    }
 
-	/**
-	 * @return The exception message, without the description of the context.
-	 */
-	public String messageWithoutContext() {
-		return messageWithoutContext;
-	}
+    @SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
+    public SearchException(String message, EventContext context) {
+        this(message, null, context);
+    }
 
-	/**
-	 * @return The context in which this exception occurred.
-	 */
-	public EventContext context() {
-		return context;
-	}
+    @SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
+    public SearchException(Throwable cause, EventContext context) {
+        this(null, cause, context);
+    }
+
+    /**
+     * @return The exception message, without the description of the context.
+     */
+    public String messageWithoutContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return The context in which this exception occurred.
+     */
+    public EventContext context() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

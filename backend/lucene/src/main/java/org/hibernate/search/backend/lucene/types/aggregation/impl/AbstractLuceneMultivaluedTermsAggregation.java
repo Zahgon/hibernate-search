@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.TermResults;
 import org.hibernate.search.backend.lucene.search.aggregation.impl.AggregationExtractContext;
@@ -22,7 +21,6 @@ import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentV
 import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConverter;
 import org.hibernate.search.engine.search.aggregation.spi.TermsAggregationBuilder;
 import org.hibernate.search.engine.search.common.ValueModel;
-
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.CollectorManager;
@@ -33,171 +31,145 @@ import org.apache.lucene.search.CollectorManager;
  * @param <K> The type of keys in the returned map. It can be {@code F}
  * or a different type if value converters are used.
  */
-public abstract class AbstractLuceneMultivaluedTermsAggregation<F, T, K, V, R>
-		extends AbstractLuceneBucketAggregation<K, R> {
+public abstract class AbstractLuceneMultivaluedTermsAggregation<F, T, K, V, R> extends AbstractLuceneBucketAggregation<K, R> {
 
-	protected final ProjectionConverter<V, ? extends K> fromFieldValueConverter;
+    protected final ProjectionConverter<V, ? extends K> fromFieldValueConverter;
 
-	protected final BucketOrder order;
-	protected final int maxTermCount;
-	protected final int minDocCount;
-	protected final LuceneSearchAggregation<R> aggregation;
+    protected final BucketOrder order;
 
-	AbstractLuceneMultivaluedTermsAggregation(AbstractBuilder<F, T, K, V, R> builder) {
-		super( builder );
-		this.fromFieldValueConverter = builder.fromFieldValueConverter;
-		this.order = builder.order;
-		this.maxTermCount = builder.maxTermCount;
-		this.minDocCount = builder.minDocCount;
-		this.aggregation = builder.aggregation;
-	}
+    protected final int maxTermCount;
 
-	protected abstract class AbstractExtractor implements Extractor<Map<K, R>> {
-		protected final Extractor<R> extractor;
+    protected final int minDocCount;
 
-		protected AbstractExtractor(Extractor<R> extractor) {
-			this.extractor = extractor;
-		}
+    protected final LuceneSearchAggregation<R> aggregation;
 
-		@Override
-		public final Map<K, R> extract(AggregationExtractContext context) throws IOException {
-			List<Bucket<T, R>> buckets = getTopBuckets( context );
+    AbstractLuceneMultivaluedTermsAggregation(AbstractBuilder<F, T, K, V, R> builder) {
+        super(builder);
+        this.fromFieldValueConverter = builder.fromFieldValueConverter;
+        this.order = builder.order;
+        this.maxTermCount = builder.maxTermCount;
+        this.minDocCount = builder.minDocCount;
+        this.aggregation = builder.aggregation;
+    }
 
-			if ( minDocCount == 0 && buckets.size() < maxTermCount ) {
-				Set<T> firstTerms = collectFirstTerms( context.getIndexReader(), order.isTermOrderDescending(), maxTermCount );
-				for ( Bucket<T, R> bucket : buckets ) {
-					firstTerms.remove( bucket.term() );
-				}
-				R zeroValue = createZeroValue( context );
-				firstTerms.forEach( term -> buckets.add( new Bucket<>( term, 0, zeroValue ) ) );
-				buckets.sort( order.toBucketComparator( getAscendingTermComparator() ) );
-			}
+    protected abstract class AbstractExtractor implements Extractor<Map<K, R>> {
 
-			return toMap( context.fromDocumentValueConvertContext(), buckets );
-		}
+        protected final Extractor<R> extractor;
 
-		protected abstract TermResults termResults(AggregationExtractContext context) throws IOException;
+        protected AbstractExtractor(Extractor<R> extractor) {
+            this.extractor = extractor;
+        }
 
-		protected R createZeroValue(AggregationExtractContext context) throws IOException {
-			LocalAggregationExtractContext localContext = new LocalAggregationExtractContext( context );
-			var termResults = termResults( context );
-			CollectorManager<Collector, ?>[] managers = termResults.collectorManagers();
-			CollectorKey<?, ?>[] keys = termResults.collectorKeys();
-			HashMap<CollectorKey<?, ?>, Object> results = new HashMap<>();
-			for ( int i = 0; i < keys.length; i++ ) {
-				results.put( keys[i], managers[i].reduce( List.of( managers[i].newCollector() ) ) );
-			}
-			localContext.setResults( results );
-			return extractor.extract( localContext );
-		}
+        @Override
+        public final Map<K, R> extract(AggregationExtractContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		abstract Set<T> collectFirstTerms(IndexReader reader, boolean descending, int limit)
-				throws IOException;
+        protected abstract TermResults termResults(AggregationExtractContext context) throws IOException;
 
-		abstract Comparator<T> getAscendingTermComparator();
+        protected R createZeroValue(AggregationExtractContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		abstract V termToFieldValue(T key);
+        abstract Set<T> collectFirstTerms(IndexReader reader, boolean descending, int limit) throws IOException;
 
-		abstract List<Bucket<T, R>> getTopBuckets(AggregationExtractContext context) throws IOException;
+        abstract Comparator<T> getAscendingTermComparator();
 
-		private Map<K, R> toMap(FromDocumentValueConvertContext convertContext, List<Bucket<T, R>> buckets) {
-			Map<K, R> result = new LinkedHashMap<>(); // LinkedHashMap to preserve ordering
-			for ( Bucket<T, R> bucket : buckets ) {
-				V decoded = termToFieldValue( bucket.term() );
-				K key = fromFieldValueConverter.fromDocumentValue( decoded, convertContext );
-				result.put( key, bucket.value() );
-			}
-			return result;
-		}
+        abstract V termToFieldValue(T key);
 
-		protected Map<CollectorKey<?, ?>, Object> prepareResults(LongBucket bucket, TermResults termResults)
-				throws IOException {
-			Map<CollectorKey<?, ?>, Object> result = new HashMap<>();
-			List<Collector>[] collectors = bucket.collectors;
-			CollectorKey<?, ?>[] collectorKeys = termResults.collectorKeys();
-			CollectorManager<Collector, ?>[] managers = termResults.collectorManagers();
-			for ( int i = 0; i < collectorKeys.length; i++ ) {
-				result.put( collectorKeys[i], managers[i].reduce( collectors[i] ) );
-			}
-			return result;
-		}
-	}
+        abstract List<Bucket<T, R>> getTopBuckets(AggregationExtractContext context) throws IOException;
 
-	abstract static class AbstractTypeSelector<F> implements TermsAggregationBuilder.TypeSelector {
-		protected final LuceneSearchIndexScope<?> scope;
-		protected final LuceneSearchIndexValueFieldContext<F> field;
+        private Map<K, R> toMap(FromDocumentValueConvertContext convertContext, List<Bucket<T, R>> buckets) {
+            // LinkedHashMap to preserve ordering
+            Map<K, R> result = new LinkedHashMap<>();
+            for (Bucket<T, R> bucket : buckets) {
+                V decoded = termToFieldValue(bucket.term());
+                K key = fromFieldValueConverter.fromDocumentValue(decoded, convertContext);
+                result.put(key, bucket.value());
+            }
+            return result;
+        }
 
-		protected AbstractTypeSelector(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			this.scope = scope;
-			this.field = field;
-		}
+        protected Map<CollectorKey<?, ?>, Object> prepareResults(LongBucket bucket, TermResults termResults) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public abstract <K> AbstractBuilder<F, ?, K, ?, Long> type(Class<K> expectedType, ValueModel valueModel);
-	}
+    abstract static class AbstractTypeSelector<F> implements TermsAggregationBuilder.TypeSelector {
 
-	abstract static class AbstractBuilder<F, T, K, V, R>
-			extends AbstractLuceneBucketAggregation.AbstractBuilder<K, R>
-			implements TermsAggregationBuilder<K, R> {
+        protected final LuceneSearchIndexScope<?> scope;
 
-		protected final LuceneSearchAggregation<R> aggregation;
-		protected final ProjectionConverter<V, ? extends K> fromFieldValueConverter;
-		protected BucketOrder order;
-		protected int minDocCount;
-		protected int maxTermCount;
+        protected final LuceneSearchIndexValueFieldContext<F> field;
 
-		AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field,
-				LuceneSearchAggregation<R> aggregation, ProjectionConverter<V, ? extends K> fromFieldValueConverter) {
-			this( scope, field, aggregation, fromFieldValueConverter, BucketOrder.COUNT_DESC, 1, 100 );
-		}
+        protected AbstractTypeSelector(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            this.scope = scope;
+            this.field = field;
+        }
 
-		AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field,
-				LuceneSearchAggregation<R> aggregation, ProjectionConverter<V, ? extends K> fromFieldValueConverter,
-				BucketOrder order, int minDocCount, int maxTermCount) {
-			super( scope, field );
-			this.aggregation = aggregation;
-			this.fromFieldValueConverter = fromFieldValueConverter;
-			this.order = order;
-			this.minDocCount = minDocCount;
-			this.maxTermCount = maxTermCount;
-		}
+        @Override
+        public abstract <K> AbstractBuilder<F, ?, K, ?, Long> type(Class<K> expectedType, ValueModel valueModel);
+    }
 
-		@Override
-		public void orderByCountDescending() {
-			order( BucketOrder.COUNT_DESC );
-		}
+    abstract static class AbstractBuilder<F, T, K, V, R> extends AbstractLuceneBucketAggregation.AbstractBuilder<K, R> implements TermsAggregationBuilder<K, R> {
 
-		@Override
-		public void orderByCountAscending() {
-			order( BucketOrder.COUNT_ASC );
-		}
+        protected final LuceneSearchAggregation<R> aggregation;
 
-		@Override
-		public void orderByTermAscending() {
-			order( BucketOrder.TERM_ASC );
-		}
+        protected final ProjectionConverter<V, ? extends K> fromFieldValueConverter;
 
-		@Override
-		public void orderByTermDescending() {
-			order( BucketOrder.TERM_DESC );
-		}
+        protected BucketOrder order;
 
-		@Override
-		public void minDocumentCount(int minDocumentCount) {
-			this.minDocCount = minDocumentCount;
-		}
+        protected int minDocCount;
 
-		@Override
-		public void maxTermCount(int maxTermCount) {
-			this.maxTermCount = maxTermCount;
-		}
+        protected int maxTermCount;
 
-		@Override
-		public abstract AbstractLuceneMultivaluedTermsAggregation<F, T, K, V, R> build();
+        AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field, LuceneSearchAggregation<R> aggregation, ProjectionConverter<V, ? extends K> fromFieldValueConverter) {
+            this(scope, field, aggregation, fromFieldValueConverter, BucketOrder.COUNT_DESC, 1, 100);
+        }
 
-		protected final void order(BucketOrder order) {
-			this.order = order;
-		}
-	}
+        AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field, LuceneSearchAggregation<R> aggregation, ProjectionConverter<V, ? extends K> fromFieldValueConverter, BucketOrder order, int minDocCount, int maxTermCount) {
+            super(scope, field);
+            this.aggregation = aggregation;
+            this.fromFieldValueConverter = fromFieldValueConverter;
+            this.order = order;
+            this.minDocCount = minDocCount;
+            this.maxTermCount = maxTermCount;
+        }
 
+        @Override
+        public void orderByCountDescending() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void orderByCountAscending() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void orderByTermAscending() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void orderByTermDescending() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void minDocumentCount(int minDocumentCount) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void maxTermCount(int maxTermCount) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public abstract AbstractLuceneMultivaluedTermsAggregation<F, T, K, V, R> build();
+
+        protected final void order(BucketOrder order) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

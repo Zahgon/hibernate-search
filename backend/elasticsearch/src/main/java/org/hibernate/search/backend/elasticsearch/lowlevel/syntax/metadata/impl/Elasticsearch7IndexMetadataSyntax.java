@@ -11,18 +11,13 @@ import org.hibernate.search.backend.elasticsearch.lowlevel.index.aliases.impl.In
  */
 public class Elasticsearch7IndexMetadataSyntax implements ElasticsearchIndexMetadataSyntax {
 
-	@Override
-	public IndexAliasDefinition createWriteAliasDefinition() {
-		IndexAliasDefinition definition = new IndexAliasDefinition();
-		definition.setWriteIndex( true );
-		return definition;
-	}
+    @Override
+    public IndexAliasDefinition createWriteAliasDefinition() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexAliasDefinition createReadAliasDefinition() {
-		IndexAliasDefinition definition = new IndexAliasDefinition();
-		definition.setWriteIndex( false );
-		return definition;
-	}
-
+    @Override
+    public IndexAliasDefinition createReadAliasDefinition() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

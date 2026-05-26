@@ -11,18 +11,19 @@ import org.hibernate.search.spi.SearchIntegrator;
 import org.hibernate.search.util.common.impl.CollectionHelper;
 
 public class V5MigrationOrmSearchIntegratorAdapter implements SearchIntegrator {
-	private final SearchMapping delegate;
 
-	public V5MigrationOrmSearchIntegratorAdapter(SearchMapping delegate) {
-		this.delegate = delegate;
-	}
+    private final SearchMapping delegate;
 
-	@Override
-	public V5MigrationSearchScope scope(Class<?>... targetTypes) {
-		return new V5MigrationOrmSearchScopeAdapter( delegate.scope( CollectionHelper.asSet( targetTypes ) ) );
-	}
+    public V5MigrationOrmSearchIntegratorAdapter(SearchMapping delegate) {
+        this.delegate = delegate;
+    }
 
-	public SearchMapping toSearchMapping() {
-		return delegate;
-	}
+    @Override
+    public V5MigrationSearchScope scope(Class<?>... targetTypes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public SearchMapping toSearchMapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

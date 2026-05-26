@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.hibernate.search.backend.lucene.analysis.model.impl.LuceneAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.lucene.document.model.impl.AbstractLuceneIndexFieldTemplate;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexField;
@@ -37,118 +36,76 @@ import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.aggregation.spi.AggregationTypeKeys;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-public class LuceneIndexRootBuilder extends AbstractLuceneIndexCompositeNodeBuilder
-		implements IndexRootBuilder, IndexSchemaBuildContext {
+public class LuceneIndexRootBuilder extends AbstractLuceneIndexCompositeNodeBuilder implements IndexRootBuilder, IndexSchemaBuildContext {
 
-	private final EventContext indexEventContext;
-	private final BackendMapperContext backendMapperContext;
-	private final String mappedTypeName;
-	private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
+    private final EventContext indexEventContext;
 
-	private DslConverter<?, String> idDslConverter;
-	private DslConverter<?, String> idParser;
-	private ProjectionConverter<String, ?> idProjectionConverter;
+    private final BackendMapperContext backendMapperContext;
 
-	public LuceneIndexRootBuilder(EventContext indexEventContext,
-			BackendMapperContext backendMapperContext, String mappedTypeName,
-			LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry) {
-		super( new LuceneIndexCompositeNodeType.Builder( ObjectStructure.FLATTENED ) );
-		this.indexEventContext = indexEventContext;
-		this.backendMapperContext = backendMapperContext;
-		this.mappedTypeName = mappedTypeName;
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+    private final String mappedTypeName;
 
-		this.typeBuilder.queryElementFactory( AggregationTypeKeys.COUNT_DOCUMENTS, LuceneCountDocumentAggregation.factory() );
-	}
+    private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	@Override
-	public EventContext eventContext() {
-		return getIndexEventContext().append( EventContexts.indexSchemaRoot() );
-	}
+    private DslConverter<?, String> idDslConverter;
 
-	@Override
-	public LuceneIndexFieldTypeFactory createTypeFactory(IndexFieldTypeDefaultsProvider defaultsProvider) {
-		return new LuceneIndexFieldTypeFactoryImpl( indexEventContext, backendMapperContext, analysisDefinitionRegistry,
-				defaultsProvider );
-	}
+    private DslConverter<?, String> idParser;
 
-	@Override
-	public void explicitRouting() {
-		// Nothing to do
-	}
+    private ProjectionConverter<String, ?> idProjectionConverter;
 
-	@Override
-	public <I> void idDslConverter(Class<I> valueType, ToDocumentValueConverter<I, String> converter) {
-		this.idDslConverter = new DslConverter<>( valueType, converter );
-	}
+    public LuceneIndexRootBuilder(EventContext indexEventContext, BackendMapperContext backendMapperContext, String mappedTypeName, LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry) {
+        super(new LuceneIndexCompositeNodeType.Builder(ObjectStructure.FLATTENED));
+        this.indexEventContext = indexEventContext;
+        this.backendMapperContext = backendMapperContext;
+        this.mappedTypeName = mappedTypeName;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        this.typeBuilder.queryElementFactory(AggregationTypeKeys.COUNT_DOCUMENTS, LuceneCountDocumentAggregation.factory());
+    }
 
-	@Override
-	public void idParser(ToDocumentValueConverter<String, String> converter) {
-		this.idParser = new DslConverter<>( String.class, converter );
-	}
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <I> void idProjectionConverter(Class<I> valueType, FromDocumentValueConverter<String, I> converter) {
-		this.idProjectionConverter = new ProjectionConverter<>( valueType, converter );
-	}
+    @Override
+    public LuceneIndexFieldTypeFactory createTypeFactory(IndexFieldTypeDefaultsProvider defaultsProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexRootBuilder getRootNodeBuilder() {
-		return this;
-	}
+    @Override
+    public void explicitRouting() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public LuceneIndexModel build(String indexName) {
-		IndexIdentifier identifier = new IndexIdentifier( idDslConverter, idParser, idProjectionConverter );
+    @Override
+    public <I> void idDslConverter(Class<I> valueType, ToDocumentValueConverter<I, String> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, LuceneIndexField> staticFields = new HashMap<>();
-		List<AbstractLuceneIndexFieldTemplate<?>> fieldTemplates = new ArrayList<>();
-		// Initializing a one-element array so that we can mutate the boolean below.
-		// Alternatively we could use AtomicBoolean, but we don't need concurrent access here.
-		boolean[] hasNestedDocument = new boolean[1];
+    @Override
+    public void idParser(ToDocumentValueConverter<String, String> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		LuceneIndexNodeCollector collector = new LuceneIndexNodeCollector() {
-			@Override
-			public void collect(String absoluteFieldPath, LuceneIndexValueField<?> node) {
-				staticFields.put( absoluteFieldPath, node );
-			}
+    @Override
+    public <I> void idProjectionConverter(Class<I> valueType, FromDocumentValueConverter<String, I> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(String absolutePath, LuceneIndexObjectField node) {
-				staticFields.put( absolutePath, node );
-				if ( node.type().nested() ) {
-					hasNestedDocument[0] = true;
-				}
-			}
+    @Override
+    public LuceneIndexRootBuilder getRootNodeBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(LuceneIndexObjectFieldTemplate template) {
-				fieldTemplates.add( template );
-				if ( template.type().nested() ) {
-					hasNestedDocument[0] = true;
-				}
-			}
+    public LuceneIndexModel build(String indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void collect(LuceneIndexValueFieldTemplate template) {
-				fieldTemplates.add( template );
-			}
-		};
+    @Override
+    String getAbsolutePath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, LuceneIndexField> staticChildrenByName = new TreeMap<>();
-		LuceneIndexRoot rootNode = new LuceneIndexRoot( typeBuilder.build(), staticChildrenByName );
-		contributeChildren( rootNode, collector, staticChildrenByName );
-
-		return new LuceneIndexModel( analysisDefinitionRegistry, indexName, mappedTypeName, identifier,
-				rootNode, staticFields, fieldTemplates, hasNestedDocument[0] );
-	}
-
-	@Override
-	String getAbsolutePath() {
-		return null;
-	}
-
-	EventContext getIndexEventContext() {
-		return indexEventContext;
-	}
-
+    EventContext getIndexEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,25 +10,24 @@ package org.hibernate.search.mapper.pojo.model.spi;
  */
 public abstract class AbstractPojoGenericTypeModel<T> implements PojoTypeModel<T> {
 
-	private final PojoRawTypeModel<? super T> rawTypeModel;
+    private final PojoRawTypeModel<? super T> rawTypeModel;
 
-	protected AbstractPojoGenericTypeModel(PojoRawTypeModel<? super T> rawTypeModel) {
-		this.rawTypeModel = rawTypeModel;
-	}
+    protected AbstractPojoGenericTypeModel(PojoRawTypeModel<? super T> rawTypeModel) {
+        this.rawTypeModel = rawTypeModel;
+    }
 
-	@Override
-	public final String toString() {
-		return getClass().getSimpleName() + "[" + name() + "]";
-	}
+    @Override
+    public final String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final PojoRawTypeModel<? super T> rawType() {
-		return rawTypeModel;
-	}
+    @Override
+    public final PojoRawTypeModel<? super T> rawType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPropertyModel<?> property(String propertyName) {
-		return rawTypeModel.property( propertyName );
-	}
-
+    @Override
+    public PojoPropertyModel<?> property(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

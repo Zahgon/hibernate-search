@@ -12,47 +12,25 @@ package org.hibernate.search.backend.elasticsearch.validation.impl;
  */
 abstract class LeafValidator<T> {
 
-	public final void validate(ValidationErrorCollector errorCollector,
-			ValidationContextType type, String name,
-			T expected, T actual) {
-		validateWithDefault( errorCollector, type, name, expected, actual, null );
-	}
+    public final void validate(ValidationErrorCollector errorCollector, ValidationContextType type, String name, T expected, T actual) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/*
+    /*
 	 * Validate that two values are equal, using a given default value when null is encountered on either value.
 	 * Useful to take into account the fact that Elasticsearch has default values for attributes.
 	 */
-	public final void validateWithDefault(ValidationErrorCollector errorCollector,
-			ValidationContextType type, String name,
-			T expected, T actual, T defaultValueForNulls) {
-		validateWithDefault( errorCollector, type, name, expected, actual, defaultValueForNulls, defaultValueForNulls );
-	}
+    public final void validateWithDefault(ValidationErrorCollector errorCollector, ValidationContextType type, String name, T expected, T actual, T defaultValueForNulls) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/*
+    /*
 	 * Validate that two values are equal, using a given default value when null is encountered on either value.
 	 * Useful to take into account the fact that Elasticsearch has default values for attributes.
 	 */
-	public final void validateWithDefault(ValidationErrorCollector errorCollector,
-			ValidationContextType type, String name,
-			T expected, T actual, T defaultValueForExpectedNull, T defaultValueForActualNull) {
-		T defaultedExpected = expected == null ? defaultValueForExpectedNull : expected;
-		T defaultedActual = actual == null ? defaultValueForActualNull : actual;
-		if ( defaultedExpected == defaultedActual ) {
-			// Covers null == null
-			return;
-		}
-		errorCollector.push( type, name );
-		try {
-			doValidate(
-					errorCollector, defaultedExpected, defaultedActual, actual
-			);
-		}
-		finally {
-			errorCollector.pop();
-		}
-	}
+    public final void validateWithDefault(ValidationErrorCollector errorCollector, ValidationContextType type, String name, T expected, T actual, T defaultValueForExpectedNull, T defaultValueForActualNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract void doValidate(ValidationErrorCollector errorCollector,
-			T defaultedExpected, T defaultedActual, Object actual);
-
+    protected abstract void doValidate(ValidationErrorCollector errorCollector, T defaultedExpected, T defaultedActual, Object actual);
 }

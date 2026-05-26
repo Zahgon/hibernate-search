@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.predicate.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.backend.lucene.search.common.impl.AbstractLuceneCodecAwareSearchQueryElementFactory;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexValueFieldContext;
@@ -18,76 +17,66 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.RangePredicateBuilder;
 import org.hibernate.search.util.common.data.Range;
 import org.hibernate.search.util.common.data.RangeBoundInclusion;
-
 import org.apache.lucene.search.Query;
 
 public class LuceneNumericRangePredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneNumericRangePredicate(Builder<?, ?> builder) {
-		super( builder );
-	}
+    private LuceneNumericRangePredicate(Builder<?, ?> builder) {
+        super(builder);
+    }
 
-	public static class Factory<F, E extends Number>
-			extends
-			AbstractLuceneCodecAwareSearchQueryElementFactory<RangePredicateBuilder, F, AbstractLuceneNumericFieldCodec<F, E>> {
-		public Factory(AbstractLuceneNumericFieldCodec<F, E> codec) {
-			super( codec );
-		}
+    public static class Factory<F, E extends Number> extends AbstractLuceneCodecAwareSearchQueryElementFactory<RangePredicateBuilder, F, AbstractLuceneNumericFieldCodec<F, E>> {
 
-		@Override
-		public Builder<F, E> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( codec, scope, field );
-		}
-	}
+        public Factory(AbstractLuceneNumericFieldCodec<F, E> codec) {
+            super(codec);
+        }
 
-	private static class Builder<F, E extends Number> extends AbstractBuilder<F>
-			implements RangePredicateBuilder {
-		private final AbstractLuceneNumericFieldCodec<F, E> codec;
+        @Override
+        public Builder<F, E> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private Range<E> range;
+    private static class Builder<F, E extends Number> extends AbstractBuilder<F> implements RangePredicateBuilder {
 
-		Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			this.codec = codec;
-		}
+        private final AbstractLuceneNumericFieldCodec<F, E> codec;
 
-		@Override
-		public void within(Range<?> range, ValueModel lowerBoundModel, ValueModel upperBoundModel) {
-			this.range = convertAndEncode( codec, range, lowerBoundModel, upperBoundModel );
-		}
+        private Range<E> range;
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneNumericRangePredicate( this );
-		}
+        Builder(AbstractLuceneNumericFieldCodec<F, E> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            this.codec = codec;
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			LuceneNumericDomain<E> domain = codec.getDomain();
-			return domain.createRangeQuery(
-					absoluteFieldPath,
-					getLowerValue( domain, range.lowerBoundValue(), range.lowerBoundInclusion() ),
-					getUpperValue( domain, range.upperBoundValue(), range.upperBoundInclusion() )
-			);
-		}
+        @Override
+        public void within(Range<?> range, ValueModel lowerBoundModel, ValueModel upperBoundModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private static <E extends Number> E getLowerValue(LuceneNumericDomain<E> domain, Optional<E> boundValueOptional,
-				RangeBoundInclusion inclusion) {
-			if ( !boundValueOptional.isPresent() ) {
-				return domain.getMinValue();
-			}
-			E boundValue = boundValueOptional.get();
-			return RangeBoundInclusion.EXCLUDED.equals( inclusion ) ? domain.getNextValue( boundValue ) : boundValue;
-		}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private static <E extends Number> E getUpperValue(LuceneNumericDomain<E> domain, Optional<E> boundValueOptional,
-				RangeBoundInclusion inclusion) {
-			if ( !boundValueOptional.isPresent() ) {
-				return domain.getMaxValue();
-			}
-			E boundValue = boundValueOptional.get();
-			return RangeBoundInclusion.EXCLUDED.equals( inclusion ) ? domain.getPreviousValue( boundValue ) : boundValue;
-		}
-	}
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private static <E extends Number> E getLowerValue(LuceneNumericDomain<E> domain, Optional<E> boundValueOptional, RangeBoundInclusion inclusion) {
+            if (!boundValueOptional.isPresent()) {
+                return domain.getMinValue();
+            }
+            E boundValue = boundValueOptional.get();
+            return RangeBoundInclusion.EXCLUDED.equals(inclusion) ? domain.getNextValue(boundValue) : boundValue;
+        }
+
+        private static <E extends Number> E getUpperValue(LuceneNumericDomain<E> domain, Optional<E> boundValueOptional, RangeBoundInclusion inclusion) {
+            if (!boundValueOptional.isPresent()) {
+                return domain.getMaxValue();
+            }
+            E boundValue = boundValueOptional.get();
+            return RangeBoundInclusion.EXCLUDED.equals(inclusion) ? domain.getPreviousValue(boundValue) : boundValue;
+        }
+    }
 }

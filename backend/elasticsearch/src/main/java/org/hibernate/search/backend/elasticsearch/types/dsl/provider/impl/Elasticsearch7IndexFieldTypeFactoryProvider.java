@@ -8,7 +8,6 @@ import org.hibernate.search.backend.elasticsearch.logging.impl.VersionLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.PropertyMapping;
 import org.hibernate.search.backend.elasticsearch.types.impl.ElasticsearchIndexValueFieldType;
 import org.hibernate.search.backend.elasticsearch.types.mapping.impl.ElasticsearchVectorFieldTypeMappingContributor;
-
 import com.google.gson.Gson;
 
 /**
@@ -16,26 +15,25 @@ import com.google.gson.Gson;
  */
 public class Elasticsearch7IndexFieldTypeFactoryProvider extends AbstractIndexFieldTypeFactoryProvider {
 
-	private final ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor =
-			new ElasticsearchVectorFieldTypeMappingContributor() {
+    private final ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor = new ElasticsearchVectorFieldTypeMappingContributor() {
 
-				@Override
-				public void contribute(PropertyMapping mapping, Context context) {
-					throw VersionLog.INSTANCE.searchBackendVersionIncompatibleWithVectorIntegration( "Elasticsearch", "8.12" );
-				}
+        @Override
+        public void contribute(PropertyMapping mapping, Context context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-				@Override
-				public <F> void contribute(ElasticsearchIndexValueFieldType.Builder<F> builder, Context context) {
-					throw VersionLog.INSTANCE.searchBackendVersionIncompatibleWithVectorIntegration( "Elasticsearch", "8.12" );
-				}
-			};
+        @Override
+        public <F> void contribute(ElasticsearchIndexValueFieldType.Builder<F> builder, Context context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	public Elasticsearch7IndexFieldTypeFactoryProvider(Gson userFacingGson) {
-		super( userFacingGson );
-	}
+    public Elasticsearch7IndexFieldTypeFactoryProvider(Gson userFacingGson) {
+        super(userFacingGson);
+    }
 
-	@Override
-	protected ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor() {
-		return vectorFieldTypeMappingContributor;
-	}
+    @Override
+    protected ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

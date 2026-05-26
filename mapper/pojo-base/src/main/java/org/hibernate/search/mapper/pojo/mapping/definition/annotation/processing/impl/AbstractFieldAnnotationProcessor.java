@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processin
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBinderRef;
@@ -26,69 +25,38 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 abstract class AbstractFieldAnnotationProcessor<A extends Annotation> implements PropertyMappingAnnotationProcessor<A> {
 
-	@Override
-	public final void process(PropertyMappingStep mappingContext, A annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		String cleanedUpRelativeFieldName = context.toNullIfDefault( getName( annotation ), "" );
-		PropertyMappingFieldOptionsStep<?> fieldContext =
-				initFieldMappingContext( mappingContext, annotation, cleanedUpRelativeFieldName );
+    @Override
+    public final void process(PropertyMappingStep mappingContext, A annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ValueBinderRef valueBinder = getValueBinder( annotation );
-		ValueBinder binder = createValueBinder(
-				getValueBridge( annotation ),
-				valueBinder,
-				context
-		);
+    abstract PropertyMappingFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext, A annotation, String fieldName);
 
-		Map<String, Object> params = context.toMap( valueBinder.params() );
-		fieldContext.valueBinder( binder, params );
+    abstract ContainerExtraction getExtraction(A annotation);
 
-		ContainerExtractorPath extractorPath = context.toContainerExtractorPath( getExtraction( annotation ) );
-		fieldContext.extractors( extractorPath );
-	}
+    abstract String getName(A annotation);
 
-	abstract PropertyMappingFieldOptionsStep<?> initFieldMappingContext(PropertyMappingStep mappingContext,
-			A annotation, String fieldName);
+    abstract ValueBridgeRef getValueBridge(A annotation);
 
-	abstract ContainerExtraction getExtraction(A annotation);
+    abstract ValueBinderRef getValueBinder(A annotation);
 
-	abstract String getName(A annotation);
-
-	abstract ValueBridgeRef getValueBridge(A annotation);
-
-	abstract ValueBinderRef getValueBinder(A annotation);
-
-	@SuppressWarnings("rawtypes") // Raw types are the best we can do here
-	private ValueBinder createValueBinder(ValueBridgeRef bridgeReferenceAnnotation,
-			ValueBinderRef binderReferenceAnnotation, MappingAnnotationProcessorContext context) {
-		Optional<BeanReference<? extends ValueBridge>> bridgeReference = Optional.empty();
-		if ( bridgeReferenceAnnotation != null ) {
-			bridgeReference = context.toBeanReference(
-					ValueBridge.class,
-					ValueBridgeRef.UndefinedBridgeImplementationType.class,
-					bridgeReferenceAnnotation.type(), bridgeReferenceAnnotation.name(),
-					bridgeReferenceAnnotation.retrieval()
-			);
-		}
-		Optional<BeanReference<? extends ValueBinder>> binderReference = context.toBeanReference(
-				ValueBinder.class,
-				ValueBinderRef.UndefinedBinderImplementationType.class,
-				binderReferenceAnnotation.type(), binderReferenceAnnotation.name(),
-				binderReferenceAnnotation.retrieval()
-		);
-
-		if ( bridgeReference.isPresent() && binderReference.isPresent() ) {
-			throw MappingLog.INSTANCE.invalidFieldDefiningBothBridgeReferenceAndBinderReference();
-		}
-		else if ( bridgeReference.isPresent() ) {
-			return new BeanBinder( bridgeReference.get() );
-		}
-		else if ( binderReference.isPresent() ) {
-			return new BeanDelegatingBinder( binderReference.get() );
-		}
-		else {
-			// The bridge will be auto-detected from the property type
-			return null;
-		}
-	}
+    // Raw types are the best we can do here
+    @SuppressWarnings("rawtypes")
+    private ValueBinder createValueBinder(ValueBridgeRef bridgeReferenceAnnotation, ValueBinderRef binderReferenceAnnotation, MappingAnnotationProcessorContext context) {
+        Optional<BeanReference<? extends ValueBridge>> bridgeReference = Optional.empty();
+        if (bridgeReferenceAnnotation != null) {
+            bridgeReference = context.toBeanReference(ValueBridge.class, ValueBridgeRef.UndefinedBridgeImplementationType.class, bridgeReferenceAnnotation.type(), bridgeReferenceAnnotation.name(), bridgeReferenceAnnotation.retrieval());
+        }
+        Optional<BeanReference<? extends ValueBinder>> binderReference = context.toBeanReference(ValueBinder.class, ValueBinderRef.UndefinedBinderImplementationType.class, binderReferenceAnnotation.type(), binderReferenceAnnotation.name(), binderReferenceAnnotation.retrieval());
+        if (bridgeReference.isPresent() && binderReference.isPresent()) {
+            throw MappingLog.INSTANCE.invalidFieldDefiningBothBridgeReferenceAndBinderReference();
+        } else if (bridgeReference.isPresent()) {
+            return new BeanBinder(bridgeReference.get());
+        } else if (binderReference.isPresent()) {
+            return new BeanDelegatingBinder(binderReference.get());
+        } else {
+            // The bridge will be auto-detected from the property type
+            return null;
+        }
+    }
 }

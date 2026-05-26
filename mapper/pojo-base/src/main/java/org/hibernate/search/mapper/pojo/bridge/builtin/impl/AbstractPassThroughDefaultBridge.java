@@ -19,18 +19,18 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValue
  */
 abstract class AbstractPassThroughDefaultBridge<F> extends AbstractSimpleDefaultBridge<F, F> {
 
-	@Override
-	public final F toIndexedValue(F value, ValueBridgeToIndexedValueContext context) {
-		return value;
-	}
+    @Override
+    public final F toIndexedValue(F value, ValueBridgeToIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final F fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
-		return value;
-	}
+    @Override
+    public final F fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final F parse(String value) {
-		return fromString( value );
-	}
+    @Override
+    public final F parse(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

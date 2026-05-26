@@ -10,12 +10,12 @@ import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterBuild
 
 public class LuceneSearchHighlighterFactory extends AbstractSearchHighlighterFactory<LuceneSearchIndexScope<?>> {
 
-	public LuceneSearchHighlighterFactory(LuceneSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    public LuceneSearchHighlighterFactory(LuceneSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	protected SearchHighlighterBuilder highlighterBuilder(LuceneSearchIndexScope<?> scope) {
-		return new LuceneAbstractSearchHighlighter.Builder( scope );
-	}
+    @Override
+    protected SearchHighlighterBuilder highlighterBuilder(LuceneSearchIndexScope<?> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

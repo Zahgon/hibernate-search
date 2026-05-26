@@ -18,7 +18,6 @@ import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.query.dsl.impl.QueryBuildingContext;
 import org.hibernate.search.spatial.Coordinates;
 import org.hibernate.search.util.common.SearchException;
-
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.SortField.Type;
@@ -33,142 +32,114 @@ import org.apache.lucene.search.SortField.Type;
  */
 public class SortFieldStates {
 
-	private static final Object MISSING_VALUE_LAST = new Object();
-	private static final Object MISSING_VALUE_FIRST = new Object();
+    private static final Object MISSING_VALUE_LAST = new Object();
 
-	private final SearchSortFactory factory;
-	private final CompositeSortComponentsStep<?, ?> delegate;
+    private static final Object MISSING_VALUE_FIRST = new Object();
 
-	private Type currentType;
-	private String currentName;
-	private SortOrder currentOrder;
-	private Object currentMissingValue;
-	private SortField currentSortFieldNativeSortDescription;
-	private Coordinates coordinates;
-	private Double currentLatitude;
-	private Double currentLongitude;
+    private final SearchSortFactory factory;
 
-	public SortFieldStates(QueryBuildingContext queryContext) {
-		factory = queryContext.getScope().sort();
-		delegate = factory.composite();
-	}
+    private final CompositeSortComponentsStep<?, ?> delegate;
 
-	public void setCurrentType(Type currentType) {
-		this.currentType = currentType;
-	}
+    private Type currentType;
 
-	public void setCurrentName(String fieldName) {
-		this.currentName = fieldName;
-	}
+    private String currentName;
 
-	public void setCurrentMissingValue(Object currentMissingValue) {
-		this.currentMissingValue = currentMissingValue;
-	}
+    private SortOrder currentOrder;
 
-	public void setCurrentMissingValueLast() {
-		this.currentMissingValue = MISSING_VALUE_LAST;
-	}
+    private Object currentMissingValue;
 
-	public void setCurrentMissingValueFirst() {
-		this.currentMissingValue = MISSING_VALUE_FIRST;
-	}
+    private SortField currentSortFieldNativeSortDescription;
 
-	public void setAsc() {
-		this.currentOrder = SortOrder.ASC;
-	}
+    private Coordinates coordinates;
 
-	public void setDesc() {
-		this.currentOrder = SortOrder.DESC;
-	}
+    private Double currentLatitude;
 
-	public void setCurrentSortFieldNativeSortDescription(SortField currentSortField) {
-		this.currentSortFieldNativeSortDescription = currentSortField;
-	}
+    private Double currentLongitude;
 
-	public void closeSortField() {
-		SearchSort sort;
-		if ( currentSortFieldNativeSortDescription != null ) {
-			sort = factory.extension( LuceneExtension.get() )
-					.fromLuceneSortField( currentSortFieldNativeSortDescription ).toSort();
-		}
-		else if ( currentType == Type.SCORE ) {
-			ScoreSortOptionsStep<?, ?> optionsStep = factory.score();
-			applyOrder( optionsStep );
-			sort = optionsStep.toSort();
-		}
-		else if ( currentType == Type.DOC ) {
-			sort = factory.indexOrder().toSort();
-		}
-		else if ( coordinates != null || currentLatitude != null ) {
-			if ( currentMissingValue != null ) {
-				throw new SearchException( "Missing values substitutes are not supported for distance sorting yet" );
-			}
-			GeoPoint center;
-			if ( coordinates != null ) {
-				center = Coordinates.toGeoPoint( coordinates );
-			}
-			else {
-				center = GeoPoint.of( currentLatitude, currentLongitude );
-			}
-			DistanceSortOptionsStep<?, ?, ?> optionsStep = factory.distance( currentName, center );
-			applyOrder( optionsStep );
-			sort = optionsStep.toSort();
-		}
-		else {
-			FieldSortOptionsStep<?, ?, ?> optionsStep = factory.field( currentName );
-			applyOrder( optionsStep );
-			applyMissing( optionsStep );
-			sort = optionsStep.toSort();
-		}
-		delegate.add( sort );
-		reset();
-	}
+    public SortFieldStates(QueryBuildingContext queryContext) {
+        factory = queryContext.getScope().sort();
+        delegate = factory.composite();
+    }
 
-	private void applyOrder(SortOrderStep<?> step) {
-		if ( currentOrder != null ) {
-			step.order( currentOrder );
-		}
-	}
+    public void setCurrentType(Type currentType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void applyMissing(FieldSortOptionsStep<?, ?, ?> step) {
-		if ( currentMissingValue == null ) {
-			return;
-		}
-		if ( currentMissingValue == MISSING_VALUE_LAST ) {
-			step.missing().last();
-		}
-		else if ( currentMissingValue == MISSING_VALUE_FIRST ) {
-			step.missing().first();
-		}
-		else {
-			step.missing().use( currentMissingValue );
-		}
-	}
+    public void setCurrentName(String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Sort createSort() {
-		return LuceneMigrationUtils.toLuceneSort( delegate.toSort() );
-	}
+    public void setCurrentMissingValue(Object currentMissingValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void reset() {
-		this.currentType = null;
-		this.currentName = null;
-		this.currentOrder = null;
-		this.currentMissingValue = null;
-		this.currentSortFieldNativeSortDescription = null;
-		this.coordinates = null;
-		this.currentLatitude = null;
-		this.currentLongitude = null;
-	}
+    public void setCurrentMissingValueLast() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setCoordinates(Coordinates coordinates) {
-		this.coordinates = coordinates;
-	}
+    public void setCurrentMissingValueFirst() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setCurrentLatitude(double latitude) {
-		this.currentLatitude = latitude;
-	}
+    public void setAsc() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setCurrentLongitude(double longitude) {
-		this.currentLongitude = longitude;
-	}
+    public void setDesc() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setCurrentSortFieldNativeSortDescription(SortField currentSortField) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void closeSortField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private void applyOrder(SortOrderStep<?> step) {
+        if (currentOrder != null) {
+            step.order(currentOrder);
+        }
+    }
+
+    private void applyMissing(FieldSortOptionsStep<?, ?, ?> step) {
+        if (currentMissingValue == null) {
+            return;
+        }
+        if (currentMissingValue == MISSING_VALUE_LAST) {
+            step.missing().last();
+        } else if (currentMissingValue == MISSING_VALUE_FIRST) {
+            step.missing().first();
+        } else {
+            step.missing().use(currentMissingValue);
+        }
+    }
+
+    public Sort createSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private void reset() {
+        this.currentType = null;
+        this.currentName = null;
+        this.currentOrder = null;
+        this.currentMissingValue = null;
+        this.currentSortFieldNativeSortDescription = null;
+        this.coordinates = null;
+        this.currentLatitude = null;
+        this.currentLongitude = null;
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setCurrentLatitude(double latitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setCurrentLongitude(double longitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

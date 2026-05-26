@@ -12,21 +12,20 @@ import org.hibernate.search.engine.search.reference.predicate.MatchPredicateFiel
 
 public final class MatchPredicateFieldStepImpl<SR> implements MatchPredicateFieldStep<SR, MatchPredicateFieldMoreStep<?, ?>> {
 
-	private final SearchPredicateDslContext<?> dslContext;
+    private final SearchPredicateDslContext<?> dslContext;
 
-	public MatchPredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
-		this.dslContext = dslContext;
-	}
+    public MatchPredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public MatchPredicateFieldMoreStep<?, ?> fields(String... fieldPaths) {
-		return AbstractMatchPredicateFieldMoreStep.create( dslContext, fieldPaths );
-	}
+    @Override
+    public MatchPredicateFieldMoreStep<?, ?> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> MatchPredicateFieldMoreGenericStep<?, ?, T, MatchPredicateFieldReference<? super SR, T>> fields(
-			MatchPredicateFieldReference<? super SR, T>... fields) {
-		return AbstractMatchPredicateFieldMoreStep.create( dslContext, fields );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> MatchPredicateFieldMoreGenericStep<?, ?, T, MatchPredicateFieldReference<? super SR, T>> fields(MatchPredicateFieldReference<? super SR, T>... fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

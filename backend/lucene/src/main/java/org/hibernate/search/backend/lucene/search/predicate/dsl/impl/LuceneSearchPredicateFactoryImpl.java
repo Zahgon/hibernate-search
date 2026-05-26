@@ -12,48 +12,28 @@ import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.dsl.spi.AbstractSearchPredicateFactory;
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 import org.hibernate.search.engine.search.predicate.dsl.spi.StaticPredicateFinalStep;
-
 import org.apache.lucene.search.Query;
 
-public class LuceneSearchPredicateFactoryImpl<SR>
-		extends AbstractSearchPredicateFactory<
-				SR,
-				LuceneSearchPredicateFactory<SR>,
-				LuceneSearchPredicateIndexScope<?>>
-		implements LuceneSearchPredicateFactory<SR> {
+public class LuceneSearchPredicateFactoryImpl<SR> extends AbstractSearchPredicateFactory<SR, LuceneSearchPredicateFactory<SR>, LuceneSearchPredicateIndexScope<?>> implements LuceneSearchPredicateFactory<SR> {
 
-	public LuceneSearchPredicateFactoryImpl(Class<SR> scopeRootType,
-			SearchPredicateDslContext<LuceneSearchPredicateIndexScope<?>> dslContext) {
-		super( scopeRootType, dslContext );
-	}
+    public LuceneSearchPredicateFactoryImpl(Class<SR> scopeRootType, SearchPredicateDslContext<LuceneSearchPredicateIndexScope<?>> dslContext) {
+        super(scopeRootType, dslContext);
+    }
 
-	@Override
-	public LuceneSearchPredicateFactory<SR> withRoot(String objectFieldPath) {
-		return new LuceneSearchPredicateFactoryImpl<>( scopeRootType, dslContext.rescope(
-				dslContext.scope().withRoot( objectFieldPath ) ) );
-	}
+    @Override
+    public LuceneSearchPredicateFactory<SR> withRoot(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PredicateFinalStep fromLuceneQuery(Query luceneQuery) {
-		return new StaticPredicateFinalStep( dslContext.scope().predicateBuilders().fromLuceneQuery( luceneQuery ) );
-	}
+    @Override
+    public PredicateFinalStep fromLuceneQuery(Query luceneQuery) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // well because we check ;)
-	@Override
-	public <SR2> LuceneSearchPredicateFactory<SR2> withScopeRoot(Class<SR2> scopeRootType) {
-		if ( this.scopeRootType.equals( scopeRootType ) ) {
-			return (LuceneSearchPredicateFactory<SR2>) this;
-		}
-		if (
-			// if we want the "untyped" version of the factory we can get it from any other factory
-		// e.g. we have one tied to a Book__ and we want to use some "raw" string paths in a named predicate.
-		scopeRootType.equals( NonStaticMetamodelScope.class )
-				// scope type is in the same hierarchy:
-				|| this.scopeRootType.isAssignableFrom( scopeRootType )
-				|| scopeRootType.isAssignableFrom( this.scopeRootType )
-		) {
-			return new LuceneSearchPredicateFactoryImpl<>( scopeRootType, dslContext );
-		}
-		throw QueryLog.INSTANCE.incompatibleScopeRootType( scopeRootType, this.scopeRootType );
-	}
+    // well because we check ;)
+    @SuppressWarnings("unchecked")
+    @Override
+    public <SR2> LuceneSearchPredicateFactory<SR2> withScopeRoot(Class<SR2> scopeRootType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

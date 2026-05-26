@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.AbstractPojoIndexingDependencyCollectorDirectValueNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorPropertyNode;
@@ -25,127 +24,71 @@ import org.hibernate.search.mapper.pojo.model.path.impl.BoundPojoModelPathValueN
 import org.hibernate.search.mapper.pojo.model.path.spi.PojoModelPathBinder;
 import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
 
-public class PojoPropertyIndexingDependencyConfigurationContextImpl<P> extends AbstractPojoBridgedElementDependencyContext
-		implements PojoPropertyIndexingDependencyConfigurationContext {
+public class PojoPropertyIndexingDependencyConfigurationContextImpl<P> extends AbstractPojoBridgedElementDependencyContext implements PojoPropertyIndexingDependencyConfigurationContext {
 
-	private final BoundPojoModelPathPropertyNode<?, P> modelPath;
-	private final Map<ContainerExtractorPath, ValueDependencyContext> valueDependencyContexts = new LinkedHashMap<>();
+    private final BoundPojoModelPathPropertyNode<?, P> modelPath;
 
-	public PojoPropertyIndexingDependencyConfigurationContextImpl(
-			PojoBootstrapIntrospector introspector,
-			ContainerExtractorBinder containerExtractorBinder,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider,
-			BoundPojoModelPathPropertyNode<?, P> modelPath) {
-		super( introspector, containerExtractorBinder, typeAdditionalMetadataProvider );
-		this.modelPath = modelPath;
-	}
+    private final Map<ContainerExtractorPath, ValueDependencyContext> valueDependencyContexts = new LinkedHashMap<>();
 
-	@Override
-	public PojoPropertyIndexingDependencyConfigurationContext use(ContainerExtractorPath extractorPathFromBridgedProperty,
-			PojoModelPathValueNode pathFromExtractedBridgedPropertyValueToUsedValue) {
-		valueDependencyContexts.computeIfAbsent( extractorPathFromBridgedProperty, ValueDependencyContext::new )
-				.use( pathFromExtractedBridgedPropertyValueToUsedValue );
-		return this;
-	}
+    public PojoPropertyIndexingDependencyConfigurationContextImpl(PojoBootstrapIntrospector introspector, ContainerExtractorBinder containerExtractorBinder, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider, BoundPojoModelPathPropertyNode<?, P> modelPath) {
+        super(introspector, containerExtractorBinder, typeAdditionalMetadataProvider);
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	public PojoOtherEntityIndexingDependencyConfigurationContext fromOtherEntity(
-			ContainerExtractorPath extractorPathFromBridgedProperty,
-			Class<?> otherEntityType,
-			PojoModelPathValueNode pathFromOtherEntityTypeToBridgedPropertyExtractedType) {
-		return valueDependencyContexts.computeIfAbsent( extractorPathFromBridgedProperty, ValueDependencyContext::new )
-				.addOtherEntityDependencyContext( otherEntityType, pathFromOtherEntityTypeToBridgedPropertyExtractedType );
-	}
+    @Override
+    public PojoPropertyIndexingDependencyConfigurationContext use(ContainerExtractorPath extractorPathFromBridgedProperty, PojoModelPathValueNode pathFromExtractedBridgedPropertyValueToUsedValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void useRootOnly() {
-		super.useRootOnly();
-		// Declare the value passed to the bridge as a dependency
-		ContainerExtractorPath noExtractorPath = ContainerExtractorPath.noExtractors();
-		valueDependencyContexts.put( noExtractorPath, new ValueDependencyContext( noExtractorPath ) );
-	}
+    @Override
+    public PojoOtherEntityIndexingDependencyConfigurationContext fromOtherEntity(ContainerExtractorPath extractorPathFromBridgedProperty, Class<?> otherEntityType, PojoModelPathValueNode pathFromOtherEntityTypeToBridgedPropertyExtractedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean hasNonRootDependency() {
-		if ( valueDependencyContexts.isEmpty() ) {
-			return false;
-		}
-		if ( valueDependencyContexts.size() > 1 ) {
-			return true;
-		}
-		ValueDependencyContext noExtractorValue = valueDependencyContexts.get( ContainerExtractorPath.noExtractors() );
-		return noExtractorValue == null // If true, the only value dependency was added by a call to use(...), not useRootOnly()
-				|| noExtractorValue.hasExplicitDependency(); // If true, the only value dependency was populated with calls to use(...)
-	}
+    @Override
+    public void useRootOnly() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void contributeDependencies(PojoIndexingDependencyCollectorPropertyNode<?, P> dependencyCollector) {
-		for ( Map.Entry<ContainerExtractorPath, ValueDependencyContext> entry : valueDependencyContexts.entrySet() ) {
-			ContainerExtractorPath extractorPathFromBridgedElement = entry.getKey();
+    @Override
+    public boolean hasNonRootDependency() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			AbstractPojoIndexingDependencyCollectorDirectValueNode<?, ?> dependencyCollectorValueNode =
-					dependencyCollector.value( extractorPathFromBridgedElement );
+    public void contributeDependencies(PojoIndexingDependencyCollectorPropertyNode<?, P> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			// Always declare the extracted value as a dependency.
-			dependencyCollectorValueNode.collectDependency();
+    private class ValueDependencyContext {
 
-			entry.getValue().contributeDependencies( dependencyCollectorValueNode );
-		}
-	}
+        private final BoundPojoModelPathOriginalTypeNode<?> valueTypePath;
 
-	private class ValueDependencyContext {
-		private final BoundPojoModelPathOriginalTypeNode<?> valueTypePath;
-		private final List<PojoModelPathValueNode> usedPaths = new ArrayList<>();
-		private final List<PojoOtherEntityIndexingDependencyConfigurationContextImpl<?>> otherEntityDependencyContexts =
-				new ArrayList<>();
+        private final List<PojoModelPathValueNode> usedPaths = new ArrayList<>();
 
-		private ValueDependencyContext(ContainerExtractorPath extractorPathFromBridgedProperty) {
-			BoundPojoModelPathValueNode<?, ?, ?> valuePath =
-					bindingPathWalker.value( modelPath, extractorPathFromBridgedProperty );
-			valueTypePath = valuePath.type();
-		}
+        private final List<PojoOtherEntityIndexingDependencyConfigurationContextImpl<?>> otherEntityDependencyContexts = new ArrayList<>();
 
-		public void contributeDependencies(
-				AbstractPojoIndexingDependencyCollectorDirectValueNode<?, ?> dependencyCollectorValueNode) {
-			PojoIndexingDependencyCollectorTypeNode<?> dependencyCollectorTypeNode =
-					dependencyCollectorValueNode.type();
-			for ( PojoModelPathValueNode pathFromExtractedBridgedElementToUsedValue : usedPaths ) {
-				PojoModelPathBinder.bind(
-						dependencyCollectorTypeNode,
-						pathFromExtractedBridgedElementToUsedValue,
-						PojoIndexingDependencyCollectorNode.walker()
-				);
-			}
-			for ( PojoOtherEntityIndexingDependencyConfigurationContextImpl<
-					?> otherEntityDependencyContext : otherEntityDependencyContexts ) {
-				otherEntityDependencyContext.contributeDependencies( dependencyCollectorTypeNode );
-			}
-		}
+        private ValueDependencyContext(ContainerExtractorPath extractorPathFromBridgedProperty) {
+            BoundPojoModelPathValueNode<?, ?, ?> valuePath = bindingPathWalker.value(modelPath, extractorPathFromBridgedProperty);
+            valueTypePath = valuePath.type();
+        }
 
-		private PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> addOtherEntityDependencyContext(
-				Class<?> otherEntityType, PojoModelPathValueNode pathFromOtherEntityTypeToBridgedPropertyExtractedType) {
-			PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> otherContext = createOtherEntityDependencyContext(
-					valueTypePath.getTypeModel().rawType(),
-					otherEntityType, pathFromOtherEntityTypeToBridgedPropertyExtractedType
-			);
+        public void contributeDependencies(AbstractPojoIndexingDependencyCollectorDirectValueNode<?, ?> dependencyCollectorValueNode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// If we get here, the path is valid
+        private PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> addOtherEntityDependencyContext(Class<?> otherEntityType, PojoModelPathValueNode pathFromOtherEntityTypeToBridgedPropertyExtractedType) {
+            PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> otherContext = createOtherEntityDependencyContext(valueTypePath.getTypeModel().rawType(), otherEntityType, pathFromOtherEntityTypeToBridgedPropertyExtractedType);
+            // If we get here, the path is valid
+            otherEntityDependencyContexts.add(otherContext);
+            return otherContext;
+        }
 
-			otherEntityDependencyContexts.add( otherContext );
-			return otherContext;
-		}
+        public void use(PojoModelPathValueNode pathFromExtractedBridgedPropertyValueToUsedValue) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public void use(PojoModelPathValueNode pathFromExtractedBridgedPropertyValueToUsedValue) {
-			PojoModelPathBinder.bind(
-					valueTypePath, pathFromExtractedBridgedPropertyValueToUsedValue, bindingPathWalker
-			);
-
-			// If we get here, the path is valid
-
-			usedPaths.add( pathFromExtractedBridgedPropertyValueToUsedValue );
-		}
-
-		public boolean hasExplicitDependency() {
-			return !usedPaths.isEmpty() || !otherEntityDependencyContexts.isEmpty();
-		}
-	}
+        public boolean hasExplicitDependency() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

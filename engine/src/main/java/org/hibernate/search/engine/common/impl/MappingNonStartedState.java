@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.common.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.common.spi.SearchIntegration;
 import org.hibernate.search.engine.environment.bean.BeanResolver;
@@ -19,32 +18,24 @@ import org.hibernate.search.util.common.impl.Throwables;
 
 class MappingNonStartedState {
 
-	private final MappingKey<?, ?> key;
-	private final MappingImplementor<?> mapping;
+    private final MappingKey<?, ?> key;
 
-	MappingNonStartedState(MappingKey<?, ?> key, MappingImplementor<?> mapping) {
-		this.key = key;
-		this.mapping = mapping;
-	}
+    private final MappingImplementor<?> mapping;
 
-	void closeOnFailure() {
-		mapping.stop();
-	}
+    MappingNonStartedState(MappingKey<?, ?> key, MappingImplementor<?> mapping) {
+        this.key = key;
+        this.mapping = mapping;
+    }
 
-	CompletableFuture<?> start(RootFailureCollector rootFailureCollector, BeanResolver beanResolver,
-			ConfigurationPropertySource propertySource, ThreadPoolProvider threadPoolProvider,
-			SearchIntegration.Handle integrationHandle) {
-		ContextualFailureCollector mappingFailureCollector = rootFailureCollector.withContext( key );
-		MappingStartContextImpl startContext = new MappingStartContextImpl( mappingFailureCollector, beanResolver,
-				propertySource, threadPoolProvider, integrationHandle );
-		return mapping.start( startContext )
-				.exceptionally( Futures.handler( e -> {
-					mappingFailureCollector.add( Throwables.expectException( e ) );
-					return null;
-				} ) );
-	}
+    void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	MappingImplementor<?> getMapping() {
-		return mapping;
-	}
+    CompletableFuture<?> start(RootFailureCollector rootFailureCollector, BeanResolver beanResolver, ConfigurationPropertySource propertySource, ThreadPoolProvider threadPoolProvider, SearchIntegration.Handle integrationHandle) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    MappingImplementor<?> getMapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

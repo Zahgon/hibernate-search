@@ -6,28 +6,24 @@ package org.hibernate.search.backend.elasticsearch.types.dsl.impl;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchFieldCodec;
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchInstantFieldCodec;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
-
 import com.google.gson.Gson;
 
-class ElasticsearchInstantIndexFieldTypeOptionsStep
-		extends
-		AbstractElasticsearchTemporalIndexFieldTypeOptionsStep<ElasticsearchInstantIndexFieldTypeOptionsStep, Instant> {
+class ElasticsearchInstantIndexFieldTypeOptionsStep extends AbstractElasticsearchTemporalIndexFieldTypeOptionsStep<ElasticsearchInstantIndexFieldTypeOptionsStep, Instant> {
 
-	ElasticsearchInstantIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Instant.class, DefaultStringConverters.INSTANT );
-	}
+    ElasticsearchInstantIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Instant.class, DefaultStringConverters.INSTANT);
+    }
 
-	@Override
-	protected ElasticsearchFieldCodec<Instant> createCodec(Gson gson, DateTimeFormatter formatter) {
-		return new ElasticsearchInstantFieldCodec( gson, formatter );
-	}
+    @Override
+    protected ElasticsearchFieldCodec<Instant> createCodec(Gson gson, DateTimeFormatter formatter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchInstantIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchInstantIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

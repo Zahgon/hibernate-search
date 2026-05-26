@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.loading.impl;
 
 import java.util.Set;
-
 import org.hibernate.AssertionFailure;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.mapping.PersistentClass;
@@ -21,98 +20,52 @@ import org.hibernate.search.mapper.pojo.loading.spi.PojoSelectionEntityLoader;
 
 public class HibernateOrmEntityIdEntityLoadingStrategy<E, I> extends AbstractHibernateOrmLoadingStrategy<E, I> {
 
-	public static HibernateOrmEntityLoadingStrategy<?, ?> create(PersistentClass persistentClass) {
-		var rootClass = persistentClass.getRootClass();
-		return create(
-				rootClass, HibernateOrmUtils.entityClass( rootClass ),
-				GroupingAllowed.determine( persistentClass )
-		);
-	}
+    public static HibernateOrmEntityLoadingStrategy<?, ?> create(PersistentClass persistentClass) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static <E> HibernateOrmEntityIdEntityLoadingStrategy<E, ?> create(RootClass rootClass, Class<E> rootMappedClass,
-			GroupingAllowed groupingAllowed) {
-		var idProperty = rootClass.getIdentifierProperty();
-		return new HibernateOrmEntityIdEntityLoadingStrategy<>( rootMappedClass, rootClass.getEntityName(),
-				idProperty.getType().getReturnedClass(), idProperty.getName(), groupingAllowed );
-	}
+    private static <E> HibernateOrmEntityIdEntityLoadingStrategy<E, ?> create(RootClass rootClass, Class<E> rootMappedClass, GroupingAllowed groupingAllowed) {
+        var idProperty = rootClass.getIdentifierProperty();
+        return new HibernateOrmEntityIdEntityLoadingStrategy<>(rootMappedClass, rootClass.getEntityName(), idProperty.getType().getReturnedClass(), idProperty.getName(), groupingAllowed);
+    }
 
-	private final Class<E> rootEntityClass;
+    private final Class<E> rootEntityClass;
 
-	HibernateOrmEntityIdEntityLoadingStrategy(Class<E> rootEntityClass, String rootEntityName,
-			Class<I> uniquePropertyType, String uniquePropertyName, GroupingAllowed groupingAllowed) {
-		super( rootEntityName, uniquePropertyType, uniquePropertyName, groupingAllowed );
-		this.rootEntityClass = rootEntityClass;
-	}
+    HibernateOrmEntityIdEntityLoadingStrategy(Class<E> rootEntityClass, String rootEntityName, Class<I> uniquePropertyType, String uniquePropertyName, GroupingAllowed groupingAllowed) {
+        super(rootEntityName, uniquePropertyType, uniquePropertyName, groupingAllowed);
+        this.rootEntityClass = rootEntityClass;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( obj == null || !( getClass().equals( obj.getClass() ) ) ) {
-			return false;
-		}
-		HibernateOrmEntityIdEntityLoadingStrategy<?, ?> other = (HibernateOrmEntityIdEntityLoadingStrategy<?, ?>) obj;
-		// If the root entity type is different,
-		// the factories work in separate ID spaces and should be used separately.
-		return rootEntityName.equals( other.rootEntityName );
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return rootEntityClass.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoSelectionEntityLoader<E> createEntityLoader(
-			Set<? extends PojoLoadingTypeContext<? extends E>> targetEntityTypeContexts,
-			HibernateOrmSelectionLoadingContext loadingContext) {
-		var sessionFactory = loadingContext.sessionImplementor().getSessionFactory();
-		EntityMappingType commonSuperType = toMostSpecificCommonEntitySuperType( sessionFactory, targetEntityTypeContexts );
-		if ( commonSuperType == null ) {
-			throw invalidTypesException( targetEntityTypeContexts );
-		}
+    @Override
+    public PojoSelectionEntityLoader<E> createEntityLoader(Set<? extends PojoLoadingTypeContext<? extends E>> targetEntityTypeContexts, HibernateOrmSelectionLoadingContext loadingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		/*
-		 * Theoretically, this cast is unsafe,
-		 * since the loader could return entities of any type T extending "commonSuperClass",
-		 * which is either E2 (good: T = E2)
-		 * or a common supertype of some child types of E2
-		 * (not good: T might be an interface that E2 doesn't implement but its children do).
-		 *
-		 * However, we perform some runtime checks that make this cast safe.
-		 *
-		 * See PojoLoader.castToExactTypeOrNull() and its callers for more information.
-		 */
-		@SuppressWarnings("unchecked")
-		PojoSelectionEntityLoader<E> result =
-				(PojoSelectionEntityLoader<E>) doCreate( commonSuperType, loadingContext.sessionContext(),
-						loadingContext.cacheLookupStrategy(), loadingContext.loadingOptions() );
+    @Override
+    protected TypeQueryFactory<E, I> createFactory(SessionFactoryImplementor sessionFactoryImplementor, Class<E> entityClass, String ormEntityName, Class<I> uniquePropertyType, String uniquePropertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return result;
-	}
-
-	@Override
-	protected TypeQueryFactory<E, I> createFactory(
-			SessionFactoryImplementor sessionFactoryImplementor, Class<E> entityClass, String ormEntityName,
-			Class<I> uniquePropertyType, String uniquePropertyName) {
-		return TypeQueryFactory.create( sessionFactoryImplementor, entityClass, ormEntityName, uniquePropertyType,
-				uniquePropertyName, true );
-	}
-
-	private PojoSelectionEntityLoader<?> doCreate(EntityMappingType entityMappingType,
-			HibernateOrmLoadingSessionContext sessionContext, EntityLoadingCacheLookupStrategy cacheLookupStrategy,
-			MutableEntityLoadingOptions loadingOptions) {
-		var session = sessionContext.session();
-		var sessionFactory = session.getSessionFactory();
-		EntityMappingType rootEntityMappingType = HibernateOrmUtils.entityMappingType( sessionFactory, rootEntityName );
-		if ( !rootEntityClass.isAssignableFrom( entityMappingType.getJavaType().getJavaTypeClass() ) ) {
-			throw invalidTypeException( entityMappingType );
-		}
-
-
-		PersistenceContextLookupStrategy persistenceContextLookup =
-				PersistenceContextLookupStrategy.create( session );
-		EntityLoadingCacheLookupStrategyImplementor cacheLookupStrategyImplementor;
-
-		/*
+    private PojoSelectionEntityLoader<?> doCreate(EntityMappingType entityMappingType, HibernateOrmLoadingSessionContext sessionContext, EntityLoadingCacheLookupStrategy cacheLookupStrategy, MutableEntityLoadingOptions loadingOptions) {
+        var session = sessionContext.session();
+        var sessionFactory = session.getSessionFactory();
+        EntityMappingType rootEntityMappingType = HibernateOrmUtils.entityMappingType(sessionFactory, rootEntityName);
+        if (!rootEntityClass.isAssignableFrom(entityMappingType.getJavaType().getJavaTypeClass())) {
+            throw invalidTypeException(entityMappingType);
+        }
+        PersistenceContextLookupStrategy persistenceContextLookup = PersistenceContextLookupStrategy.create(session);
+        EntityLoadingCacheLookupStrategyImplementor cacheLookupStrategyImplementor;
+        /*
 		 * Ideally, in order to comply with the cache lookup strategy,
 		 * we would use multiAccess setters such as
 		 * with(CacheMode) and enableSessionCheck(boolean),
@@ -123,38 +76,29 @@ public class HibernateOrmEntityIdEntityLoadingStrategy<E, I> extends AbstractHib
 		 * we go the safer route and wrap the loader with other loaders that
 		 * will perform PC and 2LC checking prior to using the multiAccess.
 		 */
-		switch ( cacheLookupStrategy ) {
-			case SKIP:
-				cacheLookupStrategyImplementor = null;
-				break;
-			case PERSISTENCE_CONTEXT:
-				cacheLookupStrategyImplementor = persistenceContextLookup;
-				break;
-			case PERSISTENCE_CONTEXT_THEN_SECOND_LEVEL_CACHE:
-				// We must use the root entity persister here,
-				// to avoid a WrongClassException when the type of an entity changes,
-				// because that exception cannot be recovered from.
-				cacheLookupStrategyImplementor =
-						PersistenceContextThenSecondLevelCacheLookupStrategy.create( rootEntityMappingType, session );
-				break;
-			default:
-				throw new AssertionFailure( "Unexpected cache lookup strategy: " + cacheLookupStrategy );
-		}
+        switch(cacheLookupStrategy) {
+            case SKIP:
+                cacheLookupStrategyImplementor = null;
+                break;
+            case PERSISTENCE_CONTEXT:
+                cacheLookupStrategyImplementor = persistenceContextLookup;
+                break;
+            case PERSISTENCE_CONTEXT_THEN_SECOND_LEVEL_CACHE:
+                // We must use the root entity persister here,
+                // to avoid a WrongClassException when the type of an entity changes,
+                // because that exception cannot be recovered from.
+                cacheLookupStrategyImplementor = PersistenceContextThenSecondLevelCacheLookupStrategy.create(rootEntityMappingType, session);
+                break;
+            default:
+                throw new AssertionFailure("Unexpected cache lookup strategy: " + cacheLookupStrategy);
+        }
+        // We must pass rootEntityMappingType here, to avoid getting a WrongClassException when loading from the cache,
+        // even if we know we actually want instances from the most specific entity type,
+        // because that exception cannot be recovered from.
+        return new HibernateOrmSelectionEntityByIdLoader<>(rootEntityMappingType, createFactory(sessionFactory, entityMappingType), sessionContext, persistenceContextLookup, cacheLookupStrategyImplementor, loadingOptions);
+    }
 
-		// We must pass rootEntityMappingType here, to avoid getting a WrongClassException when loading from the cache,
-		// even if we know we actually want instances from the most specific entity type,
-		// because that exception cannot be recovered from.
-		return new HibernateOrmSelectionEntityByIdLoader<>( rootEntityMappingType,
-				createFactory( sessionFactory, entityMappingType ),
-				sessionContext,
-				persistenceContextLookup, cacheLookupStrategyImplementor, loadingOptions );
-	}
-
-	private AssertionFailure invalidTypeException(EntityMappingType otherEntityMappingType) {
-		throw new AssertionFailure(
-				"The targeted entity type is not a subclass of the expected root entity type."
-						+ " Expected root entity name: " + rootEntityName
-						+ " Targeted entity name: " + otherEntityMappingType.getEntityName()
-		);
-	}
+    private AssertionFailure invalidTypeException(EntityMappingType otherEntityMappingType) {
+        throw new AssertionFailure("The targeted entity type is not a subclass of the expected root entity type." + " Expected root entity name: " + rootEntityName + " Targeted entity name: " + otherEntityMappingType.getEntityName());
+    }
 }

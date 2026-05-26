@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.aggregation.dsl.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.dsl.MaxAggregationOptionsStep;
 import org.hibernate.search.engine.search.aggregation.dsl.spi.SearchAggregationDslContext;
@@ -14,33 +13,29 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 
-class MaxAggregationOptionsStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>, F>
-		implements MaxAggregationOptionsStep<SR, MaxAggregationOptionsStepImpl<SR, PDF, F>, PDF, F> {
-	private final FieldMetricAggregationBuilder<F> builder;
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+class MaxAggregationOptionsStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>, F> implements MaxAggregationOptionsStep<SR, MaxAggregationOptionsStepImpl<SR, PDF, F>, PDF, F> {
 
-	MaxAggregationOptionsStepImpl(FieldMetricAggregationBuilder<F> builder,
-			SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.builder = builder;
-		this.dslContext = dslContext;
-	}
+    private final FieldMetricAggregationBuilder<F> builder;
 
-	@Override
-	public MaxAggregationOptionsStepImpl<SR, PDF, F> filter(
-			Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
-		SearchPredicate predicate = clauseContributor.apply( dslContext.predicateFactory() ).toPredicate();
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-		return filter( predicate );
-	}
+    MaxAggregationOptionsStepImpl(FieldMetricAggregationBuilder<F> builder, SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.builder = builder;
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public MaxAggregationOptionsStepImpl<SR, PDF, F> filter(SearchPredicate searchPredicate) {
-		builder.filter( searchPredicate );
-		return this;
-	}
+    @Override
+    public MaxAggregationOptionsStepImpl<SR, PDF, F> filter(Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchAggregation<F> toAggregation() {
-		return builder.build();
-	}
+    @Override
+    public MaxAggregationOptionsStepImpl<SR, PDF, F> filter(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SearchAggregation<F> toAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

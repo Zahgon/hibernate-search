@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.engine.backend.Backend;
 import org.hibernate.search.engine.backend.index.IndexManager;
 import org.hibernate.search.engine.backend.reporting.spi.BackendMappingHints;
@@ -41,224 +40,160 @@ import org.hibernate.search.mapper.pojo.standalone.session.impl.StandalonePojoSe
 import org.hibernate.search.mapper.pojo.standalone.tenancy.impl.TenancyConfiguration;
 import org.hibernate.search.util.common.impl.Closer;
 
-public class StandalonePojoMapping extends AbstractPojoMappingImplementor<StandalonePojoMapping>
-		implements CloseableSearchMapping, StandalonePojoSearchSessionMappingContext {
+public class StandalonePojoMapping extends AbstractPojoMappingImplementor<StandalonePojoMapping> implements CloseableSearchMapping, StandalonePojoSearchSessionMappingContext {
 
-	private final StandalonePojoTypeContextContainer typeContextContainer;
-	private final SchemaManagementListener schemaManagementListener;
-	private final ConfiguredIndexingPlanSynchronizationStrategyHolder configuredIndexingPlanSynchronizationStrategyHolder;
-	private final MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation;
+    private final StandalonePojoTypeContextContainer typeContextContainer;
 
-	private SearchIntegration.Handle integrationHandle;
-	private TenancyConfiguration tenancyConfiguration;
-	private boolean active;
+    private final SchemaManagementListener schemaManagementListener;
 
+    private final ConfiguredIndexingPlanSynchronizationStrategyHolder configuredIndexingPlanSynchronizationStrategyHolder;
 
-	StandalonePojoMapping(PojoMappingDelegate mappingDelegate, StandalonePojoTypeContextContainer typeContextContainer,
-			SchemaManagementListener schemaManagementListener,
-			MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation) {
-		super( mappingDelegate );
-		this.typeContextContainer = typeContextContainer;
-		this.schemaManagementListener = schemaManagementListener;
-		this.configuredIndexingPlanSynchronizationStrategyHolder = new ConfiguredIndexingPlanSynchronizationStrategyHolder(
-				this );
-		this.active = true;
-		this.massIndexingDefaultCleanOperation = massIndexingDefaultCleanOperation;
-	}
+    private final MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation;
 
-	@Override
-	public CompletableFuture<?> start(MappingStartContext context) {
-		integrationHandle = context.integrationHandle();
+    private SearchIntegration.Handle integrationHandle;
 
-		configuredIndexingPlanSynchronizationStrategyHolder.start( context );
+    private TenancyConfiguration tenancyConfiguration;
 
-		Optional<SearchScopeImpl<?, Object>> scopeOptional = createAllScope();
-		if ( !scopeOptional.isPresent() ) {
-			// No indexed type
-			return CompletableFuture.completedFuture( null );
-		}
-		SearchScopeImpl<?, Object> scope = scopeOptional.get();
+    private boolean active;
 
-		// Schema management
-		PojoScopeSchemaManager schemaManager = scope.schemaManagerDelegate();
+    StandalonePojoMapping(PojoMappingDelegate mappingDelegate, StandalonePojoTypeContextContainer typeContextContainer, SchemaManagementListener schemaManagementListener, MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation) {
+        super(mappingDelegate);
+        this.typeContextContainer = typeContextContainer;
+        this.schemaManagementListener = schemaManagementListener;
+        this.configuredIndexingPlanSynchronizationStrategyHolder = new ConfiguredIndexingPlanSynchronizationStrategyHolder(this);
+        this.active = true;
+        this.massIndexingDefaultCleanOperation = massIndexingDefaultCleanOperation;
+    }
 
-		this.tenancyConfiguration = TenancyConfiguration.create(
-				context.beanResolver(), delegate().tenancyMode(), context.configurationPropertySource() );
+    @Override
+    public CompletableFuture<?> start(MappingStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return schemaManagementListener.onStart( context, schemaManager );
-	}
+    @Override
+    public CompletableFuture<?> preStop(MappingPreStopContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> preStop(MappingPreStopContext context) {
-		Optional<SearchScopeImpl<?, Object>> scope = createAllScope();
-		if ( !scope.isPresent() ) {
-			// No indexed type
-			return CompletableFuture.completedFuture( null );
-		}
-		PojoScopeSchemaManager schemaManager = scope.get().schemaManagerDelegate();
-		return schemaManagementListener.onStop( context, schemaManager );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		if ( !active ) {
-			return;
-		}
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( SearchIntegration::close, integrationHandle, SearchIntegration.Handle::getOrNull );
-			closer.push(
-					ConfiguredIndexingPlanSynchronizationStrategyHolder::close,
-					configuredIndexingPlanSynchronizationStrategyHolder
-			);
-			closer.push( TenancyConfiguration::close, tenancyConfiguration );
-			integrationHandle = null;
-			active = false;
-		}
-	}
+    @Override
+    public BackendMappingHints hints() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BackendMappingHints hints() {
-		return StandalonePojoMappingHints.INSTANCE;
-	}
+    @Override
+    public PojoRuntimeIntrospector runtimeIntrospector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoRuntimeIntrospector runtimeIntrospector() {
-		return PojoRuntimeIntrospector.simple();
-	}
+    @Override
+    public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation() {
-		return massIndexingDefaultCleanOperation;
-	}
+    @Override
+    public <T> SearchScope<T> scope(Collection<? extends Class<? extends T>> targetedTypes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchScope<T> scope(Collection<? extends Class<? extends T>> targetedTypes) {
-		return createScope( NonStaticMetamodelScope.class, targetedTypes );
-	}
+    @Override
+    public <T> SearchScope<T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchScope<T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
-		return createScope( NonStaticMetamodelScope.class, expectedSuperType, entityNames );
-	}
+    @Override
+    public <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
-		return createScope( rootScope, classes );
-	}
+    @Override
+    public StandalonePojoMapping toConcreteType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandalonePojoMapping toConcreteType() {
-		return this;
-	}
+    @Override
+    public SearchSession createSession() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSession createSession() {
-		return createSessionBuilder().build();
-	}
+    @Override
+    public SearchSessionBuilder createSessionWithOptions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSessionBuilder createSessionWithOptions() {
-		return createSessionBuilder();
-	}
+    @Override
+    public <SR, T> SearchScopeImpl<SR, T> createScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> SearchScopeImpl<SR, T> createScope(Class<SR> rootScope,
-			Collection<? extends Class<? extends T>> classes) {
-		PojoScopeDelegate<SR, EntityReference, T, SearchIndexedEntity<? extends T>> scopeDelegate =
-				delegate().createPojoScopeForClasses(
-						this,
-						rootScope,
-						classes,
-						typeContextContainer::indexedForExactType
-				);
+    @Override
+    public <SR, T> SearchScopeImpl<SR, T> createScope(Class<SR> rootScope, Class<T> expectedSuperType, Collection<String> entityNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// Explicit type parameter is necessary here for ECJ (Eclipse compiler)
-		return new SearchScopeImpl<SR, T>( this, tenancyConfiguration, scopeDelegate );
-	}
+    @Override
+    public <E> SearchIndexedEntity<E> indexedEntity(Class<E> entityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> SearchScopeImpl<SR, T> createScope(Class<SR> rootScope, Class<T> expectedSuperType,
-			Collection<String> entityNames) {
-		PojoScopeDelegate<SR, EntityReference, T, SearchIndexedEntity<? extends T>> scopeDelegate =
-				delegate().createPojoScopeForEntityNames(
-						this,
-						rootScope,
-						expectedSuperType, entityNames,
-						typeContextContainer::indexedForExactType
-				);
+    @Override
+    public SearchIndexedEntity<?> indexedEntity(String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// Explicit type parameter is necessary here for ECJ (Eclipse compiler)
-		return new SearchScopeImpl<SR, T>( this, tenancyConfiguration, scopeDelegate );
-	}
+    @Override
+    public Collection<SearchIndexedEntity<?>> allIndexedEntities() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <E> SearchIndexedEntity<E> indexedEntity(Class<E> entityType) {
-		return typeContextContainer.indexedForExactClass( entityType );
-	}
+    @Override
+    public IndexManager indexManager(String indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexedEntity<?> indexedEntity(String entityName) {
-		return typeContextContainer.indexedByEntityName().getOrFail( entityName );
-	}
+    @Override
+    public Backend backend() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<SearchIndexedEntity<?>> allIndexedEntities() {
-		return Collections.unmodifiableCollection( typeContextContainer.allIndexed() );
-	}
+    @Override
+    public Backend backend(String backendName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexManager indexManager(String indexName) {
-		return searchIntegration().indexManager( indexName );
-	}
+    @Override
+    public StandalonePojoLoadingContext.Builder loadingContextBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Backend backend() {
-		return searchIntegration().backend();
-	}
+    @Override
+    public PojoMassIndexerAgent createMassIndexerAgent(PojoMassIndexerAgentCreateContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Backend backend(String backendName) {
-		return searchIntegration().backend( backendName );
-	}
+    @Override
+    public StandalonePojoMassIndexingSessionContext createSession(String tenantIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandalonePojoLoadingContext.Builder loadingContextBuilder() {
-		return new StandalonePojoLoadingContext.Builder( this );
-	}
+    @Override
+    public TenancyConfiguration tenancyConfiguration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoMassIndexerAgent createMassIndexerAgent(PojoMassIndexerAgentCreateContext context) {
-		// No coordination: so we don't need to prevent outbox-polling event processing (since it's not supported) when doing mass-indexing.
-		return PojoMassIndexerAgent.noOp();
-	}
+    private SearchIntegration searchIntegration() {
+        return integrationHandle.getOrFail();
+    }
 
-	@Override
-	public StandalonePojoMassIndexingSessionContext createSession(String tenantIdentifier) {
-		return createSessionBuilder().tenantId( tenantIdentifier ).build();
-	}
+    private Optional<SearchScopeImpl<?, Object>> createAllScope() {
+        return delegate().<NonStaticMetamodelScope, EntityReference, SearchIndexedEntity<?>>createPojoAllScope(this, NonStaticMetamodelScope.class, typeContextContainer::indexedForExactType).map(scopeDelegate -> new SearchScopeImpl<>(this, tenancyConfiguration, scopeDelegate));
+    }
 
-	@Override
-	public TenancyConfiguration tenancyConfiguration() {
-		return tenancyConfiguration;
-	}
-
-	private SearchIntegration searchIntegration() {
-		return integrationHandle.getOrFail();
-	}
-
-	private Optional<SearchScopeImpl<?, Object>> createAllScope() {
-		return delegate()
-				.<NonStaticMetamodelScope, EntityReference, SearchIndexedEntity<?>>createPojoAllScope(
-						this,
-						NonStaticMetamodelScope.class,
-						typeContextContainer::indexedForExactType
-				)
-				.map( scopeDelegate -> new SearchScopeImpl<>( this, tenancyConfiguration, scopeDelegate ) );
-	}
-
-	private StandalonePojoSearchSession.Builder createSessionBuilder() {
-		return new StandalonePojoSearchSession.Builder(
-				this, configuredIndexingPlanSynchronizationStrategyHolder, typeContextContainer
-		);
-	}
+    private StandalonePojoSearchSession.Builder createSessionBuilder() {
+        return new StandalonePojoSearchSession.Builder(this, configuredIndexingPlanSynchronizationStrategyHolder, typeContextContainer);
+    }
 }

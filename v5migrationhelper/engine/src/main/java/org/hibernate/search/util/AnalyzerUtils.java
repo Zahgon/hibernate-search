@@ -9,10 +9,8 @@ import java.io.StringReader;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.search.util.logging.impl.LoggerFactory;
 import org.hibernate.search.util.logging.impl.MigrationHelperLog;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -28,27 +26,13 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 @Deprecated
 public final class AnalyzerUtils {
 
-	private AnalyzerUtils() {
-		//not allowed
-	}
+    private AnalyzerUtils() {
+        //not allowed
+    }
 
-	public static final MigrationHelperLog log = LoggerFactory.make( MethodHandles.lookup() );
+    public static final MigrationHelperLog log = LoggerFactory.make(MethodHandles.lookup());
 
-	public static List<String> tokenizedTermValues(Analyzer analyzer, String field, String text) throws IOException {
-		final List<String> tokenList = new ArrayList<String>();
-		final TokenStream stream = analyzer.tokenStream( field, new StringReader( text ) );
-		try {
-			CharTermAttribute term = stream.addAttribute( CharTermAttribute.class );
-			stream.reset();
-			while ( stream.incrementToken() ) {
-				String s = new String( term.buffer(), 0, term.length() );
-				tokenList.add( s );
-			}
-			stream.end();
-		}
-		finally {
-			stream.close();
-		}
-		return tokenList;
-	}
+    public static List<String> tokenizedTermValues(Analyzer analyzer, String field, String text) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

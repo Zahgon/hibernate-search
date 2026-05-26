@@ -8,13 +8,12 @@ import com.google.gson.JsonElement;
 
 public class JsonBooleanAccessor extends AbstractTypingJsonAccessor<Boolean> {
 
-	public JsonBooleanAccessor(JsonAccessor<JsonElement> parentAccessor) {
-		super( parentAccessor );
-	}
+    public JsonBooleanAccessor(JsonAccessor<JsonElement> parentAccessor) {
+        super(parentAccessor);
+    }
 
-	@Override
-	protected JsonElementType<Boolean> getExpectedElementType() {
-		return JsonElementTypes.BOOLEAN;
-	}
-
+    @Override
+    protected JsonElementType<Boolean> getExpectedElementType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

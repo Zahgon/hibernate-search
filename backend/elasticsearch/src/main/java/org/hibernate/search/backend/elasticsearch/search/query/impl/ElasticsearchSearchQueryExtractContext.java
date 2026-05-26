@@ -11,7 +11,6 @@ import org.hibernate.search.engine.backend.session.spi.BackendSessionContext;
 import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentValueConvertContext;
 import org.hibernate.search.engine.backend.types.converter.runtime.spi.FromDocumentValueConvertContextImpl;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
-
 import com.google.gson.JsonObject;
 
 /**
@@ -20,41 +19,39 @@ import com.google.gson.JsonObject;
  */
 public class ElasticsearchSearchQueryExtractContext implements AggregationExtractContext {
 
-	private final ElasticsearchSearchQueryRequestContext requestContext;
-	private final ProjectionHitMapper<?> projectionHitMapper;
-	private final FromDocumentValueConvertContext fromDocumentValueConvertContext;
+    private final ElasticsearchSearchQueryRequestContext requestContext;
 
-	private final JsonObject responseBody;
+    private final ProjectionHitMapper<?> projectionHitMapper;
 
-	ElasticsearchSearchQueryExtractContext(ElasticsearchSearchQueryRequestContext requestContext,
-			BackendSessionContext sessionContext,
-			ProjectionHitMapper<?> projectionHitMapper,
-			JsonObject responseBody) {
-		this.requestContext = requestContext;
-		this.projectionHitMapper = projectionHitMapper;
-		this.fromDocumentValueConvertContext = new FromDocumentValueConvertContextImpl( sessionContext );
-		this.responseBody = responseBody;
-	}
+    private final FromDocumentValueConvertContext fromDocumentValueConvertContext;
 
-	@Override
-	public FromDocumentValueConvertContext fromDocumentValueConvertContext() {
-		return fromDocumentValueConvertContext;
-	}
+    private final JsonObject responseBody;
 
-	public JsonObject getResponseBody() {
-		return responseBody;
-	}
+    ElasticsearchSearchQueryExtractContext(ElasticsearchSearchQueryRequestContext requestContext, BackendSessionContext sessionContext, ProjectionHitMapper<?> projectionHitMapper, JsonObject responseBody) {
+        this.requestContext = requestContext;
+        this.projectionHitMapper = projectionHitMapper;
+        this.fromDocumentValueConvertContext = new FromDocumentValueConvertContextImpl(sessionContext);
+        this.responseBody = responseBody;
+    }
 
-	ProjectionHitMapper<?> getProjectionHitMapper() {
-		return projectionHitMapper;
-	}
+    @Override
+    public FromDocumentValueConvertContext fromDocumentValueConvertContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ProjectionExtractContext createProjectionExtractContext() {
-		return new ProjectionExtractContext( requestContext );
-	}
+    public JsonObject getResponseBody() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ProjectionTransformContext createProjectionTransformContext() {
-		return new ProjectionTransformContext( fromDocumentValueConvertContext );
-	}
+    ProjectionHitMapper<?> getProjectionHitMapper() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    ProjectionExtractContext createProjectionExtractContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    ProjectionTransformContext createProjectionTransformContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

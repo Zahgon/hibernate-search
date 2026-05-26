@@ -11,31 +11,22 @@ import org.hibernate.search.engine.backend.types.ObjectStructure;
 import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
 import org.hibernate.search.util.common.pattern.spi.SimpleGlobPattern;
 
-class LuceneIndexObjectFieldTemplateBuilder
-		extends AbstractLuceneIndexFieldTemplateBuilder<
-				LuceneIndexObjectFieldTemplateBuilder,
-				LuceneIndexObjectFieldTemplate> {
+class LuceneIndexObjectFieldTemplateBuilder extends AbstractLuceneIndexFieldTemplateBuilder<LuceneIndexObjectFieldTemplateBuilder, LuceneIndexObjectFieldTemplate> {
 
-	private final LuceneIndexCompositeNodeType.Builder typeBuilder;
+    private final LuceneIndexCompositeNodeType.Builder typeBuilder;
 
-	LuceneIndexObjectFieldTemplateBuilder(AbstractLuceneIndexCompositeNodeBuilder parent,
-			String templateName, TreeNodeInclusion inclusion, ObjectStructure structure, String prefix) {
-		super( parent, templateName, inclusion, prefix );
-		this.typeBuilder = new LuceneIndexCompositeNodeType.Builder( structure );
-	}
+    LuceneIndexObjectFieldTemplateBuilder(AbstractLuceneIndexCompositeNodeBuilder parent, String templateName, TreeNodeInclusion inclusion, ObjectStructure structure, String prefix) {
+        super(parent, templateName, inclusion, prefix);
+        this.typeBuilder = new LuceneIndexCompositeNodeType.Builder(structure);
+    }
 
-	@Override
-	protected LuceneIndexObjectFieldTemplateBuilder thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneIndexObjectFieldTemplateBuilder thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected void doContribute(LuceneIndexNodeCollector collector,
-			LuceneIndexCompositeNode parentNode, SimpleGlobPattern absolutePathGlob, boolean multiValued) {
-		LuceneIndexObjectFieldTemplate fieldTemplate = new LuceneIndexObjectFieldTemplate(
-				parentNode, absolutePathGlob, typeBuilder.build(), inclusion, multiValued );
-
-		collector.collect( fieldTemplate );
-	}
-
+    @Override
+    protected void doContribute(LuceneIndexNodeCollector collector, LuceneIndexCompositeNode parentNode, SimpleGlobPattern absolutePathGlob, boolean multiValued) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

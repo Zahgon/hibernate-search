@@ -13,29 +13,26 @@ import org.hibernate.search.engine.search.projection.dsl.SearchProjectionFactory
 
 public interface CompositeProjectionDefinition<T> extends ProjectionDefinition<T>, AutoCloseable {
 
-	@SuppressWarnings("removal")
-	@Deprecated(since = "8.0", forRemoval = true)
-	@Override
-	default SearchProjection<? extends T> create(SearchProjectionFactory<?, ?> factory, ProjectionDefinitionContext context) {
-		var projection = context.projection();
-		return apply( projection.composite(), context ).toProjection();
-	}
+    @SuppressWarnings("removal")
+    @Deprecated(since = "8.0", forRemoval = true)
+    @Override
+    default SearchProjection<? extends T> create(SearchProjectionFactory<?, ?> factory, ProjectionDefinitionContext context) {
+        var projection = context.projection();
+        return apply(projection.composite(), context).toProjection();
+    }
 
-	@Override
-	default SearchProjection<? extends T> create(ProjectionDefinitionContext context) {
-		var projection = context.projection();
-		return apply( projection.composite(), context ).toProjection();
-	}
+    @Override
+    default SearchProjection<? extends T> create(ProjectionDefinitionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	CompositeProjectionValueStep<?, T> apply(CompositeProjectionInnerStep initialStep,
-			ProjectionDefinitionContext context);
+    CompositeProjectionValueStep<?, T> apply(CompositeProjectionInnerStep initialStep, ProjectionDefinitionContext context);
 
-	/**
-	 * Close any resource before the projection definition is discarded.
-	 */
-	@Override
-	default void close() {
-		// Do nothing by default
-	}
-
+    /**
+     * Close any resource before the projection definition is discarded.
+     */
+    @Override
+    default void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

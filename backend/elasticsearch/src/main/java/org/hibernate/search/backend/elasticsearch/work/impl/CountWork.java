@@ -7,87 +7,65 @@ package org.hibernate.search.backend.elasticsearch.work.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchResponse;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.engine.common.timing.Deadline;
-
 import com.google.gson.JsonObject;
 
 public class CountWork extends AbstractNonBulkableWork<Long> {
 
-	private static final JsonAccessor<Long> COUNT_ACCESSOR = JsonAccessor.root().property( "count" ).asLong();
+    private static final JsonAccessor<Long> COUNT_ACCESSOR = JsonAccessor.root().property("count").asLong();
 
-	protected CountWork(Builder builder) {
-		super( builder );
-	}
+    protected CountWork(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	protected Long generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		JsonObject body = response.body();
-		return COUNT_ACCESSOR.get( body ).get();
-	}
+    @Override
+    protected Long generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder extends AbstractBuilder<Builder> {
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		private final List<URLEncodedString> indexNames = new ArrayList<>();
-		private JsonObject query;
-		private Set<String> routingKeys;
-		private Deadline deadline;
+        private final List<URLEncodedString> indexNames = new ArrayList<>();
 
-		public Builder() {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-		}
+        private JsonObject query;
 
-		public Builder index(URLEncodedString indexName) {
-			indexNames.add( indexName );
-			return this;
-		}
+        private Set<String> routingKeys;
 
-		public Builder query(JsonObject query) {
-			this.query = query;
-			return this;
-		}
+        private Deadline deadline;
 
-		public Builder routingKeys(Set<String> routingKeys) {
-			this.routingKeys = routingKeys;
-			return this;
-		}
+        public Builder() {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+        }
 
-		public Builder deadline(Deadline deadline) {
-			this.deadline = deadline;
-			return this;
-		}
+        public Builder index(URLEncodedString indexName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.get()
-							.multiValuedPathComponent( indexNames );
+        public Builder query(JsonObject query) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			builder.pathComponent( Paths._COUNT );
+        public Builder routingKeys(Set<String> routingKeys) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( query != null ) {
-				builder.body( query );
-			}
+        public Builder deadline(Deadline deadline) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( !routingKeys.isEmpty() ) {
-				builder.multiValuedParam( "routing", routingKeys );
-			}
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( deadline != null ) {
-				builder.deadline( deadline );
-			}
-
-			return builder.build();
-		}
-
-		@Override
-		public CountWork build() {
-			return new CountWork( this );
-		}
-	}
+        @Override
+        public CountWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

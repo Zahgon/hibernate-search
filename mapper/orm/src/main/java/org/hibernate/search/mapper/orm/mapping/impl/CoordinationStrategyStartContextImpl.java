@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.mapping.impl;
 
 import java.time.Clock;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.engine.environment.thread.spi.ThreadPoolProvider;
@@ -17,52 +16,54 @@ import org.hibernate.search.mapper.orm.coordination.common.spi.CoordinationStrat
 import org.hibernate.search.mapper.orm.tenancy.spi.TenancyConfiguration;
 
 public class CoordinationStrategyStartContextImpl implements CoordinationStrategyStartContext {
-	private final AutomaticIndexingMappingContext mapping;
-	private final MappingStartContext delegate;
-	private final ConfigurationPropertySource configurationPropertySource;
-	private final TenancyConfiguration tenancyConfiguration;
 
-	public CoordinationStrategyStartContextImpl(AutomaticIndexingMappingContext mapping,
-			MappingStartContext delegate, TenancyConfiguration tenancyConfiguration) {
-		this.mapping = mapping;
-		this.delegate = delegate;
-		this.configurationPropertySource = delegate.configurationPropertySource()
-				.withMask( HibernateOrmMapperSettings.Radicals.COORDINATION );
-		this.tenancyConfiguration = tenancyConfiguration;
-	}
+    private final AutomaticIndexingMappingContext mapping;
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return delegate.failureCollector();
-	}
+    private final MappingStartContext delegate;
 
-	@Override
-	public BeanResolver beanResolver() {
-		return delegate.beanResolver();
-	}
+    private final ConfigurationPropertySource configurationPropertySource;
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return configurationPropertySource;
-	}
+    private final TenancyConfiguration tenancyConfiguration;
 
-	@Override
-	public ThreadPoolProvider threadPoolProvider() {
-		return delegate.threadPoolProvider();
-	}
+    public CoordinationStrategyStartContextImpl(AutomaticIndexingMappingContext mapping, MappingStartContext delegate, TenancyConfiguration tenancyConfiguration) {
+        this.mapping = mapping;
+        this.delegate = delegate;
+        this.configurationPropertySource = delegate.configurationPropertySource().withMask(HibernateOrmMapperSettings.Radicals.COORDINATION);
+        this.tenancyConfiguration = tenancyConfiguration;
+    }
 
-	@Override
-	public Clock clock() {
-		return Clock.systemUTC();
-	}
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AutomaticIndexingMappingContext mapping() {
-		return mapping;
-	}
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TenancyConfiguration tenancyConfiguration() {
-		return tenancyConfiguration;
-	}
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ThreadPoolProvider threadPoolProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Clock clock() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public AutomaticIndexingMappingContext mapping() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public TenancyConfiguration tenancyConfiguration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

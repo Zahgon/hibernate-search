@@ -9,35 +9,27 @@ import org.hibernate.search.backend.elasticsearch.client.common.spi.Elasticsearc
 /**
  * Used with JBoss Logging's {@link org.jboss.logging.annotations.FormatWith}
  * to display {@link ElasticsearchRequest}s in log messages.
- *
  */
 public final class ElasticsearchRequestFormatter {
 
-	private final ElasticsearchRequest request;
+    private final ElasticsearchRequest request;
 
-	public ElasticsearchRequestFormatter(ElasticsearchRequest request) {
-		this.request = request;
-	}
+    public ElasticsearchRequestFormatter(ElasticsearchRequest request) {
+        this.request = request;
+    }
 
-	@Override
-	public String toString() {
-		return formatRequest( request );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static String formatRequest(ElasticsearchRequest request) {
-		if ( request == null ) {
-			return "(no request)";
-		}
-
-		//Wild guess for some tuning. The only certainty is that the default (16) is too small.
-		StringBuilder sb = new StringBuilder( 180 );
-
-		sb.append( request.method() )
-				.append( " " )
-				.append( request.path() )
-				.append( " with parameters " )
-				.append( request.parameters() );
-
-		return sb.toString();
-	}
+    private static String formatRequest(ElasticsearchRequest request) {
+        if (request == null) {
+            return "(no request)";
+        }
+        //Wild guess for some tuning. The only certainty is that the default (16) is too small.
+        StringBuilder sb = new StringBuilder(180);
+        sb.append(request.method()).append(" ").append(request.path()).append(" with parameters ").append(request.parameters());
+        return sb.toString();
+    }
 }

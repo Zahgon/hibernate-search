@@ -6,7 +6,6 @@ package org.hibernate.search.engine.cfg.spi;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 
 /**
@@ -34,53 +33,55 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 @Incubating
 public final class ConfigurationScope {
-	public static final ConfigurationScope GLOBAL = new ConfigurationScope( null, ConfigurationScopeNamespaces.GLOBAL, null );
 
-	private final ConfigurationScope parent;
-	private final String namespace;
-	private final String name;
+    public static final ConfigurationScope GLOBAL = new ConfigurationScope(null, ConfigurationScopeNamespaces.GLOBAL, null);
 
-	private ConfigurationScope(ConfigurationScope parent, String namespace, String name) {
-		this.parent = parent;
-		this.namespace = namespace;
-		this.name = name;
-	}
+    private final ConfigurationScope parent;
 
-	public ConfigurationScope reduce(String namespace, String name) {
-		return new ConfigurationScope( this, namespace, name );
-	}
+    private final String namespace;
 
-	public boolean matchAny(String namespace) {
-		return this.namespace.equals( namespace );
-	}
+    private final String name;
 
-	public boolean matchExact(String namespace) {
-		return matchExact( namespace, null );
-	}
+    private ConfigurationScope(ConfigurationScope parent, String namespace, String name) {
+        this.parent = parent;
+        this.namespace = namespace;
+        this.name = name;
+    }
 
-	public boolean matchExact(String namespace, String name) {
-		return matchAny( namespace ) && Objects.equals( this.name, name );
-	}
+    public ConfigurationScope reduce(String namespace, String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean match(Predicate<ConfigurationScope> predicate) {
-		return predicate.test( this );
-	}
+    public boolean matchAny(String namespace) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationScope parent() {
-		return parent;
-	}
+    public boolean matchExact(String namespace) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String namespace() {
-		return namespace;
-	}
+    public boolean matchExact(String namespace, String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String name() {
-		return name;
-	}
+    public boolean match(Predicate<ConfigurationScope> predicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return ( parent == null ? "" : parent + ": " ) + namespace + ( name == null ? "" : "(" + name + ")" );
-	}
+    public ConfigurationScope parent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public String namespace() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

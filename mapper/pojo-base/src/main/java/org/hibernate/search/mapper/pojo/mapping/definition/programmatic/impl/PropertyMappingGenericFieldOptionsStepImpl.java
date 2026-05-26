@@ -8,17 +8,14 @@ import org.hibernate.search.mapper.pojo.bridge.binding.spi.FieldModelContributor
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingGenericFieldOptionsStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStep;
 
-class PropertyMappingGenericFieldOptionsStepImpl
-		extends AbstractPropertyMappingNonFullTextStandardFieldOptionsStep<PropertyMappingGenericFieldOptionsStep>
-		implements PropertyMappingGenericFieldOptionsStep {
+class PropertyMappingGenericFieldOptionsStepImpl extends AbstractPropertyMappingNonFullTextStandardFieldOptionsStep<PropertyMappingGenericFieldOptionsStep> implements PropertyMappingGenericFieldOptionsStep {
 
-	PropertyMappingGenericFieldOptionsStepImpl(PropertyMappingStep parent, String relativeFieldName) {
-		super( parent, relativeFieldName, FieldModelContributorContext::standardTypeOptionsStep );
-	}
+    PropertyMappingGenericFieldOptionsStepImpl(PropertyMappingStep parent, String relativeFieldName) {
+        super(parent, relativeFieldName, FieldModelContributorContext::standardTypeOptionsStep);
+    }
 
-	@Override
-	PropertyMappingGenericFieldOptionsStep thisAsS() {
-		return this;
-	}
-
+    @Override
+    PropertyMappingGenericFieldOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

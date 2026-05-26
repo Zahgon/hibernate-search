@@ -15,30 +15,21 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 public class DebugIOStrategy extends IOStrategy {
 
-	public static DebugIOStrategy create(BackendThreads threads, FailureHandler failureHandler) {
-		return new DebugIOStrategy( threads, failureHandler );
-	}
+    public static DebugIOStrategy create(BackendThreads threads, FailureHandler failureHandler) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private DebugIOStrategy(BackendThreads threads, FailureHandler failureHandler) {
-		super( threads, failureHandler );
-	}
+    private DebugIOStrategy(BackendThreads threads, FailureHandler failureHandler) {
+        super(threads, failureHandler);
+    }
 
-	@Override
-	IndexWriterProvider createIndexWriterProvider(String indexName, EventContext eventContext,
-			DirectoryHolder directoryHolder, IndexWriterConfigSource configSource) {
-		return new IndexWriterProvider(
-				indexName, eventContext,
-				directoryHolder, configSource,
-				null, 0,
-				threads,
-				failureHandler
-		);
-	}
+    @Override
+    IndexWriterProvider createIndexWriterProvider(String indexName, EventContext eventContext, DirectoryHolder directoryHolder, IndexWriterConfigSource configSource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	IndexReaderProvider createIndexReaderProvider(DirectoryHolder directoryHolder,
-			IndexWriterProvider indexWriterProvider) {
-		return new NotSharedIndexReaderProvider( directoryHolder );
-	}
-
+    @Override
+    IndexReaderProvider createIndexReaderProvider(DirectoryHolder directoryHolder, IndexWriterProvider indexWriterProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

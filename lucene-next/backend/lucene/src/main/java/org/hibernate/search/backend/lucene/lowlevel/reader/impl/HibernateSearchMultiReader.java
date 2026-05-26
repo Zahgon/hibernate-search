@@ -11,12 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.logging.impl.LuceneMiscLog;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
-
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
@@ -33,84 +31,50 @@ import org.apache.lucene.index.MultiReader;
  */
 public class HibernateSearchMultiReader extends MultiReader {
 
-	public static HibernateSearchMultiReader open(Set<String> indexNames,
-			Collection<? extends ReadIndexManagerContext> indexManagerContexts, Set<String> routingKeys) {
-		if ( indexManagerContexts.isEmpty() ) {
-			return null;
-		}
-		else {
-			Builder builder = new Builder();
-			try {
-				for ( ReadIndexManagerContext indexManagerContext : indexManagerContexts ) {
-					indexManagerContext.openIndexReaders( routingKeys, builder );
-				}
-				return builder.build();
-			}
-			catch (IOException | RuntimeException e) {
-				new SuppressingCloser( e )
-						.pushAll( builder.directoryReaders );
-				throw LuceneMiscLog.INSTANCE.unableToOpenIndexReaders(
-						e.getMessage(), EventContexts.fromIndexNames( indexNames ), e
-				);
-			}
-		}
-	}
+    public static HibernateSearchMultiReader open(Set<String> indexNames, Collection<? extends ReadIndexManagerContext> indexManagerContexts, Set<String> routingKeys) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final List<DirectoryReader> directoryReaders;
-	private final IndexReaderMetadataResolver metadataResolver;
+    private final List<DirectoryReader> directoryReaders;
 
-	HibernateSearchMultiReader(List<DirectoryReader> directoryReaders, IndexReaderMetadataResolver metadataResolver)
-			throws IOException {
-		// If this flag isn't set to true, the MultiReader will increase the usage counter!
-		super( toReaderArray( directoryReaders ), true );
-		this.directoryReaders = directoryReaders;
-		this.metadataResolver = metadataResolver;
-	}
+    private final IndexReaderMetadataResolver metadataResolver;
 
-	public IndexReaderMetadataResolver getMetadataResolver() {
-		return metadataResolver;
-	}
+    HibernateSearchMultiReader(List<DirectoryReader> directoryReaders, IndexReaderMetadataResolver metadataResolver) throws IOException {
+        // If this flag isn't set to true, the MultiReader will increase the usage counter!
+        super(toReaderArray(directoryReaders), true);
+        this.directoryReaders = directoryReaders;
+        this.metadataResolver = metadataResolver;
+    }
 
-	@Override
-	protected synchronized void doClose() throws IOException {
-		final boolean traceEnabled = LuceneMiscLog.INSTANCE.isTraceEnabled();
-		if ( traceEnabled ) {
-			LuceneMiscLog.INSTANCE.closingMultiReader( this );
-		}
-		try ( Closer<IOException> closer = new Closer<>() ) {
-			/*
-			 * Important: we decrement a usage counter instead of directly closing the reader,
-			 * just in case the reader is shared.
-			 * If the reader is not shared, this is equivalent to closing the reader.
-			 */
-			closer.pushAll( DirectoryReader::decRef, directoryReaders );
-		}
-		if ( traceEnabled ) {
-			LuceneMiscLog.INSTANCE.closedMultiReader( this );
-		}
-	}
+    public IndexReaderMetadataResolver getMetadataResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static IndexReader[] toReaderArray(List<DirectoryReader> directoryReaders) {
-		return directoryReaders.toArray( new DirectoryReader[0] );
-	}
+    @Override
+    protected synchronized void doClose() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder implements DirectoryReaderCollector {
-		private final List<DirectoryReader> directoryReaders = new ArrayList<>();
-		private final Map<DirectoryReader, String> mappedTypeNameByDirectoryReader = new HashMap<>();
+    private static IndexReader[] toReaderArray(List<DirectoryReader> directoryReaders) {
+        return directoryReaders.toArray(new DirectoryReader[0]);
+    }
 
-		private Builder() {
-		}
+    public static class Builder implements DirectoryReaderCollector {
 
-		@Override
-		public void collect(String mappedTypeName, DirectoryReader directoryReader) {
-			directoryReaders.add( directoryReader );
-			mappedTypeNameByDirectoryReader.put( directoryReader, mappedTypeName );
-		}
+        private final List<DirectoryReader> directoryReaders = new ArrayList<>();
 
-		HibernateSearchMultiReader build() throws IOException {
-			IndexReaderMetadataResolver metadataResolver =
-					new IndexReaderMetadataResolver( mappedTypeNameByDirectoryReader );
-			return new HibernateSearchMultiReader( directoryReaders, metadataResolver );
-		}
-	}
+        private final Map<DirectoryReader, String> mappedTypeNameByDirectoryReader = new HashMap<>();
+
+        private Builder() {
+        }
+
+        @Override
+        public void collect(String mappedTypeName, DirectoryReader directoryReader) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        HibernateSearchMultiReader build() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

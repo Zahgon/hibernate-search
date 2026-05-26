@@ -8,14 +8,15 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 
 public final class StaticPredicateFinalStep implements PredicateFinalStep {
-	private final SearchPredicate predicate;
 
-	public StaticPredicateFinalStep(SearchPredicate predicate) {
-		this.predicate = predicate;
-	}
+    private final SearchPredicate predicate;
 
-	@Override
-	public SearchPredicate toPredicate() {
-		return predicate;
-	}
+    public StaticPredicateFinalStep(SearchPredicate predicate) {
+        this.predicate = predicate;
+    }
+
+    @Override
+    public SearchPredicate toPredicate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

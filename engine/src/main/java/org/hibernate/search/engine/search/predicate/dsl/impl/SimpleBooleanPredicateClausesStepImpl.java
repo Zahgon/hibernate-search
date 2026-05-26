@@ -11,45 +11,30 @@ import org.hibernate.search.engine.search.predicate.dsl.SimpleBooleanPredicateCl
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 
-public final class SimpleBooleanPredicateClausesStepImpl<SR>
-		extends
-		AbstractSimpleBooleanPredicateClausesStep<SR,
-				SimpleBooleanPredicateClausesStepImpl<SR>,
-				SimpleBooleanPredicateClausesCollector<SR, ?>>
-		implements SimpleBooleanPredicateClausesStep<SR, SimpleBooleanPredicateClausesStepImpl<SR>> {
+public final class SimpleBooleanPredicateClausesStepImpl<SR> extends AbstractSimpleBooleanPredicateClausesStep<SR, SimpleBooleanPredicateClausesStepImpl<SR>, SimpleBooleanPredicateClausesCollector<SR, ?>> implements SimpleBooleanPredicateClausesStep<SR, SimpleBooleanPredicateClausesStepImpl<SR>> {
 
-	public SimpleBooleanPredicateClausesStepImpl(SimpleBooleanPredicateOperator operator,
-			SearchPredicateDslContext<?> dslContext,
-			TypedSearchPredicateFactory<SR> factory) {
-		super( operator, dslContext, factory );
-	}
+    public SimpleBooleanPredicateClausesStepImpl(SimpleBooleanPredicateOperator operator, SearchPredicateDslContext<?> dslContext, TypedSearchPredicateFactory<SR> factory) {
+        super(operator, dslContext, factory);
+    }
 
-	public SimpleBooleanPredicateClausesStepImpl(SimpleBooleanPredicateOperator operator,
-			SearchPredicateDslContext<?> dslContext,
-			TypedSearchPredicateFactory<SR> factory,
-			SearchPredicate firstSearchPredicate,
-			SearchPredicate... otherSearchPredicates) {
-		this( operator, dslContext, factory );
-		add( firstSearchPredicate );
-		for ( SearchPredicate step : otherSearchPredicates ) {
-			add( step );
-		}
-	}
+    public SimpleBooleanPredicateClausesStepImpl(SimpleBooleanPredicateOperator operator, SearchPredicateDslContext<?> dslContext, TypedSearchPredicateFactory<SR> factory, SearchPredicate firstSearchPredicate, SearchPredicate... otherSearchPredicates) {
+        this(operator, dslContext, factory);
+        add(firstSearchPredicate);
+        for (SearchPredicate step : otherSearchPredicates) {
+            add(step);
+        }
+    }
 
-	public SimpleBooleanPredicateClausesStepImpl(SimpleBooleanPredicateOperator operator,
-			SearchPredicateDslContext<?> dslContext,
-			TypedSearchPredicateFactory<SR> factory,
-			PredicateFinalStep firstSearchPredicate,
-			PredicateFinalStep... otherSearchPredicates) {
-		this( operator, dslContext, factory );
-		add( firstSearchPredicate.toPredicate() );
-		for ( PredicateFinalStep step : otherSearchPredicates ) {
-			add( step.toPredicate() );
-		}
-	}
+    public SimpleBooleanPredicateClausesStepImpl(SimpleBooleanPredicateOperator operator, SearchPredicateDslContext<?> dslContext, TypedSearchPredicateFactory<SR> factory, PredicateFinalStep firstSearchPredicate, PredicateFinalStep... otherSearchPredicates) {
+        this(operator, dslContext, factory);
+        add(firstSearchPredicate.toPredicate());
+        for (PredicateFinalStep step : otherSearchPredicates) {
+            add(step.toPredicate());
+        }
+    }
 
-	@Override
-	protected SimpleBooleanPredicateClausesStepImpl<SR> self() {
-		return this;
-	}
+    @Override
+    protected SimpleBooleanPredicateClausesStepImpl<SR> self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

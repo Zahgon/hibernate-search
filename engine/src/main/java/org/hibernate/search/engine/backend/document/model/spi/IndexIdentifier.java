@@ -12,40 +12,40 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 public final class IndexIdentifier implements SearchIndexIdentifierContext {
 
-	private final DslConverter<?, String> dslConverter;
-	private final DslConverter<?, String> parser;
-	private final ProjectionConverter<String, ?> projectionConverter;
+    private final DslConverter<?, String> dslConverter;
 
-	public IndexIdentifier(DslConverter<?, String> dslConverter, DslConverter<?, String> parser,
-			ProjectionConverter<String, ?> projectionConverter) {
-		this.dslConverter = dslConverter != null ? dslConverter : RAW_DSL_CONVERTER;
-		this.parser = parser != null ? parser : RAW_DSL_CONVERTER;
-		this.projectionConverter = projectionConverter != null ? projectionConverter : RAW_PROJECTION_CONVERTER;
-	}
+    private final DslConverter<?, String> parser;
 
-	@Override
-	public EventContext eventContext() {
-		return relativeEventContext();
-	}
+    private final ProjectionConverter<String, ?> projectionConverter;
 
-	@Override
-	public EventContext relativeEventContext() {
-		return EventContexts.indexSchemaIdentifier();
-	}
+    public IndexIdentifier(DslConverter<?, String> dslConverter, DslConverter<?, String> parser, ProjectionConverter<String, ?> projectionConverter) {
+        this.dslConverter = dslConverter != null ? dslConverter : RAW_DSL_CONVERTER;
+        this.parser = parser != null ? parser : RAW_DSL_CONVERTER;
+        this.projectionConverter = projectionConverter != null ? projectionConverter : RAW_PROJECTION_CONVERTER;
+    }
 
-	@Override
-	public DslConverter<?, String> mappingDslConverter() {
-		return dslConverter;
-	}
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DslConverter<?, String> parserDslConverter() {
-		return parser;
-	}
+    @Override
+    public EventContext relativeEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionConverter<String, ?> mappingProjectionConverter() {
-		return projectionConverter;
-	}
+    @Override
+    public DslConverter<?, String> mappingDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public DslConverter<?, String> parserDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ProjectionConverter<String, ?> mappingProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

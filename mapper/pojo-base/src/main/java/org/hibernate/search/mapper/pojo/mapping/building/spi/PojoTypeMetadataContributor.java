@@ -8,12 +8,11 @@ import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.Po
 
 public interface PojoTypeMetadataContributor extends PojoSearchMappingTypeNode {
 
-	default void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorTypeNode collector) {
-		// No-op by default
-	}
+    default void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorTypeNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default void contributeIndexMapping(PojoIndexMappingCollectorTypeNode collector) {
-		// No-op by default
-	}
-
+    default void contributeIndexMapping(PojoIndexMappingCollectorTypeNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

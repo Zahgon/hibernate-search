@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.schema.management.impl;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.reporting.spi.FailureCollector;
@@ -20,64 +19,59 @@ import org.hibernate.search.util.common.impl.Futures;
 
 public class SearchSchemaManagerImpl implements SearchSchemaManager {
 
-	private final PojoScopeSchemaManager delegate;
+    private final PojoScopeSchemaManager delegate;
 
-	public SearchSchemaManagerImpl(PojoScopeSchemaManager delegate) {
-		this.delegate = delegate;
-	}
+    public SearchSchemaManagerImpl(PojoScopeSchemaManager delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void validate() {
-		doOperation( PojoScopeSchemaManager::validate );
-	}
+    @Override
+    public void validate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void createIfMissing() {
-		doOperation( PojoScopeSchemaManager::createIfMissing );
-	}
+    @Override
+    public void createIfMissing() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void createOrValidate() {
-		doOperation( PojoScopeSchemaManager::createOrValidate );
-	}
+    @Override
+    public void createOrValidate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void createOrUpdate() {
-		doOperation( PojoScopeSchemaManager::createOrUpdate );
-	}
+    @Override
+    public void createOrUpdate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void dropIfExisting() {
-		doOperation( PojoScopeSchemaManager::dropIfExisting );
-	}
+    @Override
+    public void dropIfExisting() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void dropAndCreate() {
-		doOperation( PojoScopeSchemaManager::dropAndCreate );
-	}
+    @Override
+    public void dropAndCreate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void exportExpectedSchema(SearchSchemaCollector collector) {
-		delegate.exportExpectedSchema( collector );
-	}
+    @Override
+    public void exportExpectedSchema(SearchSchemaCollector collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void exportExpectedSchema(Path targetDirectory) {
-		delegate.exportExpectedSchema( targetDirectory );
-	}
+    @Override
+    public void exportExpectedSchema(Path targetDirectory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void doOperation(
-			TriFunction<PojoScopeSchemaManager, FailureCollector, OperationSubmitter, CompletableFuture<?>> operation) {
-		RootFailureCollector failureCollector = new RootFailureCollector(
-				HibernateOrmEventContextMessages.INSTANCE.schemaManagement()
-		);
-		try {
-			Futures.unwrappedExceptionJoin( operation.apply( delegate, failureCollector, OperationSubmitter.blocking() ) );
-		}
-		catch (RuntimeException e) {
-			failureCollector.withContext( EventContexts.defaultContext() )
-					.add( e );
-		}
-		failureCollector.checkNoFailure();
-	}
+    private void doOperation(TriFunction<PojoScopeSchemaManager, FailureCollector, OperationSubmitter, CompletableFuture<?>> operation) {
+        RootFailureCollector failureCollector = new RootFailureCollector(HibernateOrmEventContextMessages.INSTANCE.schemaManagement());
+        try {
+            Futures.unwrappedExceptionJoin(operation.apply(delegate, failureCollector, OperationSubmitter.blocking()));
+        } catch (RuntimeException e) {
+            failureCollector.withContext(EventContexts.defaultContext()).add(e);
+        }
+        failureCollector.checkNoFailure();
+    }
 }

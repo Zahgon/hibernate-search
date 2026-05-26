@@ -10,44 +10,42 @@ import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 
 public class NoOpDocumentElement implements DocumentElement {
 
-	static final NoOpDocumentElement INSTANCE = new NoOpDocumentElement();
+    static final NoOpDocumentElement INSTANCE = new NoOpDocumentElement();
 
-	public static NoOpDocumentElement get() {
-		return INSTANCE;
-	}
+    public static NoOpDocumentElement get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private NoOpDocumentElement() {
-	}
+    private NoOpDocumentElement() {
+    }
 
-	@Override
-	public <F> void addValue(IndexFieldReference<F> fieldReference, F value) {
-		// No-op
-	}
+    @Override
+    public <F> void addValue(IndexFieldReference<F> fieldReference, F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DocumentElement addObject(IndexObjectFieldReference fieldReference) {
-		// No-op; just return a no-op child
-		return INSTANCE;
-	}
+    @Override
+    public DocumentElement addObject(IndexObjectFieldReference fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addNullObject(IndexObjectFieldReference fieldReference) {
-		// No-op
-	}
+    @Override
+    public void addNullObject(IndexObjectFieldReference fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addValue(String relativeFieldName, Object value) {
-		// No-op
-	}
+    @Override
+    public void addValue(String relativeFieldName, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DocumentElement addObject(String relativeFieldName) {
-		// No-op; just return a no-op child
-		return INSTANCE;
-	}
+    @Override
+    public DocumentElement addObject(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addNullObject(String relativeFieldName) {
-		// No-op
-	}
+    @Override
+    public void addNullObject(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

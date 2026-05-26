@@ -10,45 +10,38 @@ import org.hibernate.search.mapper.pojo.extractor.ValueProcessor;
 import org.hibernate.search.util.common.impl.Closer;
 
 final class ChainingContainerExtractorHolder<C, U, V> implements ContainerExtractorHolder<C, V> {
-	private final ContainerExtractorHolder<C, U> base;
-	private final BeanHolder<? extends ContainerExtractor<? super U, V>> chained;
 
-	public ChainingContainerExtractorHolder(ContainerExtractorHolder<C, U> base,
-			BeanHolder<? extends ContainerExtractor<? super U, V>> chained) {
-		this.base = base;
-		this.chained = chained;
-	}
+    private final ContainerExtractorHolder<C, U> base;
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder( "[" );
-		appendToString( builder );
-		builder.append( "]" );
-		return builder.toString();
-	}
+    private final BeanHolder<? extends ContainerExtractor<? super U, V>> chained;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ContainerExtractorHolder::close, base );
-			closer.push( BeanHolder::close, chained );
-		}
-	}
+    public ChainingContainerExtractorHolder(ContainerExtractorHolder<C, U> base, BeanHolder<? extends ContainerExtractor<? super U, V>> chained) {
+        this.base = base;
+        this.chained = chained;
+    }
 
-	@Override
-	public <T, C2> ValueProcessor<T, C, C2> wrap(ValueProcessor<T, ? super V, C2> perValueProcessor) {
-		return base.wrap( new ContainerExtractingProcessor<>( chained.get(), perValueProcessor ) );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean multiValued() {
-		return base.multiValued() || chained.get().multiValued();
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendToString(StringBuilder builder) {
-		base.appendToString( builder );
-		builder.append( ", " );
-		builder.append( chained );
-	}
+    @Override
+    public <T, C2> ValueProcessor<T, C, C2> wrap(ValueProcessor<T, ? super V, C2> perValueProcessor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean multiValued() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void appendToString(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

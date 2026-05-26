@@ -8,7 +8,6 @@ import org.hibernate.search.backend.elasticsearch.types.dsl.provider.impl.Elasti
 import org.hibernate.search.backend.elasticsearch.types.dsl.provider.impl.OpenSearch1IndexFieldTypeFactoryProvider;
 import org.hibernate.search.backend.elasticsearch.validation.impl.ElasticsearchPropertyMappingValidatorProvider;
 import org.hibernate.search.backend.elasticsearch.validation.impl.OpenSearch1PropertyMappingValidatorProvider;
-
 import com.google.gson.Gson;
 
 /**
@@ -16,13 +15,13 @@ import com.google.gson.Gson;
  */
 public class OpenSearch1ModelDialect implements ElasticsearchModelDialect {
 
-	@Override
-	public ElasticsearchIndexFieldTypeFactoryProvider createIndexTypeFieldFactoryProvider(Gson userFacingGson) {
-		return new OpenSearch1IndexFieldTypeFactoryProvider( userFacingGson );
-	}
+    @Override
+    public ElasticsearchIndexFieldTypeFactoryProvider createIndexTypeFieldFactoryProvider(Gson userFacingGson) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchPropertyMappingValidatorProvider createElasticsearchPropertyMappingValidatorProvider() {
-		return new OpenSearch1PropertyMappingValidatorProvider();
-	}
+    @Override
+    public ElasticsearchPropertyMappingValidatorProvider createElasticsearchPropertyMappingValidatorProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

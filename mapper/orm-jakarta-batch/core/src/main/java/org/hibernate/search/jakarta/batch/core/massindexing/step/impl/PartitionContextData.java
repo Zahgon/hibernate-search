@@ -14,19 +14,19 @@ import java.io.Serializable;
  */
 public class PartitionContextData implements Serializable {
 
-	private static final long serialVersionUID = 1961574468720628080L;
+    private static final long serialVersionUID = 1961574468720628080L;
 
-	private PartitionProgress partitionProgress;
+    private PartitionProgress partitionProgress;
 
-	public PartitionContextData(int partitionId, String entityName) {
-		partitionProgress = new PartitionProgress( partitionId, entityName );
-	}
+    public PartitionContextData(int partitionId, String entityName) {
+        partitionProgress = new PartitionProgress(partitionId, entityName);
+    }
 
-	public void documentAdded(int increment) {
-		partitionProgress.documentsAdded( increment );
-	}
+    public void documentAdded(int increment) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PartitionProgress getPartitionProgress() {
-		return partitionProgress;
-	}
+    public PartitionProgress getPartitionProgress() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

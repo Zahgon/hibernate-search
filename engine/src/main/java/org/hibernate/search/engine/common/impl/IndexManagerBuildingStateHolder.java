@@ -7,7 +7,6 @@ package org.hibernate.search.engine.common.impl;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.document.model.dsl.spi.IndexRootBuilder;
 import org.hibernate.search.engine.backend.index.spi.IndexManagerBuilder;
 import org.hibernate.search.engine.backend.index.spi.IndexManagerImplementor;
@@ -36,222 +35,142 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 class IndexManagerBuildingStateHolder {
 
-	private static final OptionalConfigurationProperty<BeanReference<? extends BackendFactory>> BACKEND_TYPE =
-			ConfigurationProperty.forKey( BackendSettings.TYPE ).asBeanReference( BackendFactory.class )
-					.build();
+    private static final OptionalConfigurationProperty<BeanReference<? extends BackendFactory>> BACKEND_TYPE = ConfigurationProperty.forKey(BackendSettings.TYPE).asBeanReference(BackendFactory.class).build();
 
-	private final BeanResolver beanResolver;
-	private final ConfigurationPropertySource propertySource;
-	private final RootBuildContext rootBuildContext;
+    private final BeanResolver beanResolver;
 
-	// Use a LinkedHashMap for deterministic iteration
-	private final Map<String, BackendInitialBuildState> backendBuildStateByName = new LinkedHashMap<>();
-	// Use a LinkedHashMap for deterministic iteration
-	private final Map<String, IndexManagerInitialBuildState> indexManagerBuildStateByName = new LinkedHashMap<>();
+    private final ConfigurationPropertySource propertySource;
 
-	IndexManagerBuildingStateHolder(BeanResolver beanResolver, ConfigurationPropertySource propertySource,
-			RootBuildContext rootBuildContext) {
-		this.beanResolver = beanResolver;
-		this.propertySource = propertySource;
-		this.rootBuildContext = rootBuildContext;
-	}
+    private final RootBuildContext rootBuildContext;
 
-	void createBackends(BackendsInfo backendsInfo) {
-		for ( BackendsInfo.BackendInfo backendInfo : backendsInfo.values() ) {
-			Optional<String> backendNameOptional = backendInfo.name();
-			String backendName = backendNameOptional.orElse( null );
-			EventContext eventContext = EventContexts.fromBackendName( backendName );
-			BackendInitialBuildState backendBuildState;
-			try {
-				backendBuildState = createBackend( backendNameOptional, backendInfo.tenancyStrategy(), eventContext );
-			}
-			catch (RuntimeException e) {
-				rootBuildContext.getFailureCollector().withContext( eventContext ).add( e );
-				continue;
-			}
-			backendBuildStateByName.put( backendName, backendBuildState );
-		}
-	}
+    // Use a LinkedHashMap for deterministic iteration
+    private final Map<String, BackendInitialBuildState> backendBuildStateByName = new LinkedHashMap<>();
 
-	IndexManagerBuildingState getIndexManagerBuildingState(BackendMapperContext backendMapperContext,
-			Optional<String> backendNameOptional, String indexName,
-			String mappedTypeName) {
-		String backendName = backendNameOptional.orElse( null );
-		return getBackend( backendName )
-				.createIndexManagerBuildingState( backendMapperContext, backendName, indexName, mappedTypeName );
-	}
+    // Use a LinkedHashMap for deterministic iteration
+    private final Map<String, IndexManagerInitialBuildState> indexManagerBuildStateByName = new LinkedHashMap<>();
 
-	private BackendInitialBuildState getBackend(String backendName) {
-		BackendInitialBuildState backendBuildState = backendBuildStateByName.get( backendName );
-		if ( backendBuildState == null ) {
-			throw new AssertionFailure(
-					"Mapper asking for a reference to backend '" + backendName + "', which was not declared in advance."
-			);
-		}
-		return backendBuildState;
-	}
+    IndexManagerBuildingStateHolder(BeanResolver beanResolver, ConfigurationPropertySource propertySource, RootBuildContext rootBuildContext) {
+        this.beanResolver = beanResolver;
+        this.propertySource = propertySource;
+        this.rootBuildContext = rootBuildContext;
+    }
 
-	Map<String, BackendNonStartedState> getBackendNonStartedStates() {
-		// Use a LinkedHashMap for deterministic iteration
-		Map<String, BackendNonStartedState> backendsByName = new LinkedHashMap<>();
-		for ( Map.Entry<String, BackendInitialBuildState> entry : backendBuildStateByName.entrySet() ) {
-			backendsByName.put( entry.getKey(), entry.getValue().getNonStartedState() );
-		}
-		return backendsByName;
-	}
+    void createBackends(BackendsInfo backendsInfo) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	Map<String, IndexManagerNonStartedState> getIndexManagersNonStartedStates() {
-		// Use a LinkedHashMap for deterministic iteration
-		Map<String, IndexManagerNonStartedState> indexManagersByName = new LinkedHashMap<>();
-		for ( Map.Entry<String, IndexManagerInitialBuildState> entry : indexManagerBuildStateByName.entrySet() ) {
-			indexManagersByName.put( entry.getKey(), entry.getValue().getNonStartedState() );
-		}
-		return indexManagersByName;
-	}
+    IndexManagerBuildingState getIndexManagerBuildingState(BackendMapperContext backendMapperContext, Optional<String> backendNameOptional, String indexName, String mappedTypeName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void closeOnFailure(SuppressingCloser closer) {
-		closer.pushAll( state -> state.closeOnFailure( closer ), indexManagerBuildStateByName.values() );
-		closer.pushAll( BackendInitialBuildState::closeOnFailure, backendBuildStateByName.values() );
-	}
+    private BackendInitialBuildState getBackend(String backendName) {
+        BackendInitialBuildState backendBuildState = backendBuildStateByName.get(backendName);
+        if (backendBuildState == null) {
+            throw new AssertionFailure("Mapper asking for a reference to backend '" + backendName + "', which was not declared in advance.");
+        }
+        return backendBuildState;
+    }
 
-	private BackendInitialBuildState createBackend(Optional<String> backendNameOptional, TenancyMode tenancyMode,
-			EventContext eventContext) {
-		ConfigurationPropertySourceExtractor backendPropertySourceExtractor =
-				EngineConfigurationUtils.extractorForBackend( backendNameOptional );
-		ConfigurationPropertySource backendPropertySource =
-				backendPropertySourceExtractor.extract( beanResolver, propertySource );
-		try ( BeanHolder<? extends BackendFactory> backendFactoryHolder =
-				BACKEND_TYPE.<BeanHolder<? extends BackendFactory>>getAndMap( backendPropertySource, beanResolver::resolve )
-						.orElseGet( () -> createDefaultBackendFactory( backendPropertySource ) ) ) {
-			BackendBuildContext backendBuildContext =
-					new BackendBuildContextImpl( rootBuildContext, tenancyMode, backendNameOptional );
+    Map<String, BackendNonStartedState> getBackendNonStartedStates() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			BackendImplementor backend =
-					backendFactoryHolder.get().create( eventContext, backendBuildContext, backendPropertySource );
-			return new BackendInitialBuildState( eventContext, backendPropertySourceExtractor, backendBuildContext,
-					backend );
-		}
-	}
+    Map<String, IndexManagerNonStartedState> getIndexManagersNonStartedStates() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private BeanHolder<? extends BackendFactory> createDefaultBackendFactory(
-			ConfigurationPropertySource backendPropertySource) {
-		Map<String, BeanReference<BackendFactory>> referencesByName = beanResolver.namedConfiguredForRole(
-				BackendFactory.class );
-		if ( referencesByName.isEmpty() ) {
-			throw ConfigurationLog.INSTANCE.noBackendFactoryRegistered( BACKEND_TYPE.resolveOrRaw( backendPropertySource ) );
-		}
-		else if ( referencesByName.size() > 1 ) {
-			throw ConfigurationLog.INSTANCE.multipleBackendFactoriesRegistered(
-					BACKEND_TYPE.resolveOrRaw( backendPropertySource ),
-					referencesByName.keySet() );
-		}
-		return referencesByName.values().iterator().next().resolve( beanResolver );
-	}
+    void closeOnFailure(SuppressingCloser closer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	class BackendInitialBuildState {
-		private final EventContext eventContext;
-		private final ConfigurationPropertySourceExtractor propertySourceExtractor;
-		private final BackendBuildContext backendBuildContext;
-		private final BackendImplementor backend;
+    private BackendInitialBuildState createBackend(Optional<String> backendNameOptional, TenancyMode tenancyMode, EventContext eventContext) {
+        ConfigurationPropertySourceExtractor backendPropertySourceExtractor = EngineConfigurationUtils.extractorForBackend(backendNameOptional);
+        ConfigurationPropertySource backendPropertySource = backendPropertySourceExtractor.extract(beanResolver, propertySource);
+        try (BeanHolder<? extends BackendFactory> backendFactoryHolder = BACKEND_TYPE.<BeanHolder<? extends BackendFactory>>getAndMap(backendPropertySource, beanResolver::resolve).orElseGet(() -> createDefaultBackendFactory(backendPropertySource))) {
+            BackendBuildContext backendBuildContext = new BackendBuildContextImpl(rootBuildContext, tenancyMode, backendNameOptional);
+            BackendImplementor backend = backendFactoryHolder.get().create(eventContext, backendBuildContext, backendPropertySource);
+            return new BackendInitialBuildState(eventContext, backendPropertySourceExtractor, backendBuildContext, backend);
+        }
+    }
 
-		private BackendInitialBuildState(EventContext eventContext,
-				ConfigurationPropertySourceExtractor propertySourceExtractor,
-				BackendBuildContext backendBuildContext,
-				BackendImplementor backend) {
-			this.eventContext = eventContext;
-			this.propertySourceExtractor = propertySourceExtractor;
-			this.backendBuildContext = backendBuildContext;
-			this.backend = backend;
-		}
+    private BeanHolder<? extends BackendFactory> createDefaultBackendFactory(ConfigurationPropertySource backendPropertySource) {
+        Map<String, BeanReference<BackendFactory>> referencesByName = beanResolver.namedConfiguredForRole(BackendFactory.class);
+        if (referencesByName.isEmpty()) {
+            throw ConfigurationLog.INSTANCE.noBackendFactoryRegistered(BACKEND_TYPE.resolveOrRaw(backendPropertySource));
+        } else if (referencesByName.size() > 1) {
+            throw ConfigurationLog.INSTANCE.multipleBackendFactoriesRegistered(BACKEND_TYPE.resolveOrRaw(backendPropertySource), referencesByName.keySet());
+        }
+        return referencesByName.values().iterator().next().resolve(beanResolver);
+    }
 
-		IndexManagerInitialBuildState createIndexManagerBuildingState(
-				BackendMapperContext backendMapperContext, String backendName, String indexName, String mappedTypeName) {
-			IndexManagerInitialBuildState state = indexManagerBuildStateByName.get( indexName );
-			if ( state != null ) {
-				throw MappingLog.INSTANCE.twoTypesTargetSameIndex( indexName, state.mappedTypeName, mappedTypeName );
-			}
+    class BackendInitialBuildState {
 
-			ConfigurationPropertySourceExtractor indexPropertySourceExtractor =
-					EngineConfigurationUtils.extractorForIndex( propertySourceExtractor, backendName, indexName );
-			ConfigurationPropertySource indexPropertySource =
-					indexPropertySourceExtractor.extract( beanResolver, propertySource );
+        private final EventContext eventContext;
 
-			IndexManagerBuilder builder = backend.createIndexManagerBuilder(
-					indexName, mappedTypeName, backendBuildContext, backendMapperContext, indexPropertySource
-			);
-			IndexRootBuilder schemaRootNodeBuilder = builder.schemaRootNodeBuilder();
+        private final ConfigurationPropertySourceExtractor propertySourceExtractor;
 
-			state = new IndexManagerInitialBuildState( indexName, mappedTypeName, indexPropertySourceExtractor,
-					builder, schemaRootNodeBuilder );
-			indexManagerBuildStateByName.put( indexName, state );
-			return state;
+        private final BackendBuildContext backendBuildContext;
 
-		}
+        private final BackendImplementor backend;
 
-		void closeOnFailure() {
-			backend.stop();
-		}
+        private BackendInitialBuildState(EventContext eventContext, ConfigurationPropertySourceExtractor propertySourceExtractor, BackendBuildContext backendBuildContext, BackendImplementor backend) {
+            this.eventContext = eventContext;
+            this.propertySourceExtractor = propertySourceExtractor;
+            this.backendBuildContext = backendBuildContext;
+            this.backend = backend;
+        }
 
-		BackendNonStartedState getNonStartedState() {
-			return new BackendNonStartedState( eventContext, propertySourceExtractor, backend );
-		}
-	}
+        IndexManagerInitialBuildState createIndexManagerBuildingState(BackendMapperContext backendMapperContext, String backendName, String indexName, String mappedTypeName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static class IndexManagerInitialBuildState implements IndexManagerBuildingState {
+        void closeOnFailure() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final String indexName;
-		private final String mappedTypeName;
-		private final ConfigurationPropertySourceExtractor propertySourceExtractor;
-		private final IndexManagerBuilder builder;
-		private final IndexRootBuilder schemaRootNodeBuilder;
+        BackendNonStartedState getNonStartedState() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private IndexManagerImplementor indexManager;
+    private static class IndexManagerInitialBuildState implements IndexManagerBuildingState {
 
-		IndexManagerInitialBuildState(String indexName, String mappedTypeName,
-				ConfigurationPropertySourceExtractor propertySourceExtractor,
-				IndexManagerBuilder builder,
-				IndexRootBuilder schemaRootNodeBuilder) {
-			this.indexName = indexName;
-			this.mappedTypeName = mappedTypeName;
-			this.propertySourceExtractor = propertySourceExtractor;
-			this.builder = builder;
-			this.schemaRootNodeBuilder = schemaRootNodeBuilder;
-		}
+        private final String indexName;
 
-		void closeOnFailure(SuppressingCloser closer) {
-			if ( indexManager != null ) {
-				closer.push( IndexManagerImplementor::stop, indexManager );
-			}
-			else {
-				closer.push( IndexManagerBuilder::closeOnFailure, builder );
-			}
-		}
+        private final String mappedTypeName;
 
-		@Override
-		public IndexRootBuilder getSchemaRootNodeBuilder() {
-			return schemaRootNodeBuilder;
-		}
+        private final ConfigurationPropertySourceExtractor propertySourceExtractor;
 
-		@Override
-		public IndexManagerImplementor build() {
-			if ( indexManager != null ) {
-				throw new AssertionFailure(
-						"Trying to build index manager " + indexName + " twice."
-				);
-			}
-			indexManager = builder.build();
-			return indexManager;
-		}
+        private final IndexManagerBuilder builder;
 
-		IndexManagerNonStartedState getNonStartedState() {
-			if ( indexManager == null ) {
-				throw new AssertionFailure(
-						"Index manager " + indexName + " was not built by the mapper as expected."
-				);
-			}
-			return new IndexManagerNonStartedState( EventContexts.fromIndexName( indexName ),
-					propertySourceExtractor, indexManager );
-		}
-	}
+        private final IndexRootBuilder schemaRootNodeBuilder;
 
+        private IndexManagerImplementor indexManager;
+
+        IndexManagerInitialBuildState(String indexName, String mappedTypeName, ConfigurationPropertySourceExtractor propertySourceExtractor, IndexManagerBuilder builder, IndexRootBuilder schemaRootNodeBuilder) {
+            this.indexName = indexName;
+            this.mappedTypeName = mappedTypeName;
+            this.propertySourceExtractor = propertySourceExtractor;
+            this.builder = builder;
+            this.schemaRootNodeBuilder = schemaRootNodeBuilder;
+        }
+
+        void closeOnFailure(SuppressingCloser closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public IndexRootBuilder getSchemaRootNodeBuilder() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public IndexManagerImplementor build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        IndexManagerNonStartedState getNonStartedState() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

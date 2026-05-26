@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.loading.impl;
 
 import java.util.List;
-
 import org.hibernate.LockMode;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.search.mapper.orm.common.spi.TransactionHelper;
@@ -15,57 +14,43 @@ import org.hibernate.search.mapper.pojo.loading.spi.PojoMassEntitySink;
 
 public final class HibernateOrmMassEntityLoader<E, I> implements PojoMassEntityLoader<I> {
 
-	private static final String ID_PARAMETER_NAME = "ids";
+    private static final String ID_PARAMETER_NAME = "ids";
 
-	private final HibernateOrmQueryLoader<E, ?> typeQueryLoader;
-	private final HibernateOrmMassLoadingContext options;
-	private final PojoMassEntitySink<E> sink;
-	private final SessionImplementor session;
-	private final TransactionHelper transactionHelper;
+    private final HibernateOrmQueryLoader<E, ?> typeQueryLoader;
 
-	public HibernateOrmMassEntityLoader(HibernateOrmQueryLoader<E, ?> typeGroupLoader,
-			HibernateOrmMassLoadingContext options,
-			PojoMassEntitySink<E> sink,
-			SessionImplementor session) {
-		this.typeQueryLoader = typeGroupLoader;
-		this.options = options;
-		this.sink = sink;
-		this.session = session;
-		this.transactionHelper = new TransactionHelper( session.getSessionFactory(), null );
-	}
+    private final HibernateOrmMassLoadingContext options;
 
-	@Override
-	public void close() {
-		session.close();
-	}
+    private final PojoMassEntitySink<E> sink;
 
-	@Override
-	public void load(List<I> identifiers) throws InterruptedException {
-		transactionHelper.begin( session );
-		try {
-			sink.accept( typeQueryLoader.uniquePropertyIsTheEntityId() ? multiLoad( identifiers ) : queryByIds( identifiers ) );
-			session.clear();
-		}
-		catch (Exception e) {
-			transactionHelper.rollbackSafely( session, e );
-			throw e;
-		}
-		transactionHelper.commit( session );
-	}
+    private final SessionImplementor session;
 
-	private List<E> multiLoad(List<I> identifiers) {
-		return typeQueryLoader.findMultiple( session, identifiers, options.cacheMode(), LockMode.NONE );
-	}
+    private final TransactionHelper transactionHelper;
 
-	@SuppressWarnings({ "removal" }) // because there is no alternative till we get ORM 8 and JPA 4 ...
-	private List<E> queryByIds(List<I> identifiers) {
-		return typeQueryLoader.createLoadingQuery( session, ID_PARAMETER_NAME )
-				.setParameter( ID_PARAMETER_NAME, identifiers )
-				.setCacheMode( options.cacheMode() )
-				.setHibernateLockMode( LockMode.NONE )
-				.setCacheable( false )
-				.setQueryFlushMode( org.hibernate.query.QueryFlushMode.NO_FLUSH )
-				.setFetchSize( identifiers.size() )
-				.list();
-	}
+    public HibernateOrmMassEntityLoader(HibernateOrmQueryLoader<E, ?> typeGroupLoader, HibernateOrmMassLoadingContext options, PojoMassEntitySink<E> sink, SessionImplementor session) {
+        this.typeQueryLoader = typeGroupLoader;
+        this.options = options;
+        this.sink = sink;
+        this.session = session;
+        this.transactionHelper = new TransactionHelper(session.getSessionFactory(), null);
+    }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void load(List<I> identifiers) throws InterruptedException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private List<E> multiLoad(List<I> identifiers) {
+        return typeQueryLoader.findMultiple(session, identifiers, options.cacheMode(), LockMode.NONE);
+    }
+
+    // because there is no alternative till we get ORM 8 and JPA 4 ...
+    @SuppressWarnings({ "removal" })
+    private List<E> queryByIds(List<I> identifiers) {
+        return typeQueryLoader.createLoadingQuery(session, ID_PARAMETER_NAME).setParameter(ID_PARAMETER_NAME, identifiers).setCacheMode(options.cacheMode()).setHibernateLockMode(LockMode.NONE).setCacheable(false).setQueryFlushMode(org.hibernate.query.QueryFlushMode.NO_FLUSH).setFetchSize(identifiers.size()).list();
+    }
 }

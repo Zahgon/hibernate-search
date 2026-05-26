@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.event.impl;
 
 import java.util.BitSet;
-
 import org.hibernate.HibernateException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -51,332 +50,147 @@ import org.hibernate.search.util.common.annotation.impl.SuppressForbiddenApis;
  * @author Sanne Grinovero
  * @author Hardy Ferentschik
  */
-public final class HibernateSearchEventListener
-		implements PostDeleteEventListener,
-		PostInsertEventListener, PostUpdateEventListener,
-		PostCollectionRecreateEventListener, PostCollectionRemoveEventListener, PostCollectionUpdateEventListener,
-		FlushEventListener, AutoFlushEventListener, ClearEventListener {
+public final class HibernateSearchEventListener implements PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener, PostCollectionRecreateEventListener, PostCollectionRemoveEventListener, PostCollectionUpdateEventListener, FlushEventListener, AutoFlushEventListener, ClearEventListener {
 
-	private final HibernateOrmListenerContextProvider contextProvider;
-	private final boolean dirtyCheckingEnabled;
+    private final HibernateOrmListenerContextProvider contextProvider;
 
-	public HibernateSearchEventListener(HibernateOrmListenerContextProvider contextProvider,
-			boolean dirtyCheckingEnabled) {
-		this.contextProvider = contextProvider;
-		this.dirtyCheckingEnabled = dirtyCheckingEnabled;
-		ConfigurationLog.INSTANCE.dirtyChecksEnabled( dirtyCheckingEnabled );
-	}
+    private final boolean dirtyCheckingEnabled;
 
-	public void registerTo(SessionFactoryImplementor sessionFactory) {
-		EventListenerRegistry listenerRegistry =
-				HibernateOrmUtils.getServiceOrFail( sessionFactory.getServiceRegistry(), EventListenerRegistry.class );
-		listenerRegistry.addDuplicationStrategy(
-				new KeepIfSameClassDuplicationStrategy( HibernateSearchEventListener.class ) );
+    public HibernateSearchEventListener(HibernateOrmListenerContextProvider contextProvider, boolean dirtyCheckingEnabled) {
+        this.contextProvider = contextProvider;
+        this.dirtyCheckingEnabled = dirtyCheckingEnabled;
+        ConfigurationLog.INSTANCE.dirtyChecksEnabled(dirtyCheckingEnabled);
+    }
 
-		listenerRegistry.appendListeners( EventType.POST_INSERT, this );
-		listenerRegistry.appendListeners( EventType.POST_UPDATE, this );
-		listenerRegistry.appendListeners( EventType.POST_DELETE, this );
-		listenerRegistry.appendListeners( EventType.POST_COLLECTION_RECREATE, this );
-		listenerRegistry.appendListeners( EventType.POST_COLLECTION_REMOVE, this );
-		listenerRegistry.appendListeners( EventType.POST_COLLECTION_UPDATE, this );
-		listenerRegistry.appendListeners( EventType.FLUSH, this );
-		listenerRegistry.appendListeners( EventType.AUTO_FLUSH, this );
-		listenerRegistry.appendListeners( EventType.CLEAR, this );
-	}
+    public void registerTo(SessionFactoryImplementor sessionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void onPostDelete(PostDeleteEvent event) {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		Object entity = event.getEntity();
-		HibernateOrmListenerTypeContext typeContext = getTypeContextOrNull( event.getPersister() );
-		if ( typeContext == null ) {
-			return;
-		}
-		PojoTypeIndexingPlan plan = getCurrentIndexingPlanIfTypeIncluded( event.getSession(), typeContext );
-		if ( plan == null ) {
-			// This type is excluded through filters.
-			// Return early, to avoid unnecessary processing.
-			return;
-		}
+    @Override
+    public void onPostDelete(PostDeleteEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Object providedId = typeContext.toIndexingPlanProvidedId( event.getId() );
-		plan.delete( providedId, null, entity );
+    @Override
+    public void onPostInsert(PostInsertEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// In case ToOne associations are updated and set to null after which the entity is removed,
-		// we may end up with the `Object entity` from which we cannot derive what other entities are affected
-		// and have to be re-indexed.
-		//
-		// Hence, we will look at the state of the deleted entity when it was loaded
-		// and derive the required information from it:
-		BitSet dirtyAssociationPaths = typeContext.dirtyContainingAssociationFilter().all();
+    @Override
+    public void onPostUpdate(PostUpdateEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( dirtyAssociationPaths != null ) {
-			plan.updateAssociationInverseSide( dirtyAssociationPaths, null, event.getDeletedState() );
-		}
-	}
+    @Override
+    public void onPostRecreateCollection(PostCollectionRecreateEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void onPostInsert(PostInsertEvent event) {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		final Object entity = event.getEntity();
-		HibernateOrmListenerTypeContext typeContext = getTypeContextOrNull( event.getPersister() );
-		if ( typeContext == null ) {
-			return;
-		}
-		PojoTypeIndexingPlan plan = getCurrentIndexingPlanIfTypeIncluded( event.getSession(), typeContext );
-		if ( plan == null ) {
-			// This type is excluded through filters.
-			// Return early, to avoid unnecessary processing.
-			return;
-		}
+    @Override
+    public void onPostRemoveCollection(PostCollectionRemoveEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Object providedId = typeContext.toIndexingPlanProvidedId( event.getId() );
-		plan.add( providedId, null, entity );
+    @Override
+    public void onPostUpdateCollection(PostCollectionUpdateEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		BitSet dirtyAssociationPaths = typeContext.dirtyContainingAssociationFilter().all();
+    /**
+     * Make sure the indexes are updated right after the hibernate flush,
+     * avoiding entity loading during a flush. Not needed during transactions.
+     */
+    @Override
+    public void onFlush(FlushEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// In case ToOne associations are updated on the "contained" side only,
-		// make sure to remember that the association was updated on the "containing" side too.
-		// This will only work correctly if the containing side of the association
-		// is lazy and has not yet been loaded (otherwise it will be out of date when reindexing)
-		// but that's the best we can do.
-		if ( dirtyAssociationPaths != null ) {
-			plan.updateAssociationInverseSide( dirtyAssociationPaths, null, event.getState() );
-		}
-	}
+    @Override
+    public void onAutoFlush(AutoFlushEvent event) throws HibernateException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void onPostUpdate(PostUpdateEvent event) {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		final Object entity = event.getEntity();
-		HibernateOrmListenerTypeContext typeContext = getTypeContextOrNull( event.getPersister() );
-		if ( typeContext == null ) {
-			// This type is not indexed, nor contained in an indexed type.
-			// Return early, to avoid creating an indexing plan.
-			return;
-		}
-		PojoTypeIndexingPlan plan = getCurrentIndexingPlanIfTypeIncluded( event.getSession(), typeContext );
-		if ( plan == null ) {
-			// This type is excluded through filters.
-			// Return early, to avoid unnecessary processing.
-			return;
-		}
+    @Override
+    public void onClear(ClearEvent event) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		boolean considerAllDirty;
-		BitSet dirtyPaths;
-		BitSet dirtyDirectAssociationPaths;
-		if ( dirtyCheckingEnabled ) {
-			int[] dirtyProperties = event.getDirtyProperties();
-			if ( dirtyProperties == null || dirtyProperties.length == 0 ) {
-				// No information about dirty properties.
-				// This can happen when an entity is merged before it's even been loaded.
-				// Just assume everything is dirty.
-				considerAllDirty = true;
-				dirtyPaths = null;
-				dirtyDirectAssociationPaths = typeContext.dirtyContainingAssociationFilter().all();
-			}
-			else {
-				considerAllDirty = false;
-				dirtyPaths = typeContext.dirtyFilter().filter( dirtyProperties );
-				dirtyDirectAssociationPaths = typeContext.dirtyContainingAssociationFilter().filter( dirtyProperties );
-			}
-		}
-		else {
-			// Dirty checking is disabled.
-			// Just assume everything is dirty.
-			considerAllDirty = true;
-			dirtyPaths = null;
-			dirtyDirectAssociationPaths = typeContext.dirtyContainingAssociationFilter().all();
-		}
+    private PojoTypeIndexingPlan getCurrentIndexingPlanIfTypeIncluded(SharedSessionContractImplementor sessionImplementor, HibernateOrmListenerTypeContext typeContext) {
+        return contextProvider.currentIndexingPlanIfTypeIncluded(sessionImplementor, typeContext.typeIdentifier());
+    }
 
-		Object providedId = typeContext.toIndexingPlanProvidedId( event.getId() );
-		if ( considerAllDirty ) {
-			plan.addOrUpdate( providedId, null, entity, true, true, null );
-		}
-		else if ( dirtyPaths != null ) {
-			plan.addOrUpdate( providedId, null, entity, false, false, dirtyPaths );
-		}
+    private PojoIndexingPlan getCurrentIndexingPlanIfExisting(SessionImplementor sessionImplementor) {
+        return contextProvider.currentIndexingPlanIfExisting(sessionImplementor);
+    }
 
-		// In case ToOne associations are updated on the "contained" side only,
-		// make sure to remember that the association was updated on the "containing" side too.
-		// This will only work correctly if the containing side of the association
-		// is lazy and has not yet been loaded (otherwise it will be out of date when reindexing)
-		// but that's the best we can do.
-		if ( dirtyDirectAssociationPaths != null ) {
-			plan.updateAssociationInverseSide( dirtyDirectAssociationPaths, event.getOldState(), event.getState() );
-		}
-	}
+    private HibernateOrmListenerTypeContext getTypeContextOrNull(EntityMappingType entityMappingType) {
+        String entityName = entityMappingType.getEntityName();
+        return contextProvider.typeContextProvider().byHibernateOrmEntityName().getOrNull(entityName);
+    }
 
-	@Override
-	public void onPostRecreateCollection(PostCollectionRecreateEvent event) {
-		processCollectionEvent( event );
-	}
+    private void processCollectionEvent(AbstractCollectionEvent event) {
+        if (!contextProvider.listenerEnabled()) {
+            return;
+        }
+        Object ownerEntity = event.getAffectedOwnerOrNull();
+        if (ownerEntity == null) {
+            //Hibernate cannot determine every single time the owner especially in case detached objects are involved
+            // or property-ref is used
+            //Should log really but we don't know if we're interested in this collection for indexing
+            return;
+        }
+        HibernateOrmListenerTypeContext typeContext = contextProvider.typeContextProvider().byHibernateOrmEntityName().getOrNull(event.getAffectedOwnerEntityName());
+        if (typeContext == null) {
+            // This type is not indexed, nor contained in an indexed type.
+            // Return early, to avoid creating an indexing plan.
+            return;
+        }
+        PojoTypeIndexingPlan plan = getCurrentIndexingPlanIfTypeIncluded(event.getSession(), typeContext);
+        if (plan == null) {
+            // This type is excluded through filters.
+            // Return early, to avoid unnecessary processing.
+            return;
+        }
+        BitSet dirtyPaths;
+        if (dirtyCheckingEnabled) {
+            PersistentCollection<?> persistentCollection = event.getCollection();
+            String collectionRole = null;
+            if (persistentCollection != null) {
+                collectionRole = persistentCollection.getRole();
+            }
+            if (collectionRole != null) {
+                // Collection role will only be non-null for PostCollectionUpdateEvents.
+                // For those events, we can determine whether the collection has any impact on indexing.
+                dirtyPaths = typeContext.dirtyFilter().filter(collectionRole);
+                if (dirtyPaths == null) {
+                    // This collection is not relevant for indexing.
+                    // Return early, to avoid creating an indexing plan.
+                    return;
+                }
+            } else {
+                // We don't know which collection is being changed,
+                // so we have to default to reindexing, just in case.
+                dirtyPaths = null;
+            }
+        } else {
+            // Dirty checking is disabled.
+            // Just assume everything is dirty.
+            dirtyPaths = null;
+        }
+        Object providedId = typeContext.toIndexingPlanProvidedId(event.getAffectedOwnerIdOrNull());
+        if (dirtyPaths != null) {
+            plan.addOrUpdate(providedId, null, ownerEntity, false, false, dirtyPaths);
+        } else {
+            plan.addOrUpdate(providedId, null, ownerEntity, true, true, null);
+        }
+    }
 
-	@Override
-	public void onPostRemoveCollection(PostCollectionRemoveEvent event) {
-		processCollectionEvent( event );
-	}
-
-	@Override
-	public void onPostUpdateCollection(PostCollectionUpdateEvent event) {
-		processCollectionEvent( event );
-	}
-
-	/**
-	 * Make sure the indexes are updated right after the hibernate flush,
-	 * avoiding entity loading during a flush. Not needed during transactions.
-	 */
-	@Override
-	public void onFlush(FlushEvent event) {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		EventSource session = event.getSession();
-
-		PojoIndexingPlan plan = getCurrentIndexingPlanIfExisting( session );
-		if ( plan == null ) {
-			// Nothing to flush
-			return;
-		}
-
-		plan.process();
-
-		// flush within a transaction should trigger only the prepare phase,
-		// since the execute phase is supposed to be triggered by the transaction commit
-		if ( !session.isTransactionInProgress() ) {
-			// out of transaction it will trigger both of them
-			contextProvider.currentAutomaticIndexingSynchronizationStrategy( session )
-					.executeAndSynchronize( plan );
-		}
-	}
-
-	@Override
-	public void onAutoFlush(AutoFlushEvent event) throws HibernateException {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		if ( !event.isFlushRequired() ) {
-			/*
-			 * Auto-flush was disabled or there wasn't any entity/collection to flush.
-			 * Note this is not an optimization: we really need to avoid triggering entity processing in this case.
-			 * There may be dirty entities, but ORM chose not to flush them,
-			 * so we shouldn't flush the index changes either.
-			 */
-			return;
-		}
-		PojoIndexingPlan plan = getCurrentIndexingPlanIfExisting( event.getSession() );
-		if ( plan != null ) {
-			plan.process();
-		}
-	}
-
-	@Override
-	public void onClear(ClearEvent event) {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		EventSource session = event.getSession();
-		PojoIndexingPlan plan = getCurrentIndexingPlanIfExisting( session );
-
-		// skip the clearNotPrepared operation in case there has been no one to clear
-		if ( plan != null ) {
-			plan.discardNotProcessed();
-		}
-	}
-
-	private PojoTypeIndexingPlan getCurrentIndexingPlanIfTypeIncluded(
-			SharedSessionContractImplementor sessionImplementor,
-			HibernateOrmListenerTypeContext typeContext) {
-		return contextProvider.currentIndexingPlanIfTypeIncluded( sessionImplementor, typeContext.typeIdentifier() );
-	}
-
-	private PojoIndexingPlan getCurrentIndexingPlanIfExisting(SessionImplementor sessionImplementor) {
-		return contextProvider.currentIndexingPlanIfExisting( sessionImplementor );
-	}
-
-	private HibernateOrmListenerTypeContext getTypeContextOrNull(EntityMappingType entityMappingType) {
-		String entityName = entityMappingType.getEntityName();
-		return contextProvider.typeContextProvider().byHibernateOrmEntityName().getOrNull( entityName );
-	}
-
-	private void processCollectionEvent(AbstractCollectionEvent event) {
-		if ( !contextProvider.listenerEnabled() ) {
-			return;
-		}
-		Object ownerEntity = event.getAffectedOwnerOrNull();
-		if ( ownerEntity == null ) {
-			//Hibernate cannot determine every single time the owner especially in case detached objects are involved
-			// or property-ref is used
-			//Should log really but we don't know if we're interested in this collection for indexing
-			return;
-		}
-
-		HibernateOrmListenerTypeContext typeContext = contextProvider.typeContextProvider()
-				.byHibernateOrmEntityName().getOrNull( event.getAffectedOwnerEntityName() );
-		if ( typeContext == null ) {
-			// This type is not indexed, nor contained in an indexed type.
-			// Return early, to avoid creating an indexing plan.
-			return;
-		}
-		PojoTypeIndexingPlan plan = getCurrentIndexingPlanIfTypeIncluded( event.getSession(), typeContext );
-		if ( plan == null ) {
-			// This type is excluded through filters.
-			// Return early, to avoid unnecessary processing.
-			return;
-		}
-
-		BitSet dirtyPaths;
-		if ( dirtyCheckingEnabled ) {
-			PersistentCollection<?> persistentCollection = event.getCollection();
-			String collectionRole = null;
-			if ( persistentCollection != null ) {
-				collectionRole = persistentCollection.getRole();
-			}
-			if ( collectionRole != null ) {
-				// Collection role will only be non-null for PostCollectionUpdateEvents.
-				// For those events, we can determine whether the collection has any impact on indexing.
-				dirtyPaths = typeContext.dirtyFilter().filter( collectionRole );
-				if ( dirtyPaths == null ) {
-					// This collection is not relevant for indexing.
-					// Return early, to avoid creating an indexing plan.
-					return;
-				}
-			}
-			else {
-				// We don't know which collection is being changed,
-				// so we have to default to reindexing, just in case.
-				dirtyPaths = null;
-			}
-		}
-		else {
-			// Dirty checking is disabled.
-			// Just assume everything is dirty.
-			dirtyPaths = null;
-		}
-
-		Object providedId = typeContext.toIndexingPlanProvidedId( event.getAffectedOwnerIdOrNull() );
-		if ( dirtyPaths != null ) {
-			plan.addOrUpdate( providedId, null, ownerEntity, false, false, dirtyPaths );
-		}
-		else {
-			plan.addOrUpdate( providedId, null, ownerEntity, true, true, null );
-		}
-	}
-
-	/**
-	 * Required since Hibernate ORM 4.3
-	 */
-	@Override
-	@SuppressForbiddenApis(reason = "We are forced to implement this method and it requires accepting an EntityPersister")
-	public boolean requiresPostCommitHandling(EntityPersister persister) {
-		// TODO Tests seem to pass using _false_ but we might be able to take
-		// advantage of this new hook?
-		return false;
-	}
+    /**
+     * Required since Hibernate ORM 4.3
+     */
+    @Override
+    @SuppressForbiddenApis(reason = "We are forced to implement this method and it requires accepting an EntityPersister")
+    public boolean requiresPostCommitHandling(EntityPersister persister) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

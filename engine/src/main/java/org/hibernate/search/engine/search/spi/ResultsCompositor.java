@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 import org.hibernate.search.util.common.function.TriFunction;
 
@@ -35,111 +34,78 @@ import org.hibernate.search.util.common.function.TriFunction;
 @Incubating
 public interface ResultsCompositor<E, V> {
 
-	/**
-	 * Creates the initial container for component values.
-	 * <p>
-	 * This operation should be non-blocking.
-	 *
-	 * @return The initial container for component values,
-	 * to pass to the first call to {@link #set(Object, int, Object)}.
-	 */
-	E createInitial();
+    /**
+     * Creates the initial container for component values.
+     * <p>
+     * This operation should be non-blocking.
+     *
+     * @return The initial container for component values,
+     * to pass to the first call to {@link #set(Object, int, Object)}.
+     */
+    E createInitial();
 
-	/**
-	 * Sets a value in the given component container.
-	 * <p>
-	 * This operation should be non-blocking.
-	 *
-	 * @param components The container for component values collected so far.
-	 * For the first call, this is the container returned by {@link #createInitial()}.
-	 * For the next calls, this is the container returned by the previous call to {@link #set(Object, int, Object)}.
-	 * @param index The index of the value to set.
-	 * @param value The value to set.
-	 * @return The container for component values.
-	 */
-	E set(E components, int index, Object value);
+    /**
+     * Sets a value in the given component container.
+     * <p>
+     * This operation should be non-blocking.
+     *
+     * @param components The container for component values collected so far.
+     * For the first call, this is the container returned by {@link #createInitial()}.
+     * For the next calls, this is the container returned by the previous call to {@link #set(Object, int, Object)}.
+     * @param index The index of the value to set.
+     * @param value The value to set.
+     * @return The container for component values.
+     */
+    E set(E components, int index, Object value);
 
-	/**
-	 * Gets a value from the given component container.
-	 * <p>
-	 * This operation should be non-blocking.
-	 *
-	 * @param components The container for component values collected so far.
-	 * This is the container returned by the last call to {@link #set(Object, int, Object)}.
-	 * @param index The index of the value to get.
-	 * @return The new container for component values.
-	 */
-	Object get(E components, int index);
+    /**
+     * Gets a value from the given component container.
+     * <p>
+     * This operation should be non-blocking.
+     *
+     * @param components The container for component values collected so far.
+     * This is the container returned by the last call to {@link #set(Object, int, Object)}.
+     * @param index The index of the value to get.
+     * @return The new container for component values.
+     */
+    Object get(E components, int index);
 
-	/**
-	 * Finishes composition, converting the component container into the final result.
-	 * <p>
-	 * This operation may be blocking.
-	 *
-	 * @param components The container for component values created by {@link #createInitial()} and populated
-	 * by successive calls to {@link #set(Object, int, Object)}.
-	 * @return The final result of the collecting.
-	 */
-	V finish(E components);
+    /**
+     * Finishes composition, converting the component container into the final result.
+     * <p>
+     * This operation may be blocking.
+     *
+     * @param components The container for component values created by {@link #createInitial()} and populated
+     * by successive calls to {@link #set(Object, int, Object)}.
+     * @return The final result of the collecting.
+     */
+    V finish(E components);
 
-	static <P1, V> ResultsCompositor<Object, V> from(Function<P1, V> transformer) {
-		return new SingleValuedResultsCompositor<>( transformer );
-	}
+    static <P1, V> ResultsCompositor<Object, V> from(Function<P1, V> transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <P1, P2, V> ResultsCompositor<Object[], V> from(BiFunction<P1, P2, V> transformer) {
-		return new ObjectArrayResultsCompositor<V>( 2 ) {
-			@SuppressWarnings("unchecked")
-			@Override
-			public V finish(Object[] components) {
-				return transformer.apply( (P1) components[0], (P2) components[1] );
-			}
+    static <P1, P2, V> ResultsCompositor<Object[], V> from(BiFunction<P1, P2, V> transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			protected Object transformer() {
-				return transformer;
-			}
-		};
-	}
+    static <P1, P2, P3, V> ResultsCompositor<Object[], V> from(TriFunction<P1, P2, P3, V> transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <P1, P2, P3, V> ResultsCompositor<Object[], V> from(TriFunction<P1, P2, P3, V> transformer) {
-		return new ObjectArrayResultsCompositor<V>( 3 ) {
-			@SuppressWarnings("unchecked")
-			@Override
-			public V finish(Object[] components) {
-				return transformer.apply( (P1) components[0], (P2) components[1], (P3) components[2] );
-			}
+    static ResultsCompositor<Object[], List<?>> fromList(int size) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			protected Object transformer() {
-				return transformer;
-			}
-		};
-	}
+    static <V> ResultsCompositor<Object[], V> fromList(int size, Function<? super List<?>, ? extends V> transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static ResultsCompositor<Object[], List<?>> fromList(int size) {
-		return fromArray( size, Arrays::asList );
-	}
+    static ResultsCompositor<Object[], Object[]> fromArray(int size) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <V> ResultsCompositor<Object[], V> fromList(int size, Function<? super List<?>, ? extends V> transformer) {
-		return fromArray( size, transformer.compose( Arrays::asList ) );
-	}
-
-	static ResultsCompositor<Object[], Object[]> fromArray(int size) {
-		return fromArray( size, Function.identity() );
-	}
-
-	static <V> ResultsCompositor<Object[], V> fromArray(int size, Function<? super Object[], ? extends V> transformer) {
-		return new ObjectArrayResultsCompositor<V>( size ) {
-			@Override
-			public V finish(Object[] components) {
-				return transformer.apply( components );
-			}
-
-			@Override
-			protected Object transformer() {
-				return transformer;
-			}
-		};
-	}
-
+    static <V> ResultsCompositor<Object[], V> fromArray(int size, Function<? super Object[], ? extends V> transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

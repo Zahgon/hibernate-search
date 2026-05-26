@@ -5,40 +5,29 @@
 package org.hibernate.search.backend.elasticsearch.validation.impl;
 
 import java.util.List;
-
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.NamedDynamicTemplate;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.PropertyMapping;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.RootTypeMapping;
 import org.hibernate.search.backend.elasticsearch.reporting.impl.ElasticsearchValidationMessages;
 
 public class RootTypeMappingValidator extends AbstractTypeMappingValidator<RootTypeMapping> {
-	private final Validator<List<NamedDynamicTemplate>> dynamicTemplatesValidator;
-	private final Validator<PropertyMapping> propertyMappingValidator;
 
-	public RootTypeMappingValidator(ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider) {
-		this.propertyMappingValidator = propertyMappingValidatorProvider.create();
-		this.dynamicTemplatesValidator = new NamedDynamicTemplateListValidator( this.propertyMappingValidator );
-	}
+    private final Validator<List<NamedDynamicTemplate>> dynamicTemplatesValidator;
 
-	@Override
-	public void validate(ValidationErrorCollector errorCollector,
-			RootTypeMapping expectedMapping, RootTypeMapping actualMapping) {
-		if ( expectedMapping == null ) {
-			return;
-		}
-		if ( actualMapping == null ) {
-			errorCollector.addError( ElasticsearchValidationMessages.INSTANCE.mappingMissing() );
-			return;
-		}
+    private final Validator<PropertyMapping> propertyMappingValidator;
 
-		super.validate( errorCollector, expectedMapping, actualMapping );
+    public RootTypeMappingValidator(ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider) {
+        this.propertyMappingValidator = propertyMappingValidatorProvider.create();
+        this.dynamicTemplatesValidator = new NamedDynamicTemplateListValidator(this.propertyMappingValidator);
+    }
 
-		dynamicTemplatesValidator.validate( errorCollector, expectedMapping.getDynamicTemplates(),
-				actualMapping.getDynamicTemplates() );
-	}
+    @Override
+    public void validate(ValidationErrorCollector errorCollector, RootTypeMapping expectedMapping, RootTypeMapping actualMapping) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Validator<PropertyMapping> getPropertyMappingValidator() {
-		return propertyMappingValidator;
-	}
+    @Override
+    protected Validator<PropertyMapping> getPropertyMappingValidator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -18,210 +18,158 @@ import java.util.Optional;
  */
 public abstract class SimpleGlobPattern {
 
-	private static final char WILDCARD_MANY = '*';
+    private static final char WILDCARD_MANY = '*';
 
-	public static SimpleGlobPattern compile(String patternString) {
-		SimpleGlobPattern pattern = EmptyGlobPattern.INSTANCE;
-		int endIndexInclusive = patternString.length() - 1;
-		while ( endIndexInclusive >= 0 ) {
-			int lastWildcardIndex = patternString.lastIndexOf( WILDCARD_MANY, endIndexInclusive );
-			if ( lastWildcardIndex < endIndexInclusive ) {
-				pattern = pattern.prependLiteral( patternString.substring( lastWildcardIndex + 1, endIndexInclusive + 1 ) );
-			}
-			if ( 0 <= lastWildcardIndex ) {
-				pattern = pattern.prependMany();
-			}
-			endIndexInclusive = lastWildcardIndex - 1;
-		}
-		return pattern;
-	}
+    public static SimpleGlobPattern compile(String patternString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SimpleGlobPattern() {
-	}
+    private SimpleGlobPattern() {
+    }
 
-	public boolean matches(String candidate) {
-		return matches( candidate, 0 );
-	}
+    public boolean matches(String candidate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SimpleGlobPattern prependLiteral(String literal) {
-		if ( literal.isEmpty() ) {
-			return this;
-		}
-		return new LiteralGlobPattern( literal, this );
-	}
+    public SimpleGlobPattern prependLiteral(String literal) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SimpleGlobPattern prependMany() {
-		return new ManyGlobPattern( this );
-	}
+    public SimpleGlobPattern prependMany() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Optional<String> toLiteral() {
-		return Optional.empty();
-	}
+    public Optional<String> toLiteral() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract String toPatternString();
+    public abstract String toPatternString();
 
-	protected abstract int minLength();
+    protected abstract int minLength();
 
-	protected abstract boolean matches(String candidate, int startIndex);
+    protected abstract boolean matches(String candidate, int startIndex);
 
-	private static final class EmptyGlobPattern extends SimpleGlobPattern {
-		static final EmptyGlobPattern INSTANCE = new EmptyGlobPattern();
+    private static final class EmptyGlobPattern extends SimpleGlobPattern {
 
-		@Override
-		public String toString() {
-			return "<EMPTY>";
-		}
+        static final EmptyGlobPattern INSTANCE = new EmptyGlobPattern();
 
-		@Override
-		public String toPatternString() {
-			return "";
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected boolean matches(String candidate, int startIndex) {
-			return startIndex == candidate.length();
-		}
+        @Override
+        public String toPatternString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected int minLength() {
-			return 0;
-		}
-	}
+        @Override
+        protected boolean matches(String candidate, int startIndex) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static final class LiteralGlobPattern extends SimpleGlobPattern {
-		private final String literal;
-		private final SimpleGlobPattern next;
+        @Override
+        protected int minLength() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private LiteralGlobPattern(String literal, SimpleGlobPattern next) {
-			this.literal = literal;
-			this.next = next;
-		}
+    private static final class LiteralGlobPattern extends SimpleGlobPattern {
 
-		@Override
-		public boolean equals(Object obj) {
-			if ( obj == this ) {
-				return true;
-			}
-			if ( obj == null || getClass() != obj.getClass() ) {
-				return false;
-			}
-			LiteralGlobPattern other = (LiteralGlobPattern) obj;
-			return literal.equals( other.literal )
-					&& next.equals( other.next );
-		}
+        private final String literal;
 
-		@Override
-		public int hashCode() {
-			return Objects.hash( literal, next );
-		}
+        private final SimpleGlobPattern next;
 
-		@Override
-		public String toString() {
-			if ( next == EmptyGlobPattern.INSTANCE ) {
-				return literal;
-			}
-			else {
-				return literal + next.toString();
-			}
-		}
+        private LiteralGlobPattern(String literal, SimpleGlobPattern next) {
+            this.literal = literal;
+            this.next = next;
+        }
 
-		@Override
-		protected boolean matches(String candidate, int startIndex) {
-			return literal.regionMatches( 0, candidate, startIndex, literal.length() )
-					&& next.matches( candidate, startIndex + literal.length() );
-		}
+        @Override
+        public boolean equals(Object obj) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public SimpleGlobPattern prependLiteral(String literal) {
-			if ( literal.isEmpty() ) {
-				return this;
-			}
-			// Optimization
-			return new LiteralGlobPattern( literal + this.literal, next );
-		}
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public Optional<String> toLiteral() {
-			if ( next != EmptyGlobPattern.INSTANCE ) {
-				return Optional.empty();
-			}
-			return Optional.of( literal );
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String toPatternString() {
-			return literal + next.toPatternString();
-		}
+        @Override
+        protected boolean matches(String candidate, int startIndex) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected int minLength() {
-			return literal.length() + next.minLength();
-		}
-	}
+        @Override
+        public SimpleGlobPattern prependLiteral(String literal) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static final class ManyGlobPattern extends SimpleGlobPattern {
-		private final SimpleGlobPattern next;
-		private final int minTailLength;
+        @Override
+        public Optional<String> toLiteral() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private ManyGlobPattern(SimpleGlobPattern next) {
-			this.next = next;
-			this.minTailLength = next.minLength();
-		}
+        @Override
+        public String toPatternString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean equals(Object obj) {
-			if ( obj == this ) {
-				return true;
-			}
-			if ( obj == null || getClass() != obj.getClass() ) {
-				return false;
-			}
-			ManyGlobPattern other = (ManyGlobPattern) obj;
-			return next.equals( other.next );
-		}
+        @Override
+        protected int minLength() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash( next );
-		}
+    private static final class ManyGlobPattern extends SimpleGlobPattern {
 
-		@Override
-		public String toString() {
-			if ( next == EmptyGlobPattern.INSTANCE ) {
-				return "*";
-			}
-			else {
-				return "*" + next.toString();
-			}
-		}
+        private final SimpleGlobPattern next;
 
-		@Override
-		protected boolean matches(String candidate, int startIndex) {
-			int maxNextStartIndex = candidate.length() - minTailLength;
-			// Greedy matching: consume match as much as possible, and backtrack if necessary.
-			for ( int i = maxNextStartIndex; i >= startIndex; i-- ) {
-				if ( next.matches( candidate, i ) ) {
-					return true;
-				}
-			}
-			return false;
-		}
+        private final int minTailLength;
 
-		@Override
-		public SimpleGlobPattern prependMany() {
-			// Optimization
-			return this;
-		}
+        private ManyGlobPattern(SimpleGlobPattern next) {
+            this.next = next;
+            this.minTailLength = next.minLength();
+        }
 
-		@Override
-		public String toPatternString() {
-			return WILDCARD_MANY + next.toPatternString();
-		}
+        @Override
+        public boolean equals(Object obj) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected int minLength() {
-			return next.minLength();
-		}
-	}
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected boolean matches(String candidate, int startIndex) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SimpleGlobPattern prependMany() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public String toPatternString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected int minLength() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

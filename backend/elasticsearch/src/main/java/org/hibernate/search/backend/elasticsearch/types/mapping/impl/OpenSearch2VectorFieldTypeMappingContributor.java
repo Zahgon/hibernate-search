@@ -13,11 +13,8 @@ import org.hibernate.search.engine.search.predicate.spi.KnnPredicateBuilder;
 
 public class OpenSearch2VectorFieldTypeMappingContributor extends AbstractOpenSearch2VectorFieldTypeMappingContributor {
 
-	@Override
-	protected <F> SearchQueryElementFactory<? extends KnnPredicateBuilder,
-			ElasticsearchSearchIndexScope<?>,
-			ElasticsearchSearchIndexValueFieldContext<F>> getKnnPredicateFactory(
-					ElasticsearchIndexValueFieldType.Builder<F> builder) {
-		return new ElasticsearchKnnPredicate.OpenSearch2Factory<>( builder.codec() );
-	}
+    @Override
+    protected <F> SearchQueryElementFactory<? extends KnnPredicateBuilder, ElasticsearchSearchIndexScope<?>, ElasticsearchSearchIndexValueFieldContext<F>> getKnnPredicateFactory(ElasticsearchIndexValueFieldType.Builder<F> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

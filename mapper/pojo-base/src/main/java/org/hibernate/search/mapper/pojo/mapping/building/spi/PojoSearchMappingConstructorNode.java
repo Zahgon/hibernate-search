@@ -8,17 +8,16 @@ import java.util.Optional;
 
 public interface PojoSearchMappingConstructorNode {
 
-	Class<?>[] parametersJavaTypes();
+    Class<?>[] parametersJavaTypes();
 
-	/**
-	 * @return Whether this constructor is a projection constructor ({@code true}) or not ({@code false}).
-	 */
-	default boolean isProjectionConstructor() {
-		return false;
-	}
+    /**
+     * @return Whether this constructor is a projection constructor ({@code true}) or not ({@code false}).
+     */
+    default boolean isProjectionConstructor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default Optional<PojoSearchMappingMethodParameterNode> parameterNode(int index) {
-		return Optional.empty();
-	}
-
+    default Optional<PojoSearchMappingMethodParameterNode> parameterNode(int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -14,88 +14,58 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.hibernate.models.spi.MemberDetails;
 import org.hibernate.search.mapper.pojo.model.models.spi.AbstractPojoModelsRawTypeModel;
 import org.hibernate.search.mapper.pojo.model.spi.GenericContextAwarePojoGenericTypeModel.RawTypeDeclaringContext;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeIdentifier;
 
-public class HibernateOrmClassRawTypeModel<T>
-		extends AbstractPojoModelsRawTypeModel<T, HibernateOrmBootstrapIntrospector> {
+public class HibernateOrmClassRawTypeModel<T> extends AbstractPojoModelsRawTypeModel<T, HibernateOrmBootstrapIntrospector> {
 
-	private final HibernateOrmBasicClassTypeMetadata ormTypeMetadata;
+    private final HibernateOrmBasicClassTypeMetadata ormTypeMetadata;
 
-	private List<HibernateOrmClassRawTypeModel<? super T>> ascendingSuperTypesCache;
-	private List<HibernateOrmClassRawTypeModel<? super T>> descendingSuperTypesCache;
+    private List<HibernateOrmClassRawTypeModel<? super T>> ascendingSuperTypesCache;
 
-	HibernateOrmClassRawTypeModel(HibernateOrmBootstrapIntrospector introspector,
-			PojoRawTypeIdentifier<T> typeIdentifier,
-			HibernateOrmBasicClassTypeMetadata ormTypeMetadata, RawTypeDeclaringContext<T> rawTypeDeclaringContext) {
-		super( introspector, typeIdentifier, rawTypeDeclaringContext );
-		this.ormTypeMetadata = ormTypeMetadata;
-	}
+    private List<HibernateOrmClassRawTypeModel<? super T>> descendingSuperTypesCache;
 
-	@Override
-	@SuppressWarnings("unchecked") // xClass represents T, so its supertypes represent ? super T
-	public Stream<HibernateOrmClassRawTypeModel<? super T>> ascendingSuperTypes() {
-		if ( ascendingSuperTypesCache == null ) {
-			ascendingSuperTypesCache = introspector.ascendingSuperClasses( classDetails )
-					.map( xc -> (HibernateOrmClassRawTypeModel<? super T>) introspector.typeModel( xc ) )
-					.collect( Collectors.toList() );
-		}
-		return ascendingSuperTypesCache.stream();
-	}
+    HibernateOrmClassRawTypeModel(HibernateOrmBootstrapIntrospector introspector, PojoRawTypeIdentifier<T> typeIdentifier, HibernateOrmBasicClassTypeMetadata ormTypeMetadata, RawTypeDeclaringContext<T> rawTypeDeclaringContext) {
+        super(introspector, typeIdentifier, rawTypeDeclaringContext);
+        this.ormTypeMetadata = ormTypeMetadata;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // xClass represents T, so its supertypes represent ? super T
-	public Stream<HibernateOrmClassRawTypeModel<? super T>> descendingSuperTypes() {
-		if ( descendingSuperTypesCache == null ) {
-			descendingSuperTypesCache = introspector.descendingSuperClasses( classDetails )
-					.map( xc -> (HibernateOrmClassRawTypeModel<? super T>) introspector.typeModel( xc ) )
-					.collect( Collectors.toList() );
-		}
-		return descendingSuperTypesCache.stream();
-	}
+    @Override
+    // xClass represents T, so its supertypes represent ? super T
+    @SuppressWarnings("unchecked")
+    public Stream<HibernateOrmClassRawTypeModel<? super T>> ascendingSuperTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected HibernateOrmClassPropertyModel<?> createPropertyModel(String propertyName) {
-		List<MemberDetails> declaredProperties = new ArrayList<>( 2 );
-		List<MemberDetails> methodAccessXProperties = declaredMethodAccessPropertiesByName().get( propertyName );
-		if ( methodAccessXProperties != null ) {
-			declaredProperties.addAll( methodAccessXProperties );
-		}
-		MemberDetails fieldAccessProperty = declaredFieldAccessPropertiesByName().get( propertyName );
-		if ( fieldAccessProperty != null ) {
-			declaredProperties.add( fieldAccessProperty );
-		}
+    @Override
+    // xClass represents T, so its supertypes represent ? super T
+    @SuppressWarnings("unchecked")
+    public Stream<HibernateOrmClassRawTypeModel<? super T>> descendingSuperTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		HibernateOrmBasicClassPropertyMetadata ormPropertyMetadata = findOrmPropertyMetadata( propertyName );
-		List<Member> members = findPropertyMember( propertyName, ormPropertyMetadata );
+    @Override
+    protected HibernateOrmClassPropertyModel<?> createPropertyModel(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( members == null ) {
-			return null;
-		}
+    private HibernateOrmBasicClassPropertyMetadata findOrmPropertyMetadata(String propertyName) {
+        return findInSelfOrParents(t -> t.ormPropertyMetadataFromThisType(propertyName));
+    }
 
-		return new HibernateOrmClassPropertyModel<>( introspector, this, propertyName,
-				declaredProperties, ormPropertyMetadata, members );
-	}
+    private HibernateOrmBasicClassPropertyMetadata ormPropertyMetadataFromThisType(String propertyName) {
+        if (ormTypeMetadata != null) {
+            return ormTypeMetadata.getClassPropertyMetadataOrNull(propertyName);
+        } else {
+            return null;
+        }
+    }
 
-	private HibernateOrmBasicClassPropertyMetadata findOrmPropertyMetadata(String propertyName) {
-		return findInSelfOrParents( t -> t.ormPropertyMetadataFromThisType( propertyName ) );
-	}
-
-	private HibernateOrmBasicClassPropertyMetadata ormPropertyMetadataFromThisType(String propertyName) {
-		if ( ormTypeMetadata != null ) {
-			return ormTypeMetadata.getClassPropertyMetadataOrNull( propertyName );
-		}
-		else {
-			return null;
-		}
-	}
-
-	private List<Member> findPropertyMember(String propertyName, HibernateOrmBasicClassPropertyMetadata ormPropertyMetadata) {
-		if ( ormPropertyMetadata != null ) {
-			/*
+    private List<Member> findPropertyMember(String propertyName, HibernateOrmBasicClassPropertyMetadata ormPropertyMetadata) {
+        if (ormPropertyMetadata != null) {
+            /*
 			 * Hibernate ORM has metadata for this property,
 			 * which means this property is persisted.
 			 *
@@ -107,40 +77,32 @@ public class HibernateOrmClassRawTypeModel<T>
 			 * We still try to comply with JPA's configured access type,
 			 * which explains the two if/else branches below.
 			 */
-			Member memberFromHibernateOrmMetamodel = ormPropertyMetadata.getMember();
-			if ( memberFromHibernateOrmMetamodel instanceof Method ) {
-				return findInSelfOrParents( t -> t.declaredPropertyGetters( propertyName ) );
-			}
-			else if ( memberFromHibernateOrmMetamodel instanceof Field ) {
-				// The field name may be different from the property name,
-				// in particular with Grails when using Groovy traits (see HSEARCH-4348)
-				String memberName = memberFromHibernateOrmMetamodel.getName();
-				Member field = findInSelfOrParents( t -> t.declaredPropertyField( memberName ) );
-				return field == null ? null : Collections.singletonList( field );
-			}
-			else {
-				return null;
-			}
-		}
-		else {
-			// Hibernate ORM doesn't have any metadata for this property (the property is transient).
-			// Try using the getter first (if declared)...
-			List<Member> getters = findInSelfOrParents( t -> t.declaredPropertyGetters( propertyName ) );
-			if ( getters != null ) {
-				return getters;
-			}
-			// ... and fall back to the field (or null if not found)
-			Member field = findInSelfOrParents( t -> t.declaredPropertyField( propertyName ) );
-			return field == null ? null : Collections.singletonList( field );
-		}
-	}
+            Member memberFromHibernateOrmMetamodel = ormPropertyMetadata.getMember();
+            if (memberFromHibernateOrmMetamodel instanceof Method) {
+                return findInSelfOrParents(t -> t.declaredPropertyGetters(propertyName));
+            } else if (memberFromHibernateOrmMetamodel instanceof Field) {
+                // The field name may be different from the property name,
+                // in particular with Grails when using Groovy traits (see HSEARCH-4348)
+                String memberName = memberFromHibernateOrmMetamodel.getName();
+                Member field = findInSelfOrParents(t -> t.declaredPropertyField(memberName));
+                return field == null ? null : Collections.singletonList(field);
+            } else {
+                return null;
+            }
+        } else {
+            // Hibernate ORM doesn't have any metadata for this property (the property is transient).
+            // Try using the getter first (if declared)...
+            List<Member> getters = findInSelfOrParents(t -> t.declaredPropertyGetters(propertyName));
+            if (getters != null) {
+                return getters;
+            }
+            // ... and fall back to the field (or null if not found)
+            Member field = findInSelfOrParents(t -> t.declaredPropertyField(propertyName));
+            return field == null ? null : Collections.singletonList(field);
+        }
+    }
 
-	private <T2> T2 findInSelfOrParents(Function<HibernateOrmClassRawTypeModel<?>, T2> getter) {
-		return ascendingSuperTypes()
-				.map( getter )
-				.filter( Objects::nonNull )
-				.findFirst()
-				.orElse( null );
-	}
-
+    private <T2> T2 findInSelfOrParents(Function<HibernateOrmClassRawTypeModel<?>, T2> getter) {
+        return ascendingSuperTypes().map(getter).filter(Objects::nonNull).findFirst().orElse(null);
+    }
 }

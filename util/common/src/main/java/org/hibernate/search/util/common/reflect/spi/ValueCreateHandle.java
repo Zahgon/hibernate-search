@@ -14,25 +14,24 @@ import java.util.function.Function;
  */
 public interface ValueCreateHandle<T> extends Function<Object[], T> {
 
-	T create(Object... arguments);
+    T create(Object... arguments);
 
-	@Override
-	default T apply(Object[] objects) {
-		return create( objects );
-	}
+    @Override
+    default T apply(Object[] objects) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return {@code true} if {@code obj} is a {@link ValueCreateHandle} referencing the exact same
-	 * value accessor: same API (java.lang.invoke or java.lang.reflect),
-	 * same element (same field or method), ...
-	 */
-	@Override
-	boolean equals(Object obj);
+    /**
+     * @return {@code true} if {@code obj} is a {@link ValueCreateHandle} referencing the exact same
+     * value accessor: same API (java.lang.invoke or java.lang.reflect),
+     * same element (same field or method), ...
+     */
+    @Override
+    boolean equals(Object obj);
 
-	/*
+    /*
 	 * Note to implementors: you must override hashCode to be consistent with equals().
 	 */
-	@Override
-	int hashCode();
-
+    @Override
+    int hashCode();
 }

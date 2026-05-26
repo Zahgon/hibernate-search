@@ -5,9 +5,7 @@
 package org.hibernate.search;
 
 import java.sql.Connection;
-
 import jakarta.persistence.EntityManager;
-
 import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SharedSessionBuilder;
@@ -21,50 +19,51 @@ import org.hibernate.search.mapper.orm.session.SearchSession;
  */
 @Deprecated
 public interface FullTextSharedSessionBuilder extends SharedSessionBuilder {
-	@Override
-	FullTextSharedSessionBuilder interceptor();
 
-	@Override
-	FullTextSharedSessionBuilder connection();
+    @Override
+    FullTextSharedSessionBuilder interceptor();
 
-	@Deprecated
-	@Override
-	FullTextSharedSessionBuilder connectionReleaseMode();
+    @Override
+    FullTextSharedSessionBuilder connection();
 
-	@Override
-	FullTextSharedSessionBuilder autoJoinTransactions();
+    @Deprecated
+    @Override
+    FullTextSharedSessionBuilder connectionReleaseMode();
 
-	@Override
-	FullTextSharedSessionBuilder autoClose();
+    @Override
+    FullTextSharedSessionBuilder autoJoinTransactions();
 
-	@Override
-	FullTextSharedSessionBuilder interceptor(Interceptor interceptor);
+    @Override
+    FullTextSharedSessionBuilder autoClose();
 
-	@Override
-	FullTextSharedSessionBuilder noInterceptor();
+    @Override
+    FullTextSharedSessionBuilder interceptor(Interceptor interceptor);
 
-	@Override
-	FullTextSharedSessionBuilder connection(Connection connection);
+    @Override
+    FullTextSharedSessionBuilder noInterceptor();
 
-	@Override
-	FullTextSharedSessionBuilder autoJoinTransactions(boolean autoJoinTransactions);
+    @Override
+    FullTextSharedSessionBuilder connection(Connection connection);
 
-	@Deprecated
-	@Override
-	FullTextSharedSessionBuilder autoClose(boolean autoClose);
+    @Override
+    FullTextSharedSessionBuilder autoJoinTransactions(boolean autoJoinTransactions);
 
-	@Override
-	FullTextSession openSession();
+    @Deprecated
+    @Override
+    FullTextSharedSessionBuilder autoClose(boolean autoClose);
 
-	@Override
-	default FullTextSession open() {
-		return openSession();
-	}
+    @Override
+    FullTextSession openSession();
 
-	@Deprecated(forRemoval = true)
-	@Override
-	FullTextSharedSessionBuilder tenantIdentifier(String tenantIdentifier);
+    @Override
+    default FullTextSession open() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	FullTextSharedSessionBuilder tenantIdentifier(Object tenantIdentifier);
+    @Deprecated(forRemoval = true)
+    @Override
+    FullTextSharedSessionBuilder tenantIdentifier(String tenantIdentifier);
+
+    @Override
+    FullTextSharedSessionBuilder tenantIdentifier(Object tenantIdentifier);
 }

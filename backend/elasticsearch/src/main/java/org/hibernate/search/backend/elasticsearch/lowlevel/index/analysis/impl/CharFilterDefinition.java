@@ -9,7 +9,6 @@ import com.google.gson.annotations.JsonAdapter;
 
 /**
  * A definition of an Elasticsearch char filter, to be included in index settings.
- *
  */
 /*
  * CAUTION: JSON serialization is controlled by a specific adapter, which must be
@@ -18,9 +17,8 @@ import com.google.gson.annotations.JsonAdapter;
 @JsonAdapter(AnalysisDefinitionJsonAdapterFactory.class)
 public class CharFilterDefinition extends AnalysisDefinition {
 
-	@Override
-	public String toString() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson( this );
-	}
-
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

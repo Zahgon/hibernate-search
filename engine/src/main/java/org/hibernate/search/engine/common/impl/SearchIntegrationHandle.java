@@ -9,22 +9,19 @@ import org.hibernate.search.engine.logging.impl.EngineMiscLog;
 
 final class SearchIntegrationHandle implements SearchIntegration.Handle {
 
-	private SearchIntegration integration;
+    private SearchIntegration integration;
 
-	void initialize(SearchIntegration integration) {
-		this.integration = integration;
-	}
+    void initialize(SearchIntegration integration) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIntegration getOrFail() {
-		if ( integration == null ) {
-			throw EngineMiscLog.INSTANCE.noIntegrationBecauseInitializationNotComplete();
-		}
-		return integration;
-	}
+    @Override
+    public SearchIntegration getOrFail() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIntegration getOrNull() {
-		return integration;
-	}
+    @Override
+    public SearchIntegration getOrNull() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,30 +10,31 @@ import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.engine.reporting.spi.ContextualFailureCollector;
 
 class IndexManagerStartContextImpl implements IndexManagerStartContext {
-	private final ContextualFailureCollector failureCollector;
-	private final BeanResolver beanResolver;
-	private final ConfigurationPropertySource configurationPropertySource;
 
-	IndexManagerStartContextImpl(ContextualFailureCollector failureCollector,
-			BeanResolver beanResolver,
-			ConfigurationPropertySource configurationPropertySource) {
-		this.failureCollector = failureCollector;
-		this.beanResolver = beanResolver;
-		this.configurationPropertySource = configurationPropertySource;
-	}
+    private final ContextualFailureCollector failureCollector;
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return failureCollector;
-	}
+    private final BeanResolver beanResolver;
 
-	@Override
-	public BeanResolver beanResolver() {
-		return beanResolver;
-	}
+    private final ConfigurationPropertySource configurationPropertySource;
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return configurationPropertySource;
-	}
+    IndexManagerStartContextImpl(ContextualFailureCollector failureCollector, BeanResolver beanResolver, ConfigurationPropertySource configurationPropertySource) {
+        this.failureCollector = failureCollector;
+        this.beanResolver = beanResolver;
+        this.configurationPropertySource = configurationPropertySource;
+    }
+
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

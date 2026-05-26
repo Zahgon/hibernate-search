@@ -9,31 +9,28 @@ import org.apache.lucene.analysis.AnalyzerWrapper;
 
 public final class HibernateSearchNormalizerWrapper extends AnalyzerWrapper {
 
-	private final String normalizerName;
+    private final String normalizerName;
 
-	private final Analyzer delegate;
+    private final Analyzer delegate;
 
-	HibernateSearchNormalizerWrapper(String normalizerName, Analyzer delegate) {
-		super( delegate.getReuseStrategy() );
-		this.normalizerName = normalizerName;
-		this.delegate = delegate;
-	}
+    HibernateSearchNormalizerWrapper(String normalizerName, Analyzer delegate) {
+        super(delegate.getReuseStrategy());
+        this.normalizerName = normalizerName;
+        this.delegate = delegate;
+    }
 
-	@Override
-	protected Analyzer getWrappedAnalyzer(String fieldName) {
-		return delegate;
-	}
+    @Override
+    protected Analyzer getWrappedAnalyzer(String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected TokenStreamComponents wrapComponents(String fieldName, TokenStreamComponents components) {
-		HibernateSearchNormalizerCheckingFilter filter =
-				new HibernateSearchNormalizerCheckingFilter( components.getTokenStream(), normalizerName );
-		return new TokenStreamComponents( components.getSource(), filter );
-	}
+    @Override
+    protected TokenStreamComponents wrapComponents(String fieldName, TokenStreamComponents components) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "HibernateSearchNormalizerWrapper(" + delegate.toString() + ", normalizerName=" + normalizerName + ")";
-	}
-
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.work.impl;
 import java.util.BitSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
 import org.hibernate.search.engine.backend.common.spi.MultiEntityOperationExecutionReport;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.backend.work.execution.spi.IndexIndexingPlan;
@@ -29,69 +28,45 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
  */
 final class PojoTypeIndexingPlanIndexOrEventQueueDelegate<I, E> implements PojoTypeIndexingPlanDelegate<I, E> {
 
-	private final PojoWorkIndexedTypeContext<I, E> typeContext;
-	private final PojoTypeIndexingPlanIndexDelegate<I, E> indexDelegate;
-	private final PojoTypeIndexingPlanEventQueueDelegate<I, E> eventQueueDelegate;
+    private final PojoWorkIndexedTypeContext<I, E> typeContext;
 
-	PojoTypeIndexingPlanIndexOrEventQueueDelegate(PojoWorkIndexedTypeContext<I, E> typeContext,
-			PojoWorkSessionContext sessionContext, PojoIndexingProcessorRootContext processorRootContext,
-			IndexIndexingPlan indexPlan, PojoIndexingQueueEventSendingPlan sendingPlan) {
-		this.typeContext = typeContext;
-		this.indexDelegate = new PojoTypeIndexingPlanIndexDelegate<>( typeContext, sessionContext, processorRootContext,
-				indexPlan );
-		this.eventQueueDelegate = new PojoTypeIndexingPlanEventQueueDelegate<>( typeContext, sessionContext, sendingPlan );
-	}
+    private final PojoTypeIndexingPlanIndexDelegate<I, E> indexDelegate;
 
-	@Override
-	public boolean isDirtyForAddOrUpdate(boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPathsOrNull) {
-		// We will execute the addOrUpdate below
-		// if the dirty paths require the entity itself to be reindexed,
-		// but not if they only require reindexing some containing entities.
-		// Contained entities will be handled through reindexing resolution.
-		return forceSelfDirty
-				|| dirtyPathsOrNull != null && typeContext.dirtySelfFilter().test( dirtyPathsOrNull );
-	}
+    private final PojoTypeIndexingPlanEventQueueDelegate<I, E> eventQueueDelegate;
 
-	@Override
-	public void add(I identifier, DocumentRouteDescriptor route, Supplier<E> entitySupplier) {
-		indexDelegate.add( identifier, route, entitySupplier );
-	}
+    PojoTypeIndexingPlanIndexOrEventQueueDelegate(PojoWorkIndexedTypeContext<I, E> typeContext, PojoWorkSessionContext sessionContext, PojoIndexingProcessorRootContext processorRootContext, IndexIndexingPlan indexPlan, PojoIndexingQueueEventSendingPlan sendingPlan) {
+        this.typeContext = typeContext;
+        this.indexDelegate = new PojoTypeIndexingPlanIndexDelegate<>(typeContext, sessionContext, processorRootContext, indexPlan);
+        this.eventQueueDelegate = new PojoTypeIndexingPlanEventQueueDelegate<>(typeContext, sessionContext, sendingPlan);
+    }
 
-	@Override
-	public void addOrUpdate(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier,
-			boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths,
-			boolean updatedBecauseOfContained, boolean updateBecauseOfDirty) {
-		PojoTypeIndexingPlanDelegate<I, E> delegate;
-		if ( updatedBecauseOfContained && !updateBecauseOfDirty ) {
-			// The entity needs to be updated because of a contained entity,
-			// but there was no processed event for this entity proper
-			// (otherwise selfDirty would be true - see
-			// org.hibernate.search.mapper.pojo.work.impl.PojoIndexingQueueEventProcessingPlanImpl.addOrUpdate).
-			// In order to ensure that a given entity instance is always processed
-			// by the same background process, we will send an event to be processed later.
-			delegate = eventQueueDelegate;
-		}
-		else {
-			delegate = indexDelegate;
-		}
-		delegate.addOrUpdate( identifier, routes, entitySupplier,
-				forceSelfDirty, forceContainingDirty, dirtyPaths, updatedBecauseOfContained, updateBecauseOfDirty
-		);
-	}
+    @Override
+    public boolean isDirtyForAddOrUpdate(boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPathsOrNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void delete(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier) {
-		indexDelegate.delete( identifier, routes, entitySupplier );
-	}
+    @Override
+    public void add(I identifier, DocumentRouteDescriptor route, Supplier<E> entitySupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void discard() {
-		indexDelegate.discard();
-	}
+    @Override
+    public void addOrUpdate(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier, boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths, boolean updatedBecauseOfContained, boolean updateBecauseOfDirty) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
-		return indexDelegate.executeAndReport( operationSubmitter );
-	}
+    @Override
+    public void delete(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public void discard() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

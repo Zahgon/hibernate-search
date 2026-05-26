@@ -10,7 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolver;
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverImpl;
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverNode;
@@ -26,138 +25,88 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 class PojoImplicitReindexingResolverBuilder<T> {
 
-	static Walker walker() {
-		return Walker.INSTANCE;
-	}
+    static Walker walker() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final PojoRawTypeModel<T> rawTypeModel;
-	private final PojoImplicitReindexingResolverBuildingHelper buildingHelper;
+    private final PojoRawTypeModel<T> rawTypeModel;
 
-	// Use a LinkedHashSet for deterministic iteration
-	private final Set<PojoModelPathValueNode> dirtyPathsTriggeringSelfReindexing = new LinkedHashSet<>();
+    private final PojoImplicitReindexingResolverBuildingHelper buildingHelper;
 
-	private final Map<PojoModelPathValueNode, Map<PojoRawTypeModel<?>, PojoModelPathValueNode>> containingAssociationPaths =
-			new LinkedHashMap<>();
+    // Use a LinkedHashSet for deterministic iteration
+    private final Set<PojoModelPathValueNode> dirtyPathsTriggeringSelfReindexing = new LinkedHashSet<>();
 
-	private final PojoImplicitReindexingResolverOriginalTypeNodeBuilder<T> containingEntitiesResolverRootBuilder;
+    private final Map<PojoModelPathValueNode, Map<PojoRawTypeModel<?>, PojoModelPathValueNode>> containingAssociationPaths = new LinkedHashMap<>();
 
-	private boolean frozen = false;
+    private final PojoImplicitReindexingResolverOriginalTypeNodeBuilder<T> containingEntitiesResolverRootBuilder;
 
-	PojoImplicitReindexingResolverBuilder(PojoRawTypeModel<T> rawTypeModel,
-			PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
-		this.rawTypeModel = rawTypeModel;
-		this.buildingHelper = buildingHelper;
-		this.containingEntitiesResolverRootBuilder = new PojoImplicitReindexingResolverOriginalTypeNodeBuilder<>(
-				BoundPojoModelPath.root( rawTypeModel ), buildingHelper
-		);
-	}
+    private boolean frozen = false;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + rawTypeModel + "]";
-	}
+    PojoImplicitReindexingResolverBuilder(PojoRawTypeModel<T> rawTypeModel, PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
+        this.rawTypeModel = rawTypeModel;
+        this.buildingHelper = buildingHelper;
+        this.containingEntitiesResolverRootBuilder = new PojoImplicitReindexingResolverOriginalTypeNodeBuilder<>(BoundPojoModelPath.root(rawTypeModel), buildingHelper);
+    }
 
-	void closeOnFailure() {
-		containingEntitiesResolverRootBuilder.closeOnFailure();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void addDirtyPathTriggeringSelfReindexing(BoundPojoModelPathValueNode<?, ?, ?> dirtyPathFromEntityType) {
-		checkNotFrozen();
-		dirtyPathsTriggeringSelfReindexing.add( dirtyPathFromEntityType.toUnboundPath() );
-	}
+    void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void addContainingAssociationPath(PojoModelPathValueNode pathFromContainedSide,
-			PojoRawTypeModel<?> containingType, PojoModelPathValueNode pathFromContainingSide) {
-		checkNotFrozen();
-		containingAssociationPaths.computeIfAbsent( pathFromContainedSide, ignored -> new LinkedHashMap<>() )
-				.put( containingType, pathFromContainingSide );
-	}
+    void addDirtyPathTriggeringSelfReindexing(BoundPojoModelPathValueNode<?, ?, ?> dirtyPathFromEntityType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	PojoImplicitReindexingResolverOriginalTypeNodeBuilder<T> containingEntitiesResolverRoot() {
-		return containingEntitiesResolverRootBuilder;
-	}
+    void addContainingAssociationPath(PojoModelPathValueNode pathFromContainedSide, PojoRawTypeModel<?> containingType, PojoModelPathValueNode pathFromContainingSide) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final Optional<PojoImplicitReindexingResolver<T>> build() {
-		freeze();
+    PojoImplicitReindexingResolverOriginalTypeNodeBuilder<T> containingEntitiesResolverRoot() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PojoRuntimePathsBuildingHelper pathsBuildingHelper = buildingHelper.runtimePathsBuildingHelper( rawTypeModel );
+    final Optional<PojoImplicitReindexingResolver<T>> build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Set<PojoModelPathValueNode> immutableDirtyPathsAcceptedByFilter = dirtyPathsTriggeringSelfReindexing;
+    /**
+     * Freeze the builder, signaling that no mutating method will be called anymore
+     * and that derived data can be safely computed.
+     */
+    private void freeze() {
+        if (!frozen) {
+            frozen = true;
+            containingEntitiesResolverRootBuilder.freeze();
+        }
+    }
 
-		Optional<PojoImplicitReindexingResolverNode<T>> containingEntitiesResolverRootOptional =
-				containingEntitiesResolverRootBuilder.build( pathsBuildingHelper, null );
+    private void checkNotFrozen() {
+        if (frozen) {
+            throw new AssertionFailure("A mutating method was called on " + this + " after it was frozen.");
+        }
+    }
 
-		if ( immutableDirtyPathsAcceptedByFilter.isEmpty()
-				&& !containingEntitiesResolverRootOptional.isPresent()
-				&& containingAssociationPaths.isEmpty() ) {
-			/*
-			 * If this resolver won't resolve to anything, it is useless and we don't need to build it.
-			 */
-			return Optional.empty();
-		}
-		else {
-			PojoPathFilter dirtySelfFilter = pathsBuildingHelper.createFilter( immutableDirtyPathsAcceptedByFilter );
+    static class Walker implements PojoModelPathWalker<Void, AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?>, PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?>, PojoImplicitReindexingResolverValueNodeBuilderDelegate<?>> {
 
-			PojoImplicitReindexingResolverNode<T> containingEntitiesResolverRoot =
-					containingEntitiesResolverRootOptional.orElseGet( PojoImplicitReindexingResolverNode::noOp );
+        public static final Walker INSTANCE = new Walker();
 
-			Set<PojoModelPathValueNode> dirtySelfOrContainingPaths =
-					new HashSet<>( immutableDirtyPathsAcceptedByFilter );
-			dirtySelfOrContainingPaths.addAll(
-					containingEntitiesResolverRootBuilder.getDirtyPathsTriggeringReindexingIncludingNestedNodes() );
-			PojoPathFilter dirtySelfOrContainingFilter = pathsBuildingHelper.createFilter( dirtySelfOrContainingPaths );
+        @Override
+        public PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?> property(Void context, AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?> typeNode, PojoModelPathPropertyNode pathNode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return Optional.of( new PojoImplicitReindexingResolverImpl<>( dirtySelfFilter, dirtySelfOrContainingFilter,
-					containingEntitiesResolverRoot,
-					buildingHelper.createAssociationInverseSideResolver( rawTypeModel, containingAssociationPaths ) ) );
-		}
-	}
+        @Override
+        public PojoImplicitReindexingResolverValueNodeBuilderDelegate<?> value(Void context, PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?> propertyNode, PojoModelPathValueNode pathNode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	/**
-	 * Freeze the builder, signaling that no mutating method will be called anymore
-	 * and that derived data can be safely computed.
-	 */
-	private void freeze() {
-		if ( !frozen ) {
-			frozen = true;
-			containingEntitiesResolverRootBuilder.freeze();
-		}
-	}
-
-	private void checkNotFrozen() {
-		if ( frozen ) {
-			throw new AssertionFailure(
-					"A mutating method was called on " + this + " after it was frozen."
-			);
-		}
-	}
-
-	static class Walker
-			implements PojoModelPathWalker<
-					Void,
-					AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?>,
-					PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?>,
-					PojoImplicitReindexingResolverValueNodeBuilderDelegate<?>> {
-		public static final Walker INSTANCE = new Walker();
-
-		@Override
-		public PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?> property(
-				Void context, AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?> typeNode,
-				PojoModelPathPropertyNode pathNode) {
-			return typeNode.property( pathNode.propertyName() );
-		}
-
-		@Override
-		public PojoImplicitReindexingResolverValueNodeBuilderDelegate<?> value(
-				Void context, PojoImplicitReindexingResolverPropertyNodeBuilder<?, ?> propertyNode,
-				PojoModelPathValueNode pathNode) {
-			return propertyNode.value( pathNode.extractorPath() );
-		}
-
-		@Override
-		public AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?> type(
-				Void context, PojoImplicitReindexingResolverValueNodeBuilderDelegate<?> valueNode) {
-			return valueNode.type();
-		}
-	}
+        @Override
+        public AbstractPojoImplicitReindexingResolverTypeNodeBuilder<?, ?> type(Void context, PojoImplicitReindexingResolverValueNodeBuilderDelegate<?> valueNode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

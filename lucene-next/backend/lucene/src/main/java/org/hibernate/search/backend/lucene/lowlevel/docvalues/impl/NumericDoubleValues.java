@@ -7,7 +7,6 @@ package org.hibernate.search.backend.lucene.lowlevel.docvalues.impl;
 import java.io.IOException;
 import java.util.function.DoubleToLongFunction;
 import java.util.function.LongToDoubleFunction;
-
 import org.apache.lucene.index.NumericDocValues;
 import org.apache.lucene.search.DoubleValues;
 
@@ -19,108 +18,109 @@ import org.apache.lucene.search.DoubleValues;
  */
 public abstract class NumericDoubleValues extends DoubleValues {
 
-	/**
-	 * Sole constructor. (For invocation by subclass
-	 * constructors, typically implicit.)
-	 */
-	protected NumericDoubleValues() {
-	}
+    /**
+     * Sole constructor. (For invocation by subclass
+     * constructors, typically implicit.)
+     */
+    protected NumericDoubleValues() {
+    }
 
-	/**
-	 * Returns numeric docvalues view of raw double bits
-	 * @return numeric
-	 */
-	public NumericDocValues getRawDoubleValues() {
-		return new RawNumericDocValues( Double::doubleToRawLongBits );
-	}
+    /**
+     * Returns numeric docvalues view of raw double bits
+     * @return numeric
+     */
+    public NumericDocValues getRawDoubleValues() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Returns numeric docvalues view of raw float bits
-	 * @return numeric
-	 */
-	public NumericDocValues getRawFloatValues() {
-		return new RawNumericDocValues( v -> (long) Float.floatToRawIntBits( (float) v ) );
-	}
+    /**
+     * Returns numeric docvalues view of raw float bits
+     * @return numeric
+     */
+    public NumericDocValues getRawFloatValues() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static NumericDoubleValues fromField(NumericDocValues values, LongToDoubleFunction decoder) {
-		return new FieldNumericDoubleValues( values, decoder );
-	}
+    public static NumericDoubleValues fromField(NumericDocValues values, LongToDoubleFunction decoder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * An empty NumericDoubleValues instance that always returns {@code false} from {@link #advanceExact(int)}
-	 */
-	public static final NumericDoubleValues EMPTY = new NumericDoubleValues() {
-		@Override
-		public double doubleValue() {
-			throw new UnsupportedOperationException();
-		}
+    /**
+     * An empty NumericDoubleValues instance that always returns {@code false} from {@link #advanceExact(int)}
+     */
+    public static final NumericDoubleValues EMPTY = new NumericDoubleValues() {
 
-		@Override
-		public boolean advanceExact(int doc) {
-			return false;
-		}
-	};
+        @Override
+        public double doubleValue() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static class FieldNumericDoubleValues extends NumericDoubleValues {
+        @Override
+        public boolean advanceExact(int doc) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-		private final NumericDocValues values;
-		private final LongToDoubleFunction decoder;
+    private static class FieldNumericDoubleValues extends NumericDoubleValues {
 
-		FieldNumericDoubleValues(NumericDocValues values, LongToDoubleFunction decoder) {
-			this.values = values;
-			this.decoder = decoder;
-		}
+        private final NumericDocValues values;
 
-		@Override
-		public double doubleValue() throws IOException {
-			return decoder.applyAsDouble( values.longValue() );
-		}
+        private final LongToDoubleFunction decoder;
 
-		@Override
-		public boolean advanceExact(int doc) throws IOException {
-			return values.advanceExact( doc );
-		}
+        FieldNumericDoubleValues(NumericDocValues values, LongToDoubleFunction decoder) {
+            this.values = values;
+            this.decoder = decoder;
+        }
 
-	}
+        @Override
+        public double doubleValue() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private class RawNumericDocValues extends NumericDocValues {
-		private int docID = -1;
-		private final DoubleToLongFunction decorator;
+        @Override
+        public boolean advanceExact(int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		public RawNumericDocValues(DoubleToLongFunction decorator) {
-			this.decorator = decorator;
-		}
+    private class RawNumericDocValues extends NumericDocValues {
 
-		@Override
-		public boolean advanceExact(int target) throws IOException {
-			docID = target;
-			return NumericDoubleValues.this.advanceExact( target );
-		}
+        private int docID = -1;
 
-		@Override
-		public long longValue() throws IOException {
-			return decorator.applyAsLong( NumericDoubleValues.this.doubleValue() );
-		}
+        private final DoubleToLongFunction decorator;
 
-		@Override
-		public int docID() {
-			return docID;
-		}
+        public RawNumericDocValues(DoubleToLongFunction decorator) {
+            this.decorator = decorator;
+        }
 
-		@Override
-		public int nextDoc() {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public boolean advanceExact(int target) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public int advance(int target) {
-			throw new UnsupportedOperationException();
-		}
+        @Override
+        public long longValue() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public long cost() {
-			throw new UnsupportedOperationException();
-		}
-	}
+        @Override
+        public int docID() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public int nextDoc() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public int advance(int target) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public long cost() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

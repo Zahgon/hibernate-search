@@ -8,12 +8,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.logging.impl.AnalysisLog;
 import org.hibernate.search.engine.environment.classpath.spi.ClassLoaderHelper;
 import org.hibernate.search.engine.environment.classpath.spi.ClassResolver;
 import org.hibernate.search.engine.environment.classpath.spi.ResourceResolver;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharFilterFactory;
 import org.apache.lucene.analysis.TokenFilterFactory;
@@ -31,82 +29,64 @@ import org.apache.lucene.util.Version;
  */
 public final class LuceneAnalysisComponentFactory {
 
-	private static final String LUCENE_VERSION_PARAM = "luceneMatchVersion";
+    private static final String LUCENE_VERSION_PARAM = "luceneMatchVersion";
 
-	private static final KeywordTokenizerFactory KEYWORD_TOKENIZER_FACTORY =
-			new KeywordTokenizerFactory( Collections.emptyMap() );
+    private static final KeywordTokenizerFactory KEYWORD_TOKENIZER_FACTORY = new KeywordTokenizerFactory(Collections.emptyMap());
 
-	private final Version luceneMatchVersion;
+    private final Version luceneMatchVersion;
 
-	private final ResourceLoader resourceLoader;
+    private final ResourceLoader resourceLoader;
 
-	public LuceneAnalysisComponentFactory(Version luceneMatchVersion,
-			ClassResolver classResolver, ResourceResolver resourceResolver) {
-		super();
-		this.luceneMatchVersion = luceneMatchVersion;
-		this.resourceLoader = new HibernateSearchResourceLoader( classResolver, resourceResolver );
-	}
+    public LuceneAnalysisComponentFactory(Version luceneMatchVersion, ClassResolver classResolver, ResourceResolver resourceResolver) {
+        super();
+        this.luceneMatchVersion = luceneMatchVersion;
+        this.resourceLoader = new HibernateSearchResourceLoader(classResolver, resourceResolver);
+    }
 
-	public Analyzer createAnalyzer(TokenizerFactory tokenizerFactory,
-			CharFilterFactory[] charFilterFactories, TokenFilterFactory[] filterFactories) {
-		return new TokenizerChain( charFilterFactories, tokenizerFactory, filterFactories );
-	}
+    public Analyzer createAnalyzer(TokenizerFactory tokenizerFactory, CharFilterFactory[] charFilterFactories, TokenFilterFactory[] filterFactories) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Analyzer createNormalizer(String name,
-			CharFilterFactory[] charFilterFactories, TokenFilterFactory[] filterFactories) {
-		Analyzer normalizer = new TokenizerChain( charFilterFactories, KEYWORD_TOKENIZER_FACTORY, filterFactories );
-		return wrapNormalizer( name, normalizer );
-	}
+    public Analyzer createNormalizer(String name, CharFilterFactory[] charFilterFactories, TokenFilterFactory[] filterFactories) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Analyzer wrapNormalizer(String name, Analyzer normalizer) {
-		return new HibernateSearchNormalizerWrapper( name, normalizer );
-	}
+    public Analyzer wrapNormalizer(String name, Analyzer normalizer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public TokenizerFactory createTokenizerFactory(Class<? extends TokenizerFactory> factoryClass,
-			Map<String, String> parameters)
-			throws IOException {
-		return createAnalysisComponent( TokenizerFactory.class, factoryClass, parameters );
-	}
+    public TokenizerFactory createTokenizerFactory(Class<? extends TokenizerFactory> factoryClass, Map<String, String> parameters) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CharFilterFactory createCharFilterFactory(Class<? extends CharFilterFactory> factoryClass,
-			Map<String, String> parameters)
-			throws IOException {
-		return createAnalysisComponent( CharFilterFactory.class, factoryClass, parameters );
-	}
+    public CharFilterFactory createCharFilterFactory(Class<? extends CharFilterFactory> factoryClass, Map<String, String> parameters) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public TokenFilterFactory createTokenFilterFactory(Class<? extends TokenFilterFactory> factoryClass,
-			Map<String, String> parameters)
-			throws IOException {
-		return createAnalysisComponent( TokenFilterFactory.class, factoryClass, parameters );
-	}
+    public TokenFilterFactory createTokenFilterFactory(Class<? extends TokenFilterFactory> factoryClass, Map<String, String> parameters) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <T> T createAnalysisComponent(Class<T> expectedFactoryClass,
-			Class<? extends T> factoryClass, Map<String, String> parameters)
-			throws IOException {
-		try {
-			final Map<String, String> tokenMapsOfParameters = getMapOfParameters( parameters, luceneMatchVersion );
-			T tokenizerFactory = ClassLoaderHelper.instanceFromClass(
-					expectedFactoryClass,
-					factoryClass,
-					tokenMapsOfParameters
-			);
-			injectResourceLoader( tokenizerFactory );
-			return tokenizerFactory;
-		}
-		catch (RuntimeException e) {
-			throw AnalysisLog.INSTANCE.unableToCreateAnalysisComponent( factoryClass, e.getMessage(), e );
-		}
-	}
+    private <T> T createAnalysisComponent(Class<T> expectedFactoryClass, Class<? extends T> factoryClass, Map<String, String> parameters) throws IOException {
+        try {
+            final Map<String, String> tokenMapsOfParameters = getMapOfParameters(parameters, luceneMatchVersion);
+            T tokenizerFactory = ClassLoaderHelper.instanceFromClass(expectedFactoryClass, factoryClass, tokenMapsOfParameters);
+            injectResourceLoader(tokenizerFactory);
+            return tokenizerFactory;
+        } catch (RuntimeException e) {
+            throw AnalysisLog.INSTANCE.unableToCreateAnalysisComponent(factoryClass, e.getMessage(), e);
+        }
+    }
 
-	private void injectResourceLoader(Object processor) throws IOException {
-		if ( processor instanceof ResourceLoaderAware ) {
-			( (ResourceLoaderAware) processor ).inform( resourceLoader );
-		}
-	}
+    private void injectResourceLoader(Object processor) throws IOException {
+        if (processor instanceof ResourceLoaderAware) {
+            ((ResourceLoaderAware) processor).inform(resourceLoader);
+        }
+    }
 
-	private static Map<String, String> getMapOfParameters(Map<String, String> params, Version luceneMatchVersion) {
-		Map<String, String> mapOfParams = new LinkedHashMap<>( params );
-		params.put( LUCENE_VERSION_PARAM, luceneMatchVersion.toString() );
-		return mapOfParams;
-	}
+    private static Map<String, String> getMapOfParameters(Map<String, String> params, Version luceneMatchVersion) {
+        Map<String, String> mapOfParams = new LinkedHashMap<>(params);
+        params.put(LUCENE_VERSION_PARAM, luceneMatchVersion.toString());
+        return mapOfParams;
+    }
 }

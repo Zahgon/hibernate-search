@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processin
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing.MappingAnnotatedMethodParameter;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing.MethodParameterMappingAnnotationProcessorContext;
 import org.hibernate.search.mapper.pojo.model.spi.PojoConstructorModel;
@@ -16,48 +15,43 @@ import org.hibernate.search.mapper.pojo.reporting.spi.PojoEventContexts;
 import org.hibernate.search.util.common.reflect.spi.AnnotationHelper;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-public class MethodParameterMappingAnnotationProcessorContextImpl
-		extends AbstractMappingAnnotationProcessorContext
-		implements MethodParameterMappingAnnotationProcessorContext, MappingAnnotatedMethodParameter {
-	private final PojoConstructorModel<?> constructorModel;
-	private final PojoMethodParameterModel<?> methodParameterModel;
-	private final Annotation annotation;
+public class MethodParameterMappingAnnotationProcessorContextImpl extends AbstractMappingAnnotationProcessorContext implements MethodParameterMappingAnnotationProcessorContext, MappingAnnotatedMethodParameter {
 
-	public MethodParameterMappingAnnotationProcessorContextImpl(PojoConstructorModel<?> constructorModel,
-			PojoMethodParameterModel<?> methodParameterModel, Annotation annotation,
-			AnnotationHelper annotationHelper) {
-		super( annotationHelper );
-		this.constructorModel = constructorModel;
-		this.methodParameterModel = methodParameterModel;
-		this.annotation = annotation;
-	}
+    private final PojoConstructorModel<?> constructorModel;
 
-	@Override
-	public MappingAnnotatedMethodParameter annotatedElement() {
-		return this; // Not a lot to implement, so we just implement everything in the same class
-	}
+    private final PojoMethodParameterModel<?> methodParameterModel;
 
-	@Override
-	public EventContext eventContext() {
-		return PojoEventContexts.fromType( constructorModel.typeModel() )
-				.append( PojoEventContexts.fromConstructor( constructorModel ) )
-				.append( PojoEventContexts.fromMethodParameter( methodParameterModel ) )
-				.append( PojoEventContexts.fromAnnotation( annotation ) );
-	}
+    private final Annotation annotation;
 
-	@Override
-	public Optional<String> name() {
-		return methodParameterModel.name();
-	}
+    public MethodParameterMappingAnnotationProcessorContextImpl(PojoConstructorModel<?> constructorModel, PojoMethodParameterModel<?> methodParameterModel, Annotation annotation, AnnotationHelper annotationHelper) {
+        super(annotationHelper);
+        this.constructorModel = constructorModel;
+        this.methodParameterModel = methodParameterModel;
+        this.annotation = annotation;
+    }
 
-	@Override
-	public Class<?> javaClass() {
-		return methodParameterModel.typeModel().rawType().typeIdentifier().javaClass();
-	}
+    @Override
+    public MappingAnnotatedMethodParameter annotatedElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Stream<Annotation> allAnnotations() {
-		return methodParameterModel.annotations().flatMap( annotationHelper::expandRepeatableContainingAnnotation );
-	}
+    @Override
+    public EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public Optional<String> name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Class<?> javaClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Stream<Annotation> allAnnotations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

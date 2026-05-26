@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorTypeNode;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.model.PojoElementAccessor;
@@ -27,115 +26,89 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public abstract class AbstractPojoModelCompositeElement<V> implements PojoModelCompositeElement {
 
-	private final PojoBootstrapIntrospector introspector;
-	private final PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider;
-	// Use a LinkedHashMap for deterministic iteration
-	private final Map<String, PojoModelNestedCompositeElement<V, ?>> properties = new LinkedHashMap<>();
-	private PojoTypeAdditionalMetadata typeAdditionalMetadata;
-	private boolean propertiesInitialized = false;
+    private final PojoBootstrapIntrospector introspector;
 
-	private PojoElementAccessor<?> accessor;
+    private final PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider;
 
-	AbstractPojoModelCompositeElement(AbstractPojoModelCompositeElement<?> parent) {
-		this.introspector = parent.introspector;
-		this.typeAdditionalMetadataProvider = parent.typeAdditionalMetadataProvider;
-	}
+    // Use a LinkedHashMap for deterministic iteration
+    private final Map<String, PojoModelNestedCompositeElement<V, ?>> properties = new LinkedHashMap<>();
 
-	AbstractPojoModelCompositeElement(PojoBootstrapIntrospector introspector,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
-		this.introspector = introspector;
-		this.typeAdditionalMetadataProvider = typeAdditionalMetadataProvider;
-	}
+    private PojoTypeAdditionalMetadata typeAdditionalMetadata;
 
-	@Override
-	@SuppressWarnings("unchecked") // The cast is checked using reflection
-	public final <T> PojoElementAccessor<T> createAccessor(Class<T> requestedType) {
-		if ( !isAssignableTo( requestedType ) ) {
-			throw MappingLog.INSTANCE.incompatibleRequestedType( getModelPathTypeNode().toUnboundPath(), requestedType );
-		}
-		return (PojoElementAccessor<T>) createAccessor();
-	}
+    private boolean propertiesInitialized = false;
 
-	@Override
-	public PojoElementAccessor<?> createAccessor() {
-		if ( accessor == null ) {
-			accessor = doCreateAccessor();
-		}
-		return accessor;
-	}
+    private PojoElementAccessor<?> accessor;
 
-	@Override
-	public boolean isAssignableTo(Class<?> clazz) {
-		return getTypeModel().rawType().isSubTypeOf( introspector.typeModel( clazz ) );
-	}
+    AbstractPojoModelCompositeElement(AbstractPojoModelCompositeElement<?> parent) {
+        this.introspector = parent.introspector;
+        this.typeAdditionalMetadataProvider = parent.typeAdditionalMetadataProvider;
+    }
 
-	@Override
-	public Class<?> rawType() {
-		return getTypeModel().rawType().typeIdentifier().javaClass();
-	}
+    AbstractPojoModelCompositeElement(PojoBootstrapIntrospector introspector, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
+        this.introspector = introspector;
+        this.typeAdditionalMetadataProvider = typeAdditionalMetadataProvider;
+    }
 
-	@Override
-	public PojoModelNestedCompositeElement<?, ?> property(String relativeFieldName) {
-		return properties.computeIfAbsent( relativeFieldName, name -> {
-			BoundPojoModelPathTypeNode<V> modelPathTypeNode = getModelPathTypeNode();
-			PojoPropertyAdditionalMetadata additionalMetadata =
-					getTypeAdditionalMetadata().getPropertyAdditionalMetadata( name );
-			return new PojoModelNestedCompositeElement<>(
-					this,
-					modelPathTypeNode.property( name ),
-					additionalMetadata
-			);
-		} );
-	}
+    @Override
+    // The cast is checked using reflection
+    @SuppressWarnings("unchecked")
+    public final <T> PojoElementAccessor<T> createAccessor(Class<T> requestedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<? extends PojoModelProperty> properties() {
-		if ( !propertiesInitialized ) {
-			// Populate all the known properties
-			getTypeModel().rawType().ascendingSuperTypes()
-					.flatMap( pojoRawTypeModel -> pojoRawTypeModel.declaredProperties().stream() )
-					.map( PojoPropertyModel::name )
-					.forEach( this::property );
-			propertiesInitialized = true;
-		}
-		return Collections.unmodifiableCollection( properties.values() );
-	}
+    @Override
+    public PojoElementAccessor<?> createAccessor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean hasDependency() {
-		return hasAccessor();
-	}
+    @Override
+    public boolean isAssignableTo(Class<?> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean hasNonRootDependency() {
-		for ( PojoModelNestedCompositeElement<V, ?> property : properties.values() ) {
-			if ( property.hasAccessor() ) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public Class<?> rawType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract PojoElementAccessor<V> doCreateAccessor();
+    @Override
+    public PojoModelNestedCompositeElement<?, ?> property(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract BoundPojoModelPathTypeNode<V> getModelPathTypeNode();
+    @Override
+    public Collection<? extends PojoModelProperty> properties() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final boolean hasAccessor() {
-		return accessor != null;
-	}
+    public boolean hasDependency() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final void contributePropertyDependencies(PojoIndexingDependencyCollectorTypeNode<V> dependencyCollector) {
-		for ( Map.Entry<String, PojoModelNestedCompositeElement<V, ?>> entry : properties.entrySet() ) {
-			entry.getValue().contributeDependencies( dependencyCollector );
-		}
-	}
+    public boolean hasNonRootDependency() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private PojoTypeModel<V> getTypeModel() {
-		return getModelPathTypeNode().getTypeModel();
-	}
+    abstract PojoElementAccessor<V> doCreateAccessor();
 
-	private PojoTypeAdditionalMetadata getTypeAdditionalMetadata() {
-		if ( typeAdditionalMetadata == null ) {
-			typeAdditionalMetadata = typeAdditionalMetadataProvider.get( getModelPathTypeNode().getTypeModel().rawType() );
-		}
-		return typeAdditionalMetadata;
-	}
+    abstract BoundPojoModelPathTypeNode<V> getModelPathTypeNode();
+
+    final boolean hasAccessor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    final void contributePropertyDependencies(PojoIndexingDependencyCollectorTypeNode<V> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private PojoTypeModel<V> getTypeModel() {
+        return getModelPathTypeNode().getTypeModel();
+    }
+
+    private PojoTypeAdditionalMetadata getTypeAdditionalMetadata() {
+        if (typeAdditionalMetadata == null) {
+            typeAdditionalMetadata = typeAdditionalMetadataProvider.get(getModelPathTypeNode().getTypeModel().rawType());
+        }
+        return typeAdditionalMetadata;
+    }
 }

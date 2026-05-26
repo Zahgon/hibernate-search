@@ -8,27 +8,27 @@ import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentV
 
 public class ProjectionTransformContext {
 
-	private final FromDocumentValueConvertContext fromDocumentValueConvertContext;
+    private final FromDocumentValueConvertContext fromDocumentValueConvertContext;
 
-	private boolean hasFailedLoad = false;
+    private boolean hasFailedLoad = false;
 
-	public ProjectionTransformContext(FromDocumentValueConvertContext fromDocumentValueConvertContext) {
-		this.fromDocumentValueConvertContext = fromDocumentValueConvertContext;
-	}
+    public ProjectionTransformContext(FromDocumentValueConvertContext fromDocumentValueConvertContext) {
+        this.fromDocumentValueConvertContext = fromDocumentValueConvertContext;
+    }
 
-	FromDocumentValueConvertContext fromDocumentValueConvertContext() {
-		return fromDocumentValueConvertContext;
-	}
+    FromDocumentValueConvertContext fromDocumentValueConvertContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void reportFailedLoad() {
-		hasFailedLoad = true;
-	}
+    void reportFailedLoad() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean hasFailedLoad() {
-		return hasFailedLoad;
-	}
+    public boolean hasFailedLoad() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void reset() {
-		hasFailedLoad = false;
-	}
+    public void reset() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

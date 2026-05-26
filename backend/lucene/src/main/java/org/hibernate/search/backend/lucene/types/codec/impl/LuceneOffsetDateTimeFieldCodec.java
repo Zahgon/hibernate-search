@@ -11,65 +11,51 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
 import java.util.Locale;
-
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneLongDomain;
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneNumericDomain;
-
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 
 public final class LuceneOffsetDateTimeFieldCodec extends AbstractLuceneNumericFieldCodec<OffsetDateTime, Long> {
 
-	static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
-			.append( LuceneLocalDateTimeFieldCodec.FORMATTER )
-			// OffsetId is mandatory
-			.appendOffsetId()
-			.toFormatter( Locale.ROOT )
-			.withResolverStyle( ResolverStyle.STRICT );
+    static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder().append(LuceneLocalDateTimeFieldCodec.FORMATTER).// OffsetId is mandatory
+    appendOffsetId().toFormatter(Locale.ROOT).withResolverStyle(ResolverStyle.STRICT);
 
-	public LuceneOffsetDateTimeFieldCodec(Indexing indexing, DocValues docValues, Storage storage,
-			OffsetDateTime indexNullAsValue) {
-		super( indexing, docValues, storage, indexNullAsValue );
-	}
+    public LuceneOffsetDateTimeFieldCodec(Indexing indexing, DocValues docValues, Storage storage, OffsetDateTime indexNullAsValue) {
+        super(indexing, docValues, storage, indexNullAsValue);
+    }
 
-	@Override
-	void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, OffsetDateTime value,
-			Long encodedValue) {
-		documentBuilder.addField( new StoredField( absoluteFieldPath, FORMATTER.format( value ) ) );
-	}
+    @Override
+    void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, OffsetDateTime value, Long encodedValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public OffsetDateTime decode(IndexableField field) {
-		String value = field.stringValue();
+    @Override
+    public OffsetDateTime decode(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( value == null ) {
-			return null;
-		}
+    @Override
+    public Long raw(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return OffsetDateTime.parse( value, FORMATTER );
-	}
+    @Override
+    public Long encode(OffsetDateTime value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long raw(IndexableField field) {
-		return encode( decode( field ) );
-	}
+    @Override
+    public OffsetDateTime decode(Long encoded) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long encode(OffsetDateTime value) {
-		return value == null ? null : value.toInstant().toEpochMilli();
-	}
+    @Override
+    public LuceneNumericDomain<Long> getDomain() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public OffsetDateTime decode(Long encoded) {
-		return Instant.ofEpochMilli( encoded ).atOffset( ZoneOffset.UTC );
-	}
-
-	@Override
-	public LuceneNumericDomain<Long> getDomain() {
-		return LuceneLongDomain.get();
-	}
-
-	public Class<Long> encodedType() {
-		return Long.class;
-	}
+    public Class<Long> encodedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

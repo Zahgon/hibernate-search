@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
 import org.hibernate.search.engine.backend.session.spi.BackendSessionContext;
 import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentValueConvertContext;
@@ -41,155 +40,127 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
  * @see #get()
  */
 @SuppressWarnings("deprecation")
-public final class HibernateOrmExtension
-		implements IdentifierBridgeToDocumentIdentifierContextExtension<HibernateOrmMappingContext>,
-		IdentifierBridgeFromDocumentIdentifierContextExtension<HibernateOrmSessionContext>,
-		RoutingBridgeRouteContextExtension<HibernateOrmSessionContext>,
-		TypeBridgeWriteContextExtension<HibernateOrmSessionContext>,
-		PropertyBridgeWriteContextExtension<HibernateOrmSessionContext>,
-		ValueBridgeToIndexedValueContextExtension<HibernateOrmMappingContext>,
-		ValueBridgeFromIndexedValueContextExtension<HibernateOrmSessionContext>,
-		org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContextExtension<
-				HibernateOrmMappingContext>,
-		ToDocumentValueConvertContextExtension<HibernateOrmMappingContext>,
-		org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContextExtension<
-				HibernateOrmSessionContext>,
-		FromDocumentValueConvertContextExtension<HibernateOrmSessionContext> {
+public final class HibernateOrmExtension implements IdentifierBridgeToDocumentIdentifierContextExtension<HibernateOrmMappingContext>, IdentifierBridgeFromDocumentIdentifierContextExtension<HibernateOrmSessionContext>, RoutingBridgeRouteContextExtension<HibernateOrmSessionContext>, TypeBridgeWriteContextExtension<HibernateOrmSessionContext>, PropertyBridgeWriteContextExtension<HibernateOrmSessionContext>, ValueBridgeToIndexedValueContextExtension<HibernateOrmMappingContext>, ValueBridgeFromIndexedValueContextExtension<HibernateOrmSessionContext>, org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContextExtension<HibernateOrmMappingContext>, ToDocumentValueConvertContextExtension<HibernateOrmMappingContext>, org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContextExtension<HibernateOrmSessionContext>, FromDocumentValueConvertContextExtension<HibernateOrmSessionContext> {
 
-	private static final HibernateOrmExtension INSTANCE = new HibernateOrmExtension();
+    private static final HibernateOrmExtension INSTANCE = new HibernateOrmExtension();
 
-	public static HibernateOrmExtension get() {
-		return INSTANCE;
-	}
+    public static HibernateOrmExtension get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private HibernateOrmExtension() {
-		// Private constructor, use get() instead.
-	}
+    private HibernateOrmExtension() {
+        // Private constructor, use get() instead.
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmMappingContext> extendOptional(IdentifierBridgeToDocumentIdentifierContext original,
-			BridgeMappingContext mappingContext) {
-		return extendToOrmMappingContext( mappingContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmMappingContext> extendOptional(IdentifierBridgeToDocumentIdentifierContext original, BridgeMappingContext mappingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmSessionContext> extendOptional(IdentifierBridgeFromDocumentIdentifierContext original,
-			BridgeSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmSessionContext> extendOptional(IdentifierBridgeFromDocumentIdentifierContext original, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmSessionContext> extendOptional(RoutingBridgeRouteContext original,
-			BridgeSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmSessionContext> extendOptional(RoutingBridgeRouteContext original, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmSessionContext> extendOptional(TypeBridgeWriteContext original,
-			BridgeSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmSessionContext> extendOptional(TypeBridgeWriteContext original, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmSessionContext> extendOptional(PropertyBridgeWriteContext original,
-			BridgeSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmSessionContext> extendOptional(PropertyBridgeWriteContext original, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmMappingContext> extendOptional(ValueBridgeToIndexedValueContext original,
-			BridgeMappingContext mappingContext) {
-		return extendToOrmMappingContext( mappingContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmMappingContext> extendOptional(ValueBridgeToIndexedValueContext original, BridgeMappingContext mappingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmSessionContext> extendOptional(ValueBridgeFromIndexedValueContext original,
-			BridgeSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmSessionContext> extendOptional(ValueBridgeFromIndexedValueContext original, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @deprecated Use {@link org.hibernate.search.engine.backend.types.converter.ToDocumentFieldValueConverter}
-	 * and {@link org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext} instead.
-	 */
-	@Override
-	@Deprecated(since = "6.1")
-	public Optional<HibernateOrmMappingContext> extendOptional(
-			org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext original,
-			BackendMappingContext mappingContext) {
-		return extendToOrmMappingContext( mappingContext );
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Use {@link org.hibernate.search.engine.backend.types.converter.ToDocumentFieldValueConverter}
+     * and {@link org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext} instead.
+     */
+    @Override
+    @Deprecated(since = "6.1")
+    public Optional<HibernateOrmMappingContext> extendOptional(org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContext original, BackendMappingContext mappingContext) {
+        return extendToOrmMappingContext(mappingContext);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmMappingContext> extendOptional(ToDocumentValueConvertContext original,
-			BackendMappingContext mappingContext) {
-		return extendToOrmMappingContext( mappingContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmMappingContext> extendOptional(ToDocumentValueConvertContext original, BackendMappingContext mappingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @deprecated Use {@link org.hibernate.search.engine.backend.types.converter.FromDocumentValueConverter}
-	 * and {@link org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentValueConvertContext} instead.
-	 */
-	@Override
-	@Deprecated(since = "6.1")
-	public Optional<HibernateOrmSessionContext> extendOptional(
-			org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext original,
-			BackendSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Use {@link org.hibernate.search.engine.backend.types.converter.FromDocumentValueConverter}
+     * and {@link org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentValueConvertContext} instead.
+     */
+    @Override
+    @Deprecated(since = "6.1")
+    public Optional<HibernateOrmSessionContext> extendOptional(org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext original, BackendSessionContext sessionContext) {
+        return extendToOrmSessionContext(sessionContext);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Optional<HibernateOrmSessionContext> extendOptional(FromDocumentValueConvertContext original,
-			BackendSessionContext sessionContext) {
-		return extendToOrmSessionContext( sessionContext );
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<HibernateOrmSessionContext> extendOptional(FromDocumentValueConvertContext original, BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private Optional<HibernateOrmMappingContext> extendToOrmMappingContext(Object mappingContext) {
-		if ( mappingContext instanceof HibernateOrmMappingContext ) {
-			return Optional.of( (HibernateOrmMappingContext) mappingContext );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    private Optional<HibernateOrmMappingContext> extendToOrmMappingContext(Object mappingContext) {
+        if (mappingContext instanceof HibernateOrmMappingContext) {
+            return Optional.of((HibernateOrmMappingContext) mappingContext);
+        } else {
+            return Optional.empty();
+        }
+    }
 
-	private Optional<HibernateOrmSessionContext> extendToOrmSessionContext(Object sessionContext) {
-		if ( sessionContext instanceof HibernateOrmSessionContext ) {
-			return Optional.of( (HibernateOrmSessionContext) sessionContext );
-		}
-		else {
-			return Optional.empty();
-		}
-	}
+    private Optional<HibernateOrmSessionContext> extendToOrmSessionContext(Object sessionContext) {
+        if (sessionContext instanceof HibernateOrmSessionContext) {
+            return Optional.of((HibernateOrmSessionContext) sessionContext);
+        } else {
+            return Optional.empty();
+        }
+    }
 }

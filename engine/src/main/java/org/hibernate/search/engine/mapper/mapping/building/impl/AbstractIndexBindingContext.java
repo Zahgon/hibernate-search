@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
-
 import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaElement;
 import org.hibernate.search.engine.backend.document.model.dsl.impl.IndexSchemaElementImpl;
@@ -32,127 +31,86 @@ import org.hibernate.search.util.common.SearchException;
 
 abstract class AbstractIndexBindingContext<B extends IndexCompositeNodeBuilder> implements IndexBindingContext {
 
-	private static final BiFunction<MappingElement, String, SearchException> CYCLIC_RECURSION_EXCEPTION_FACTORY =
-			(mappingElement, cyclicRecursionPath) -> MappingLog.INSTANCE.indexedEmbeddedCyclicRecursion( mappingElement,
-					mappingElement.eventContext(), cyclicRecursionPath );
+    private static final BiFunction<MappingElement, String, SearchException> CYCLIC_RECURSION_EXCEPTION_FACTORY = (mappingElement, cyclicRecursionPath) -> MappingLog.INSTANCE.indexedEmbeddedCyclicRecursion(mappingElement, mappingElement.eventContext(), cyclicRecursionPath);
 
-	private final IndexedEntityBindingMapperContext mapperContext;
-	private final IndexRootBuilder indexRootBuilder;
-	final B indexSchemaObjectNodeBuilder;
-	final TreeNestingContext nestingContext;
+    private final IndexedEntityBindingMapperContext mapperContext;
 
-	AbstractIndexBindingContext(IndexedEntityBindingMapperContext mapperContext,
-			IndexRootBuilder indexRootBuilder,
-			B indexSchemaObjectNodeBuilder, TreeNestingContext nestingContext) {
-		this.mapperContext = mapperContext;
-		this.indexRootBuilder = indexRootBuilder;
-		this.indexSchemaObjectNodeBuilder = indexSchemaObjectNodeBuilder;
-		this.nestingContext = nestingContext;
-	}
+    private final IndexRootBuilder indexRootBuilder;
 
-	@Override
-	public String toString() {
-		return new StringBuilder( getClass().getSimpleName() )
-				.append( "[" )
-				.append( "indexSchemaObjectNodeBuilder=" ).append( indexSchemaObjectNodeBuilder )
-				.append( ",nestingContext=" ).append( nestingContext )
-				.append( "]" )
-				.toString();
-	}
+    final B indexSchemaObjectNodeBuilder;
 
-	@Override
-	public IndexFieldTypeFactory createTypeFactory(IndexFieldTypeDefaultsProvider defaultsProvider) {
-		return indexRootBuilder.createTypeFactory( defaultsProvider );
-	}
+    final TreeNestingContext nestingContext;
 
-	@Override
-	public IndexSchemaElement schemaElement() {
-		return new IndexSchemaElementImpl<>(
-				createTypeFactory(),
-				indexSchemaObjectNodeBuilder,
-				nestingContext,
-				isParentMultivaluedAndWithoutObjectField()
-		);
-	}
+    AbstractIndexBindingContext(IndexedEntityBindingMapperContext mapperContext, IndexRootBuilder indexRootBuilder, B indexSchemaObjectNodeBuilder, TreeNestingContext nestingContext) {
+        this.mapperContext = mapperContext;
+        this.indexRootBuilder = indexRootBuilder;
+        this.indexSchemaObjectNodeBuilder = indexSchemaObjectNodeBuilder;
+        this.nestingContext = nestingContext;
+    }
 
-	@Override
-	public IndexSchemaElement schemaElement(TreeContributionListener listener) {
-		return new IndexSchemaElementImpl<>(
-				createTypeFactory(),
-				indexSchemaObjectNodeBuilder,
-				TreeNestingContext.notifying( nestingContext, listener ),
-				isParentMultivaluedAndWithoutObjectField()
-		);
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<IndexedEmbeddedBindingContext> addIndexedEmbeddedIfIncluded(MappingElement mappingElement,
-			String relativePrefix, ObjectStructure structure, TreeFilterDefinition filter, boolean multiValued) {
-		TreeFilterPathTracker pathTracker = mapperContext.getOrCreatePathTracker( mappingElement, filter );
-		return nestingContext.nestComposed( mappingElement, relativePrefix,
-				filter, pathTracker,
-				new NestedContextBuilderImpl(
-						mapperContext,
-						indexRootBuilder, indexSchemaObjectNodeBuilder,
-						structure,
-						isParentMultivaluedAndWithoutObjectField() || multiValued
-				),
-				CYCLIC_RECURSION_EXCEPTION_FACTORY
-		);
-	}
+    @Override
+    public IndexFieldTypeFactory createTypeFactory(IndexFieldTypeDefaultsProvider defaultsProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return {@code true} if the parent IndexedEmbedded was multi-valued,
-	 * and didn't add any object field.
-	 * This means in particular that any field added in this context will have to be considered multi-valued,
-	 * because it may be contributed multiple times from multiple parent values.
-	 */
-	abstract boolean isParentMultivaluedAndWithoutObjectField();
+    @Override
+    public IndexSchemaElement schemaElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class NestedContextBuilderImpl
-			implements TreeNestingContext.NestedContextBuilder<IndexedEmbeddedBindingContext> {
+    @Override
+    public IndexSchemaElement schemaElement(TreeContributionListener listener) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final IndexedEntityBindingMapperContext mapperContext;
-		private final IndexRootBuilder indexRootBuilder;
-		private IndexCompositeNodeBuilder currentNodeBuilder;
-		private final ObjectStructure structure;
-		private final List<IndexObjectFieldReference> parentIndexObjectReferences = new ArrayList<>();
-		private boolean multiValued;
+    @Override
+    public Optional<IndexedEmbeddedBindingContext> addIndexedEmbeddedIfIncluded(MappingElement mappingElement, String relativePrefix, ObjectStructure structure, TreeFilterDefinition filter, boolean multiValued) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private NestedContextBuilderImpl(IndexedEntityBindingMapperContext mapperContext,
-				IndexRootBuilder indexRootBuilder,
-				IndexCompositeNodeBuilder currentNodeBuilder,
-				ObjectStructure structure,
-				boolean multiValued) {
-			this.mapperContext = mapperContext;
-			this.indexRootBuilder = indexRootBuilder;
-			this.currentNodeBuilder = currentNodeBuilder;
-			this.structure = structure;
-			this.multiValued = multiValued;
-		}
+    /**
+     * @return {@code true} if the parent IndexedEmbedded was multi-valued,
+     * and didn't add any object field.
+     * This means in particular that any field added in this context will have to be considered multi-valued,
+     * because it may be contributed multiple times from multiple parent values.
+     */
+    abstract boolean isParentMultivaluedAndWithoutObjectField();
 
-		@Override
-		public void appendObject(String objectName) {
-			IndexObjectFieldBuilder nextNodeBuilder =
-					currentNodeBuilder.addObjectField( objectName, TreeNodeInclusion.INCLUDED, structure );
-			if ( multiValued ) {
-				// Only mark the first object as multi-valued
-				multiValued = false;
-				nextNodeBuilder.multiValued();
-			}
-			parentIndexObjectReferences.add( nextNodeBuilder.toReference() );
-			currentNodeBuilder = nextNodeBuilder;
-		}
+    private static class NestedContextBuilderImpl implements TreeNestingContext.NestedContextBuilder<IndexedEmbeddedBindingContext> {
 
-		@Override
-		public IndexedEmbeddedBindingContext build(TreeNestingContext nestingContext) {
-			return new IndexedEmbeddedBindingContextImpl(
-					mapperContext,
-					indexRootBuilder,
-					currentNodeBuilder, parentIndexObjectReferences, nestingContext,
-					multiValued
-			);
-		}
-	}
+        private final IndexedEntityBindingMapperContext mapperContext;
 
+        private final IndexRootBuilder indexRootBuilder;
+
+        private IndexCompositeNodeBuilder currentNodeBuilder;
+
+        private final ObjectStructure structure;
+
+        private final List<IndexObjectFieldReference> parentIndexObjectReferences = new ArrayList<>();
+
+        private boolean multiValued;
+
+        private NestedContextBuilderImpl(IndexedEntityBindingMapperContext mapperContext, IndexRootBuilder indexRootBuilder, IndexCompositeNodeBuilder currentNodeBuilder, ObjectStructure structure, boolean multiValued) {
+            this.mapperContext = mapperContext;
+            this.indexRootBuilder = indexRootBuilder;
+            this.currentNodeBuilder = currentNodeBuilder;
+            this.structure = structure;
+            this.multiValued = multiValued;
+        }
+
+        @Override
+        public void appendObject(String objectName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public IndexedEmbeddedBindingContext build(TreeNestingContext nestingContext) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

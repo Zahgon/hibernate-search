@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 import java.util.BitSet;
-
 import com.carrotsearch.hppc.LongHashSet;
 
 /**
@@ -15,33 +14,27 @@ import com.carrotsearch.hppc.LongHashSet;
  */
 public class CountDistinct implements AggregationFunction<CountDistinct> {
 
-	private final BitSet counts = new BitSet( 1024 );
-	private final LongHashSet hashCounts = new LongHashSet();
+    private final BitSet counts = new BitSet(1024);
 
-	@Override
-	public void apply(long value) {
-		if ( value >= 0 && value < counts.size() ) {
-			counts.set( (int) value );
-		}
-		else {
-			hashCounts.add( value );
-		}
-	}
+    private final LongHashSet hashCounts = new LongHashSet();
 
-	@Override
-	public void merge(AggregationFunction<CountDistinct> sibling) {
-		CountDistinct other = sibling.implementation();
-		counts.or( other.counts );
-		hashCounts.addAll( other.hashCounts );
-	}
+    @Override
+    public void apply(long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long result() {
-		return (long) counts.cardinality() + hashCounts.size();
-	}
+    @Override
+    public void merge(AggregationFunction<CountDistinct> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CountDistinct implementation() {
-		return this;
-	}
+    @Override
+    public Long result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CountDistinct implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -23,164 +23,148 @@ import org.hibernate.search.engine.environment.classpath.spi.ServiceResolver;
  * i.e. the configuration properties, classes, resources, services and beans.
  */
 public final class SearchIntegrationEnvironment implements AutoCloseable {
-	public static final String CONFIGURATION_PROPERTIES_MASK = "hibernate.search";
 
-	public static ConfigurationPropertySource rootPropertySource(ConfigurationPropertySource propertySource,
-			BeanResolver beanResolver) {
-		return propertySource
-				.withMask( CONFIGURATION_PROPERTIES_MASK )
-				.withFallback(
-						ConfigurationPropertySourceScopeUtils.fallback(
-								beanResolver,
-								ConfigurationPropertySourceScopeUtils.global()
-						) );
-	}
+    public static final String CONFIGURATION_PROPERTIES_MASK = "hibernate.search";
 
-	private final ConfigurationPropertySource propertySource;
-	private final ConfigurationPropertyChecker propertyChecker;
-	private final ClassResolver classResolver;
-	private final ResourceResolver resourceResolver;
-	private final ServiceResolver serviceResolver;
-	private final BeanResolver beanResolver;
-	private final BeanProvider beanProvider;
+    public static ConfigurationPropertySource rootPropertySource(ConfigurationPropertySource propertySource, BeanResolver beanResolver) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SearchIntegrationEnvironment(Builder builder) {
-		AggregatedClassLoader aggregatedClassLoader = null;
+    private final ConfigurationPropertySource propertySource;
 
-		if ( builder.classResolver != null ) {
-			classResolver = builder.classResolver;
-		}
-		else {
-			aggregatedClassLoader = AggregatedClassLoader.createDefault();
-			classResolver = DefaultClassResolver.create( aggregatedClassLoader );
-		}
+    private final ConfigurationPropertyChecker propertyChecker;
 
-		if ( builder.resourceResolver != null ) {
-			resourceResolver = builder.resourceResolver;
-		}
-		else {
-			if ( aggregatedClassLoader == null ) {
-				aggregatedClassLoader = AggregatedClassLoader.createDefault();
-			}
-			resourceResolver = DefaultResourceResolver.create( aggregatedClassLoader );
-		}
+    private final ClassResolver classResolver;
 
-		if ( builder.serviceResolver != null ) {
-			serviceResolver = builder.serviceResolver;
-		}
-		else {
-			if ( aggregatedClassLoader == null ) {
-				aggregatedClassLoader = AggregatedClassLoader.createDefault();
-			}
-			serviceResolver = DefaultServiceResolver.create( aggregatedClassLoader );
-		}
+    private final ResourceResolver resourceResolver;
 
-		propertyChecker = builder.propertyChecker;
-		beanProvider = builder.beanProvider;
+    private final ServiceResolver serviceResolver;
 
-		// This is the property source without any mask or ConfigurationProvider defaults applied.
-		ConfigurationPropertySource rawPropertySource = builder.propertySource;
+    private final BeanResolver beanResolver;
 
-		beanResolver = BeanResolverImpl.create( classResolver, serviceResolver, beanProvider,
-				// BeanResolverImpl.create() will apply its own, limited, fallback configuration.
-				rawPropertySource );
+    private final BeanProvider beanProvider;
 
-		propertySource = rootPropertySource( rawPropertySource, beanResolver );
-	}
+    private SearchIntegrationEnvironment(Builder builder) {
+        AggregatedClassLoader aggregatedClassLoader = null;
+        if (builder.classResolver != null) {
+            classResolver = builder.classResolver;
+        } else {
+            aggregatedClassLoader = AggregatedClassLoader.createDefault();
+            classResolver = DefaultClassResolver.create(aggregatedClassLoader);
+        }
+        if (builder.resourceResolver != null) {
+            resourceResolver = builder.resourceResolver;
+        } else {
+            if (aggregatedClassLoader == null) {
+                aggregatedClassLoader = AggregatedClassLoader.createDefault();
+            }
+            resourceResolver = DefaultResourceResolver.create(aggregatedClassLoader);
+        }
+        if (builder.serviceResolver != null) {
+            serviceResolver = builder.serviceResolver;
+        } else {
+            if (aggregatedClassLoader == null) {
+                aggregatedClassLoader = AggregatedClassLoader.createDefault();
+            }
+            serviceResolver = DefaultServiceResolver.create(aggregatedClassLoader);
+        }
+        propertyChecker = builder.propertyChecker;
+        beanProvider = builder.beanProvider;
+        // This is the property source without any mask or ConfigurationProvider defaults applied.
+        ConfigurationPropertySource rawPropertySource = builder.propertySource;
+        beanResolver = BeanResolverImpl.create(classResolver, serviceResolver, beanProvider, // BeanResolverImpl.create() will apply its own, limited, fallback configuration.
+        rawPropertySource);
+        propertySource = rootPropertySource(rawPropertySource, beanResolver);
+    }
 
-	private SearchIntegrationEnvironment(SearchIntegrationEnvironment source, ConfigurationPropertySource propertySource,
-			ConfigurationPropertyChecker checker) {
-		this.propertyChecker = checker;
-		this.classResolver = source.classResolver;
-		this.resourceResolver = source.resourceResolver;
-		this.serviceResolver = source.serviceResolver;
-		beanProvider = source.beanProvider;
-		beanResolver = source.beanResolver;
-		this.propertySource = rootPropertySource( propertySource, beanResolver );
-	}
+    private SearchIntegrationEnvironment(SearchIntegrationEnvironment source, ConfigurationPropertySource propertySource, ConfigurationPropertyChecker checker) {
+        this.propertyChecker = checker;
+        this.classResolver = source.classResolver;
+        this.resourceResolver = source.resourceResolver;
+        this.serviceResolver = source.serviceResolver;
+        beanProvider = source.beanProvider;
+        beanResolver = source.beanResolver;
+        this.propertySource = rootPropertySource(propertySource, beanResolver);
+    }
 
-	@Override
-	public void close() {
-		if ( beanProvider != null ) {
-			beanProvider.close();
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationPropertySource propertySource() {
-		return propertySource;
-	}
+    public ConfigurationPropertySource propertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationPropertyChecker propertyChecker() {
-		return propertyChecker;
-	}
+    public ConfigurationPropertyChecker propertyChecker() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ClassResolver classResolver() {
-		return classResolver;
-	}
+    public ClassResolver classResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ResourceResolver resourceResolver() {
-		return resourceResolver;
-	}
+    public ResourceResolver resourceResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ServiceResolver serviceResolver() {
-		return serviceResolver;
-	}
+    public ServiceResolver serviceResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BeanResolver beanResolver() {
-		return beanResolver;
-	}
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BeanProvider beanProvider() {
-		return beanProvider;
-	}
+    public BeanProvider beanProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SearchIntegrationEnvironment override(ConfigurationPropertySource propertySource,
-			ConfigurationPropertyChecker propertyChecker) {
-		return new SearchIntegrationEnvironment( this, propertySource, propertyChecker );
-	}
+    public SearchIntegrationEnvironment override(ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Builder builder(ConfigurationPropertySource propertySource,
-			ConfigurationPropertyChecker propertyChecker) {
-		return new Builder( propertySource, propertyChecker );
-	}
+    public static Builder builder(ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static final class Builder {
-		private final ConfigurationPropertySource propertySource;
-		private final ConfigurationPropertyChecker propertyChecker;
+    public static final class Builder {
 
-		private ClassResolver classResolver;
-		private ResourceResolver resourceResolver;
-		private ServiceResolver serviceResolver;
-		private BeanProvider beanProvider;
+        private final ConfigurationPropertySource propertySource;
 
-		private Builder(ConfigurationPropertySource propertySource,
-				ConfigurationPropertyChecker propertyChecker) {
-			this.propertySource = propertySource;
-			this.propertyChecker = propertyChecker;
-		}
+        private final ConfigurationPropertyChecker propertyChecker;
 
-		public Builder classResolver(ClassResolver classResolver) {
-			this.classResolver = classResolver;
-			return this;
-		}
+        private ClassResolver classResolver;
 
-		public Builder resourceResolver(ResourceResolver resourceResolver) {
-			this.resourceResolver = resourceResolver;
-			return this;
-		}
+        private ResourceResolver resourceResolver;
 
-		public Builder serviceResolver(ServiceResolver serviceResolver) {
-			this.serviceResolver = serviceResolver;
-			return this;
-		}
+        private ServiceResolver serviceResolver;
 
-		public Builder beanProvider(BeanProvider beanProvider) {
-			this.beanProvider = beanProvider;
-			return this;
-		}
+        private BeanProvider beanProvider;
 
-		public SearchIntegrationEnvironment build() {
-			return new SearchIntegrationEnvironment( this );
-		}
-	}
+        private Builder(ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
+            this.propertySource = propertySource;
+            this.propertyChecker = propertyChecker;
+        }
+
+        public Builder classResolver(ClassResolver classResolver) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder resourceResolver(ResourceResolver resourceResolver) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder serviceResolver(ServiceResolver serviceResolver) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder beanProvider(BeanProvider beanProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public SearchIntegrationEnvironment build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

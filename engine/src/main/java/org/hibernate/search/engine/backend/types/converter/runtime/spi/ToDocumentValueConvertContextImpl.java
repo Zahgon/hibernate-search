@@ -10,22 +10,21 @@ import org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentVal
 import org.hibernate.search.engine.common.dsl.spi.DslExtensionState;
 
 public class ToDocumentValueConvertContextImpl implements ToDocumentValueConvertContext {
-	private final BackendMappingContext mappingContext;
 
-	public ToDocumentValueConvertContextImpl(BackendMappingContext mappingContext) {
-		this.mappingContext = mappingContext;
-	}
+    private final BackendMappingContext mappingContext;
 
-	@Override
-	@Deprecated(since = "6.1")
-	public <T> T extension(
-			org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContextExtension<
-					T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, mappingContext ) );
-	}
+    public ToDocumentValueConvertContextImpl(BackendMappingContext mappingContext) {
+        this.mappingContext = mappingContext;
+    }
 
-	@Override
-	public <T> T extension(ToDocumentValueConvertContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, mappingContext ) );
-	}
+    @Override
+    @Deprecated(since = "6.1")
+    public <T> T extension(org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentFieldValueConvertContextExtension<T> extension) {
+        return DslExtensionState.returnIfSupported(extension, extension.extendOptional(this, mappingContext));
+    }
+
+    @Override
+    public <T> T extension(ToDocumentValueConvertContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

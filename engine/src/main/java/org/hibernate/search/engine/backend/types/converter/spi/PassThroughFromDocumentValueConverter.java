@@ -9,13 +9,13 @@ import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentV
 
 final class PassThroughFromDocumentValueConverter<F> implements FromDocumentValueConverter<F, F> {
 
-	@Override
-	public F fromDocumentValue(F value, FromDocumentValueConvertContext context) {
-		return value;
-	}
+    @Override
+    public F fromDocumentValue(F value, FromDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
-		return getClass().equals( other.getClass() );
-	}
+    @Override
+    public boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

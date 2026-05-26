@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.programmatic.impl;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoSearchMappingConstructorNode;
 import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoSearchMappingMethodParameterNode;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.ConstructorMappingStep;
@@ -16,57 +15,48 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMapp
 import org.hibernate.search.mapper.pojo.model.spi.PojoConstructorModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoMethodParameterModel;
 
-class InitialConstructorMappingStep
-		implements ConstructorMappingStep, PojoSearchMappingConstructorNode {
+class InitialConstructorMappingStep implements ConstructorMappingStep, PojoSearchMappingConstructorNode {
 
-	private final TypeMappingStepImpl parent;
-	private final PojoConstructorModel<?> constructorModel;
+    private final TypeMappingStepImpl parent;
 
-	private boolean projectionConstructor = false;
-	private Map<Integer, InitialMethodParameterMappingStep> parameters;
+    private final PojoConstructorModel<?> constructorModel;
 
-	InitialConstructorMappingStep(TypeMappingStepImpl parent, PojoConstructorModel<?> constructorModel) {
-		this.parent = parent;
-		this.constructorModel = constructorModel;
-	}
+    private boolean projectionConstructor = false;
 
-	@Override
-	public TypeMappingStep hostingType() {
-		return parent;
-	}
+    private Map<Integer, InitialMethodParameterMappingStep> parameters;
 
-	@Override
-	public Class<?>[] parametersJavaTypes() {
-		return constructorModel.parametersJavaTypes();
-	}
+    InitialConstructorMappingStep(TypeMappingStepImpl parent, PojoConstructorModel<?> constructorModel) {
+        this.parent = parent;
+        this.constructorModel = constructorModel;
+    }
 
-	@Override
-	public ConstructorMappingStep projectionConstructor() {
-		this.projectionConstructor = true;
-		return this;
-	}
+    @Override
+    public TypeMappingStep hostingType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isProjectionConstructor() {
-		return projectionConstructor;
-	}
+    @Override
+    public Class<?>[] parametersJavaTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MethodParameterMappingStep parameter(int index) {
-		if ( parameters == null ) {
-			parameters = new HashMap<>();
-		}
-		InitialMethodParameterMappingStep parameter = parameters.get( index );
-		if ( parameter == null ) {
-			PojoMethodParameterModel<?> parameterModel = constructorModel.parameter( index );
-			parameter = new InitialMethodParameterMappingStep( this, parameterModel );
-			parameters.put( index, parameter );
-		}
-		return parameter;
-	}
+    @Override
+    public ConstructorMappingStep projectionConstructor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<PojoSearchMappingMethodParameterNode> parameterNode(int index) {
-		return Optional.ofNullable( parameters == null ? null : parameters.get( index ) );
-	}
+    @Override
+    public boolean isProjectionConstructor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public MethodParameterMappingStep parameter(int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<PojoSearchMappingMethodParameterNode> parameterNode(int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

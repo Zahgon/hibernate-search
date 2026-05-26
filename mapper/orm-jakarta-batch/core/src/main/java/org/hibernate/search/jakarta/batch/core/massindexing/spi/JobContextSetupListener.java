@@ -9,7 +9,6 @@ import jakarta.batch.api.listener.AbstractJobListener;
 import jakarta.batch.runtime.context.JobContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-
 import org.hibernate.search.jakarta.batch.core.context.jpa.spi.EntityManagerFactoryRegistry;
 import org.hibernate.search.jakarta.batch.core.inject.scope.spi.HibernateSearchJobScoped;
 import org.hibernate.search.jakarta.batch.core.massindexing.MassIndexingJobParameters;
@@ -35,160 +34,123 @@ import org.hibernate.search.util.common.impl.StringHelper;
 @HibernateSearchJobScoped
 public class JobContextSetupListener extends AbstractJobListener {
 
-	@Inject
-	private JobContext jobContext;
+    @Inject
+    private JobContext jobContext;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ENTITY_MANAGER_FACTORY_NAMESPACE)
-	private String entityManagerFactoryNamespace;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ENTITY_MANAGER_FACTORY_NAMESPACE)
+    private String entityManagerFactoryNamespace;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ENTITY_MANAGER_FACTORY_REFERENCE)
-	private String entityManagerFactoryReference;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ENTITY_MANAGER_FACTORY_REFERENCE)
+    private String entityManagerFactoryReference;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ENTITY_TYPES)
-	private String serializedEntityTypes;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ENTITY_TYPES)
+    private String serializedEntityTypes;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.MAX_THREADS)
-	private String serializedMaxThreads;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.MAX_THREADS)
+    private String serializedMaxThreads;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY)
-	private String serializedMaxResultsPerEntity;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY)
+    private String serializedMaxResultsPerEntity;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ID_FETCH_SIZE)
-	private String serializedIdFetchSize;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ID_FETCH_SIZE)
+    private String serializedIdFetchSize;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ENTITY_FETCH_SIZE)
-	private String serializedEntityFetchSize;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ENTITY_FETCH_SIZE)
+    private String serializedEntityFetchSize;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.CACHE_MODE)
-	private String serializedCacheMode;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.CACHE_MODE)
+    private String serializedCacheMode;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.MERGE_SEGMENTS_ON_FINISH)
-	private String serializedMergeSegmentsOnFinish;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.MERGE_SEGMENTS_ON_FINISH)
+    private String serializedMergeSegmentsOnFinish;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.MERGE_SEGMENTS_AFTER_PURGE)
-	private String serializedMergeSegmentsAfterPurge;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.MERGE_SEGMENTS_AFTER_PURGE)
+    private String serializedMergeSegmentsAfterPurge;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.PURGE_ALL_ON_START)
-	private String serializedPurgeAllOnStart;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.PURGE_ALL_ON_START)
+    private String serializedPurgeAllOnStart;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.DROP_AND_CREATE_SCHEMA_ON_START)
-	private String serializedDropAndCreateSchemaOnStart;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.DROP_AND_CREATE_SCHEMA_ON_START)
+    private String serializedDropAndCreateSchemaOnStart;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.CHECKPOINT_INTERVAL)
-	private String serializedCheckpointInterval;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.CHECKPOINT_INTERVAL)
+    private String serializedCheckpointInterval;
 
-	@Inject
-	@BatchProperty(name = MassIndexingJobParameters.ROWS_PER_PARTITION)
-	private String serializedRowsPerPartition;
+    @Inject
+    @BatchProperty(name = MassIndexingJobParameters.ROWS_PER_PARTITION)
+    private String serializedRowsPerPartition;
 
-	@Inject
-	private EntityManagerFactoryRegistry emfRegistry;
+    @Inject
+    private EntityManagerFactoryRegistry emfRegistry;
 
-	@Override
-	public void beforeJob() throws Exception {
-		validateParameters();
-		JobContextUtil.getOrCreateData( jobContext,
-				emfRegistry, entityManagerFactoryNamespace, entityManagerFactoryReference,
-				serializedEntityTypes );
-	}
+    @Override
+    public void beforeJob() throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Validates job parameters.
-	 *
-	 * @throws SearchException if any validation fails.
-	 */
-	private void validateParameters() throws SearchException {
-		validateEntityTypes();
-		validateQuerying();
-		validateChunkSettings();
-		validateJobSettings();
-	}
+    /**
+     * Validates job parameters.
+     *
+     * @throws SearchException if any validation fails.
+     */
+    private void validateParameters() throws SearchException {
+        validateEntityTypes();
+        validateQuerying();
+        validateChunkSettings();
+        validateJobSettings();
+    }
 
-	private void validateEntityTypes() {
-		ValidationUtil.validateEntityTypes(
-				emfRegistry,
-				entityManagerFactoryNamespace,
-				entityManagerFactoryReference,
-				serializedEntityTypes
-		);
-	}
+    private void validateEntityTypes() {
+        ValidationUtil.validateEntityTypes(emfRegistry, entityManagerFactoryNamespace, entityManagerFactoryReference, serializedEntityTypes);
+    }
 
-	private void validateChunkSettings() {
-		Integer rowsPerPartition = SerializationUtil.parseIntegerParameterOptional(
-				MassIndexingJobParameters.ROWS_PER_PARTITION, serializedRowsPerPartition,
-				MassIndexingJobParameters.Defaults.ROWS_PER_PARTITION
-		);
-		Integer checkpointIntervalRaw = SerializationUtil.parseIntegerParameterOptional(
-				MassIndexingJobParameters.CHECKPOINT_INTERVAL, serializedCheckpointInterval, null
-		);
-		int checkpointInterval =
-				MassIndexingJobParameters.Defaults.checkpointInterval( checkpointIntervalRaw, rowsPerPartition );
-		Integer entityFetchSizeRaw = SerializationUtil.parseIntegerParameterOptional(
-				MassIndexingJobParameters.ENTITY_FETCH_SIZE, serializedEntityFetchSize, null
-		);
-		int entityFetchSize =
-				MassIndexingJobParameters.Defaults.entityFetchSize( entityFetchSizeRaw, checkpointInterval );
+    private void validateChunkSettings() {
+        Integer rowsPerPartition = SerializationUtil.parseIntegerParameterOptional(MassIndexingJobParameters.ROWS_PER_PARTITION, serializedRowsPerPartition, MassIndexingJobParameters.Defaults.ROWS_PER_PARTITION);
+        Integer checkpointIntervalRaw = SerializationUtil.parseIntegerParameterOptional(MassIndexingJobParameters.CHECKPOINT_INTERVAL, serializedCheckpointInterval, null);
+        int checkpointInterval = MassIndexingJobParameters.Defaults.checkpointInterval(checkpointIntervalRaw, rowsPerPartition);
+        Integer entityFetchSizeRaw = SerializationUtil.parseIntegerParameterOptional(MassIndexingJobParameters.ENTITY_FETCH_SIZE, serializedEntityFetchSize, null);
+        int entityFetchSize = MassIndexingJobParameters.Defaults.entityFetchSize(entityFetchSizeRaw, checkpointInterval);
+        ValidationUtil.validatePositive(MassIndexingJobParameters.ENTITY_FETCH_SIZE, entityFetchSize);
+        ValidationUtil.validatePositive(MassIndexingJobParameters.CHECKPOINT_INTERVAL, checkpointInterval);
+        ValidationUtil.validatePositive(MassIndexingJobParameters.ROWS_PER_PARTITION, rowsPerPartition);
+        ValidationUtil.validateCheckpointInterval(checkpointInterval, rowsPerPartition);
+        ValidationUtil.validateEntityFetchSize(entityFetchSize, checkpointInterval);
+    }
 
-		ValidationUtil.validatePositive( MassIndexingJobParameters.ENTITY_FETCH_SIZE, entityFetchSize );
-		ValidationUtil.validatePositive( MassIndexingJobParameters.CHECKPOINT_INTERVAL, checkpointInterval );
-		ValidationUtil.validatePositive( MassIndexingJobParameters.ROWS_PER_PARTITION, rowsPerPartition );
-		ValidationUtil.validateCheckpointInterval( checkpointInterval, rowsPerPartition );
-		ValidationUtil.validateEntityFetchSize( entityFetchSize, checkpointInterval );
-	}
+    private void validateJobSettings() {
+        if (StringHelper.isNotEmpty(serializedMaxThreads)) {
+            int maxThreads = SerializationUtil.parseIntegerParameter(MassIndexingJobParameters.MAX_THREADS, serializedMaxThreads);
+            ValidationUtil.validatePositive(MassIndexingJobParameters.MAX_THREADS, maxThreads);
+        }
+        // A boolean parameter is validated if its deserialization is successful.
+        SerializationUtil.parseBooleanParameterOptional(MassIndexingJobParameters.MERGE_SEGMENTS_ON_FINISH, serializedMergeSegmentsOnFinish, MassIndexingJobParameters.Defaults.MERGE_SEGMENTS_ON_FINISH);
+        SerializationUtil.parseBooleanParameterOptional(MassIndexingJobParameters.MERGE_SEGMENTS_AFTER_PURGE, serializedMergeSegmentsAfterPurge, MassIndexingJobParameters.Defaults.MERGE_SEGMENTS_AFTER_PURGE);
+        SerializationUtil.parseBooleanParameterOptional(MassIndexingJobParameters.PURGE_ALL_ON_START, serializedPurgeAllOnStart, MassIndexingJobParameters.Defaults.PURGE_ALL_ON_START);
+        SerializationUtil.parseBooleanParameterOptional(MassIndexingJobParameters.DROP_AND_CREATE_SCHEMA_ON_START, serializedDropAndCreateSchemaOnStart, MassIndexingJobParameters.Defaults.DROP_AND_CREATE_SCHEMA_ON_START);
+    }
 
-	private void validateJobSettings() {
-		if ( StringHelper.isNotEmpty( serializedMaxThreads ) ) {
-			int maxThreads =
-					SerializationUtil.parseIntegerParameter( MassIndexingJobParameters.MAX_THREADS, serializedMaxThreads );
-			ValidationUtil.validatePositive( MassIndexingJobParameters.MAX_THREADS, maxThreads );
-		}
-
-		// A boolean parameter is validated if its deserialization is successful.
-		SerializationUtil.parseBooleanParameterOptional( MassIndexingJobParameters.MERGE_SEGMENTS_ON_FINISH,
-				serializedMergeSegmentsOnFinish,
-				MassIndexingJobParameters.Defaults.MERGE_SEGMENTS_ON_FINISH );
-		SerializationUtil.parseBooleanParameterOptional( MassIndexingJobParameters.MERGE_SEGMENTS_AFTER_PURGE,
-				serializedMergeSegmentsAfterPurge,
-				MassIndexingJobParameters.Defaults.MERGE_SEGMENTS_AFTER_PURGE );
-		SerializationUtil.parseBooleanParameterOptional( MassIndexingJobParameters.PURGE_ALL_ON_START,
-				serializedPurgeAllOnStart,
-				MassIndexingJobParameters.Defaults.PURGE_ALL_ON_START );
-		SerializationUtil.parseBooleanParameterOptional( MassIndexingJobParameters.DROP_AND_CREATE_SCHEMA_ON_START,
-				serializedDropAndCreateSchemaOnStart,
-				MassIndexingJobParameters.Defaults.DROP_AND_CREATE_SCHEMA_ON_START );
-	}
-
-	private void validateQuerying() {
-		SerializationUtil.parseIntegerParameterOptional( MassIndexingJobParameters.ID_FETCH_SIZE, serializedIdFetchSize,
-				MassIndexingJobParameters.Defaults.ID_FETCH_SIZE );
-
-		if ( StringHelper.isNotEmpty( serializedEntityFetchSize ) ) {
-			SerializationUtil.parseIntegerParameter( MassIndexingJobParameters.ENTITY_FETCH_SIZE, serializedEntityFetchSize );
-		}
-
-		if ( StringHelper.isNotEmpty( serializedMaxResultsPerEntity ) ) {
-			int maxResultsPerEntity = SerializationUtil.parseIntegerParameter(
-					MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY,
-					serializedMaxResultsPerEntity
-			);
-			ValidationUtil.validatePositive( MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY, maxResultsPerEntity );
-		}
-
-		SerializationUtil.parseCacheModeParameter( MassIndexingJobParameters.CACHE_MODE, serializedCacheMode,
-				MassIndexingJobParameters.Defaults.CACHE_MODE );
-	}
-
+    private void validateQuerying() {
+        SerializationUtil.parseIntegerParameterOptional(MassIndexingJobParameters.ID_FETCH_SIZE, serializedIdFetchSize, MassIndexingJobParameters.Defaults.ID_FETCH_SIZE);
+        if (StringHelper.isNotEmpty(serializedEntityFetchSize)) {
+            SerializationUtil.parseIntegerParameter(MassIndexingJobParameters.ENTITY_FETCH_SIZE, serializedEntityFetchSize);
+        }
+        if (StringHelper.isNotEmpty(serializedMaxResultsPerEntity)) {
+            int maxResultsPerEntity = SerializationUtil.parseIntegerParameter(MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY, serializedMaxResultsPerEntity);
+            ValidationUtil.validatePositive(MassIndexingJobParameters.MAX_RESULTS_PER_ENTITY, maxResultsPerEntity);
+        }
+        SerializationUtil.parseCacheModeParameter(MassIndexingJobParameters.CACHE_MODE, serializedCacheMode, MassIndexingJobParameters.Defaults.CACHE_MODE);
+    }
 }

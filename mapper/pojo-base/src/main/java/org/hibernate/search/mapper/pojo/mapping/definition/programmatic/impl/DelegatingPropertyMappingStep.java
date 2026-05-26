@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.mapping.definition.programmatic.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.MarkerBinder;
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.PropertyBinder;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.AssociationInverseSideOptionsStep;
@@ -24,119 +23,119 @@ import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 
 class DelegatingPropertyMappingStep implements PropertyMappingStep {
 
-	private final PropertyMappingStep delegate;
+    private final PropertyMappingStep delegate;
 
-	DelegatingPropertyMappingStep(PropertyMappingStep delegate) {
-		this.delegate = delegate;
-	}
+    DelegatingPropertyMappingStep(PropertyMappingStep delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public TypeMappingStep hostingType() {
-		return delegate.hostingType();
-	}
+    @Override
+    public TypeMappingStep hostingType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingDocumentIdOptionsStep documentId() {
-		return delegate.documentId();
-	}
+    @Override
+    public PropertyMappingDocumentIdOptionsStep documentId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingStep binder(PropertyBinder binder, Map<String, Object> params) {
-		return delegate.binder( binder, params );
-	}
+    @Override
+    public PropertyMappingStep binder(PropertyBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingStep marker(MarkerBinder binder, Map<String, Object> params) {
-		return delegate.marker( binder );
-	}
+    @Override
+    public PropertyMappingStep marker(MarkerBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingGenericFieldOptionsStep genericField() {
-		return delegate.genericField();
-	}
+    @Override
+    public PropertyMappingGenericFieldOptionsStep genericField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingGenericFieldOptionsStep genericField(String relativeFieldName) {
-		return delegate.genericField( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingGenericFieldOptionsStep genericField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFullTextFieldOptionsStep fullTextField() {
-		return delegate.fullTextField();
-	}
+    @Override
+    public PropertyMappingFullTextFieldOptionsStep fullTextField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFullTextFieldOptionsStep fullTextField(String relativeFieldName) {
-		return delegate.fullTextField( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingFullTextFieldOptionsStep fullTextField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingKeywordFieldOptionsStep keywordField() {
-		return delegate.keywordField();
-	}
+    @Override
+    public PropertyMappingKeywordFieldOptionsStep keywordField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingKeywordFieldOptionsStep keywordField(String relativeFieldName) {
-		return delegate.keywordField( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingKeywordFieldOptionsStep keywordField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField() {
-		return delegate.scaledNumberField();
-	}
+    @Override
+    public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField(String relativeFieldName) {
-		return delegate.scaledNumberField( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFieldOptionsStep<?> nonStandardField() {
-		return delegate.nonStandardField();
-	}
+    @Override
+    public PropertyMappingFieldOptionsStep<?> nonStandardField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFieldOptionsStep<?> nonStandardField(String relativeFieldName) {
-		return delegate.nonStandardField( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingFieldOptionsStep<?> nonStandardField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingIndexedEmbeddedStep indexedEmbedded() {
-		return delegate.indexedEmbedded();
-	}
+    @Override
+    public PropertyMappingIndexedEmbeddedStep indexedEmbedded() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingIndexedEmbeddedStep indexedEmbedded(String relativeFieldName) {
-		return delegate.indexedEmbedded( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingIndexedEmbeddedStep indexedEmbedded(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AssociationInverseSideOptionsStep associationInverseSide(PojoModelPathValueNode inversePath) {
-		return delegate.associationInverseSide( inversePath );
-	}
+    @Override
+    public AssociationInverseSideOptionsStep associationInverseSide(PojoModelPathValueNode inversePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexingDependencyOptionsStep indexingDependency() {
-		return delegate.indexingDependency();
-	}
+    @Override
+    public IndexingDependencyOptionsStep indexingDependency() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField(int dimension) {
-		return delegate.vectorField( dimension );
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField(int dimension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField(int dimension, String relativeFieldName) {
-		return delegate.vectorField( dimension, relativeFieldName );
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField(int dimension, String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField() {
-		return delegate.vectorField();
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField(String relativeFieldName) {
-		return delegate.vectorField( relativeFieldName );
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

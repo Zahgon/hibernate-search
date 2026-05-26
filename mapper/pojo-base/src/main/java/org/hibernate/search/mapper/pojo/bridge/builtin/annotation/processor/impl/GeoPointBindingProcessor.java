@@ -13,26 +13,19 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMappingStep;
 
-public class GeoPointBindingProcessor
-		implements TypeMappingAnnotationProcessor<GeoPointBinding>,
-		PropertyMappingAnnotationProcessor<GeoPointBinding> {
-	@Override
-	public void process(TypeMappingStep mapping, GeoPointBinding annotation,
-			TypeMappingAnnotationProcessorContext context) {
-		mapping.binder( createBinder( annotation ) );
-	}
+public class GeoPointBindingProcessor implements TypeMappingAnnotationProcessor<GeoPointBinding>, PropertyMappingAnnotationProcessor<GeoPointBinding> {
 
-	@Override
-	public void process(PropertyMappingStep mapping, GeoPointBinding annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		mapping.binder( createBinder( annotation ) );
-	}
+    @Override
+    public void process(TypeMappingStep mapping, GeoPointBinding annotation, TypeMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private GeoPointBinder createBinder(GeoPointBinding annotation) {
-		return GeoPointBinder.create()
-				.fieldName( annotation.fieldName() )
-				.markerSet( annotation.markerSet() )
-				.projectable( annotation.projectable() )
-				.sortable( annotation.sortable() );
-	}
+    @Override
+    public void process(PropertyMappingStep mapping, GeoPointBinding annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private GeoPointBinder createBinder(GeoPointBinding annotation) {
+        return GeoPointBinder.create().fieldName(annotation.fieldName()).markerSet(annotation.markerSet()).projectable(annotation.projectable()).sortable(annotation.sortable());
+    }
 }

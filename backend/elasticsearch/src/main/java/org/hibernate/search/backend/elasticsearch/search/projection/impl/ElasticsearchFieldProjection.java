@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.search.projection.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.AbstractElasticsearchCodecAwareSearchQueryElementFactory;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
@@ -19,7 +18,6 @@ import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.spi.FieldProjectionBuilder;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -33,166 +31,131 @@ import com.google.gson.JsonPrimitive;
  */
 public class ElasticsearchFieldProjection<F, V, P, T> extends AbstractElasticsearchProjection<P> {
 
-	private final String absoluteFieldPath;
-	private final String[] absoluteFieldPathComponents;
-	private final String requiredContextAbsoluteFieldPath;
+    private final String absoluteFieldPath;
 
-	private final Function<JsonElement, T> decodeFunction;
-	private final boolean canDecodeArrays;
-	private final ProjectionConverter<? super T, ? extends V> converter;
-	private final ProjectionCollector.Provider<V, P> collectorProvider;
+    private final String[] absoluteFieldPathComponents;
 
-	private ElasticsearchFieldProjection(Builder<F, V, T> builder,
-			ProjectionCollector.Provider<V, P> collectorProvider) {
-		this( builder.scope, builder.field, builder.decodeFunction, builder.canDecodeArrays, builder.converter,
-				collectorProvider
-		);
-	}
+    private final String requiredContextAbsoluteFieldPath;
 
-	ElasticsearchFieldProjection(ElasticsearchSearchIndexScope<?> scope,
-			ElasticsearchSearchIndexValueFieldContext<?> field,
-			Function<JsonElement, T> decodeFunction, boolean canDecodeArrays,
-			ProjectionConverter<? super T, ? extends V> converter,
-			ProjectionCollector.Provider<V, P> collectorProvider) {
-		super( scope );
-		this.absoluteFieldPath = field.absolutePath();
-		this.absoluteFieldPathComponents = field.absolutePathComponents();
-		this.requiredContextAbsoluteFieldPath = collectorProvider.isSingleValued()
-				? field.closestMultiValuedParentAbsolutePath()
-				: null;
-		this.decodeFunction = decodeFunction;
-		this.canDecodeArrays = canDecodeArrays;
-		this.converter = converter;
-		this.collectorProvider = collectorProvider;
-	}
+    private final Function<JsonElement, T> decodeFunction;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "absoluteFieldPath=" + absoluteFieldPath
-				+ ", collectorProvider=" + collectorProvider
-				+ "]";
-	}
+    private final boolean canDecodeArrays;
 
-	@Override
-	public ValueFieldExtractor<?> request(JsonObject requestBody, ProjectionRequestContext context) {
-		ProjectionRequestContext innerContext = context.forField( absoluteFieldPath, absoluteFieldPathComponents );
-		if ( !context.projectionCardinalityCorrectlyAddressed( requiredContextAbsoluteFieldPath ) ) {
-			throw QueryLog.INSTANCE.invalidSingleValuedProjectionOnValueFieldInMultiValuedObjectField(
-					absoluteFieldPath, requiredContextAbsoluteFieldPath );
-		}
-		JsonPrimitive fieldPathJson = new JsonPrimitive( absoluteFieldPath );
-		AccumulatingSourceExtractor.REQUEST_SOURCE_ACCESSOR.addElementIfAbsent( requestBody, fieldPathJson );
-		return new ValueFieldExtractor<>( innerContext.relativeCurrentFieldPathComponents(), collectorProvider.get() );
-	}
+    private final ProjectionConverter<? super T, ? extends V> converter;
 
-	/**
-	 * @param <A> The type of the temporary storage for accumulated values, before and after being transformed.
-	 */
-	private class ValueFieldExtractor<A> extends AccumulatingSourceExtractor<T, V, A, P> {
-		public ValueFieldExtractor(String[] fieldPathComponents, ProjectionCollector<T, V, A, P> collector) {
-			super( fieldPathComponents, collector );
-		}
+    private final ProjectionCollector.Provider<V, P> collectorProvider;
 
-		@Override
-		public String toString() {
-			return getClass().getSimpleName() + "["
-					+ "absoluteFieldPath=" + absoluteFieldPath
-					+ ", collector=" + collector
-					+ "]";
-		}
+    private ElasticsearchFieldProjection(Builder<F, V, T> builder, ProjectionCollector.Provider<V, P> collectorProvider) {
+        this(builder.scope, builder.field, builder.decodeFunction, builder.canDecodeArrays, builder.converter, collectorProvider);
+    }
 
-		@Override
-		protected T extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonElement sourceElement,
-				ProjectionExtractContext context) {
-			return decodeFunction.apply( sourceElement );
-		}
+    ElasticsearchFieldProjection(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<?> field, Function<JsonElement, T> decodeFunction, boolean canDecodeArrays, ProjectionConverter<? super T, ? extends V> converter, ProjectionCollector.Provider<V, P> collectorProvider) {
+        super(scope);
+        this.absoluteFieldPath = field.absolutePath();
+        this.absoluteFieldPathComponents = field.absolutePathComponents();
+        this.requiredContextAbsoluteFieldPath = collectorProvider.isSingleValued() ? field.closestMultiValuedParentAbsolutePath() : null;
+        this.decodeFunction = decodeFunction;
+        this.canDecodeArrays = canDecodeArrays;
+        this.converter = converter;
+        this.collectorProvider = collectorProvider;
+    }
 
-		@Override
-		protected boolean canDecodeArrays() {
-			return canDecodeArrays;
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public P transform(LoadingResult<?> loadingResult, A extractedData,
-				ProjectionTransformContext context) {
-			FromDocumentValueConvertContext convertContext = context.fromDocumentValueConvertContext();
-			A transformedData = collector.transformAll( extractedData, converter.delegate(), convertContext );
-			return collector.finish( transformedData );
-		}
-	}
+    @Override
+    public ValueFieldExtractor<?> request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Factory<F>
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<FieldProjectionBuilder.TypeSelector, F> {
-		public Factory(ElasticsearchFieldCodec<F> codec) {
-			super( codec );
-		}
+    /**
+     * @param <A> The type of the temporary storage for accumulated values, before and after being transformed.
+     */
+    private class ValueFieldExtractor<A> extends AccumulatingSourceExtractor<T, V, A, P> {
 
-		@Override
-		public TypeSelector<?> create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			// Check the compatibility of nested structure in the case of multi-index search.
-			field.nestedPathHierarchy();
-			return new TypeSelector<>( codec, scope, field );
-		}
-	}
+        public ValueFieldExtractor(String[] fieldPathComponents, ProjectionCollector<T, V, A, P> collector) {
+            super(fieldPathComponents, collector);
+        }
 
-	public static class TypeSelector<F> implements FieldProjectionBuilder.TypeSelector {
-		private final ElasticsearchFieldCodec<F> codec;
-		private final ElasticsearchSearchIndexScope<?> scope;
-		private final ElasticsearchSearchIndexValueFieldContext<F> field;
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private TypeSelector(ElasticsearchFieldCodec<F> codec,
-				ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
-			this.codec = codec;
-			this.scope = scope;
-			this.field = field;
-		}
+        @Override
+        protected T extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonElement sourceElement, ProjectionExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public <V> Builder<F, V, ?> type(Class<V> expectedType, ValueModel valueModel) {
-			if ( ValueModel.RAW.equals( valueModel ) ) {
-				return new Builder<>( Function.identity(), codec.canDecodeArrays(), scope, field,
-						// unchecked cast to make eclipse-compiler happy
-						// we know that Elasticsearch projection converters work with the JsonElement
-						( (ProjectionConverter<JsonElement, ?>) field.type().rawProjectionConverter() )
-								.withConvertedType( expectedType, field )
-				);
-			}
-			else {
-				return new Builder<>( codec::decode, codec.canDecodeArrays(), scope, field,
-						field.type().projectionConverter( valueModel ).withConvertedType( expectedType, field )
-				);
-			}
-		}
-	}
+        @Override
+        protected boolean canDecodeArrays() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public static class Builder<F, V, T> implements FieldProjectionBuilder<V> {
+        @Override
+        public P transform(LoadingResult<?> loadingResult, A extractedData, ProjectionTransformContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private final Function<JsonElement, T> decodeFunction;
-		private final boolean canDecodeArrays;
-		private final ElasticsearchSearchIndexScope<?> scope;
-		private final ElasticsearchSearchIndexValueFieldContext<F> field;
-		private final ProjectionConverter<T, ? extends V> converter;
+    public static class Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<FieldProjectionBuilder.TypeSelector, F> {
 
-		private Builder(Function<JsonElement, T> decodeFunction, boolean canDecodeArrays,
-				ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field, ProjectionConverter<T, ? extends V> converter) {
-			this.decodeFunction = decodeFunction;
-			this.canDecodeArrays = canDecodeArrays;
-			this.scope = scope;
-			this.field = field;
-			this.converter = converter;
-		}
+        public Factory(ElasticsearchFieldCodec<F> codec) {
+            super(codec);
+        }
 
-		@Override
-		public <P> SearchProjection<P> build(ProjectionCollector.Provider<V, P> collectorProvider) {
-			if ( collectorProvider.isSingleValued() && field.multiValued() ) {
-				throw QueryLog.INSTANCE.invalidSingleValuedProjectionOnMultiValuedField( field.absolutePath(),
-						field.eventContext() );
-			}
-			return new ElasticsearchFieldProjection<>( this, collectorProvider );
-		}
-	}
+        @Override
+        public TypeSelector<?> create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    public static class TypeSelector<F> implements FieldProjectionBuilder.TypeSelector {
+
+        private final ElasticsearchFieldCodec<F> codec;
+
+        private final ElasticsearchSearchIndexScope<?> scope;
+
+        private final ElasticsearchSearchIndexValueFieldContext<F> field;
+
+        private TypeSelector(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            this.codec = codec;
+            this.scope = scope;
+            this.field = field;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <V> Builder<F, V, ?> type(Class<V> expectedType, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    public static class Builder<F, V, T> implements FieldProjectionBuilder<V> {
+
+        private final Function<JsonElement, T> decodeFunction;
+
+        private final boolean canDecodeArrays;
+
+        private final ElasticsearchSearchIndexScope<?> scope;
+
+        private final ElasticsearchSearchIndexValueFieldContext<F> field;
+
+        private final ProjectionConverter<T, ? extends V> converter;
+
+        private Builder(Function<JsonElement, T> decodeFunction, boolean canDecodeArrays, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field, ProjectionConverter<T, ? extends V> converter) {
+            this.decodeFunction = decodeFunction;
+            this.canDecodeArrays = canDecodeArrays;
+            this.scope = scope;
+            this.field = field;
+            this.converter = converter;
+        }
+
+        @Override
+        public <P> SearchProjection<P> build(ProjectionCollector.Provider<V, P> collectorProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

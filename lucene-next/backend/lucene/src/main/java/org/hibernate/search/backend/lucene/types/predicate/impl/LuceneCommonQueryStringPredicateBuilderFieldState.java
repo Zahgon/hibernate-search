@@ -10,40 +10,38 @@ import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexV
 import org.hibernate.search.backend.lucene.types.codec.impl.LuceneFieldCodec;
 import org.hibernate.search.engine.search.predicate.spi.CommonQueryStringPredicateBuilder;
 
-public final class LuceneCommonQueryStringPredicateBuilderFieldState
-		implements CommonQueryStringPredicateBuilder.FieldState {
+public final class LuceneCommonQueryStringPredicateBuilderFieldState implements CommonQueryStringPredicateBuilder.FieldState {
 
-	private final LuceneSearchIndexValueFieldContext<?> field;
-	private Float boost;
+    private final LuceneSearchIndexValueFieldContext<?> field;
 
-	private LuceneCommonQueryStringPredicateBuilderFieldState(LuceneSearchIndexValueFieldContext<?> field) {
-		this.field = field;
-	}
+    private Float boost;
 
-	@Override
-	public void boost(float boost) {
-		this.boost = boost;
-	}
+    private LuceneCommonQueryStringPredicateBuilderFieldState(LuceneSearchIndexValueFieldContext<?> field) {
+        this.field = field;
+    }
 
-	public LuceneSearchIndexValueFieldContext<?> field() {
-		return field;
-	}
+    @Override
+    public void boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Float boost() {
-		return boost;
-	}
+    public LuceneSearchIndexValueFieldContext<?> field() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Factory<T, C extends LuceneFieldCodec<T, ?>>
-			extends AbstractLuceneCodecAwareSearchQueryElementFactory<LuceneCommonQueryStringPredicateBuilderFieldState, T, C> {
-		public Factory(C codec) {
-			super( codec );
-		}
+    public Float boost() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public LuceneCommonQueryStringPredicateBuilderFieldState create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<T> field) {
-			return new LuceneCommonQueryStringPredicateBuilderFieldState( field );
-		}
-	}
+    public static class Factory<T, C extends LuceneFieldCodec<T, ?>> extends AbstractLuceneCodecAwareSearchQueryElementFactory<LuceneCommonQueryStringPredicateBuilderFieldState, T, C> {
 
+        public Factory(C codec) {
+            super(codec);
+        }
+
+        @Override
+        public LuceneCommonQueryStringPredicateBuilderFieldState create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<T> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

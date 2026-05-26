@@ -12,7 +12,6 @@ import org.hibernate.search.backend.lucene.search.predicate.impl.PredicateReques
 import org.hibernate.search.backend.lucene.types.predicate.parse.impl.LuceneWildcardExpressionHelper;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.WildcardPredicateBuilder;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
@@ -21,44 +20,42 @@ import org.apache.lucene.util.BytesRef;
 
 public class LuceneTextWildcardPredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneTextWildcardPredicate(Builder<?> builder) {
-		super( builder );
-	}
+    private LuceneTextWildcardPredicate(Builder<?> builder) {
+        super(builder);
+    }
 
-	public static class Factory<F>
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<WildcardPredicateBuilder, F> {
-		@Override
-		public Builder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( scope, field );
-		}
-	}
+    public static class Factory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<WildcardPredicateBuilder, F> {
 
-	private static class Builder<F> extends AbstractBuilder<F> implements WildcardPredicateBuilder {
+        @Override
+        public Builder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private final Analyzer analyzerOrNormalizer;
+    private static class Builder<F> extends AbstractBuilder<F> implements WildcardPredicateBuilder {
 
-		private String pattern;
+        private final Analyzer analyzerOrNormalizer;
 
-		private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			this.analyzerOrNormalizer = field.type().searchAnalyzerOrNormalizer();
-		}
+        private String pattern;
 
-		@Override
-		public void pattern(String wildcardPattern) {
-			this.pattern = wildcardPattern;
-		}
+        private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            this.analyzerOrNormalizer = field.type().searchAnalyzerOrNormalizer();
+        }
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneTextWildcardPredicate( this );
-		}
+        @Override
+        public void pattern(String wildcardPattern) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			BytesRef analyzedWildcard =
-					LuceneWildcardExpressionHelper.analyzeWildcard( analyzerOrNormalizer, absoluteFieldPath, pattern );
-			return new WildcardQuery( new Term( absoluteFieldPath, analyzedWildcard ) );
-		}
-	}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

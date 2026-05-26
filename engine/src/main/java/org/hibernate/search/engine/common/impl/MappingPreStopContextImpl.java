@@ -8,15 +8,15 @@ import org.hibernate.search.engine.mapper.mapping.spi.MappingPreStopContext;
 import org.hibernate.search.engine.reporting.spi.ContextualFailureCollector;
 
 class MappingPreStopContextImpl implements MappingPreStopContext {
-	private final ContextualFailureCollector failureCollector;
 
-	MappingPreStopContextImpl(ContextualFailureCollector failureCollector) {
-		this.failureCollector = failureCollector;
-	}
+    private final ContextualFailureCollector failureCollector;
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return failureCollector;
-	}
+    MappingPreStopContextImpl(ContextualFailureCollector failureCollector) {
+        this.failureCollector = failureCollector;
+    }
 
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

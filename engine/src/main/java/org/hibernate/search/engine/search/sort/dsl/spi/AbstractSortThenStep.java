@@ -9,37 +9,37 @@ import org.hibernate.search.engine.search.sort.dsl.SortThenStep;
 import org.hibernate.search.engine.search.sort.dsl.TypedSearchSortFactory;
 
 public abstract class AbstractSortThenStep<SR> implements SortThenStep<SR> {
-	private final SearchSortDslContext<SR, ?, ?> parentDslContext;
 
-	private SearchSortDslContext<SR, ?, ?> selfDslContext;
+    private final SearchSortDslContext<SR, ?, ?> parentDslContext;
 
-	public AbstractSortThenStep(SearchSortDslContext<SR, ?, ?> parentDslContext) {
-		this.parentDslContext = parentDslContext;
-	}
+    private SearchSortDslContext<SR, ?, ?> selfDslContext;
 
-	@Override
-	public final TypedSearchSortFactory<SR> then() {
-		return selfDslContext().then();
-	}
+    public AbstractSortThenStep(SearchSortDslContext<SR, ?, ?> parentDslContext) {
+        this.parentDslContext = parentDslContext;
+    }
 
-	@Override
-	public SearchSort toSort() {
-		return selfDslContext().toSort();
-	}
+    @Override
+    public final TypedSearchSortFactory<SR> then() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private SearchSortDslContext<SR, ?, ?> selfDslContext() {
-		/*
+    @Override
+    public SearchSort toSort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private SearchSortDslContext<SR, ?, ?> selfDslContext() {
+        /*
 		 * Postpone the call of build() as long as possible,
 		 * and make sure to only call it once,
 		 * so that "finalizing" operations may be performed in build().
 		 * See HSEARCH-3207: we must never call build() twice, because it may have side-effects.
 		 */
-		if ( selfDslContext == null ) {
-			selfDslContext = parentDslContext.append( build() );
-		}
-		return selfDslContext;
-	}
+        if (selfDslContext == null) {
+            selfDslContext = parentDslContext.append(build());
+        }
+        return selfDslContext;
+    }
 
-	protected abstract SearchSort build();
-
+    protected abstract SearchSort build();
 }

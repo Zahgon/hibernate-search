@@ -20,52 +20,52 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  * @see org.hibernate.search.mapper.pojo.mapping.definition.annotation.EntityProjection
  */
 public final class EntityProjectionBinder implements ProjectionBinder {
-	private static final EntityProjectionBinder INSTANCE = new EntityProjectionBinder();
 
-	/**
-	 * Creates an {@link EntityProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @return The binder.
-	 */
-	public static EntityProjectionBinder create() {
-		return INSTANCE;
-	}
+    private static final EntityProjectionBinder INSTANCE = new EntityProjectionBinder();
 
-	private EntityProjectionBinder() {
-	}
+    /**
+     * Creates an {@link EntityProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @return The binder.
+     */
+    public static EntityProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		bind( context, context.constructorParameter().rawType() );
-	}
+    private EntityProjectionBinder() {
+    }
 
-	private <T> void bind(ProjectionBindingContext context, Class<T> constructorParameterType) {
-		context.definition( constructorParameterType, new Definition<>( constructorParameterType ) );
-	}
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class Definition<I> extends AbstractProjectionDefinition<I> {
-		private final Class<I> requestedEntityType;
+    private <T> void bind(ProjectionBindingContext context, Class<T> constructorParameterType) {
+        context.definition(constructorParameterType, new Definition<>(constructorParameterType));
+    }
 
-		private Definition(Class<I> requestedEntityType) {
-			this.requestedEntityType = requestedEntityType;
-		}
+    private static class Definition<I> extends AbstractProjectionDefinition<I> {
 
-		@Override
-		protected String type() {
-			return "entity";
-		}
+        private final Class<I> requestedEntityType;
 
-		@Override
-		public void appendTo(ToStringTreeAppender appender) {
-			super.appendTo( appender );
-			appender.attribute( "requestedEntityType", requestedEntityType );
-		}
+        private Definition(Class<I> requestedEntityType) {
+            this.requestedEntityType = requestedEntityType;
+        }
 
-		@Override
-		public SearchProjection<I> create(ProjectionDefinitionContext context) {
-			return context.projection().entity( requestedEntityType ).toProjection();
-		}
-	}
+        @Override
+        protected String type() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public void appendTo(ToStringTreeAppender appender) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<I> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

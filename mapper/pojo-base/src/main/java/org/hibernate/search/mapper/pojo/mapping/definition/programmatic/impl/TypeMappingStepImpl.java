@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.engine.mapper.mapping.building.spi.MappingBuildContext;
 import org.hibernate.search.engine.mapper.mapping.building.spi.MappingConfigurationCollector;
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.TypeBinder;
@@ -28,88 +27,69 @@ import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.Po
 import org.hibernate.search.mapper.pojo.model.spi.PojoPropertyModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
-public class TypeMappingStepImpl
-		implements TypeMappingStep, PojoMappingConfigurationContributor, PojoTypeMetadataContributor {
+public class TypeMappingStepImpl implements TypeMappingStep, PojoMappingConfigurationContributor, PojoTypeMetadataContributor {
 
-	private final PojoRawTypeModel<?> typeModel;
+    private final PojoRawTypeModel<?> typeModel;
 
-	private final ErrorCollectingPojoTypeMetadataContributor children = new ErrorCollectingPojoTypeMetadataContributor();
+    private final ErrorCollectingPojoTypeMetadataContributor children = new ErrorCollectingPojoTypeMetadataContributor();
 
-	private Map<List<Class<?>>, InitialConstructorMappingStep> constructors;
+    private Map<List<Class<?>>, InitialConstructorMappingStep> constructors;
 
-	public TypeMappingStepImpl(PojoRawTypeModel<?> typeModel) {
-		this.typeModel = typeModel;
-	}
+    public TypeMappingStepImpl(PojoRawTypeModel<?> typeModel) {
+        this.typeModel = typeModel;
+    }
 
-	@Override
-	public void configure(MappingBuildContext buildContext, PojoMappingConfigurationContext configurationContext,
-			MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector) {
-		configurationCollector.collectContributor( typeModel, this );
-	}
+    @Override
+    public void configure(MappingBuildContext buildContext, PojoMappingConfigurationContext configurationContext, MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorTypeNode collector) {
-		children.contributeAdditionalMetadata( collector );
-	}
+    @Override
+    public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorTypeNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void contributeIndexMapping(PojoIndexMappingCollectorTypeNode collector) {
-		children.contributeIndexMapping( collector );
-	}
+    @Override
+    public void contributeIndexMapping(PojoIndexMappingCollectorTypeNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypeMappingIndexedStep indexed() {
-		TypeMappingIndexedStepImpl child = new TypeMappingIndexedStepImpl( typeModel.typeIdentifier() );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public TypeMappingIndexedStep indexed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypeMappingSearchEntityStep searchEntity() {
-		TypeMappingSearchEntityStepImpl child = new TypeMappingSearchEntityStepImpl( typeModel.typeIdentifier() );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public TypeMappingSearchEntityStep searchEntity() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypeMappingStep binder(TypeBinder binder, Map<String, Object> params) {
-		children.add( new TypeBridgeMappingContributor( binder, params ) );
-		return this;
-	}
+    @Override
+    public TypeMappingStep binder(TypeBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConstructorMappingStep mainConstructor() {
-		return constructor( typeModel.mainConstructor().parametersJavaTypes() );
-	}
+    @Override
+    public ConstructorMappingStep mainConstructor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConstructorMappingStep constructor(Class<?>... parameterTypes) {
-		if ( constructors == null ) {
-			constructors = new LinkedHashMap<>();
-		}
-		List<Class<?>> key = Arrays.asList( parameterTypes );
-		InitialConstructorMappingStep result = constructors.get( key );
-		if ( result == null ) {
-			result = new InitialConstructorMappingStep( this, typeModel.constructor( parameterTypes ) );
-			constructors.put( key, result );
-		}
-		return result;
-	}
+    @Override
+    public ConstructorMappingStep constructor(Class<?>... parameterTypes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Map<List<Class<?>>, ? extends PojoSearchMappingConstructorNode> constructors() {
-		return constructors == null ? Collections.emptyMap() : constructors;
-	}
+    @Override
+    public Map<List<Class<?>>, ? extends PojoSearchMappingConstructorNode> constructors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingStep property(String propertyName) {
-		PojoPropertyModel<?> propertyModel = typeModel.property( propertyName );
-		InitialPropertyMappingStep child = new InitialPropertyMappingStep( this, propertyModel );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingStep property(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	PojoRawTypeModel<?> getTypeModel() {
-		return typeModel;
-	}
+    PojoRawTypeModel<?> getTypeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

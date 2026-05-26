@@ -8,49 +8,40 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.logging.impl.ConfigurationLog;
 import org.hibernate.search.engine.tenancy.spi.TenancyMode;
 
 public final class BackendsInfo {
 
-	// Using a linked hash map to preserve the order
-	private final Map<Optional<String>, BackendInfo> backendsByNames = new LinkedHashMap<>();
+    // Using a linked hash map to preserve the order
+    private final Map<Optional<String>, BackendInfo> backendsByNames = new LinkedHashMap<>();
 
-	public Collection<BackendInfo> values() {
-		return backendsByNames.values();
-	}
+    public Collection<BackendInfo> values() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void collect(Optional<String> name, TenancyMode tenancyMode) {
-		backendsByNames.merge( name, new BackendInfo( name, tenancyMode ),
-				(info1, info2) -> {
-					if ( info1.tenancyMode == info2.tenancyMode ) {
-						return info1;
-					}
-					if ( name.isPresent() ) {
-						throw ConfigurationLog.INSTANCE.differentMultiTenancyNamedBackend( name.get() );
-					}
-					throw ConfigurationLog.INSTANCE.differentMultiTenancyDefaultBackend();
-				}
-		);
-	}
+    public void collect(Optional<String> name, TenancyMode tenancyMode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static final class BackendInfo {
-		// {@code Optional.empty()} means "the default backend"
-		private final Optional<String> name;
-		private final TenancyMode tenancyMode;
+    public static final class BackendInfo {
 
-		public BackendInfo(Optional<String> name, TenancyMode tenancyMode) {
-			this.name = name;
-			this.tenancyMode = tenancyMode;
-		}
+        // {@code Optional.empty()} means "the default backend"
+        private final Optional<String> name;
 
-		public Optional<String> name() {
-			return name;
-		}
+        private final TenancyMode tenancyMode;
 
-		public TenancyMode tenancyStrategy() {
-			return tenancyMode;
-		}
-	}
+        public BackendInfo(Optional<String> name, TenancyMode tenancyMode) {
+            this.name = name;
+            this.tenancyMode = tenancyMode;
+        }
+
+        public Optional<String> name() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public TenancyMode tenancyStrategy() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

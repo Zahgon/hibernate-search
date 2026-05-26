@@ -7,14 +7,15 @@ package org.hibernate.search.mapper.pojo.bridge.binding.impl;
 import org.hibernate.search.engine.common.tree.spi.TreeContributionListener;
 
 class PojoTreeContributionListener implements TreeContributionListener {
-	private boolean schemaContributed = false;
 
-	@Override
-	public void onNodeContributed() {
-		schemaContributed = true;
-	}
+    private boolean schemaContributed = false;
 
-	boolean isAnySchemaContributed() {
-		return schemaContributed;
-	}
+    @Override
+    public void onNodeContributed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    boolean isAnySchemaContributed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

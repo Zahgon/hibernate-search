@@ -26,72 +26,26 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 
-class LuceneBooleanIndexFieldTypeOptionsStep
-		extends AbstractLuceneStandardIndexFieldTypeOptionsStep<LuceneBooleanIndexFieldTypeOptionsStep, Boolean> {
+class LuceneBooleanIndexFieldTypeOptionsStep extends AbstractLuceneStandardIndexFieldTypeOptionsStep<LuceneBooleanIndexFieldTypeOptionsStep, Boolean> {
 
-	private Sortable sortable = Sortable.DEFAULT;
+    private Sortable sortable = Sortable.DEFAULT;
 
-	LuceneBooleanIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Boolean.class, DefaultStringConverters.BOOLEAN );
-	}
+    LuceneBooleanIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Boolean.class, DefaultStringConverters.BOOLEAN);
+    }
 
-	@Override
-	public LuceneBooleanIndexFieldTypeOptionsStep sortable(Sortable sortable) {
-		this.sortable = sortable;
-		return thisAsS();
-	}
+    @Override
+    public LuceneBooleanIndexFieldTypeOptionsStep sortable(Sortable sortable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexValueFieldType<Boolean> toIndexFieldType() {
-		boolean resolvedSearchable = resolveDefault( searchable );
-		boolean resolvedSortable = resolveDefault( sortable );
-		boolean resolvedProjectable = resolveDefault( projectable );
-		boolean resolvedAggregable = resolveDefault( aggregable );
+    @Override
+    public LuceneIndexValueFieldType<Boolean> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Indexing indexing = resolvedSearchable ? Indexing.ENABLED : Indexing.DISABLED;
-		DocValues docValues = resolvedSortable || resolvedAggregable ? DocValues.ENABLED : DocValues.DISABLED;
-		Storage storage = resolvedProjectable ? Storage.ENABLED : Storage.DISABLED;
-
-		LuceneBooleanFieldCodec codec = new LuceneBooleanFieldCodec( indexing, docValues, storage, indexNullAsValue );
-		builder.codec( codec );
-
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.MATCH, new LuceneNumericMatchPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.RANGE, new LuceneNumericRangePredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.TERMS, new LuceneNumericTermsPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS,
-					DocValues.ENABLED.equals( docValues )
-							? new LuceneExistsPredicate.DocValuesOrNormsBasedFactory<>()
-							: new LuceneExistsPredicate.DefaultFactory<>() );
-			builder.queryElementFactory( LucenePredicateTypeKeys.SIMPLE_QUERY_STRING,
-					new LuceneCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-			builder.queryElementFactory( LucenePredicateTypeKeys.QUERY_STRING,
-					new LuceneCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.FIELD, new LuceneStandardFieldSort.NumericFieldFactory<>( codec ) );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new LuceneFieldProjection.Factory<>( codec ) );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			builder.queryElementFactory( AggregationTypeKeys.TERMS, new LuceneNumericTermsAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.COUNT, LuceneCountValuesAggregation.factory() );
-		}
-
-		return builder.build();
-	}
-
-	@Override
-	protected LuceneBooleanIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
-
+    @Override
+    protected LuceneBooleanIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.predicate.dsl.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.KnnPredicateFieldStep;
 import org.hibernate.search.engine.search.predicate.dsl.KnnPredicateOptionsStep;
@@ -20,105 +19,89 @@ import org.hibernate.search.engine.search.predicate.spi.KnnPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.reference.predicate.KnnPredicateFieldReference;
 
-public class KnnPredicateFieldStepImpl<SR>
-		extends AbstractPredicateFinalStep
-		implements KnnPredicateFieldStep<SR>, KnnPredicateVectorStep<SR>, KnnPredicateOptionsStep<SR> {
+public class KnnPredicateFieldStepImpl<SR> extends AbstractPredicateFinalStep implements KnnPredicateFieldStep<SR>, KnnPredicateVectorStep<SR>, KnnPredicateOptionsStep<SR> {
 
-	private final TypedSearchPredicateFactory<SR> factory;
-	private final int k;
-	private BooleanPredicateBuilder booleanBuilder;
-	protected KnnPredicateBuilder builder;
+    private final TypedSearchPredicateFactory<SR> factory;
 
-	public KnnPredicateFieldStepImpl(TypedSearchPredicateFactory<SR> factory, SearchPredicateDslContext<?> dslContext, int k) {
-		super( dslContext );
-		this.factory = factory;
-		this.k = k;
-	}
+    private final int k;
 
-	@Override
-	public KnnPredicateVectorStep<SR> field(String fieldPath) {
-		this.builder = dslContext.scope().fieldQueryElement( fieldPath, PredicateTypeKeys.KNN );
-		this.builder.k( k );
-		return this;
-	}
+    private BooleanPredicateBuilder booleanBuilder;
 
-	@Override
-	public <T> KnnPredicateVectorGenericStep<SR, T> field(KnnPredicateFieldReference<? super SR, T> field) {
-		this.field( field.absolutePath() );
-		return new KnnPredicateVectorGenericStepImpl<>();
-	}
+    protected KnnPredicateBuilder builder;
 
-	@Override
-	public KnnPredicateOptionsStep<SR> filter(SearchPredicate searchPredicate) {
-		this.booleanPredicateBuilder().must( searchPredicate );
-		return this;
-	}
+    public KnnPredicateFieldStepImpl(TypedSearchPredicateFactory<SR> factory, SearchPredicateDslContext<?> dslContext, int k) {
+        super(dslContext);
+        this.factory = factory;
+        this.k = k;
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> filter(
-			Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
-		this.booleanPredicateBuilder().must( clauseContributor.apply( factory ).toPredicate() );
-		return this;
-	}
+    @Override
+    public KnnPredicateVectorStep<SR> field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> matching(byte... vector) {
-		this.builder.vector( vector );
-		return this;
-	}
+    @Override
+    public <T> KnnPredicateVectorGenericStep<SR, T> field(KnnPredicateFieldReference<? super SR, T> field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> matching(float... vector) {
-		this.builder.vector( vector );
-		return this;
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> filter(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> requiredMinimumSimilarity(float similarity) {
-		this.builder.requiredMinimumSimilarity( similarity );
-		return this;
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> filter(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> requiredMinimumScore(float score) {
-		this.builder.requiredMinimumScore( score );
-		return this;
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> matching(byte... vector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> boost(float boost) {
-		this.builder.boost( boost );
-		return this;
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> matching(float... vector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public KnnPredicateOptionsStep<SR> constantScore() {
-		this.builder.constantScore();
-		return this;
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> requiredMinimumSimilarity(float similarity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		if ( this.booleanBuilder != null ) {
-			builder.filter( booleanBuilder.build() );
-		}
-		return builder.build();
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> requiredMinimumScore(float score) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private BooleanPredicateBuilder booleanPredicateBuilder() {
-		if ( this.booleanBuilder == null ) {
-			this.booleanBuilder = dslContext.scope().predicateBuilders().bool();
-		}
-		return this.booleanBuilder;
-	}
+    @Override
+    public KnnPredicateOptionsStep<SR> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private class KnnPredicateVectorGenericStepImpl<T> implements KnnPredicateVectorGenericStep<SR, T> {
+    @Override
+    public KnnPredicateOptionsStep<SR> constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public KnnPredicateOptionsStep<SR> matching(T vector) {
-			KnnPredicateFieldStepImpl.this.builder.vector( vector );
-			return KnnPredicateFieldStepImpl.this;
-		}
-	}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    private BooleanPredicateBuilder booleanPredicateBuilder() {
+        if (this.booleanBuilder == null) {
+            this.booleanBuilder = dslContext.scope().predicateBuilders().bool();
+        }
+        return this.booleanBuilder;
+    }
+
+    private class KnnPredicateVectorGenericStepImpl<T> implements KnnPredicateVectorGenericStep<SR, T> {
+
+        @Override
+        public KnnPredicateOptionsStep<SR> matching(T vector) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

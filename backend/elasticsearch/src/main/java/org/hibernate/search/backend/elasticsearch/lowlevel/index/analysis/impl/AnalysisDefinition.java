@@ -5,36 +5,32 @@
 package org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.SerializeExtraProperties;
-
 import com.google.gson.JsonElement;
 
 /**
  * An abstract base class for analysis-related definitions.
- *
  */
 public abstract class AnalysisDefinition {
 
-	private String type;
+    private String type;
 
-	@SerializeExtraProperties
-	private Map<String, JsonElement> parameters;
+    @SerializeExtraProperties
+    private Map<String, JsonElement> parameters;
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, JsonElement> getParameters() {
-		return parameters;
-	}
+    public Map<String, JsonElement> getParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setParameters(Map<String, JsonElement> parameters) {
-		this.parameters = parameters;
-	}
-
+    public void setParameters(Map<String, JsonElement> parameters) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,14 +10,14 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslCo
 
 public final class SpatialPredicateInitialStepImpl<SR> implements SpatialPredicateInitialStep<SR> {
 
-	private final SearchPredicateDslContext<?> dslContext;
+    private final SearchPredicateDslContext<?> dslContext;
 
-	public SpatialPredicateInitialStepImpl(SearchPredicateDslContext<?> dslContext) {
-		this.dslContext = dslContext;
-	}
+    public SpatialPredicateInitialStepImpl(SearchPredicateDslContext<?> dslContext) {
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public SpatialWithinPredicateFieldStep<SR, ?> within() {
-		return new SpatialWithinPredicateFieldStepImpl<>( dslContext );
-	}
+    @Override
+    public SpatialWithinPredicateFieldStep<SR, ?> within() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

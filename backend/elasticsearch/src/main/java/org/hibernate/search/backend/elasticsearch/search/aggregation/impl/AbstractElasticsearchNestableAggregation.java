@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.search.aggregation.impl;
 
 import java.util.List;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonObjectAccessor;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
@@ -17,153 +16,121 @@ import org.hibernate.search.backend.elasticsearch.search.predicate.impl.Predicat
 import org.hibernate.search.backend.elasticsearch.search.predicate.impl.PredicateRequestContext;
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
-
 import com.google.gson.JsonObject;
 
 public abstract class AbstractElasticsearchNestableAggregation<A> extends AbstractElasticsearchAggregation<A> {
 
-	private static final JsonAccessor<String> REQUEST_NESTED_PATH_ACCESSOR =
-			JsonAccessor.root().property( "nested" ).property( "path" ).asString();
-	private static final JsonObjectAccessor REQUEST_FILTER_ACCESSOR =
-			JsonAccessor.root().property( "filter" ).asObject();
+    private static final JsonAccessor<String> REQUEST_NESTED_PATH_ACCESSOR = JsonAccessor.root().property("nested").property("path").asString();
 
-	private static final String NESTED_NAME = "nested";
-	private static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_NESTED_ACCESSOR =
-			JsonAccessor.root().property( "aggregations" ).property( NESTED_NAME ).asObject();
-	private static final JsonAccessor<JsonObject> RESPONSE_NESTED_ACCESSOR =
-			JsonAccessor.root().property( NESTED_NAME ).asObject();
+    private static final JsonObjectAccessor REQUEST_FILTER_ACCESSOR = JsonAccessor.root().property("filter").asObject();
 
-	private static final String FILTERED_NAME = "filtered";
-	private static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_FILTERED_ACCESSOR =
-			JsonAccessor.root().property( "aggregations" ).property( FILTERED_NAME ).asObject();
-	private static final JsonAccessor<JsonObject> RESPONSE_FILTERED_ACCESSOR =
-			JsonAccessor.root().property( FILTERED_NAME ).asObject();
+    private static final String NESTED_NAME = "nested";
 
-	protected final List<String> nestedPathHierarchy;
-	protected final ElasticsearchSearchPredicate filter;
+    private static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_NESTED_ACCESSOR = JsonAccessor.root().property("aggregations").property(NESTED_NAME).asObject();
 
-	AbstractElasticsearchNestableAggregation(AbstractBuilder<A> builder) {
-		super( builder );
-		nestedPathHierarchy = builder.nestedPathHierarchy;
-		filter = builder.filter;
-	}
+    private static final JsonAccessor<JsonObject> RESPONSE_NESTED_ACCESSOR = JsonAccessor.root().property(NESTED_NAME).asObject();
 
-	@Override
-	public final Extractor<A> request(AggregationRequestContext context, AggregationKey<?> key, JsonObject jsonAggregations) {
-		AggregationRequestBuildingContextContext buildingContext = new AggregationRequestBuildingContextContext( context );
-		jsonAggregations.add( key.name(), request( buildingContext ) );
-		return extractor( key, buildingContext );
-	}
+    private static final String FILTERED_NAME = "filtered";
 
-	private JsonObject request(AggregationRequestBuildingContextContext context) {
-		JsonObject result = doRequest( context );
+    private static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_FILTERED_ACCESSOR = JsonAccessor.root().property("aggregations").property(FILTERED_NAME).asObject();
 
-		if ( nestedPathHierarchy.isEmpty() ) {
-			// Implicit nesting is not necessary
-			return result;
-		}
+    private static final JsonAccessor<JsonObject> RESPONSE_FILTERED_ACCESSOR = JsonAccessor.root().property(FILTERED_NAME).asObject();
 
-		if ( filter != null ) {
-			PredicateRequestContext filterContext = context.getRootPredicateContext()
-					.withNestedPath( nestedPathHierarchy.get( nestedPathHierarchy.size() - 1 ) );
-			JsonObject jsonFilter = filter.toJsonQuery( filterContext );
+    protected final List<String> nestedPathHierarchy;
 
-			JsonObject object = new JsonObject();
+    protected final ElasticsearchSearchPredicate filter;
 
-			REQUEST_FILTER_ACCESSOR.set( object, jsonFilter );
-			REQUEST_AGGREGATIONS_FILTERED_ACCESSOR.set( object, result );
-			result = object;
-		}
+    AbstractElasticsearchNestableAggregation(AbstractBuilder<A> builder) {
+        super(builder);
+        nestedPathHierarchy = builder.nestedPathHierarchy;
+        filter = builder.filter;
+    }
 
-		// traversing the nestedPathHierarchy in reverse order
-		int hierarchyLastIndex = nestedPathHierarchy.size() - 1;
-		for ( int i = hierarchyLastIndex; i >= 0; i-- ) {
-			String path = nestedPathHierarchy.get( i );
+    @Override
+    public final Extractor<A> request(AggregationRequestContext context, AggregationKey<?> key, JsonObject jsonAggregations) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			JsonObject object = new JsonObject();
+    private JsonObject request(AggregationRequestBuildingContextContext context) {
+        JsonObject result = doRequest(context);
+        if (nestedPathHierarchy.isEmpty()) {
+            // Implicit nesting is not necessary
+            return result;
+        }
+        if (filter != null) {
+            PredicateRequestContext filterContext = context.getRootPredicateContext().withNestedPath(nestedPathHierarchy.get(nestedPathHierarchy.size() - 1));
+            JsonObject jsonFilter = filter.toJsonQuery(filterContext);
+            JsonObject object = new JsonObject();
+            REQUEST_FILTER_ACCESSOR.set(object, jsonFilter);
+            REQUEST_AGGREGATIONS_FILTERED_ACCESSOR.set(object, result);
+            result = object;
+        }
+        // traversing the nestedPathHierarchy in reverse order
+        int hierarchyLastIndex = nestedPathHierarchy.size() - 1;
+        for (int i = hierarchyLastIndex; i >= 0; i--) {
+            String path = nestedPathHierarchy.get(i);
+            JsonObject object = new JsonObject();
+            REQUEST_NESTED_PATH_ACCESSOR.set(object, path);
+            REQUEST_AGGREGATIONS_NESTED_ACCESSOR.set(object, result);
+            result = object;
+        }
+        return result;
+    }
 
-			REQUEST_NESTED_PATH_ACCESSOR.set( object, path );
-			REQUEST_AGGREGATIONS_NESTED_ACCESSOR.set( object, result );
+    protected abstract JsonObject doRequest(AggregationRequestBuildingContextContext context);
 
-			result = object;
-		}
+    protected abstract Extractor<A> extractor(AggregationKey<?> key, AggregationRequestBuildingContextContext context);
 
-		return result;
-	}
+    protected abstract static class AbstractExtractor<T> implements Extractor<T> {
 
-	protected abstract JsonObject doRequest(AggregationRequestBuildingContextContext context);
+        private final AggregationKey<?> key;
 
-	protected abstract Extractor<A> extractor(AggregationKey<?> key, AggregationRequestBuildingContextContext context);
+        private final List<String> nestedPathHierarchy;
 
-	protected abstract static class AbstractExtractor<T> implements Extractor<T> {
+        private final ElasticsearchSearchPredicate filter;
 
-		private final AggregationKey<?> key;
-		private final List<String> nestedPathHierarchy;
-		private final ElasticsearchSearchPredicate filter;
+        protected AbstractExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy, ElasticsearchSearchPredicate filter) {
+            this.key = key;
+            this.nestedPathHierarchy = nestedPathHierarchy;
+            this.filter = filter;
+        }
 
-		protected AbstractExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy,
-				ElasticsearchSearchPredicate filter) {
-			this.key = key;
-			this.nestedPathHierarchy = nestedPathHierarchy;
-			this.filter = filter;
-		}
+        @Override
+        public final T extract(JsonObject aggregationResult, AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public final T extract(JsonObject aggregationResult, AggregationExtractContext context) {
-			int nestedPathHierarchySize = nestedPathHierarchy.size();
+        protected abstract T doExtract(JsonObject aggregationResult, AggregationExtractContext context);
 
-			JsonObject actualAggregationResult = aggregationResult.getAsJsonObject( key.name() );
+        @Override
+        public AggregationKey<?> key() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-			for ( int i = 0; i < nestedPathHierarchySize; ++i ) {
-				actualAggregationResult = RESPONSE_NESTED_ACCESSOR.get( actualAggregationResult )
-						.orElseThrow( ElasticsearchClientLog.INSTANCE::elasticsearchResponseMissingData );
-			}
+    protected final boolean isNested() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( filter != null ) {
-				actualAggregationResult = RESPONSE_FILTERED_ACCESSOR.get( actualAggregationResult )
-						.orElseThrow( ElasticsearchClientLog.INSTANCE::elasticsearchResponseMissingData );
-			}
+    public abstract static class AbstractBuilder<A> extends AbstractElasticsearchAggregation.AbstractBuilder<A> {
 
-			return doExtract( actualAggregationResult, context );
-		}
+        protected final ElasticsearchSearchIndexValueFieldContext<?> field;
 
-		protected abstract T doExtract(JsonObject aggregationResult, AggregationExtractContext context);
+        protected final List<String> nestedPathHierarchy;
 
-		@Override
-		public AggregationKey<?> key() {
-			return key;
-		}
-	}
+        private ElasticsearchSearchPredicate filter;
 
+        public AbstractBuilder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<?> field) {
+            super(scope);
+            this.field = field;
+            this.nestedPathHierarchy = field.nestedPathHierarchy();
+        }
 
-	protected final boolean isNested() {
-		return !nestedPathHierarchy.isEmpty();
-	}
+        public void filter(SearchPredicate filter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public abstract static class AbstractBuilder<A> extends AbstractElasticsearchAggregation.AbstractBuilder<A> {
-
-		protected final ElasticsearchSearchIndexValueFieldContext<?> field;
-		protected final List<String> nestedPathHierarchy;
-		private ElasticsearchSearchPredicate filter;
-
-		public AbstractBuilder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<?> field) {
-			super( scope );
-			this.field = field;
-			this.nestedPathHierarchy = field.nestedPathHierarchy();
-		}
-
-		public void filter(SearchPredicate filter) {
-			if ( nestedPathHierarchy.isEmpty() ) {
-				throw QueryLog.INSTANCE.cannotFilterAggregationOnRootDocumentField( field.absolutePath(),
-						field.eventContext() );
-			}
-			ElasticsearchSearchPredicate elasticsearchFilter = ElasticsearchSearchPredicate.from( scope, filter );
-			elasticsearchFilter.checkNestableWithin(
-					PredicateNestingContext.nested( nestedPathHierarchy.get( nestedPathHierarchy.size() - 1 ) ) );
-			this.filter = elasticsearchFilter;
-		}
-
-		@Override
-		public abstract ElasticsearchSearchAggregation<A> build();
-	}
+        @Override
+        public abstract ElasticsearchSearchAggregation<A> build();
+    }
 }

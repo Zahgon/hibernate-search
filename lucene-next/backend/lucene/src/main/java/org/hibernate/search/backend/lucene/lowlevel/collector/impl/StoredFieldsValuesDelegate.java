@@ -6,15 +6,12 @@ package org.hibernate.search.backend.lucene.lowlevel.collector.impl;
 
 import java.io.IOException;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.lowlevel.join.impl.ChildDocIds;
 import org.hibernate.search.backend.lucene.lowlevel.join.impl.NestedDocsProvider;
 import org.hibernate.search.backend.lucene.search.extraction.impl.ReusableDocumentStoredFieldVisitor;
 import org.hibernate.search.util.common.AssertionFailure;
-
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.LeafReaderContext;
@@ -30,98 +27,60 @@ import org.apache.lucene.search.Weight;
  * Use with care.
  */
 public class StoredFieldsValuesDelegate {
-	public static class Factory {
-		private final ReusableDocumentStoredFieldVisitor storedFieldVisitor;
-		private final Set<String> requiredNestedDocumentPathsForStoredFields;
 
-		public Factory(ReusableDocumentStoredFieldVisitor storedFieldVisitor,
-				Set<String> requiredNestedDocumentPathsForStoredFields) {
+    public static class Factory {
 
-			this.storedFieldVisitor = storedFieldVisitor;
-			this.requiredNestedDocumentPathsForStoredFields = requiredNestedDocumentPathsForStoredFields;
-		}
+        private final ReusableDocumentStoredFieldVisitor storedFieldVisitor;
 
-		public StoredFieldsValuesDelegate create(CollectorExecutionContext context) throws IOException {
-			NestedDocsProvider nestedDocsProvider;
-			if ( requiredNestedDocumentPathsForStoredFields.isEmpty() ) {
-				nestedDocsProvider = null;
-			}
-			else {
-				nestedDocsProvider = context.createNestedDocsProvider( requiredNestedDocumentPathsForStoredFields );
-			}
+        private final Set<String> requiredNestedDocumentPathsForStoredFields;
 
-			return new StoredFieldsValuesDelegate( nestedDocsProvider, storedFieldVisitor, context.getIndexSearcher() );
-		}
-	}
+        public Factory(ReusableDocumentStoredFieldVisitor storedFieldVisitor, Set<String> requiredNestedDocumentPathsForStoredFields) {
+            this.storedFieldVisitor = storedFieldVisitor;
+            this.requiredNestedDocumentPathsForStoredFields = requiredNestedDocumentPathsForStoredFields;
+        }
 
-	private final NestedDocsProvider nestedDocsProvider;
-	private final Weight childrenWeight;
-	private final ReusableDocumentStoredFieldVisitor storedFieldVisitor;
+        public StoredFieldsValuesDelegate create(CollectorExecutionContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private ChildDocIds currentLeafChildDocs;
-	private LeafReader currentLeafReader;
+    private final NestedDocsProvider nestedDocsProvider;
 
-	private int currentRootDoc;
-	private Document currentRootDocValue;
-	private final IntObjectMap<Document> currentChildDocValues;
+    private final Weight childrenWeight;
 
-	public StoredFieldsValuesDelegate(NestedDocsProvider nestedDocsProvider,
-			ReusableDocumentStoredFieldVisitor storedFieldVisitor,
-			IndexSearcher indexSearcher)
-			throws IOException {
-		this.childrenWeight = nestedDocsProvider == null ? null : nestedDocsProvider.childDocsWeight( indexSearcher );
-		this.nestedDocsProvider = nestedDocsProvider;
-		this.storedFieldVisitor = storedFieldVisitor;
-		this.currentChildDocValues = nestedDocsProvider == null ? null : new IntObjectHashMap<>();
-	}
+    private final ReusableDocumentStoredFieldVisitor storedFieldVisitor;
 
-	@Override
-	public String toString() {
-		return "StoredFieldsValues{" +
-				"storedFieldVisitor=" + storedFieldVisitor +
-				'}';
-	}
+    private ChildDocIds currentLeafChildDocs;
 
-	void context(LeafReaderContext context) throws IOException {
-		this.currentLeafReader = context.reader();
-		this.currentLeafChildDocs = nestedDocsProvider == null
-				? null
-				: nestedDocsProvider.childDocs( childrenWeight, context, null );
+    private LeafReader currentLeafReader;
 
-		this.currentRootDoc = -1;
-		this.currentRootDocValue = null;
-		if ( currentChildDocValues != null ) {
-			this.currentChildDocValues.clear();
-		}
-	}
+    private int currentRootDoc;
 
-	void collect(int parentDoc) throws IOException {
-		this.currentRootDoc = parentDoc;
+    private Document currentRootDocValue;
 
-		// collect child documents if necessary
-		if ( currentLeafChildDocs != null && currentLeafChildDocs.advanceExactParent( parentDoc ) ) {
-			for ( int childDoc = currentLeafChildDocs.nextChild(); childDoc != DocIdSetIterator.NO_MORE_DOCS;
-					childDoc = currentLeafChildDocs.nextChild() ) {
-				currentLeafReader.storedFields().document( childDoc, storedFieldVisitor );
-				currentChildDocValues.put( childDoc, storedFieldVisitor.getDocumentAndReset() );
-			}
-		}
+    private final IntObjectMap<Document> currentChildDocValues;
 
-		// collect root document
-		currentLeafReader.storedFields().document( parentDoc, storedFieldVisitor );
-		this.currentRootDocValue = storedFieldVisitor.getDocumentAndReset();
-	}
+    public StoredFieldsValuesDelegate(NestedDocsProvider nestedDocsProvider, ReusableDocumentStoredFieldVisitor storedFieldVisitor, IndexSearcher indexSearcher) throws IOException {
+        this.childrenWeight = nestedDocsProvider == null ? null : nestedDocsProvider.childDocsWeight(indexSearcher);
+        this.nestedDocsProvider = nestedDocsProvider;
+        this.storedFieldVisitor = storedFieldVisitor;
+        this.currentChildDocValues = nestedDocsProvider == null ? null : new IntObjectHashMap<>();
+    }
 
-	public Document get(int docId) {
-		if ( docId == currentRootDoc ) {
-			return currentRootDocValue;
-		}
-		Document doc = currentChildDocValues.get( docId );
-		if ( doc == null ) {
-			throw new AssertionFailure( "Getting value for " + docId + ", which is neither root document "
-					+ currentRootDoc + " nor children " + currentChildDocValues.keys() );
-		}
-		return doc;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    void context(LeafReaderContext context) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    void collect(int parentDoc) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Document get(int docId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

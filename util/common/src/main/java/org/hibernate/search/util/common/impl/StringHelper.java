@@ -13,15 +13,15 @@ package org.hibernate.search.util.common.impl;
  */
 public final class StringHelper {
 
-	private StringHelper() { /* static methods only - hide constructor */
-	}
+    private StringHelper() {
+        /* static methods only - hide constructor */
+    }
 
-	public static boolean isNotEmpty(final String string) {
-		return string != null && string.length() > 0;
-	}
+    public static boolean isNotEmpty(final String string) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static boolean isEmpty(final String string) {
-		return string == null || string.length() == 0;
-	}
-
+    public static boolean isEmpty(final String string) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

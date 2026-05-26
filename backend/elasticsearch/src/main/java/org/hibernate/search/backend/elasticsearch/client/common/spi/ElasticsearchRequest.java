@@ -11,162 +11,136 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
-
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.engine.common.timing.Deadline;
-
 import com.google.gson.JsonObject;
 
 public final class ElasticsearchRequest {
 
-	public static Builder put() {
-		return new Builder( "PUT" );
-	}
+    public static Builder put() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Builder get() {
-		return new Builder( "GET" );
-	}
+    public static Builder get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Builder post() {
-		return new Builder( "POST" );
-	}
+    public static Builder post() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Builder delete() {
-		return new Builder( "DELETE" );
-	}
+    public static Builder delete() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Builder builder(String method) {
-		return new Builder( method );
-	}
+    public static Builder builder(String method) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String method;
-	private final String path;
-	private final Map<String, String> parameters;
-	private final List<JsonObject> bodyParts;
-	private final Deadline deadline;
+    private final String method;
 
-	private ElasticsearchRequest(Builder builder) {
-		this.method = builder.method;
-		this.path = builder.pathBuilder.toString();
-		this.parameters =
-				builder.parameters == null ? Collections.emptyMap() : Collections.unmodifiableMap( builder.parameters );
-		this.bodyParts =
-				builder.bodyParts == null ? Collections.emptyList() : Collections.unmodifiableList( builder.bodyParts );
-		this.deadline = builder.deadline;
-	}
+    private final String path;
 
-	public String method() {
-		return method;
-	}
+    private final Map<String, String> parameters;
 
-	public String path() {
-		return path;
-	}
+    private final List<JsonObject> bodyParts;
 
-	public Map<String, String> parameters() {
-		return parameters;
-	}
+    private final Deadline deadline;
 
-	public List<JsonObject> bodyParts() {
-		return bodyParts;
-	}
+    private ElasticsearchRequest(Builder builder) {
+        this.method = builder.method;
+        this.path = builder.pathBuilder.toString();
+        this.parameters = builder.parameters == null ? Collections.emptyMap() : Collections.unmodifiableMap(builder.parameters);
+        this.bodyParts = builder.bodyParts == null ? Collections.emptyList() : Collections.unmodifiableList(builder.bodyParts);
+        this.deadline = builder.deadline;
+    }
 
-	public Deadline deadline() {
-		return deadline;
-	}
+    public String method() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return new StringJoiner( ", ", ElasticsearchRequest.class.getSimpleName() + "[", "]" )
-				.add( "method='" + method + "'" )
-				.add( "path='" + path + "'" )
-				.add( "parameters=" + parameters )
-				.add( "bodyParts=" + bodyParts )
-				.add( "deadline=" + deadline )
-				.toString();
-	}
+    public String path() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static final class Builder {
-		private static final char PATH_SEPARATOR = '/';
+    public Map<String, String> parameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final String method;
-		private final StringBuilder pathBuilder = new StringBuilder( 20 );
+    public List<JsonObject> bodyParts() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Map<String, String> parameters;
-		private List<JsonObject> bodyParts;
-		private Deadline deadline;
+    public Deadline deadline() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Builder(String method) {
-			super();
-			this.method = method;
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder wholeEncodedPath(String path) {
-			pathBuilder.setLength( 0 );
-			pathBuilder.append( path );
-			return this;
-		}
+    public static final class Builder {
 
-		public Builder pathComponent(URLEncodedString pathComponent) {
-			pathBuilder.append( PATH_SEPARATOR ).append( pathComponent.encoded );
-			return this;
-		}
+        private static final char PATH_SEPARATOR = '/';
 
-		public Builder multiValuedPathComponent(Iterable<URLEncodedString> indexNames) {
-			boolean first = true;
-			for ( URLEncodedString name : indexNames ) {
-				if ( !first ) {
-					pathBuilder.append( ',' );
-				}
-				else {
-					pathBuilder.append( PATH_SEPARATOR );
-					first = false;
-				}
-				pathBuilder.append( name.encoded );
-			}
-			return this;
-		}
+        private final String method;
 
-		public Builder param(String name, String value) {
-			if ( parameters == null ) {
-				parameters = new LinkedHashMap<>();
-			}
-			parameters.put( name, value );
-			return this;
-		}
+        private final StringBuilder pathBuilder = new StringBuilder(20);
 
-		public Builder param(String name, int value) {
-			return param( name, String.valueOf( value ) );
-		}
+        private Map<String, String> parameters;
 
-		public Builder param(String name, long value) {
-			return param( name, String.valueOf( value ) );
-		}
+        private List<JsonObject> bodyParts;
 
-		public Builder param(String name, boolean value) {
-			return param( name, String.valueOf( value ) );
-		}
+        private Deadline deadline;
 
-		public Builder multiValuedParam(String name, Collection<String> values) {
-			return param( name, String.join( ",", values ) );
-		}
+        private Builder(String method) {
+            super();
+            this.method = method;
+        }
 
-		public Builder body(JsonObject object) {
-			if ( bodyParts == null ) {
-				bodyParts = new ArrayList<>();
-			}
-			bodyParts.add( object );
-			return this;
-		}
+        public Builder wholeEncodedPath(String path) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public Builder deadline(Deadline deadline) {
-			this.deadline = deadline;
-			return this;
-		}
+        public Builder pathComponent(URLEncodedString pathComponent) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public ElasticsearchRequest build() {
-			return new ElasticsearchRequest( this );
-		}
-	}
+        public Builder multiValuedPathComponent(Iterable<URLEncodedString> indexNames) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        public Builder param(String name, String value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder param(String name, int value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder param(String name, long value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder param(String name, boolean value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder multiValuedParam(String name, Collection<String> values) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder body(JsonObject object) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder deadline(Deadline deadline) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public ElasticsearchRequest build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

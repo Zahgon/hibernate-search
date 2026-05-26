@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.types.aggregation.impl;
 
 import java.util.Set;
 import java.util.function.BiFunction;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl.CountDistinctTextValuesCollectorFactory;
 import org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl.CountTextValuesCollectorFactory;
@@ -24,103 +23,84 @@ import org.hibernate.search.engine.search.common.spi.SearchQueryElementFactory;
 
 public class LuceneTextCountValuesAggregation extends AbstractLuceneNestableAggregation<Long> {
 
-	private final BiFunction<JoiningTextMultiValuesSource, String, CollectorFactory<?, Long, ?>> collectorFactorySupplier;
-	private final Set<String> indexNames;
-	private final String absoluteFieldPath;
+    private final BiFunction<JoiningTextMultiValuesSource, String, CollectorFactory<?, Long, ?>> collectorFactorySupplier;
 
-	LuceneTextCountValuesAggregation(Builder builder) {
-		super( builder );
-		this.indexNames = builder.scope.hibernateSearchIndexNames();
-		this.absoluteFieldPath = builder.field.absolutePath();
-		this.collectorFactorySupplier = builder.collectorFactorySupplier;
-	}
+    private final Set<String> indexNames;
 
-	public static Factory factory() {
-		return Factory.INSTANCE;
-	}
+    private final String absoluteFieldPath;
 
-	protected static class Factory
-			implements
-			SearchQueryElementFactory<CountValuesAggregationBuilder.TypeSelector,
-					LuceneSearchIndexScope<?>,
-					LuceneSearchIndexNodeContext> {
+    LuceneTextCountValuesAggregation(Builder builder) {
+        super(builder);
+        this.indexNames = builder.scope.hibernateSearchIndexNames();
+        this.absoluteFieldPath = builder.field.absolutePath();
+        this.collectorFactorySupplier = builder.collectorFactorySupplier;
+    }
 
-		private static final Factory INSTANCE = new Factory();
+    public static Factory factory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Factory() {
-		}
+    protected static class Factory implements SearchQueryElementFactory<CountValuesAggregationBuilder.TypeSelector, LuceneSearchIndexScope<?>, LuceneSearchIndexNodeContext> {
 
-		@Override
-		public CountValuesAggregationBuilder.TypeSelector create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexNodeContext node) {
-			return new TypeSelector( scope, node );
-		}
+        private static final Factory INSTANCE = new Factory();
 
-		@Override
-		public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
-			if ( !getClass().equals( other.getClass() ) ) {
-				throw QueryLog.INSTANCE.differentImplementationClassForQueryElement( getClass(), other.getClass() );
-			}
-		}
-	}
+        private Factory() {
+        }
 
-	private record TypeSelector(LuceneSearchIndexScope<?> scope, LuceneSearchIndexNodeContext node)
-			implements CountValuesAggregationBuilder.TypeSelector {
+        @Override
+        public CountValuesAggregationBuilder.TypeSelector create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexNodeContext node) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CountValuesAggregationBuilder builder() {
-			return new Builder( scope, node.toValueField() );
-		}
-	}
+        @Override
+        public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
+    private record TypeSelector(LuceneSearchIndexScope<?> scope, LuceneSearchIndexNodeContext node) implements CountValuesAggregationBuilder.TypeSelector {
 
-	@Override
-	public Extractor<Long> request(AggregationRequestContext context) {
-		NestedDocsProvider nestedDocsProvider = createNestedDocsProvider( context );
-		JoiningTextMultiValuesSource source = JoiningTextMultiValuesSource.fromField(
-				absoluteFieldPath, nestedDocsProvider
-		);
+        @Override
+        public CountValuesAggregationBuilder builder() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		var collectorFactory = collectorFactorySupplier.apply( source, absoluteFieldPath );
-		context.requireCollector( collectorFactory );
+    @Override
+    public Extractor<Long> request(AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new LuceneTextCountValuesAggregationExtractor( collectorFactory.getCollectorKey() );
-	}
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    protected static class Builder extends AbstractBuilder<Long> implements CountValuesAggregationBuilder {
 
-	protected static class Builder extends AbstractBuilder<Long> implements CountValuesAggregationBuilder {
-		private BiFunction<JoiningTextMultiValuesSource, String, CollectorFactory<?, Long, ?>> collectorFactorySupplier;
+        private BiFunction<JoiningTextMultiValuesSource, String, CollectorFactory<?, Long, ?>> collectorFactorySupplier;
 
-		public Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field) {
-			super( scope, field );
-			collectorFactorySupplier = CountTextValuesCollectorFactory::new;
-		}
+        public Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field) {
+            super(scope, field);
+            collectorFactorySupplier = CountTextValuesCollectorFactory::new;
+        }
 
-		@Override
-		public void distinct(boolean distinct) {
-			if ( distinct ) {
-				collectorFactorySupplier = CountDistinctTextValuesCollectorFactory::new;
-			}
-			else {
-				collectorFactorySupplier = CountTextValuesCollectorFactory::new;
-			}
-		}
+        @Override
+        public void distinct(boolean distinct) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public AbstractLuceneNestableAggregation<Long> build() {
-			return new LuceneTextCountValuesAggregation( this );
-		}
-	}
+        @Override
+        public AbstractLuceneNestableAggregation<Long> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private record LuceneTextCountValuesAggregationExtractor(CollectorKey<?, Long> collectorKey) implements Extractor<Long> {
+    private record LuceneTextCountValuesAggregationExtractor(CollectorKey<?, Long> collectorKey) implements Extractor<Long> {
 
-		@Override
-		public Long extract(AggregationExtractContext context) {
-			return context.getCollectorResults( collectorKey );
-		}
-	}
+        @Override
+        public Long extract(AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

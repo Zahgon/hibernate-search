@@ -10,44 +10,35 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeFromIndexedVal
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 
 final class IdentifierBridgeToValueBridgeAdapter<I> implements ValueBridge<I, String> {
-	private final IdentifierBridge<I> delegate;
 
-	@Override
-	public String toString() {
-		return "IdentifierBridgeValueBridgeAdapter[" + "delegate=" + delegate + "]";
-	}
+    private final IdentifierBridge<I> delegate;
 
-	public IdentifierBridgeToValueBridgeAdapter(IdentifierBridge<I> delegate) {
-		this.delegate = delegate;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toIndexedValue(I value, ValueBridgeToIndexedValueContext context) {
-		return value == null
-				? null
-				: delegate.toDocumentIdentifier( value,
-						context.extension( IdentifierBridgeContextToValueBridgeContextAdapterExtension.INSTANCE ) );
-	}
+    public IdentifierBridgeToValueBridgeAdapter(IdentifierBridge<I> delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public I fromIndexedValue(String value, ValueBridgeFromIndexedValueContext context) {
-		return value == null
-				? null
-				: delegate.fromDocumentIdentifier( value,
-						context.extension( IdentifierBridgeContextToValueBridgeContextAdapterExtension.INSTANCE ) );
-	}
+    @Override
+    public String toIndexedValue(I value, ValueBridgeToIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ValueBridge<?, ?> other) {
-		if ( !( other instanceof IdentifierBridgeToValueBridgeAdapter ) ) {
-			return false;
-		}
-		IdentifierBridgeToValueBridgeAdapter<?> castedOther = (IdentifierBridgeToValueBridgeAdapter<?>) other;
-		return delegate.isCompatibleWith( castedOther.delegate );
-	}
+    @Override
+    public I fromIndexedValue(String value, ValueBridgeFromIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		delegate.close();
-	}
+    @Override
+    public boolean isCompatibleWith(ValueBridge<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

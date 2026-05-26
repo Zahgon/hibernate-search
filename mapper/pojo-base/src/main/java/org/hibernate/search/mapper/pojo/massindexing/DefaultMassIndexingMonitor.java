@@ -23,54 +23,53 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public final class DefaultMassIndexingMonitor {
 
-	public static DefaultMassIndexingMonitor builder() {
-		return new DefaultMassIndexingMonitor();
-	}
+    public static DefaultMassIndexingMonitor builder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean countOnStart = false;
-	private boolean countOnBeforeType = true;
+    private boolean countOnStart = false;
 
-	private DefaultMassIndexingMonitor() {
-	}
+    private boolean countOnBeforeType = true;
 
-	public MassIndexingMonitor build() {
-		return new PojoMassIndexingLoggingMonitor( countOnStart, countOnBeforeType );
-	}
+    private DefaultMassIndexingMonitor() {
+    }
 
-	/**
-	 * Allows specifying whether the mass indexer should try obtaining the total number of <b>all</b> entities to index before the indexing even starts.
-	 * <p>
-	 * This means that the default monitor will make an attempt to get the counts in the main thread and only then start the indexing.
-	 * Then, at index time, the mass indexer may attempt to recalculate the total for a currently indexed type (see {@link #countOnBeforeType(boolean)}.
-	 * <p>
-	 * Defaults to {@code false}.
-	 * @param countOnStart If {@code true}, the mass indexer will try determining the total number of all entities to index
-	 * before the actual indexing starts.
-	 *
-	 * @return {@code this} for method chaining
-	 */
-	public DefaultMassIndexingMonitor countOnStart(boolean countOnStart) {
-		this.countOnStart = countOnStart;
-		return this;
-	}
+    public MassIndexingMonitor build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Allows specifying whether to try determining the total number of entities of the particular type to index
-	 * and logging that information.
-	 * <p>
-	 * This count attempt happens right before fetching the IDs to index, and should provide the
-	 * number of entities to fetch.
-	 * <p>
-	 * It may be helpful to skip the counting of entities and start the ID fetching right away to save some time.
-	 * <p>
-	 * Defaults to {@code true}.
-	 * @param countOnBeforeType If {@code true}, the mass indexer will try determining the total number of entities,
-	 * otherwise the mass indexer will not try obtaining the total count.
-	 *
-	 * @return {@code this} for method chaining
-	 */
-	public DefaultMassIndexingMonitor countOnBeforeType(boolean countOnBeforeType) {
-		this.countOnBeforeType = countOnBeforeType;
-		return this;
-	}
+    /**
+     * Allows specifying whether the mass indexer should try obtaining the total number of <b>all</b> entities to index before the indexing even starts.
+     * <p>
+     * This means that the default monitor will make an attempt to get the counts in the main thread and only then start the indexing.
+     * Then, at index time, the mass indexer may attempt to recalculate the total for a currently indexed type (see {@link #countOnBeforeType(boolean)}.
+     * <p>
+     * Defaults to {@code false}.
+     * @param countOnStart If {@code true}, the mass indexer will try determining the total number of all entities to index
+     * before the actual indexing starts.
+     *
+     * @return {@code this} for method chaining
+     */
+    public DefaultMassIndexingMonitor countOnStart(boolean countOnStart) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * Allows specifying whether to try determining the total number of entities of the particular type to index
+     * and logging that information.
+     * <p>
+     * This count attempt happens right before fetching the IDs to index, and should provide the
+     * number of entities to fetch.
+     * <p>
+     * It may be helpful to skip the counting of entities and start the ID fetching right away to save some time.
+     * <p>
+     * Defaults to {@code true}.
+     * @param countOnBeforeType If {@code true}, the mass indexer will try determining the total number of entities,
+     * otherwise the mass indexer will not try obtaining the total count.
+     *
+     * @return {@code this} for method chaining
+     */
+    public DefaultMassIndexingMonitor countOnBeforeType(boolean countOnBeforeType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

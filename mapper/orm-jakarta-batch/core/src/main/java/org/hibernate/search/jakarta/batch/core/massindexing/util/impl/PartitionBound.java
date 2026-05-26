@@ -14,31 +14,32 @@ package org.hibernate.search.jakarta.batch.core.massindexing.util.impl;
  */
 public class PartitionBound {
 
-	private EntityTypeDescriptor<?, ?> entityType;
-	private Object lowerBound;
-	private Object upperBound;
+    private EntityTypeDescriptor<?, ?> entityType;
 
-	public PartitionBound(EntityTypeDescriptor<?, ?> entityType, Object lowerBound, Object upperBound) {
-		this.entityType = entityType;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
-	}
+    private Object lowerBound;
 
-	public String getEntityName() {
-		return entityType.jpaEntityName();
-	}
+    private Object upperBound;
 
-	public Object getLowerBound() {
-		return lowerBound;
-	}
+    public PartitionBound(EntityTypeDescriptor<?, ?> entityType, Object lowerBound, Object upperBound) {
+        this.entityType = entityType;
+        this.lowerBound = lowerBound;
+        this.upperBound = upperBound;
+    }
 
-	public Object getUpperBound() {
-		return upperBound;
-	}
+    public String getEntityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "PartitionBound [entityType=" + entityType + ", lowerBound=" + lowerBound + ", upperBound=" + upperBound
-				+ "]";
-	}
+    public Object getLowerBound() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Object getUpperBound() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

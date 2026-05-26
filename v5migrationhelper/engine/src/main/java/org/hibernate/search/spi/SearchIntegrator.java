@@ -5,7 +5,6 @@
 package org.hibernate.search.spi;
 
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.search.query.dsl.SearchQueryOptionsStep;
 import org.hibernate.search.query.dsl.QueryContextBuilder;
 import org.hibernate.search.query.dsl.impl.ConnectedQueryContextBuilder;
@@ -13,7 +12,6 @@ import org.hibernate.search.query.engine.impl.HSQueryImpl;
 import org.hibernate.search.query.engine.spi.HSQuery;
 import org.hibernate.search.query.engine.spi.V5MigrationSearchSession;
 import org.hibernate.search.scope.spi.V5MigrationSearchScope;
-
 import org.apache.lucene.search.Query;
 
 /**
@@ -30,33 +28,29 @@ import org.apache.lucene.search.Query;
 @Deprecated
 public interface SearchIntegrator {
 
-	V5MigrationSearchScope scope(Class<?>... targetTypes);
+    V5MigrationSearchScope scope(Class<?>... targetTypes);
 
-	/**
-	 * Return an Hibernate Search query object.
-	 * <p>This method DOES support non-Lucene backends (e.g. Elasticsearch).
-	 * <p>The returned object uses fluent APIs to define additional query settings.
-	 *
-	 * @param fullTextQuery the full-text engine query
-	 * @param session the session (for entity loading)
-	 * @param loadOptionsContributor a contributor of loading options (for entity loading)
-	 * @param entityTypes the targeted entity types
-	 * @param <LOS> The type of the initial step of the loading options definition DSL accessible through
-	 * {@link SearchQueryOptionsStep#loading(Consumer)}.
-	 * @return an Hibernate Search query object
-	 */
-	default <LOS> HSQuery createHSQuery(Query fullTextQuery, V5MigrationSearchSession<LOS> session,
-			Consumer<LOS> loadOptionsContributor, Class<?>... entityTypes) {
-		V5MigrationSearchScope scope = entityTypes == null || entityTypes.length == 0
-				? scope( Object.class )
-				: scope( entityTypes );
-		return new HSQueryImpl<>( scope, session, fullTextQuery, loadOptionsContributor );
-	}
+    /**
+     * Return an Hibernate Search query object.
+     * <p>This method DOES support non-Lucene backends (e.g. Elasticsearch).
+     * <p>The returned object uses fluent APIs to define additional query settings.
+     *
+     * @param fullTextQuery the full-text engine query
+     * @param session the session (for entity loading)
+     * @param loadOptionsContributor a contributor of loading options (for entity loading)
+     * @param entityTypes the targeted entity types
+     * @param <LOS> The type of the initial step of the loading options definition DSL accessible through
+     * {@link SearchQueryOptionsStep#loading(Consumer)}.
+     * @return an Hibernate Search query object
+     */
+    default <LOS> HSQuery createHSQuery(Query fullTextQuery, V5MigrationSearchSession<LOS> session, Consumer<LOS> loadOptionsContributor, Class<?>... entityTypes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return return a query builder providing a fluent API to create Lucene queries
-	 */
-	default QueryContextBuilder buildQueryBuilder() {
-		return new ConnectedQueryContextBuilder( this );
-	}
+    /**
+     * @return return a query builder providing a fluent API to create Lucene queries
+     */
+    default QueryContextBuilder buildQueryBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

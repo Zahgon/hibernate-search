@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.session.impl;
 
 import jakarta.transaction.Status;
 import jakarta.transaction.Synchronization;
-
 import org.hibernate.action.spi.AfterTransactionCompletionProcess;
 import org.hibernate.action.spi.BeforeTransactionCompletionProcess;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -20,66 +19,53 @@ import org.hibernate.search.mapper.orm.logging.impl.OrmMiscLog;
  * Also, suppresses any call to {@link Synchronization#afterCompletion(int)} so that
  * it can be executed later, in {@link AfterTransactionCompletionProcess#doAfterTransactionCompletion(boolean, SharedSessionContractImplementor)}.
  */
-class SynchronizationAdapter
-		implements Synchronization,
-		BeforeTransactionCompletionProcess, AfterTransactionCompletionProcess {
+class SynchronizationAdapter implements Synchronization, BeforeTransactionCompletionProcess, AfterTransactionCompletionProcess {
 
+    private final Synchronization delegate;
 
-	private final Synchronization delegate;
-	private boolean beforeExecuted = false;
-	private boolean afterExecuted = false;
+    private boolean beforeExecuted = false;
 
-	SynchronizationAdapter(Synchronization delegate) {
-		this.delegate = delegate;
-	}
+    private boolean afterExecuted = false;
 
-	@Override
-	public void beforeCompletion() {
-		doBeforeCompletion();
-	}
+    SynchronizationAdapter(Synchronization delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void afterCompletion(int status) {
-		OrmMiscLog.INSTANCE.syncAdapterIgnoringAfterCompletion( delegate );
-	}
+    @Override
+    public void beforeCompletion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void doBeforeTransactionCompletion(SharedSessionContractImplementor session) {
-		try {
-			doBeforeCompletion();
-		}
-		catch (RuntimeException e) {
-			throw OrmMiscLog.INSTANCE.synchronizationBeforeTransactionFailure( e.getMessage(), e );
-		}
-	}
+    @Override
+    public void afterCompletion(int status) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void doAfterTransactionCompletion(boolean success, SharedSessionContractImplementor sessionImplementor) {
-		try {
-			doAfterCompletion( success ? Status.STATUS_COMMITTED : Status.STATUS_ROLLEDBACK );
-		}
-		catch (RuntimeException e) {
-			throw OrmMiscLog.INSTANCE.synchronizationAfterTransactionFailure( e.getMessage(), e );
-		}
-	}
+    @Override
+    public void doBeforeTransactionCompletion(SharedSessionContractImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void doBeforeCompletion() {
-		if ( beforeExecuted ) {
-			OrmMiscLog.INSTANCE.syncAdapterIgnoringBeforeCompletionAlreadyExecuted( delegate );
-		}
-		else {
-			delegate.beforeCompletion();
-			beforeExecuted = true;
-		}
-	}
+    @Override
+    public void doAfterTransactionCompletion(boolean success, SharedSessionContractImplementor sessionImplementor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void doAfterCompletion(int status) {
-		if ( afterExecuted ) {
-			OrmMiscLog.INSTANCE.syncAdapterIgnoringAfterCompletionAlreadyExecuted( delegate );
-		}
-		else {
-			delegate.afterCompletion( status );
-			afterExecuted = true;
-		}
-	}
+    private void doBeforeCompletion() {
+        if (beforeExecuted) {
+            OrmMiscLog.INSTANCE.syncAdapterIgnoringBeforeCompletionAlreadyExecuted(delegate);
+        } else {
+            delegate.beforeCompletion();
+            beforeExecuted = true;
+        }
+    }
+
+    private void doAfterCompletion(int status) {
+        if (afterExecuted) {
+            OrmMiscLog.INSTANCE.syncAdapterIgnoringAfterCompletionAlreadyExecuted(delegate);
+        } else {
+            delegate.afterCompletion(status);
+            afterExecuted = true;
+        }
+    }
 }

@@ -10,17 +10,15 @@ import org.hibernate.search.util.common.annotation.impl.SuppressForbiddenApis;
 
 public class ConstructorProjectionApplicationException extends SearchException {
 
-	private final ProjectionConstructorPath projectionConstructorPath;
+    private final ProjectionConstructorPath projectionConstructorPath;
 
-	@SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
-	public ConstructorProjectionApplicationException(String message,
-			Throwable cause,
-			ProjectionConstructorPath projectionConstructorPath) {
-		super( message + "\n" + projectionConstructorPath.toPrefixedString(), cause );
-		this.projectionConstructorPath = projectionConstructorPath;
-	}
+    @SuppressForbiddenApis(reason = SEARCH_EXCEPTION_AND_SUBCLASSES_CAN_USE_CONSTRUCTOR)
+    public ConstructorProjectionApplicationException(String message, Throwable cause, ProjectionConstructorPath projectionConstructorPath) {
+        super(message + "\n" + projectionConstructorPath.toPrefixedString(), cause);
+        this.projectionConstructorPath = projectionConstructorPath;
+    }
 
-	public ProjectionConstructorPath projectionConstructorPath() {
-		return projectionConstructorPath;
-	}
+    public ProjectionConstructorPath projectionConstructorPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

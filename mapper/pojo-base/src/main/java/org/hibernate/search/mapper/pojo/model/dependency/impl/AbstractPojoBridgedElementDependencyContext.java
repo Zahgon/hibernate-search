@@ -17,60 +17,31 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
 public abstract class AbstractPojoBridgedElementDependencyContext {
 
-	private final PojoBootstrapIntrospector introspector;
-	final BoundPojoModelPath.Walker bindingPathWalker;
-	private final PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider;
+    private final PojoBootstrapIntrospector introspector;
 
-	private boolean useRootOnly;
+    final BoundPojoModelPath.Walker bindingPathWalker;
 
-	AbstractPojoBridgedElementDependencyContext(
-			PojoBootstrapIntrospector introspector,
-			ContainerExtractorBinder containerExtractorBinder,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
-		this.introspector = introspector;
-		this.bindingPathWalker = BoundPojoModelPath.walker( containerExtractorBinder );
-		this.typeAdditionalMetadataProvider = typeAdditionalMetadataProvider;
-	}
+    private final PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider;
 
-	public void useRootOnly() {
-		this.useRootOnly = true;
-	}
+    private boolean useRootOnly;
 
-	public boolean isUseRootOnly() {
-		return useRootOnly;
-	}
+    AbstractPojoBridgedElementDependencyContext(PojoBootstrapIntrospector introspector, ContainerExtractorBinder containerExtractorBinder, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
+        this.introspector = introspector;
+        this.bindingPathWalker = BoundPojoModelPath.walker(containerExtractorBinder);
+        this.typeAdditionalMetadataProvider = typeAdditionalMetadataProvider;
+    }
 
-	public abstract boolean hasNonRootDependency();
+    public void useRootOnly() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> createOtherEntityDependencyContext(
-			PojoRawTypeModel<?> bridgedType,
-			Class<?> otherEntityClass, PojoModelPathValueNode pathFromOtherEntityTypeToBridgedType) {
-		if ( !typeAdditionalMetadataProvider.get( bridgedType ).isEntity() ) {
-			throw MappingLog.INSTANCE.cannotDefineOtherEntityDependencyOnNonEntityBridgedType( bridgedType );
-		}
+    public boolean isUseRootOnly() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PojoRawTypeModel<?> otherEntityType = introspector.typeModel( otherEntityClass );
-		if ( !typeAdditionalMetadataProvider.get( otherEntityType ).isEntity() ) {
-			throw MappingLog.INSTANCE.cannotDefineOtherEntityDependencyFromNonEntityType( otherEntityType );
-		}
+    public abstract boolean hasNonRootDependency();
 
-		BoundPojoModelPathOriginalTypeNode<?> otherEntityRootPath = BoundPojoModelPath.root( otherEntityType );
-
-		BoundPojoModelPathValueNode<?, ?, ?> boundPathFromOtherEntityTypeToBridgedType =
-				PojoModelPathBinder.bind(
-						otherEntityRootPath,
-						pathFromOtherEntityTypeToBridgedType,
-						bindingPathWalker
-				);
-
-		PojoRawTypeModel<?> inverseSideRawType = boundPathFromOtherEntityTypeToBridgedType.getTypeModel().rawType();
-		if ( !inverseSideRawType.isSubTypeOf( bridgedType ) && !bridgedType.isSubTypeOf( inverseSideRawType ) ) {
-			throw MappingLog.INSTANCE.incorrectTargetTypeForInverseAssociation( inverseSideRawType, bridgedType );
-		}
-
-		return new PojoOtherEntityIndexingDependencyConfigurationContextImpl<>(
-				bindingPathWalker, otherEntityRootPath, boundPathFromOtherEntityTypeToBridgedType
-		);
-	}
-
+    PojoOtherEntityIndexingDependencyConfigurationContextImpl<?> createOtherEntityDependencyContext(PojoRawTypeModel<?> bridgedType, Class<?> otherEntityClass, PojoModelPathValueNode pathFromOtherEntityTypeToBridgedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

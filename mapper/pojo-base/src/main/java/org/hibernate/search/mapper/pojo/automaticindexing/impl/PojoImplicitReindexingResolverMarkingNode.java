@@ -13,19 +13,18 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoImplicitReindexingResolverMarkingNode<T> extends PojoImplicitReindexingResolverNode<T> {
 
-	@Override
-	public void close() {
-		// Nothing to do
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "mark for reindexing" );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			T dirty, PojoImplicitReindexingResolverRootContext context) {
-		collector.updateBecauseOfContained( context.detectContainingEntityType( dirty ), dirty );
-	}
+    @Override
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, T dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

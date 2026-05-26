@@ -5,55 +5,51 @@
 package org.hibernate.search.backend.lucene.search.predicate.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.spi.WithParametersPredicateBuilder;
-
 import org.apache.lucene.search.Query;
 
 public class LuceneWithParametersPredicate extends AbstractLuceneSearchPredicate {
 
-	private final LuceneSearchIndexScope<?> scope;
-	private final Function<? super NamedValues, ? extends PredicateFinalStep> predicateCreator;
+    private final LuceneSearchIndexScope<?> scope;
 
-	private LuceneWithParametersPredicate(Builder builder) {
-		super( builder );
-		scope = builder.scope;
-		predicateCreator = builder.predicateCreator;
-	}
+    private final Function<? super NamedValues, ? extends PredicateFinalStep> predicateCreator;
 
-	@Override
-	protected Query doToQuery(PredicateRequestContext context) {
-		LuceneSearchPredicate providedPredicate =
-				LuceneSearchPredicate.from( scope, predicateCreator.apply( context.queryParameters() ).toPredicate() );
-		providedPredicate.checkNestableWithin( context.getNestedPath() );
+    private LuceneWithParametersPredicate(Builder builder) {
+        super(builder);
+        scope = builder.scope;
+        predicateCreator = builder.predicateCreator;
+    }
 
-		return providedPredicate.toQuery( context );
-	}
+    @Override
+    protected Query doToQuery(PredicateRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void checkNestableWithin(String expectedParentNestedPath) {
-		// do nothing; We'll check it in to-query method.
-	}
+    @Override
+    public void checkNestableWithin(String expectedParentNestedPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder extends AbstractBuilder implements WithParametersPredicateBuilder {
-		private Function<? super NamedValues, ? extends PredicateFinalStep> predicateCreator;
+    public static class Builder extends AbstractBuilder implements WithParametersPredicateBuilder {
 
-		Builder(LuceneSearchIndexScope<?> scope) {
-			super( scope );
-		}
+        private Function<? super NamedValues, ? extends PredicateFinalStep> predicateCreator;
 
-		@Override
-		public void creator(Function<? super NamedValues, ? extends PredicateFinalStep> creator) {
-			this.predicateCreator = creator;
-		}
+        Builder(LuceneSearchIndexScope<?> scope) {
+            super(scope);
+        }
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneWithParametersPredicate( this );
-		}
-	}
+        @Override
+        public void creator(Function<? super NamedValues, ? extends PredicateFinalStep> creator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

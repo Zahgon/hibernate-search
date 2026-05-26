@@ -8,13 +8,12 @@ import com.google.gson.JsonElement;
 
 public class JsonFloatAccessor extends AbstractTypingJsonAccessor<Float> {
 
-	public JsonFloatAccessor(JsonAccessor<JsonElement> parentAccessor) {
-		super( parentAccessor );
-	}
+    public JsonFloatAccessor(JsonAccessor<JsonElement> parentAccessor) {
+        super(parentAccessor);
+    }
 
-	@Override
-	protected JsonElementType<Float> getExpectedElementType() {
-		return JsonElementTypes.FLOAT;
-	}
-
+    @Override
+    protected JsonElementType<Float> getExpectedElementType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

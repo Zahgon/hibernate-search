@@ -9,21 +9,15 @@ import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexObject
 
 class AbstractLuceneObjectFieldBuilder extends AbstractLuceneDocumentElementBuilder {
 
-	private final AbstractLuceneDocumentElementBuilder parent;
+    private final AbstractLuceneDocumentElementBuilder parent;
 
-	AbstractLuceneObjectFieldBuilder(LuceneIndexModel model, LuceneIndexObjectField schemaNode,
-			AbstractLuceneDocumentElementBuilder parent, LuceneDocumentContentImpl documentContent) {
-		super( model, schemaNode, documentContent );
-		this.parent = parent;
-	}
+    AbstractLuceneObjectFieldBuilder(LuceneIndexModel model, LuceneIndexObjectField schemaNode, AbstractLuceneDocumentElementBuilder parent, LuceneDocumentContentImpl documentContent) {
+        super(model, schemaNode, documentContent);
+        this.parent = parent;
+    }
 
-	@Override
-	void ensureDynamicValueDetectedByExistsPredicateOnObjectField() {
-		documentContent.addFieldName( schemaNode.absolutePath() );
-		if ( schemaNode.dynamic() ) {
-			// If this object field is dynamic,
-			// the parent object's metadata will not include it, so we must propagate the information.
-			parent.ensureDynamicValueDetectedByExistsPredicateOnObjectField();
-		}
-	}
+    @Override
+    void ensureDynamicValueDetectedByExistsPredicateOnObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

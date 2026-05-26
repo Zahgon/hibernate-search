@@ -5,10 +5,8 @@
 package org.hibernate.search.mapper.pojo.bridge.builtin.spatial.impl;
 
 import static java.util.function.Predicate.isEqual;
-
 import java.util.function.Function;
 import java.util.stream.Collector;
-
 import org.hibernate.search.engine.backend.document.DocumentElement;
 import org.hibernate.search.engine.backend.document.IndexFieldReference;
 import org.hibernate.search.engine.backend.document.model.dsl.IndexSchemaElement;
@@ -30,149 +28,96 @@ import org.hibernate.search.util.common.impl.StreamHelper;
 
 public class GeoPointBridge implements TypeBridge<Object>, PropertyBridge<Object> {
 
-	private final Function<Object, GeoPoint> coordinatesExtractor;
-	private final IndexFieldReference<GeoPoint> indexFieldReference;
+    private final Function<Object, GeoPoint> coordinatesExtractor;
 
-	/**
-	 * Private constructor, use {@link GeoPointBinder#create()} instead.
-	 */
-	private GeoPointBridge(Function<Object, GeoPoint> coordinatesExtractor,
-			IndexFieldReference<GeoPoint> indexFieldReference) {
-		this.coordinatesExtractor = coordinatesExtractor;
-		this.indexFieldReference = indexFieldReference;
-	}
+    private final IndexFieldReference<GeoPoint> indexFieldReference;
 
-	@Override
-	public void write(DocumentElement target, Object bridgedElement, TypeBridgeWriteContext context) {
-		doWrite( target, bridgedElement );
-	}
+    /**
+     * Private constructor, use {@link GeoPointBinder#create()} instead.
+     */
+    private GeoPointBridge(Function<Object, GeoPoint> coordinatesExtractor, IndexFieldReference<GeoPoint> indexFieldReference) {
+        this.coordinatesExtractor = coordinatesExtractor;
+        this.indexFieldReference = indexFieldReference;
+    }
 
-	@Override
-	public void write(DocumentElement target, Object bridgedElement, PropertyBridgeWriteContext context) {
-		doWrite( target, bridgedElement );
-	}
+    @Override
+    public void write(DocumentElement target, Object bridgedElement, TypeBridgeWriteContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void doWrite(DocumentElement target, Object bridgedElement) {
-		GeoPoint coordinates = coordinatesExtractor.apply( bridgedElement );
-		target.addValue( indexFieldReference, coordinates );
-	}
+    @Override
+    public void write(DocumentElement target, Object bridgedElement, PropertyBridgeWriteContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		// Nothing to do
-	}
+    private void doWrite(DocumentElement target, Object bridgedElement) {
+        GeoPoint coordinates = coordinatesExtractor.apply(bridgedElement);
+        target.addValue(indexFieldReference, coordinates);
+    }
 
-	public static class Binder implements GeoPointBinder {
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private String fieldName;
-		private Projectable projectable = Projectable.DEFAULT;
-		private Sortable sortable = Sortable.DEFAULT;
-		private String markerSet;
+    public static class Binder implements GeoPointBinder {
 
-		@Override
-		public Binder fieldName(String fieldName) {
-			this.fieldName = fieldName;
-			return this;
-		}
+        private String fieldName;
 
-		@Override
-		public Binder projectable(Projectable projectable) {
-			this.projectable = projectable;
-			return this;
-		}
+        private Projectable projectable = Projectable.DEFAULT;
 
-		@Override
-		public Binder sortable(Sortable sortable) {
-			this.sortable = sortable;
-			return this;
-		}
+        private Sortable sortable = Sortable.DEFAULT;
 
-		@Override
-		public Binder markerSet(String markerSet) {
-			this.markerSet = markerSet;
-			return this;
-		}
+        private String markerSet;
 
-		@Override
-		public void bind(TypeBindingContext context) {
-			if ( fieldName == null || fieldName.isEmpty() ) {
-				throw MappingLog.INSTANCE.missingFieldNameForGeoPointBridgeOnType( context.bridgedElement().toString() );
-			}
+        @Override
+        public Binder fieldName(String fieldName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			GeoPointBridge bridge = doBind(
-					fieldName,
-					context.typeFactory(),
-					context.indexSchemaElement(),
-					context.bridgedElement()
-			);
-			context.bridge( bridge );
-		}
+        @Override
+        public Binder projectable(Projectable projectable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void bind(PropertyBindingContext context) {
-			String defaultedFieldName;
-			if ( fieldName != null && !fieldName.isEmpty() ) {
-				defaultedFieldName = fieldName;
-			}
-			else {
-				defaultedFieldName = context.bridgedElement().name();
-			}
+        @Override
+        public Binder sortable(Sortable sortable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			GeoPointBridge bridge = doBind(
-					defaultedFieldName,
-					context.typeFactory(),
-					context.indexSchemaElement(),
-					context.bridgedElement()
-			);
-			context.bridge( bridge );
-		}
+        @Override
+        public Binder markerSet(String markerSet) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private GeoPointBridge doBind(String defaultedFieldName, IndexFieldTypeFactory typeFactory,
-				IndexSchemaElement indexSchemaElement,
-				PojoModelCompositeElement bridgedPojoModelElement) {
-			IndexFieldReference<GeoPoint> indexFieldReference = indexSchemaElement.field(
-					defaultedFieldName,
-					typeFactory.asGeoPoint().projectable( projectable ).sortable( sortable ).toIndexFieldType()
-			)
-					.toReference();
+        @Override
+        public void bind(TypeBindingContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			Function<Object, GeoPoint> coordinatesExtractor;
-			PojoElementAccessor<Double> latitudeAccessor = bridgedPojoModelElement.properties().stream()
-					.filter( model -> model.markers( LatitudeMarker.class ).stream()
-							.map( LatitudeMarker::getMarkerSet )
-							.anyMatch( isEqual( markerSet ) ) )
-					.collect( singleMarkedProperty( "@Latitude", defaultedFieldName, markerSet ) )
-					.createAccessor( Double.class );
-			PojoElementAccessor<Double> longitudeAccessor = bridgedPojoModelElement.properties().stream()
-					.filter( model -> model.markers( LongitudeMarker.class ).stream()
-							.map( LongitudeMarker::getMarkerSet )
-							.anyMatch( isEqual( markerSet ) ) )
-					.collect( singleMarkedProperty( "@Longitude", defaultedFieldName, markerSet ) )
-					.createAccessor( Double.class );
+        @Override
+        public void bind(PropertyBindingContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			coordinatesExtractor = bridgedElement -> {
-				Double latitude = latitudeAccessor.read( bridgedElement );
-				Double longitude = longitudeAccessor.read( bridgedElement );
+        private GeoPointBridge doBind(String defaultedFieldName, IndexFieldTypeFactory typeFactory, IndexSchemaElement indexSchemaElement, PojoModelCompositeElement bridgedPojoModelElement) {
+            IndexFieldReference<GeoPoint> indexFieldReference = indexSchemaElement.field(defaultedFieldName, typeFactory.asGeoPoint().projectable(projectable).sortable(sortable).toIndexFieldType()).toReference();
+            Function<Object, GeoPoint> coordinatesExtractor;
+            PojoElementAccessor<Double> latitudeAccessor = bridgedPojoModelElement.properties().stream().filter(model -> model.markers(LatitudeMarker.class).stream().map(LatitudeMarker::getMarkerSet).anyMatch(isEqual(markerSet))).collect(singleMarkedProperty("@Latitude", defaultedFieldName, markerSet)).createAccessor(Double.class);
+            PojoElementAccessor<Double> longitudeAccessor = bridgedPojoModelElement.properties().stream().filter(model -> model.markers(LongitudeMarker.class).stream().map(LongitudeMarker::getMarkerSet).anyMatch(isEqual(markerSet))).collect(singleMarkedProperty("@Longitude", defaultedFieldName, markerSet)).createAccessor(Double.class);
+            coordinatesExtractor = bridgedElement -> {
+                Double latitude = latitudeAccessor.read(bridgedElement);
+                Double longitude = longitudeAccessor.read(bridgedElement);
+                if (latitude == null || longitude == null) {
+                    return null;
+                }
+                return GeoPoint.of(latitude, longitude);
+            };
+            return new GeoPointBridge(coordinatesExtractor, indexFieldReference);
+        }
 
-				if ( latitude == null || longitude == null ) {
-					return null;
-				}
-
-				return GeoPoint.of( latitude, longitude );
-			};
-
-			return new GeoPointBridge(
-					coordinatesExtractor,
-					indexFieldReference
-			);
-		}
-
-		private static Collector<PojoModelCompositeElement, ?, PojoModelCompositeElement> singleMarkedProperty(
-				String markerName, String fieldName, String markerSet) {
-			return StreamHelper.singleElement(
-					() -> MappingLog.INSTANCE.unableToFindLongitudeOrLatitudeProperty( markerName, fieldName, markerSet ),
-					() -> MappingLog.INSTANCE.multipleLatitudeOrLongitudeProperties( markerName, fieldName, markerSet )
-			);
-		}
-	}
+        private static Collector<PojoModelCompositeElement, ?, PojoModelCompositeElement> singleMarkedProperty(String markerName, String fieldName, String markerSet) {
+            return StreamHelper.singleElement(() -> MappingLog.INSTANCE.unableToFindLongitudeOrLatitudeProperty(markerName, fieldName, markerSet), () -> MappingLog.INSTANCE.multipleLatitudeOrLongitudeProperties(markerName, fieldName, markerSet));
+        }
+    }
 }

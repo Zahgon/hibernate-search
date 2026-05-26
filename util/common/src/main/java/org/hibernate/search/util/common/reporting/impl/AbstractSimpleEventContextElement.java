@@ -5,7 +5,6 @@
 package org.hibernate.search.util.common.reporting.impl;
 
 import java.util.Objects;
-
 import org.hibernate.search.util.common.reporting.EventContextElement;
 
 /**
@@ -15,33 +14,32 @@ import org.hibernate.search.util.common.reporting.EventContextElement;
  * @param <T> The type of the parameter.
  */
 public abstract class AbstractSimpleEventContextElement<T> implements EventContextElement {
-	private final T param;
 
-	protected AbstractSimpleEventContextElement(T param) {
-		this.param = param;
-	}
+    private final T param;
 
-	@Override
-	public String toString() {
-		return "SimpleEventContextElement[" + render() + "]";
-	}
+    protected AbstractSimpleEventContextElement(T param) {
+        this.param = param;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return obj != null
-				&& getClass().equals( obj.getClass() )
-				&& Objects.deepEquals( param, ( (AbstractSimpleEventContextElement<?>) obj ).param );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hashCode( param );
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String render() {
-		return render( param );
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract String render(T param);
+    @Override
+    public String render() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected abstract String render(T param);
 }

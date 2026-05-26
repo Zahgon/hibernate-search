@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.mapper.orm.outboxpolling.avro.generated.impl.DirtinessDescriptorDto;
 import org.hibernate.search.mapper.orm.outboxpolling.avro.generated.impl.DocumentRouteDescriptorDto;
 import org.hibernate.search.mapper.orm.outboxpolling.avro.generated.impl.DocumentRoutesDescriptorDto;
@@ -21,38 +20,34 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoIndexingQueueEventPayload;
 
 final class EventPayloadFromDtoConverterUtils {
 
-	private EventPayloadFromDtoConverterUtils() {
-	}
+    private EventPayloadFromDtoConverterUtils() {
+    }
 
-	static PojoIndexingQueueEventPayload convert(PojoIndexingQueueEventPayloadDto payload) {
-		return new PojoIndexingQueueEventPayload( convert( payload.getRoutes() ), convert( payload.getDirtiness() ) );
-	}
+    static PojoIndexingQueueEventPayload convert(PojoIndexingQueueEventPayloadDto payload) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static DirtinessDescriptor convert(DirtinessDescriptorDto dirtiness) {
-		return new DirtinessDescriptor( dirtiness.getForceSelfDirty(), dirtiness.getForceContainingDirty(),
-				convertDirtyPaths( dirtiness.getDirtyPaths() ), dirtiness.getUpdateBecauseOfContained()
-		);
-	}
+    private static DirtinessDescriptor convert(DirtinessDescriptorDto dirtiness) {
+        return new DirtinessDescriptor(dirtiness.getForceSelfDirty(), dirtiness.getForceContainingDirty(), convertDirtyPaths(dirtiness.getDirtyPaths()), dirtiness.getUpdateBecauseOfContained());
+    }
 
-	private static Set<String> convertDirtyPaths(List<CharSequence> dirtyPaths) {
-		return dirtyPaths.stream().map( CharSequence::toString ).collect( Collectors.toSet() );
-	}
+    private static Set<String> convertDirtyPaths(List<CharSequence> dirtyPaths) {
+        return dirtyPaths.stream().map(CharSequence::toString).collect(Collectors.toSet());
+    }
 
-	private static DocumentRoutesDescriptor convert(DocumentRoutesDescriptorDto routes) {
-		return new DocumentRoutesDescriptor(
-				convert( routes.getCurrentRoute() ), convertRoutes( routes.getPreviousRoutes() ) );
-	}
+    private static DocumentRoutesDescriptor convert(DocumentRoutesDescriptorDto routes) {
+        return new DocumentRoutesDescriptor(convert(routes.getCurrentRoute()), convertRoutes(routes.getPreviousRoutes()));
+    }
 
-	private static Collection<DocumentRouteDescriptor> convertRoutes(List<DocumentRouteDescriptorDto> routes) {
-		return routes.stream().map( EventPayloadFromDtoConverterUtils::convert )
-				.collect( Collectors.toCollection( LinkedHashSet::new ) );
-	}
+    private static Collection<DocumentRouteDescriptor> convertRoutes(List<DocumentRouteDescriptorDto> routes) {
+        return routes.stream().map(EventPayloadFromDtoConverterUtils::convert).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 
-	private static DocumentRouteDescriptor convert(DocumentRouteDescriptorDto route) {
-		if ( route == null ) {
-			return null;
-		}
-		CharSequence routingKey = route.getRoutingKey();
-		return DocumentRouteDescriptor.of( ( routingKey == null ) ? null : routingKey.toString() );
-	}
+    private static DocumentRouteDescriptor convert(DocumentRouteDescriptorDto route) {
+        if (route == null) {
+            return null;
+        }
+        CharSequence routingKey = route.getRoutingKey();
+        return DocumentRouteDescriptor.of((routingKey == null) ? null : routingKey.toString());
+    }
 }

@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -18,43 +17,45 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 public interface BuiltInProjectionCollectors {
 
-	@SuppressWarnings("unchecked") // PROVIDER works for any V.
-	static <V> ProjectionCollector.Provider<V, V> nullable() {
-		return SingleValuedProjectionAccumulator.PROVIDER;
-	}
+    // PROVIDER works for any V.
+    @SuppressWarnings("unchecked")
+    static <V> ProjectionCollector.Provider<V, V> nullable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // PROVIDER works for any V.
-	static <V> ProjectionCollector.Provider<V, List<V>> list() {
-		return ListProjectionAccumulator.PROVIDER;
-	}
+    // PROVIDER works for any V.
+    @SuppressWarnings("unchecked")
+    static <V> ProjectionCollector.Provider<V, List<V>> list() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <V, C> ProjectionCollector.Provider<V, C> simple(
-			Function<List<V>, C> converter) {
-		return new SimpleProjectionCollector.Provider<>( converter );
-	}
+    static <V, C> ProjectionCollector.Provider<V, C> simple(Function<List<V>, C> converter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <V> ProjectionCollector.Provider<V, V[]> array(
-			Class<? super V> componentType) {
-		return ArrayProjectionCollector.provider( componentType );
-	}
+    static <V> ProjectionCollector.Provider<V, V[]> array(Class<? super V> componentType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // PROVIDER works for any V.
-	static <V> ProjectionCollector.Provider<V, Set<V>> set() {
-		return SetProjectionCollector.PROVIDER;
-	}
+    // PROVIDER works for any V.
+    @SuppressWarnings("unchecked")
+    static <V> ProjectionCollector.Provider<V, Set<V>> set() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // PROVIDER works for any V.
-	static <V> ProjectionCollector.Provider<V, SortedSet<V>> sortedSet() {
-		return SortedSetProjectionCollector.PROVIDER;
-	}
+    // PROVIDER works for any V.
+    @SuppressWarnings("unchecked")
+    static <V> ProjectionCollector.Provider<V, SortedSet<V>> sortedSet() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <V> ProjectionCollector.Provider<V, SortedSet<V>> sortedSet(
-			Comparator<? super V> comparator) {
-		return SortedSetComparatorProjectionCollector.provider( comparator );
-	}
+    static <V> ProjectionCollector.Provider<V, SortedSet<V>> sortedSet(Comparator<? super V> comparator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // PROVIDER works for any V.
-	static <V> ProjectionCollector.Provider<V, Optional<V>> optional() {
-		return OptionalProjectionCollector.PROVIDER;
-	}
+    // PROVIDER works for any V.
+    @SuppressWarnings("unchecked")
+    static <V> ProjectionCollector.Provider<V, Optional<V>> optional() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

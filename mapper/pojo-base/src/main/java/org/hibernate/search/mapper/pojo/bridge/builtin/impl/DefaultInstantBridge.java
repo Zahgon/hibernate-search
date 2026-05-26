@@ -6,26 +6,24 @@ package org.hibernate.search.mapper.pojo.bridge.builtin.impl;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
-
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultInstantBridge extends AbstractPassThroughDefaultBridge<Instant> {
 
-	public static final DefaultInstantBridge INSTANCE = new DefaultInstantBridge();
+    public static final DefaultInstantBridge INSTANCE = new DefaultInstantBridge();
 
-	private DefaultInstantBridge() {
-	}
+    private DefaultInstantBridge() {
+    }
 
-	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_INSTANT;
 
-	@Override
-	protected String toString(Instant value) {
-		return FORMATTER.format( value );
-	}
+    @Override
+    protected String toString(Instant value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Instant fromString(String value) {
-		return ParseUtils.parseInstant( value );
-	}
-
+    @Override
+    protected Instant fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

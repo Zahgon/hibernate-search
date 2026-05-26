@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
 import org.hibernate.search.engine.backend.common.spi.MultiEntityOperationExecutionReport;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.common.EntityReference;
@@ -34,497 +33,270 @@ import org.hibernate.search.util.common.SearchException;
  * @param <E> The type of entities in this plan.
  * @param <S> The type of per-instance state.
  */
-abstract class AbstractPojoTypeIndexingPlan<I, E, S extends AbstractPojoTypeIndexingPlan<I, E, S>.AbstractEntityState>
-		implements PojoImplicitReindexingAssociationInverseSideResolverRootContext, PojoTypeIndexingPlan {
+abstract class AbstractPojoTypeIndexingPlan<I, E, S extends AbstractPojoTypeIndexingPlan<I, E, S>.AbstractEntityState> implements PojoImplicitReindexingAssociationInverseSideResolverRootContext, PojoTypeIndexingPlan {
 
-	final PojoWorkSessionContext sessionContext;
-	final PojoIndexingPlanImpl root;
-	final PojoTypeIndexingPlanDelegate<I, E> delegate;
+    final PojoWorkSessionContext sessionContext;
 
-	// Use a LinkedHashMap for deterministic iteration
-	final Map<I, S> statesPerId = new LinkedHashMap<>();
-	private boolean mayRequireLoading = false;
+    final PojoIndexingPlanImpl root;
 
-	AbstractPojoTypeIndexingPlan(PojoWorkSessionContext sessionContext,
-			PojoIndexingPlanImpl root,
-			PojoTypeIndexingPlanDelegate<I, E> delegate) {
-		this.sessionContext = sessionContext;
-		this.root = root;
-		this.delegate = delegate;
-	}
+    final PojoTypeIndexingPlanDelegate<I, E> delegate;
 
-	@Override
-	public void add(Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity) {
-		if ( !mayRequireLoading && entity == null ) {
-			mayRequireLoading = true;
-		}
-		Supplier<E> entitySupplier = typeContext().toEntitySupplier( sessionContext, entity );
-		I identifier = toIdentifier( providedId, entitySupplier );
-		S state = getState( identifier );
-		state.add( entitySupplier );
-		state.providedRoutes( providedRoutes );
-	}
+    // Use a LinkedHashMap for deterministic iteration
+    final Map<I, S> statesPerId = new LinkedHashMap<>();
 
-	@Override
-	public void addOrUpdate(Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity,
-			boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths) {
-		if ( !mayRequireLoading && entity == null ) {
-			mayRequireLoading = true;
-		}
-		Supplier<E> entitySupplier = typeContext().toEntitySupplier( sessionContext, entity );
-		I identifier = toIdentifier( providedId, entitySupplier );
-		S state = getState( identifier );
-		state.addOrUpdate( entitySupplier, dirtyPaths, forceSelfDirty, forceContainingDirty );
-		state.providedRoutes( providedRoutes );
-	}
+    private boolean mayRequireLoading = false;
 
-	@Override
-	public void delete(Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity) {
-		Supplier<E> entitySupplier = typeContext().toEntitySupplier( sessionContext, entity );
-		I identifier = toIdentifier( providedId, entitySupplier );
-		S state = getState( identifier );
-		state.delete( entitySupplier );
-		state.providedRoutes( providedRoutes );
-	}
+    AbstractPojoTypeIndexingPlan(PojoWorkSessionContext sessionContext, PojoIndexingPlanImpl root, PojoTypeIndexingPlanDelegate<I, E> delegate) {
+        this.sessionContext = sessionContext;
+        this.root = root;
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void addOrUpdateOrDelete(Object providedId, DocumentRoutesDescriptor providedRoutes, boolean forceSelfDirty,
-			boolean forceContainingDirty, BitSet dirtyPaths) {
-		if ( !mayRequireLoading ) {
-			mayRequireLoading = true;
-		}
-		I identifier = toIdentifier( providedId, null );
-		S state = getState( identifier );
-		state.addOrUpdateOrDelete( dirtyPaths, forceSelfDirty, forceContainingDirty );
-		state.providedRoutes( providedRoutes );
-	}
+    @Override
+    public void add(Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void updateAssociationInverseSide(BitSet dirtyAssociationPaths, Object[] oldState, Object[] newState) {
-		typeContext().reindexingResolver().associationInverseSideResolver()
-				.resolveEntitiesToReindex( root, dirtyAssociationPaths, oldState, newState, this );
-	}
+    @Override
+    public void addOrUpdate(Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity, boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// Should only be called on indexed types,
-	// but it's simpler to implement this method for both indexed and contained types.
+    @Override
+    public void delete(Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void updateBecauseOfContained(Object entity) {
-		Supplier<E> entitySupplier = typeContext().toEntitySupplier( sessionContext, entity );
-		I identifier = typeContext().identifierMapping().getIdentifier( null, entitySupplier );
-		getState( identifier ).updateBecauseOfContained( entitySupplier );
-	}
+    @Override
+    public void addOrUpdateOrDelete(Object providedId, DocumentRoutesDescriptor providedRoutes, boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void updateBecauseOfContainedAssociation(Object entity, int dirtyAssociationPathOrdinal) {
-		Supplier<E> entitySupplier = typeContext().toEntitySupplier( sessionContext, entity );
-		I identifier = typeContext().identifierMapping().getIdentifier( null, entitySupplier );
-		BitSet dirtyPaths =
-				typeContext().reindexingResolver().dirtySelfOrContainingFilter().filter( dirtyAssociationPathOrdinal );
-		if ( dirtyPaths != null ) {
-			S state = getState( identifier );
-			// If the current entity state is "removed" and we are trying to add/update something because of
-			// the association, then we should ignore that action, since the actual value is ... removed?!
-			if ( !EntityStatus.ABSENT.equals( state.currentStatus ) ) {
-				state.addOrUpdate( entitySupplier, dirtyPaths, false, false );
-			}
-		}
-	}
+    @Override
+    public void updateAssociationInverseSide(BitSet dirtyAssociationPaths, Object[] oldState, Object[] newState) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void planLoading() {
-		for ( S state : statesPerId.values() ) {
-			state.planLoading();
-		}
-	}
+    // Should only be called on indexed types,
+    // but it's simpler to implement this method for both indexed and contained types.
+    void updateBecauseOfContained(Object entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void resolveDirty(boolean deleteOnly) {
-		for ( S state : statesPerId.values() ) {
-			state.resolveDirty( deleteOnly );
-		}
-	}
+    void updateBecauseOfContainedAssociation(Object entity, int dirtyAssociationPathOrdinal) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void discard() {
-		delegate.discard();
-	}
+    void planLoading() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void clearStates() {
-		this.mayRequireLoading = false;
-		this.statesPerId.clear();
-	}
+    void resolveDirty(boolean deleteOnly) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void process(PojoLoadingPlanProvider loadingPlanProvider) {
-		if ( delegate == null ) {
-			// Can happen with contained types depending on the strategy.
-			return;
-		}
-		if ( sessionContext.configuredIndexingPlanFilter().isIncluded( typeContext().typeIdentifier() ) ) {
-			for ( S state : statesPerId.values() ) {
-				state.sendCommandsToDelegate( loadingPlanProvider );
-			}
-		}
-	}
+    void discard() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
-		return delegate.executeAndReport( operationSubmitter );
-	}
+    void clearStates() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract PojoWorkTypeContext<I, E> typeContext();
+    void process(PojoLoadingPlanProvider loadingPlanProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract DocumentRouter<? super E> router();
+    CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	I toIdentifier(Object providedId, Supplier<E> entitySupplier) {
-		return typeContext().identifierMapping().getIdentifier( providedId, entitySupplier );
-	}
+    abstract PojoWorkTypeContext<I, E> typeContext();
 
-	final S getState(I identifier) {
-		S state = statesPerId.get( identifier );
-		if ( state == null ) {
-			state = createState( identifier );
-			statesPerId.put( identifier, state );
-		}
-		return state;
-	}
+    abstract DocumentRouter<? super E> router();
 
-	@Override
-	public PojoRuntimeIntrospector runtimeIntrospector() {
-		return sessionContext.runtimeIntrospector();
-	}
+    I toIdentifier(Object providedId, Supplier<E> entitySupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoRawTypeIdentifier<?> detectContainingEntityType(Object containingEntity) {
-		PojoRawTypeIdentifier<?> typeIdentifier = runtimeIntrospector().detectEntityType( containingEntity );
-		if ( typeIdentifier == null ) {
-			throw new AssertionFailure(
-					"Attempted to detect entity type of object " + containingEntity
-							+ " because a contained entity was modified,"
-							+ " but this object does not seem to be an entity."
-			);
-		}
-		return typeIdentifier;
-	}
+    final S getState(I identifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// This is used for reindexing resolution only:
-	// for indexing, we always propagate exceptions.
-	@Override
-	public void propagateOrIgnoreContainerExtractionException(RuntimeException exception) {
-		if ( isIgnorableDataAccessThrowable( exception ) ) {
-			return;
-		}
-		throw exception;
-	}
+    @Override
+    public PojoRuntimeIntrospector runtimeIntrospector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// This is used for reindexing resolution only:
-	// for indexing, we always propagate exceptions.
-	@Override
-	public void propagateOrIgnorePropertyAccessException(RuntimeException exception) {
-		if ( isIgnorableDataAccessThrowable( exception ) ) {
-			return;
-		}
-		throw exception;
-	}
+    @Override
+    public PojoRawTypeIdentifier<?> detectContainingEntityType(Object containingEntity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean isIgnorableDataAccessThrowable(RuntimeException exception) {
-		Throwable firstNonSearchThrowable = exception;
-		while ( firstNonSearchThrowable instanceof SearchException ) {
-			firstNonSearchThrowable = exception.getCause();
-		}
-		return firstNonSearchThrowable != null
-				&& sessionContext.runtimeIntrospector().isIgnorableDataAccessThrowable( firstNonSearchThrowable );
-	}
+    // This is used for reindexing resolution only:
+    // for indexing, we always propagate exceptions.
+    @Override
+    public void propagateOrIgnoreContainerExtractionException(RuntimeException exception) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract S createState(I identifier);
+    // This is used for reindexing resolution only:
+    // for indexing, we always propagate exceptions.
+    @Override
+    public void propagateOrIgnorePropertyAccessException(RuntimeException exception) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	boolean isDeleted(Object unproxiedObject) {
-		E entity = typeContext().toEntity( unproxiedObject );
-		I identifier = typeContext().identifierMapping().getIdentifierOrNull( entity );
-		S state = statesPerId.get( identifier );
-		if ( state == null ) {
-			// No event whatsoever for that type, so definitely no delete event.
-			return false;
-		}
-		return state.currentStatus == EntityStatus.ABSENT;
-	}
+    private boolean isIgnorableDataAccessThrowable(RuntimeException exception) {
+        Throwable firstNonSearchThrowable = exception;
+        while (firstNonSearchThrowable instanceof SearchException) {
+            firstNonSearchThrowable = exception.getCause();
+        }
+        return firstNonSearchThrowable != null && sessionContext.runtimeIntrospector().isIgnorableDataAccessThrowable(firstNonSearchThrowable);
+    }
 
-	abstract class AbstractEntityState
-			implements PojoImplicitReindexingResolverRootContext {
-		final I identifier;
-		private Supplier<E> entitySupplier;
-		private Integer loadingOrdinal;
+    protected abstract S createState(I identifier);
 
-		EntityStatus initialStatus = EntityStatus.UNKNOWN;
-		EntityStatus currentStatus = EntityStatus.UNKNOWN;
+    boolean isDeleted(Object unproxiedObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private boolean updatedBecauseOfContained;
-		private boolean forceSelfDirty;
-		private boolean forceContainingDirty;
-		private BitSet dirtyPaths;
+    abstract class AbstractEntityState implements PojoImplicitReindexingResolverRootContext {
 
-		AbstractEntityState(I identifier) {
-			this.identifier = identifier;
-		}
+        final I identifier;
 
-		@Override
-		public PojoImplicitReindexingResolverSessionContext sessionContext() {
-			return sessionContext;
-		}
+        private Supplier<E> entitySupplier;
 
-		public boolean isDirtyForAddOrUpdate() {
-			return delegate.isDirtyForAddOrUpdate( forceSelfDirty, forceContainingDirty, dirtyPaths );
-		}
+        private Integer loadingOrdinal;
 
-		@Override
-		public boolean isDirtyForReindexingResolution(PojoPathFilter filter) {
-			return forceContainingDirty || dirtyPaths != null && filter.test( dirtyPaths );
-		}
+        EntityStatus initialStatus = EntityStatus.UNKNOWN;
 
-		@Override
-		public PojoRawTypeIdentifier<?> detectContainingEntityType(Object containingEntity) {
-			return AbstractPojoTypeIndexingPlan.this.detectContainingEntityType( containingEntity );
-		}
+        EntityStatus currentStatus = EntityStatus.UNKNOWN;
 
-		// This is used for reindexing resolution only:
-		// for indexing, we always propagate exceptions.
-		@Override
-		public void propagateOrIgnoreContainerExtractionException(RuntimeException exception) {
-			AbstractPojoTypeIndexingPlan.this.propagateOrIgnoreContainerExtractionException( exception );
-		}
+        private boolean updatedBecauseOfContained;
 
-		// This is used for reindexing resolution only:
-		// for indexing, we always propagate exceptions.
-		@Override
-		public void propagateOrIgnorePropertyAccessException(RuntimeException exception) {
-			AbstractPojoTypeIndexingPlan.this.propagateOrIgnorePropertyAccessException( exception );
-		}
+        private boolean forceSelfDirty;
 
-		void add(Supplier<E> entitySupplier) {
-			this.entitySupplier = entitySupplier;
-			if ( EntityStatus.UNKNOWN.equals( initialStatus ) ) {
-				initialStatus = EntityStatus.ABSENT;
-			}
-			currentStatus = EntityStatus.PRESENT;
-			forceSelfDirty = true;
-			forceContainingDirty = true;
-			dirtyPaths = null;
-		}
+        private boolean forceContainingDirty;
 
-		void addOrUpdate(Supplier<E> entitySupplier, BitSet dirtyPaths,
-				boolean forceSelfDirty, boolean forceContainingDirty) {
-			doAddOrUpdate( entitySupplier );
-			doUpdateDirty( dirtyPaths, forceSelfDirty, forceContainingDirty );
-		}
+        private BitSet dirtyPaths;
 
-		// Should only be called on indexed types,
-		// but it's simpler to implement this method for both indexed and contained types.
-		void updateBecauseOfContained(Supplier<E> entitySupplier) {
-			if ( currentStatus == EntityStatus.ABSENT ) {
-				// This entity was deleted, but a containing entity still has a reference to it.
-				// Someone probably just forgot to clear an association.
-				// Just ignore the call.
-				return;
-			}
-			doAddOrUpdate( entitySupplier );
-			updatedBecauseOfContained = true;
-			// We don't want contained entities that haven't been modified to trigger an update of their
-			// containing entities.
-			// Thus we don't set 'shouldResolveToReindex' to true here, but leave it as is.
-		}
+        AbstractEntityState(I identifier) {
+            this.identifier = identifier;
+        }
 
-		void doAddOrUpdate(Supplier<E> entitySupplier) {
-			this.entitySupplier = entitySupplier;
-			currentStatus = EntityStatus.PRESENT;
-		}
+        @Override
+        public PojoImplicitReindexingResolverSessionContext sessionContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void delete(Supplier<E> entitySupplier) {
-			this.entitySupplier = entitySupplier;
-			if ( EntityStatus.UNKNOWN.equals( initialStatus ) ) {
-				initialStatus = EntityStatus.PRESENT;
-			}
-			currentStatus = EntityStatus.ABSENT;
+        public boolean isDirtyForAddOrUpdate() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Reindexing does not make sense for a deleted entity,
-			// but we can still resolve containing entities to reindex.
-			updatedBecauseOfContained = false;
-			forceSelfDirty = false;
-			forceContainingDirty = true;
-			dirtyPaths = null;
-		}
+        @Override
+        public boolean isDirtyForReindexingResolution(PojoPathFilter filter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void addOrUpdateOrDelete(BitSet dirtyPaths, boolean forceSelfDirty, boolean forceContainingDirty) {
-			this.entitySupplier = null;
-			currentStatus = EntityStatus.UNKNOWN;
-			doUpdateDirty( dirtyPaths, forceSelfDirty, forceContainingDirty );
-		}
+        @Override
+        public PojoRawTypeIdentifier<?> detectContainingEntityType(Object containingEntity) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected void doUpdateDirty(BitSet dirtyPaths, boolean forceSelfDirty, boolean forceContainingDirty) {
-			this.forceSelfDirty = this.forceSelfDirty || forceSelfDirty;
-			this.forceContainingDirty = this.forceContainingDirty || forceContainingDirty;
-			addDirtyPaths( dirtyPaths );
-		}
+        // This is used for reindexing resolution only:
+        // for indexing, we always propagate exceptions.
+        @Override
+        public void propagateOrIgnoreContainerExtractionException(RuntimeException exception) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		abstract void providedRoutes(DocumentRoutesDescriptor routes);
+        // This is used for reindexing resolution only:
+        // for indexing, we always propagate exceptions.
+        @Override
+        public void propagateOrIgnorePropertyAccessException(RuntimeException exception) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		abstract DocumentRoutesDescriptor providedRoutes();
+        void add(Supplier<E> entitySupplier) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void planLoading() {
-			if ( EntityStatus.ABSENT != currentStatus && entitySupplier == null ) {
-				loadingOrdinal = root.loadingPlan().planLoading( typeContext(), identifier );
-			}
-		}
+        void addOrUpdate(Supplier<E> entitySupplier, BitSet dirtyPaths, boolean forceSelfDirty, boolean forceContainingDirty) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void resolveDirty(boolean deleteOnly) {
-			// In some configurations, we will perform reindexing resolution later,
-			// after we reloaded the entities from the database;
-			// but that's not possible for deleted entities,
-			// so even those configurations perform reindexing resolution for deleted entities
-			// in-session.
-			if ( deleteOnly && !( initialStatus == EntityStatus.PRESENT && currentStatus == EntityStatus.ABSENT ) ) {
-				return;
-			}
-			Supplier<E> entitySupplier = entitySupplierOrLoad( root );
-			if ( entitySupplier == null ) {
-				// We couldn't retrieve the entity.
-				// Assume it was deleted before the current transaction started and there's nothing to resolve.
-				return;
-			}
-			try {
-				typeContext().reindexingResolver().resolveEntitiesToReindex( root, entitySupplier.get(), this );
-			}
-			catch (RuntimeException e) {
-				EntityReference entityReference = sessionContext.mappingContext().entityReferenceFactoryDelegate()
-						.create( typeContext().typeIdentifier(), typeContext().entityName(), identifier );
-				throw IndexingLog.INSTANCE.errorResolvingEntitiesToReindex( entityReference, e.getMessage(), e );
-			}
-			typeContext().resolveEntitiesToReindex( root, sessionContext, identifier,
-					entitySupplier, this );
-		}
+        // Should only be called on indexed types,
+        // but it's simpler to implement this method for both indexed and contained types.
+        void updateBecauseOfContained(Supplier<E> entitySupplier) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void sendCommandsToDelegate(PojoLoadingPlanProvider loadingPlanProvider) {
-			if ( EntityStatus.UNKNOWN.equals( currentStatus ) ) {
-				Supplier<E> entitySupplier = entitySupplierOrLoad( loadingPlanProvider );
-				currentStatus = entitySupplier != null ? EntityStatus.PRESENT : EntityStatus.ABSENT;
-			}
-			switch ( currentStatus ) {
-				case PRESENT:
-					switch ( initialStatus ) {
-						case ABSENT:
-							delegateAdd( loadingPlanProvider );
-							return;
-						case PRESENT:
-						case UNKNOWN:
-							delegateAddOrUpdate( loadingPlanProvider );
-							return;
-					}
-					break;
-				case ABSENT:
-					switch ( initialStatus ) {
-						case ABSENT:
-							// The entity was added, then deleted in the same plan.
-							// Don't do anything.
-							return;
-						case UNKNOWN:
-						case PRESENT:
-							delegateDelete();
-							return;
-					}
-					break;
-			}
-		}
+        void doAddOrUpdate(Supplier<E> entitySupplier) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void delegateAdd(PojoLoadingPlanProvider loadingPlanProvider) {
-			Supplier<E> entitySupplier = entitySupplierOrLoad( loadingPlanProvider );
-			if ( entitySupplier == null ) {
-				// We couldn't retrieve the entity.
-				// Assume it was deleted and there's nothing to add.
-				// A delete event should follow at some point.
-				return;
-			}
+        void delete(Supplier<E> entitySupplier) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			DocumentRouteDescriptor currentRoute = router()
-					.currentRoute( identifier, entitySupplier, providedRoutes(), sessionContext );
-			// We don't care about previous routes: the add() operation expects that the document isn't in the index yet.
-			if ( currentRoute == null ) {
-				// The routing bridge decided the entity should not be indexed.
-				// There's nothing to do.
-				return;
-			}
-			delegate.add( identifier, currentRoute, entitySupplier );
-		}
+        void addOrUpdateOrDelete(BitSet dirtyPaths, boolean forceSelfDirty, boolean forceContainingDirty) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		void delegateAddOrUpdate(PojoLoadingPlanProvider loadingPlanProvider) {
-			boolean updateBecauseOfDirty = isDirtyForAddOrUpdate();
-			if ( !updatedBecauseOfContained && !updateBecauseOfDirty ) {
-				// Optimization: the update is not relevant to indexing
-				return;
-			}
+        protected void doUpdateDirty(BitSet dirtyPaths, boolean forceSelfDirty, boolean forceContainingDirty) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			Supplier<E> entitySupplier = entitySupplierOrLoad( loadingPlanProvider );
-			if ( entitySupplier == null ) {
-				// We couldn't retrieve the entity.
-				// Assume it was deleted and there's nothing to add or update.
-				// A delete event should follow at some point.
-				return;
-			}
+        abstract void providedRoutes(DocumentRoutesDescriptor routes);
 
-			DocumentRoutesDescriptor routes = router()
-					.routes( identifier, entitySupplier, providedRoutes(), sessionContext );
-			if ( routes.currentRoute() == null && routes.previousRoutes().isEmpty() ) {
-				// The routing bridge decided the entity should not be indexed, and that it wasn't indexed previously.
-				// There's nothing to do.
-				return;
-			}
-			delegate.addOrUpdate( identifier, routes, entitySupplier,
-					forceSelfDirty, forceContainingDirty, dirtyPaths,
-					updatedBecauseOfContained, updateBecauseOfDirty );
-		}
+        abstract DocumentRoutesDescriptor providedRoutes();
 
-		void delegateDelete() {
-			Supplier<E> entitySupplier = entitySupplierNoLoad();
+        void planLoading() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			DocumentRouter<? super E> router;
-			if ( entitySupplier != null ) {
-				router = router();
-			}
-			else {
-				// Purge: entity is not available and we can't route according to its state.
-				// We can use the provided routing keys, though, which is what the no-op router does.
-				router = NoOpDocumentRouter.INSTANCE;
-			}
+        void resolveDirty(boolean deleteOnly) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			DocumentRoutesDescriptor routes = router
-					.routes( identifier, entitySupplier, providedRoutes(), sessionContext );
-			if ( routes.currentRoute() == null && routes.previousRoutes().isEmpty() ) {
-				// The routing bridge decided the entity should not be indexed, and that it wasn't indexed previously.
-				// There's nothing to do.
-				return;
-			}
-			delegate.delete( identifier, routes, entitySupplier );
-		}
+        void sendCommandsToDelegate(PojoLoadingPlanProvider loadingPlanProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		Supplier<E> entitySupplierNoLoad() {
-			return entitySupplier;
-		}
+        void delegateAdd(PojoLoadingPlanProvider loadingPlanProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		Supplier<E> entitySupplierOrLoad(PojoLoadingPlanProvider loadingPlanProvider) {
-			if ( entitySupplier == null && loadingOrdinal != null ) {
-				E loaded = loadingPlanProvider.loadingPlan().retrieve( typeContext(), loadingOrdinal );
-				entitySupplier = typeContext().toEntitySupplier( sessionContext, loaded );
-				loadingOrdinal = null;
-			}
-			return entitySupplier;
-		}
+        void delegateAddOrUpdate(PojoLoadingPlanProvider loadingPlanProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private void addDirtyPaths(BitSet newDirtyPaths) {
-			if ( newDirtyPaths == null ) {
-				return;
-			}
-			if ( dirtyPaths == null ) {
-				dirtyPaths = new BitSet();
-			}
-			dirtyPaths.or( newDirtyPaths );
-		}
-	}
+        void delegateDelete() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	protected enum EntityStatus {
-		UNKNOWN,
-		PRESENT,
-		ABSENT
-	}
+        Supplier<E> entitySupplierNoLoad() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        Supplier<E> entitySupplierOrLoad(PojoLoadingPlanProvider loadingPlanProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private void addDirtyPaths(BitSet newDirtyPaths) {
+            if (newDirtyPaths == null) {
+                return;
+            }
+            if (dirtyPaths == null) {
+                dirtyPaths = new BitSet();
+            }
+            dirtyPaths.or(newDirtyPaths);
+        }
+    }
+
+    protected enum EntityStatus {
+
+        UNKNOWN, PRESENT, ABSENT
+    }
 }

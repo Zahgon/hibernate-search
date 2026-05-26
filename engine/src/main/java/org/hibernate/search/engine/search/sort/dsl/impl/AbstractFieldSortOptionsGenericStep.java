@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.sort.dsl.impl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.common.SortMode;
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
@@ -24,174 +23,120 @@ import org.hibernate.search.engine.search.sort.spi.FieldSortBuilder;
 import org.hibernate.search.engine.search.sort.spi.SearchSortIndexScope;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 
-public abstract class AbstractFieldSortOptionsGenericStep<
-		SR,
-		T,
-		PDF extends TypedSearchPredicateFactory<SR>,
-		S extends AbstractFieldSortOptionsGenericStep<SR, T, PDF, S, N>,
-		N extends FieldSortMissingValueBehaviorGenericStep<T, S>>
-		extends AbstractSortThenStep<SR>
-		implements
-		FieldSortOptionsGenericStep<SR,
-				T,
-				S,
-				N,
-				PDF> {
+public abstract class AbstractFieldSortOptionsGenericStep<SR, T, PDF extends TypedSearchPredicateFactory<SR>, S extends AbstractFieldSortOptionsGenericStep<SR, T, PDF, S, N>, N extends FieldSortMissingValueBehaviorGenericStep<T, S>> extends AbstractSortThenStep<SR> implements FieldSortOptionsGenericStep<SR, T, S, N, PDF> {
 
+    private final SearchSortDslContext<SR, ?, ? extends PDF> dslContext;
 
-	private final SearchSortDslContext<SR, ?, ? extends PDF> dslContext;
-	protected final FieldSortBuilder builder;
+    protected final FieldSortBuilder builder;
 
-	public AbstractFieldSortOptionsGenericStep(SearchSortDslContext<SR, ?, ? extends PDF> dslContext,
-			String fieldPath) {
-		super( dslContext );
-		this.dslContext = dslContext;
-		this.builder = dslContext.scope().fieldQueryElement( fieldPath, SortTypeKeys.FIELD );
-	}
+    public AbstractFieldSortOptionsGenericStep(SearchSortDslContext<SR, ?, ? extends PDF> dslContext, String fieldPath) {
+        super(dslContext);
+        this.dslContext = dslContext;
+        this.builder = dslContext.scope().fieldQueryElement(fieldPath, SortTypeKeys.FIELD);
+    }
 
-	public static <
-			T,
-			SR,
-			SC extends SearchSortIndexScope<?>,
-			PDF extends TypedSearchPredicateFactory<
-					SR>> FieldSortOptionsGenericStep<SR, T, ?, ?, ? extends TypedSearchPredicateFactory<SR>> create(
-							SearchSortDslContext<SR, SC, PDF> dslContext,
-							FieldSortFieldReference<? super SR, T> fieldReference) {
-		return new FieldReferenceFieldSortOptionsStep<>( dslContext, fieldReference );
-	}
+    public static <T, SR, SC extends SearchSortIndexScope<?>, PDF extends TypedSearchPredicateFactory<SR>> FieldSortOptionsGenericStep<SR, T, ?, ?, ? extends TypedSearchPredicateFactory<SR>> create(SearchSortDslContext<SR, SC, PDF> dslContext, FieldSortFieldReference<? super SR, T> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <
-			PDF extends TypedSearchPredicateFactory<SR>,
-			SR,
-			SC extends SearchSortIndexScope<?>> FieldSortOptionsStep<SR, ?, PDF> create(
-					SearchSortDslContext<SR, SC, PDF> dslContext, String fieldPath) {
-		return new StringFieldSortOptionsStep<>( dslContext, fieldPath );
-	}
+    public static <PDF extends TypedSearchPredicateFactory<SR>, SR, SC extends SearchSortIndexScope<?>> FieldSortOptionsStep<SR, ?, PDF> create(SearchSortDslContext<SR, SC, PDF> dslContext, String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S order(SortOrder order) {
-		builder.order( order );
-		return thisAsS();
-	}
+    @Override
+    public S order(SortOrder order) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S mode(SortMode mode) {
-		builder.mode( mode );
-		return thisAsS();
-	}
+    @Override
+    public S mode(SortMode mode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public N missing() {
-		return thisAsN();
-	}
+    @Override
+    public N missing() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S filter(
-			Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
-		SearchPredicate predicate = clauseContributor.apply( dslContext.predicateFactory() ).toPredicate();
+    @Override
+    public S filter(Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return filter( predicate );
-	}
+    @Override
+    public S filter(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S filter(SearchPredicate searchPredicate) {
-		builder.filter( searchPredicate );
-		return thisAsS();
-	}
+    public S first() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public S first() {
-		builder.missingFirst();
-		return thisAsS();
-	}
+    public S last() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public S last() {
-		builder.missingLast();
-		return thisAsS();
-	}
+    public S highest() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public S highest() {
-		builder.missingHighest();
-		return thisAsS();
-	}
+    public S lowest() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public S lowest() {
-		builder.missingLowest();
-		return thisAsS();
-	}
+    @Override
+    protected SearchSort build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    protected abstract S thisAsS();
 
-	@Override
-	protected SearchSort build() {
-		return builder.build();
-	}
+    protected abstract N thisAsN();
 
-	protected abstract S thisAsS();
+    private static class FieldReferenceFieldSortOptionsStep<SR, T, PDF extends TypedSearchPredicateFactory<SR>> extends AbstractFieldSortOptionsGenericStep<SR, T, PDF, FieldReferenceFieldSortOptionsStep<SR, T, PDF>, FieldReferenceFieldSortOptionsStep<SR, T, PDF>> implements FieldSortMissingValueBehaviorGenericStep<T, FieldReferenceFieldSortOptionsStep<SR, T, PDF>> {
 
-	protected abstract N thisAsN();
+        private final ValueModel valueModel;
 
+        public FieldReferenceFieldSortOptionsStep(SearchSortDslContext<SR, ?, ? extends PDF> dslContext, FieldSortFieldReference<? super SR, ?> fieldReference) {
+            super(dslContext, fieldReference.absolutePath());
+            this.valueModel = fieldReference.valueModel();
+        }
 
-	private static class FieldReferenceFieldSortOptionsStep<SR, T, PDF extends TypedSearchPredicateFactory<SR>>
-			extends
-			AbstractFieldSortOptionsGenericStep<SR,
-					T,
-					PDF,
-					FieldReferenceFieldSortOptionsStep<SR, T, PDF>,
-					FieldReferenceFieldSortOptionsStep<SR, T, PDF>>
-			implements FieldSortMissingValueBehaviorGenericStep<T, FieldReferenceFieldSortOptionsStep<SR, T, PDF>> {
-		private final ValueModel valueModel;
+        @Override
+        public FieldReferenceFieldSortOptionsStep<SR, T, PDF> use(T value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public FieldReferenceFieldSortOptionsStep(SearchSortDslContext<SR, ?, ? extends PDF> dslContext,
-				FieldSortFieldReference<? super SR, ?> fieldReference) {
-			super( dslContext, fieldReference.absolutePath() );
-			this.valueModel = fieldReference.valueModel();
-		}
+        @Override
+        protected FieldReferenceFieldSortOptionsStep<SR, T, PDF> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public FieldReferenceFieldSortOptionsStep<SR, T, PDF> use(T value) {
-			builder.missingAs( value, valueModel );
-			return this;
-		}
+        @Override
+        protected FieldReferenceFieldSortOptionsStep<SR, T, PDF> thisAsN() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		protected FieldReferenceFieldSortOptionsStep<SR, T, PDF> thisAsS() {
-			return this;
-		}
+    private static class StringFieldSortOptionsStep<SR, PDF extends TypedSearchPredicateFactory<SR>> extends AbstractFieldSortOptionsGenericStep<SR, Object, PDF, StringFieldSortOptionsStep<SR, PDF>, FieldSortMissingValueBehaviorStep<StringFieldSortOptionsStep<SR, PDF>>> implements FieldSortOptionsStep<SR, StringFieldSortOptionsStep<SR, PDF>, PDF>, FieldSortMissingValueBehaviorStep<StringFieldSortOptionsStep<SR, PDF>> {
 
-		@Override
-		protected FieldReferenceFieldSortOptionsStep<SR, T, PDF> thisAsN() {
-			return this;
-		}
-	}
+        public StringFieldSortOptionsStep(SearchSortDslContext<SR, ?, ? extends PDF> dslContext, String fieldPath) {
+            super(dslContext, fieldPath);
+        }
 
-	private static class StringFieldSortOptionsStep<SR, PDF extends TypedSearchPredicateFactory<SR>>
-			extends
-			AbstractFieldSortOptionsGenericStep<SR,
-					Object,
-					PDF,
-					StringFieldSortOptionsStep<SR, PDF>,
-					FieldSortMissingValueBehaviorStep<StringFieldSortOptionsStep<SR, PDF>>>
-			implements FieldSortOptionsStep<SR, StringFieldSortOptionsStep<SR, PDF>, PDF>,
-			FieldSortMissingValueBehaviorStep<StringFieldSortOptionsStep<SR, PDF>> {
+        @Override
+        public StringFieldSortOptionsStep<SR, PDF> use(Object value, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public StringFieldSortOptionsStep(SearchSortDslContext<SR, ?, ? extends PDF> dslContext,
-				String fieldPath) {
-			super( dslContext, fieldPath );
-		}
+        @Override
+        protected StringFieldSortOptionsStep<SR, PDF> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public StringFieldSortOptionsStep<SR, PDF> use(Object value, ValueModel valueModel) {
-			builder.missingAs( value, valueModel );
-			return this;
-		}
-
-		@Override
-		protected StringFieldSortOptionsStep<SR, PDF> thisAsS() {
-			return this;
-		}
-
-		@Override
-		protected StringFieldSortOptionsStep<SR, PDF> thisAsN() {
-			return this;
-		}
-	}
+        @Override
+        protected StringFieldSortOptionsStep<SR, PDF> thisAsN() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

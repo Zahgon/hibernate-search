@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.mapper.pojo.logging.impl.MassIndexingLog;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingType;
@@ -27,223 +26,138 @@ import org.hibernate.search.mapper.pojo.massindexing.MassIndexingTypeGroupMonito
  */
 public class PojoMassIndexingLoggingMonitor implements MassIndexingMonitor {
 
-	private final AtomicLong documentsDoneCounter = new AtomicLong();
-	private final AtomicReference<StatusMessageInfo> lastMessageInfo = new AtomicReference<>();
-	private final LongAdder totalCounter = new LongAdder();
-	private volatile long startTime;
-	private final int logAfterNumberOfDocuments;
-	private boolean countOnStart;
-	private boolean countOnBeforeType;
+    private final AtomicLong documentsDoneCounter = new AtomicLong();
 
-	private final AtomicLong typesToIndex = new AtomicLong();
-	private final AtomicLong groupsWithUnknownTotal = new AtomicLong();
+    private final AtomicReference<StatusMessageInfo> lastMessageInfo = new AtomicReference<>();
 
-	/**
-	 * Logs progress of indexing job every 50 documents written.
-	 */
-	public PojoMassIndexingLoggingMonitor() {
-		this( 50 );
-	}
+    private final LongAdder totalCounter = new LongAdder();
 
-	/**
-	 * Logs progress of indexing job every {@code logAfterNumberOfDocuments}
-	 * documents written.
-	 *
-	 * @param logAfterNumberOfDocuments log each time the specified number of documents has been added
-	 */
-	public PojoMassIndexingLoggingMonitor(int logAfterNumberOfDocuments) {
-		this( logAfterNumberOfDocuments, false, true );
-	}
+    private volatile long startTime;
 
-	public PojoMassIndexingLoggingMonitor(boolean countOnStart, boolean countOnBeforeType) {
-		this( 50, countOnStart, countOnBeforeType );
-	}
+    private final int logAfterNumberOfDocuments;
 
-	public PojoMassIndexingLoggingMonitor(int logAfterNumberOfDocuments, boolean countOnStart,
-			boolean countOnBeforeType) {
-		this.logAfterNumberOfDocuments = logAfterNumberOfDocuments;
-		this.countOnStart = countOnStart;
-		this.countOnBeforeType = countOnBeforeType;
-	}
+    private boolean countOnStart;
 
-	@Override
-	public MassIndexingTypeGroupMonitor typeGroupMonitor(MassIndexingTypeGroupMonitorCreateContext context) {
-		typesToIndex.addAndGet( context.includedTypes().size() );
-		return new MassIndexingTypeGroupMonitorImpl( context );
-	}
+    private boolean countOnBeforeType;
 
-	@Override
-	public void documentsAdded(long increment) {
-		if ( startTime == 0 ) {
-			// this sync block doesn't seem to be a problem for Loom:
-			// - always executed in MassIndexer threads, which are not virtual threads
-			// - no I/O and simple in-memory operations
-			synchronized (this) {
-				if ( startTime == 0 ) {
-					long theStartTime = System.nanoTime();
-					lastMessageInfo.set( new StatusMessageInfo( startTime, 0 ) );
-					// Do this last, so other threads will block until we're done initializing lastMessageInfo.
-					startTime = theStartTime;
-				}
-			}
-		}
+    private final AtomicLong typesToIndex = new AtomicLong();
 
-		long previous = documentsDoneCounter.getAndAdd( increment );
-		/*
-		 * Only log if the current increment was the one that made the counter
-		 * go to a higher multiple of the period.
-		 */
-		long current = previous + increment;
-		int period = getStatusMessagePeriod();
-		if ( ( previous / period ) < ( current / period ) ) {
-			long currentTime = System.nanoTime();
-			printStatusMessage( startTime, currentTime, totalCounter.longValue(), current, typesToIndex.get(),
-					groupsWithUnknownTotal.get() != 0 );
-		}
-	}
+    private final AtomicLong groupsWithUnknownTotal = new AtomicLong();
 
-	@Override
-	public void documentsBuilt(long number) {
-		//not used
-	}
+    /**
+     * Logs progress of indexing job every 50 documents written.
+     */
+    public PojoMassIndexingLoggingMonitor() {
+        this(50);
+    }
 
-	@Override
-	public void entitiesLoaded(long size) {
+    /**
+     * Logs progress of indexing job every {@code logAfterNumberOfDocuments}
+     * documents written.
+     *
+     * @param logAfterNumberOfDocuments log each time the specified number of documents has been added
+     */
+    public PojoMassIndexingLoggingMonitor(int logAfterNumberOfDocuments) {
+        this(logAfterNumberOfDocuments, false, true);
+    }
 
-	}
+    public PojoMassIndexingLoggingMonitor(boolean countOnStart, boolean countOnBeforeType) {
+        this(50, countOnStart, countOnBeforeType);
+    }
 
-	@Override
-	public void indexingCompleted() {
-		MassIndexingLog.INSTANCE.indexingEntitiesCompleted( documentsDoneCounter.longValue(), totalCounter.longValue(),
-				Duration.ofNanos( System.nanoTime() - startTime ) );
-	}
+    public PojoMassIndexingLoggingMonitor(int logAfterNumberOfDocuments, boolean countOnStart, boolean countOnBeforeType) {
+        this.logAfterNumberOfDocuments = logAfterNumberOfDocuments;
+        this.countOnStart = countOnStart;
+        this.countOnBeforeType = countOnBeforeType;
+    }
 
-	protected int getStatusMessagePeriod() {
-		return logAfterNumberOfDocuments;
-	}
+    @Override
+    public MassIndexingTypeGroupMonitor typeGroupMonitor(MassIndexingTypeGroupMonitorCreateContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected void printStatusMessage(long startTime, long currentTime, long totalTodoCount, long doneCount, long typesToIndex,
-			boolean remainingUnknown) {
-		StatusMessageInfo currentStatusMessageInfo = new StatusMessageInfo( currentTime, doneCount );
-		StatusMessageInfo previousStatusMessageInfo = lastMessageInfo.getAndAccumulate(
-				currentStatusMessageInfo,
-				StatusMessageInfo.UPDATE_IF_MORE_UP_TO_DATE_FUNCTION
-		);
+    @Override
+    public void documentsAdded(long increment) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// Avoid logging outdated info if logging happened concurrently since we last called System.nanoTime()
-		if ( !currentStatusMessageInfo.isMoreUpToDateThan( previousStatusMessageInfo ) ) {
-			return;
-		}
+    @Override
+    public void documentsBuilt(long number) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		long elapsedNano = currentTime - startTime;
-		// period between two log events might be too short to use millis as a result infinity speed will be displayed.
-		long intervalBetweenLogsNano = currentStatusMessageInfo.currentTime - previousStatusMessageInfo.currentTime;
+    @Override
+    public void entitiesLoaded(long size) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		float estimateSpeed = doneCount * 1_000_000_000f / elapsedNano;
-		float currentSpeed = ( currentStatusMessageInfo.documentsDone
-				- previousStatusMessageInfo.documentsDone ) * 1_000_000_000f / intervalBetweenLogsNano;
+    @Override
+    public void indexingCompleted() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( remainingUnknown ) {
-			if ( typesToIndex > 0 ) {
-				MassIndexingLog.INSTANCE.indexingProgress( doneCount, typesToIndex, currentSpeed, estimateSpeed );
-			}
-			else {
-				MassIndexingLog.INSTANCE.indexingProgress( doneCount, currentSpeed, estimateSpeed );
-			}
-		}
-		else {
-			float estimatePercentileComplete = doneCount * 100f / totalTodoCount;
-			long remainingCount = totalTodoCount - doneCount;
+    protected int getStatusMessagePeriod() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( typesToIndex > 0 ) {
-				MassIndexingLog.INSTANCE.indexingProgress(
-						estimatePercentileComplete, doneCount, totalTodoCount, currentSpeed, estimateSpeed,
-						remainingCount, typesToIndex
-				);
-			}
-			else {
-				MassIndexingLog.INSTANCE.indexingProgressWithRemainingTime(
-						estimatePercentileComplete, doneCount, totalTodoCount, currentSpeed, estimateSpeed,
-						remainingCount, Duration.ofMillis( (long) ( ( remainingCount / currentSpeed ) * 1000 ) )
-				);
-			}
-		}
-	}
+    protected void printStatusMessage(long startTime, long currentTime, long totalTodoCount, long doneCount, long typesToIndex, boolean remainingUnknown) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class StatusMessageInfo {
-		public static final BinaryOperator<StatusMessageInfo> UPDATE_IF_MORE_UP_TO_DATE_FUNCTION =
-				(StatusMessageInfo storedVal,
-						StatusMessageInfo newVal) -> newVal.isMoreUpToDateThan( storedVal ) ? newVal : storedVal;
+    private static class StatusMessageInfo {
 
-		public final long currentTime;
-		public final long documentsDone;
+        public static final BinaryOperator<StatusMessageInfo> UPDATE_IF_MORE_UP_TO_DATE_FUNCTION = (StatusMessageInfo storedVal, StatusMessageInfo newVal) -> newVal.isMoreUpToDateThan(storedVal) ? newVal : storedVal;
 
-		public StatusMessageInfo(long currentTime, long documentsDone) {
-			this.currentTime = currentTime;
-			this.documentsDone = documentsDone;
-		}
+        public final long currentTime;
 
-		public boolean isMoreUpToDateThan(StatusMessageInfo other) {
-			return documentsDone > other.documentsDone
-					// Ensure we log status updates even if the mass indexer is stuck for a long time
-					|| documentsDone == other.documentsDone && currentTime > other.currentTime;
-		}
-	}
+        public final long documentsDone;
 
-	private class MassIndexingTypeGroupMonitorImpl implements MassIndexingTypeGroupMonitor {
+        public StatusMessageInfo(long currentTime, long documentsDone) {
+            this.currentTime = currentTime;
+            this.documentsDone = documentsDone;
+        }
 
-		private final long numberOfTypes;
-		private final OptionalLong totalBefore;
-		private boolean totalUnknown = true;
+        public boolean isMoreUpToDateThan(StatusMessageInfo other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		public MassIndexingTypeGroupMonitorImpl(MassIndexingTypeGroupMonitorCreateContext context) {
-			this.numberOfTypes = context.includedTypes().size();
-			if ( countOnStart ) {
-				totalBefore = context.totalCount();
-				if ( totalBefore.isPresent() ) {
-					totalUnknown = false;
-					long count = totalBefore.getAsLong();
-					totalCounter.add( count );
-					MassIndexingLog.INSTANCE.indexingEntitiesApprox( count,
-							context.includedTypes().stream().map( MassIndexingType::entityName )
-									.collect( Collectors.joining( ", ", "[ ", " ]" ) ) );
-				}
-			}
-			else {
-				totalBefore = OptionalLong.empty();
-			}
-		}
+    private class MassIndexingTypeGroupMonitorImpl implements MassIndexingTypeGroupMonitor {
 
-		@Override
-		public void documentsIndexed(long increment) {
-			if ( totalUnknown ) {
-				totalCounter.add( increment );
-			}
-		}
+        private final long numberOfTypes;
 
-		@Override
-		public void indexingStarted(MassIndexingTypeGroupMonitorContext context) {
-			typesToIndex.addAndGet( -numberOfTypes );
+        private final OptionalLong totalBefore;
 
-			if ( countOnBeforeType ) {
-				OptionalLong totalCount = context.totalCount();
-				if ( totalCount.isEmpty() ) {
-					groupsWithUnknownTotal.incrementAndGet();
-				}
-				else {
-					totalUnknown = false;
-					long actual = totalCount.getAsLong();
-					totalCounter.add( actual - totalBefore.orElse( 0 ) );
-					MassIndexingLog.INSTANCE.indexingEntities( actual );
-				}
-			}
-		}
+        private boolean totalUnknown = true;
 
-		@Override
-		public void indexingCompleted(MassIndexingTypeGroupMonitorContext context) {
-			if ( totalUnknown ) {
-				groupsWithUnknownTotal.decrementAndGet();
-			}
-		}
-	}
+        public MassIndexingTypeGroupMonitorImpl(MassIndexingTypeGroupMonitorCreateContext context) {
+            this.numberOfTypes = context.includedTypes().size();
+            if (countOnStart) {
+                totalBefore = context.totalCount();
+                if (totalBefore.isPresent()) {
+                    totalUnknown = false;
+                    long count = totalBefore.getAsLong();
+                    totalCounter.add(count);
+                    MassIndexingLog.INSTANCE.indexingEntitiesApprox(count, context.includedTypes().stream().map(MassIndexingType::entityName).collect(Collectors.joining(", ", "[ ", " ]")));
+                }
+            } else {
+                totalBefore = OptionalLong.empty();
+            }
+        }
+
+        @Override
+        public void documentsIndexed(long increment) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void indexingStarted(MassIndexingTypeGroupMonitorContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void indexingCompleted(MassIndexingTypeGroupMonitorContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

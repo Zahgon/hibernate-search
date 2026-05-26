@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import org.hibernate.search.query.dsl.AllContext;
@@ -23,55 +22,56 @@ import org.hibernate.search.query.dsl.sort.impl.ConnectedSortContext;
  * @author Emmanuel Bernard
  */
 public class ConnectedQueryBuilder implements QueryBuilder {
-	private final QueryBuildingContext context;
 
-	public ConnectedQueryBuilder(QueryBuildingContext context) {
-		this.context = context;
-	}
+    private final QueryBuildingContext context;
 
-	@Override
-	public TermContext keyword() {
-		return new ConnectedTermContext( context );
-	}
+    public ConnectedQueryBuilder(QueryBuildingContext context) {
+        this.context = context;
+    }
 
-	@Override
-	public RangeContext range() {
-		return new ConnectedRangeContext( context );
-	}
+    @Override
+    public TermContext keyword() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PhraseContext phrase() {
-		return new ConnectedPhraseContext( context );
-	}
+    @Override
+    public RangeContext range() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringContext simpleQueryString() {
-		return new ConnectedSimpleQueryStringContext( context );
-	}
+    @Override
+    public PhraseContext phrase() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	//fixme Have to use raw types but would be nice to not have to
-	@Override
-	public BooleanJunction bool() {
-		return new BooleanQueryBuilder( context );
-	}
+    @Override
+    public SimpleQueryStringContext simpleQueryString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AllContext all() {
-		return new ConnectedAllContext( context );
-	}
+    //fixme Have to use raw types but would be nice to not have to
+    @Override
+    public BooleanJunction bool() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FacetContext facet() {
-		return new ConnectedFacetContext( new FacetBuildingContext( context ) );
-	}
+    @Override
+    public AllContext all() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialContext spatial() {
-		return new ConnectedSpatialContext( context );
-	}
+    @Override
+    public FacetContext facet() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortContext sort() {
-		return new ConnectedSortContext( context );
-	}
+    @Override
+    public SpatialContext spatial() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SortContext sort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

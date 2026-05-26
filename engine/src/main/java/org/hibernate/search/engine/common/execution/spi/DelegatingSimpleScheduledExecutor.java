@@ -8,37 +8,37 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 
 @Incubating
 public class DelegatingSimpleScheduledExecutor implements SimpleScheduledExecutor {
 
-	private final ScheduledExecutorService delegate;
-	private final boolean blocking;
+    private final ScheduledExecutorService delegate;
 
-	public DelegatingSimpleScheduledExecutor(ScheduledExecutorService delegate, boolean blocking) {
-		this.delegate = delegate;
-		this.blocking = blocking;
-	}
+    private final boolean blocking;
 
-	@Override
-	public Future<?> submit(Runnable task) {
-		return delegate.submit( task );
-	}
+    public DelegatingSimpleScheduledExecutor(ScheduledExecutorService delegate, boolean blocking) {
+        this.delegate = delegate;
+        this.blocking = blocking;
+    }
 
-	@Override
-	public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
-		return delegate.schedule( command, delay, unit );
-	}
+    @Override
+    public Future<?> submit(Runnable task) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void shutdownNow() {
-		delegate.shutdownNow();
-	}
+    @Override
+    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isBlocking() {
-		return blocking;
-	}
+    @Override
+    public void shutdownNow() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean isBlocking() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,61 +10,51 @@ import org.hibernate.search.engine.search.highlighter.dsl.HighlighterFinalStep;
 import org.hibernate.search.engine.search.highlighter.dsl.HighlighterOptionsStep;
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterBuilder;
 
-public class HighlighterOptionsStepImpl<T extends HighlighterOptionsStep<T>>
-		implements HighlighterOptionsStep<T>, HighlighterFinalStep {
+public class HighlighterOptionsStepImpl<T extends HighlighterOptionsStep<T>> implements HighlighterOptionsStep<T>, HighlighterFinalStep {
 
-	protected final SearchHighlighterBuilder highlighterBuilder;
+    protected final SearchHighlighterBuilder highlighterBuilder;
 
-	public HighlighterOptionsStepImpl(SearchHighlighterBuilder highlighterBuilder) {
-		this.highlighterBuilder = highlighterBuilder;
-	}
+    public HighlighterOptionsStepImpl(SearchHighlighterBuilder highlighterBuilder) {
+        this.highlighterBuilder = highlighterBuilder;
+    }
 
-	@Override
-	public T encoder(HighlighterEncoder encoder) {
-		highlighterBuilder.encoder( encoder );
-		return thisAsT();
-	}
+    @Override
+    public T encoder(HighlighterEncoder encoder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T fragmentSize(int size) {
-		highlighterBuilder.fragmentSize( size );
-		return thisAsT();
-	}
+    @Override
+    public T fragmentSize(int size) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T noMatchSize(int size) {
-		highlighterBuilder.noMatchSize( size );
-		return thisAsT();
-	}
+    @Override
+    public T noMatchSize(int size) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T numberOfFragments(int number) {
-		highlighterBuilder.numberOfFragments( number );
-		return thisAsT();
-	}
+    @Override
+    public T numberOfFragments(int number) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T orderByScore(boolean enable) {
-		highlighterBuilder.orderByScore( enable );
-		return thisAsT();
-	}
+    @Override
+    public T orderByScore(boolean enable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T tag(String preTag, String postTag) {
-		highlighterBuilder.clearTags();
-		highlighterBuilder.tag( preTag, postTag );
-		return thisAsT();
-	}
+    @Override
+    public T tag(String preTag, String postTag) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	private T thisAsT() {
-		return (T) this;
-	}
+    @SuppressWarnings("unchecked")
+    private T thisAsT() {
+        return (T) this;
+    }
 
-
-	@Override
-	public SearchHighlighter toHighlighter() {
-		return highlighterBuilder.build();
-	}
-
+    @Override
+    public SearchHighlighter toHighlighter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

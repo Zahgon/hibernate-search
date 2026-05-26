@@ -6,49 +6,46 @@ package org.hibernate.search.backend.lucene.types.codec.impl;
 
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneDoubleDomain;
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneNumericDomain;
-
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 
 public final class LuceneDoubleFieldCodec extends AbstractLuceneNumericFieldCodec<Double, Double> {
 
-	public LuceneDoubleFieldCodec(Indexing indexing, DocValues docValues, Storage storage,
-			Double indexNullAsValue) {
-		super( indexing, docValues, storage, indexNullAsValue );
-	}
+    public LuceneDoubleFieldCodec(Indexing indexing, DocValues docValues, Storage storage, Double indexNullAsValue) {
+        super(indexing, docValues, storage, indexNullAsValue);
+    }
 
-	@Override
-	void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, Double value,
-			Double encodedValue) {
-		documentBuilder.addField( new StoredField( absoluteFieldPath, encodedValue ) );
-	}
+    @Override
+    void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, Double value, Double encodedValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Double decode(IndexableField field) {
-		return (Double) field.numericValue();
-	}
+    @Override
+    public Double decode(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Double raw(IndexableField field) {
-		return decode( field );
-	}
+    @Override
+    public Double raw(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Double encode(Double value) {
-		return value;
-	}
+    @Override
+    public Double encode(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Double decode(Double encoded) {
-		return encoded;
-	}
+    @Override
+    public Double decode(Double encoded) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneNumericDomain<Double> getDomain() {
-		return LuceneDoubleDomain.get();
-	}
+    @Override
+    public LuceneNumericDomain<Double> getDomain() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Class<Double> encodedType() {
-		return Double.class;
-	}
+    public Class<Double> encodedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

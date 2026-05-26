@@ -5,37 +5,33 @@
 package org.hibernate.search.engine.environment.thread.impl;
 
 import java.util.concurrent.ThreadFactory;
-
 import org.hibernate.search.engine.environment.thread.spi.ThreadProvider;
 
 public final class EmbeddedThreadProvider implements ThreadProvider {
 
-	public static final String NAME = "embedded";
+    public static final String NAME = "embedded";
 
-	private final String commonThreadNamePrefix;
+    private final String commonThreadNamePrefix;
 
-	public EmbeddedThreadProvider() {
-		this( "Hibernate Search - " );
-	}
+    public EmbeddedThreadProvider() {
+        this("Hibernate Search - ");
+    }
 
-	public EmbeddedThreadProvider(String commonThreadNamePrefix) {
-		this.commonThreadNamePrefix = commonThreadNamePrefix;
-	}
+    public EmbeddedThreadProvider(String commonThreadNamePrefix) {
+        this.commonThreadNamePrefix = commonThreadNamePrefix;
+    }
 
-	@Override
-	public String createThreadName(String prefix, int threadNumber) {
-		return createFullThreadNamePrefix( prefix ) + threadNumber;
-	}
+    @Override
+    public String createThreadName(String prefix, int threadNumber) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ThreadFactory createThreadFactory(String prefix) {
-		return new SimpleThreadFactory(
-				Thread.currentThread().getThreadGroup(),
-				createFullThreadNamePrefix( prefix )
-		);
-	}
+    @Override
+    public ThreadFactory createThreadFactory(String prefix) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private String createFullThreadNamePrefix(String prefix) {
-		return commonThreadNamePrefix + prefix + " - ";
-	}
+    private String createFullThreadNamePrefix(String prefix) {
+        return commonThreadNamePrefix + prefix + " - ";
+    }
 }

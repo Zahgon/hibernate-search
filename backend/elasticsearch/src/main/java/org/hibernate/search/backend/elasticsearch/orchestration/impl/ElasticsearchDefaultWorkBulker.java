@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-
 import org.hibernate.search.backend.elasticsearch.work.impl.BulkableWork;
 import org.hibernate.search.backend.elasticsearch.work.impl.NonBulkableWork;
 import org.hibernate.search.backend.elasticsearch.work.result.impl.BulkResult;
@@ -16,84 +15,48 @@ import org.hibernate.search.engine.backend.work.execution.DocumentRefreshStrateg
 
 class ElasticsearchDefaultWorkBulker implements ElasticsearchWorkBulker {
 
-	private final ElasticsearchWorkSequenceBuilder sequenceBuilder;
-	private final BiFunction<List<? extends BulkableWork<?>>,
-			DocumentRefreshStrategy,
-			NonBulkableWork<BulkResult>> bulkWorkFactory;
-	private final int maxBulkSize;
+    private final ElasticsearchWorkSequenceBuilder sequenceBuilder;
 
-	private final List<BulkableWork<?>> currentBulkItems;
-	private DocumentRefreshStrategy currentBulkRefreshStrategy;
-	private CompletableFuture<NonBulkableWork<BulkResult>> currentBulkWorkFuture;
-	private CompletableFuture<BulkResult> currentBulkResultFuture;
+    private final BiFunction<List<? extends BulkableWork<?>>, DocumentRefreshStrategy, NonBulkableWork<BulkResult>> bulkWorkFactory;
 
-	/**
-	 * @param sequenceBuilder The sequence builder to add works to
-	 * @param bulkWorkFactory The factory for bulk works
-	 * @param maxBulkSize Maximum number of works in a single bulk.
-	 * If a bulk reaches this size, it will be automatically
-	 * {@link #finalizeBulkWork() finalized}.
-	 */
-	public ElasticsearchDefaultWorkBulker(ElasticsearchWorkSequenceBuilder sequenceBuilder,
-			BiFunction<List<? extends BulkableWork<?>>, DocumentRefreshStrategy, NonBulkableWork<BulkResult>> bulkWorkFactory,
-			int maxBulkSize) {
-		this.sequenceBuilder = sequenceBuilder;
-		this.bulkWorkFactory = bulkWorkFactory;
-		this.maxBulkSize = maxBulkSize;
+    private final int maxBulkSize;
 
-		this.currentBulkItems = new ArrayList<>();
-		this.currentBulkWorkFuture = null;
-		this.currentBulkResultFuture = null;
-	}
+    private final List<BulkableWork<?>> currentBulkItems;
 
-	@Override
-	public <T> CompletableFuture<T> add(BulkableWork<T> work) {
-		DocumentRefreshStrategy workRefreshStrategy = work.getRefreshStrategy();
-		if ( currentBulkItems.isEmpty() ) {
-			currentBulkRefreshStrategy = workRefreshStrategy;
-		}
-		else if ( currentBulkRefreshStrategy != workRefreshStrategy ) {
-			// This work needs a bulk with a different "refresh" parameter; we can't reuse the current bulk.
-			finalizeBulkWork();
-			currentBulkRefreshStrategy = workRefreshStrategy;
-		}
+    private DocumentRefreshStrategy currentBulkRefreshStrategy;
 
-		if ( currentBulkWorkFuture == null ) {
-			currentBulkWorkFuture = new CompletableFuture<>();
-			currentBulkResultFuture = sequenceBuilder.addBulkExecution( currentBulkWorkFuture );
-		}
+    private CompletableFuture<NonBulkableWork<BulkResult>> currentBulkWorkFuture;
 
-		int currentBulkWorkIndex = currentBulkItems.size();
-		currentBulkItems.add( work );
+    private CompletableFuture<BulkResult> currentBulkResultFuture;
 
-		CompletableFuture<T> future = sequenceBuilder.addBulkResultExtraction(
-				currentBulkResultFuture, work, currentBulkWorkIndex
-		);
+    /**
+     * @param sequenceBuilder The sequence builder to add works to
+     * @param bulkWorkFactory The factory for bulk works
+     * @param maxBulkSize Maximum number of works in a single bulk.
+     * If a bulk reaches this size, it will be automatically
+     * {@link #finalizeBulkWork() finalized}.
+     */
+    public ElasticsearchDefaultWorkBulker(ElasticsearchWorkSequenceBuilder sequenceBuilder, BiFunction<List<? extends BulkableWork<?>>, DocumentRefreshStrategy, NonBulkableWork<BulkResult>> bulkWorkFactory, int maxBulkSize) {
+        this.sequenceBuilder = sequenceBuilder;
+        this.bulkWorkFactory = bulkWorkFactory;
+        this.maxBulkSize = maxBulkSize;
+        this.currentBulkItems = new ArrayList<>();
+        this.currentBulkWorkFuture = null;
+        this.currentBulkResultFuture = null;
+    }
 
-		if ( currentBulkItems.size() >= maxBulkSize ) {
-			finalizeBulkWork();
-		}
+    @Override
+    public <T> CompletableFuture<T> add(BulkableWork<T> work) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return future;
-	}
+    @Override
+    public void finalizeBulkWork() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void finalizeBulkWork() {
-		if ( currentBulkWorkFuture == null ) {
-			// No work was bulked, so there's nothing to do
-			return;
-		}
-
-		NonBulkableWork<BulkResult> bulkWork = bulkWorkFactory.apply( currentBulkItems, currentBulkRefreshStrategy );
-		currentBulkWorkFuture.complete( bulkWork );
-		reset();
-	}
-
-	@Override
-	public void reset() {
-		this.currentBulkItems.clear();
-		this.currentBulkRefreshStrategy = null;
-		this.currentBulkWorkFuture = null;
-		this.currentBulkResultFuture = null;
-	}
+    @Override
+    public void reset() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

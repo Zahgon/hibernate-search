@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import java.util.ArrayList;
@@ -16,76 +15,66 @@ import java.util.List;
  */
 public class FieldsContext implements Iterable<FieldContext> {
 
-	public static final String[] NO_FIELD = new String[0];
+    public static final String[] NO_FIELD = new String[0];
 
-	private final QueryBuildingContext queryContext;
-	private final List<FieldContext> fieldContexts;
-	//when a varargs of fields are passed, apply the same customization for all.
-	//keep the index of the first context in this queue
-	private int firstOfContext;
+    private final QueryBuildingContext queryContext;
 
-	public FieldsContext(String[] fieldNames, QueryBuildingContext queryContext) {
-		this.queryContext = queryContext;
-		firstOfContext = 0;
-		if ( fieldNames == null ) {
-			fieldNames = NO_FIELD;
-		}
-		fieldContexts = new ArrayList<FieldContext>( fieldNames.length < 4 ? 4 : fieldNames.length );
-		for ( String fieldName : fieldNames ) {
-			doAdd( fieldName );
-		}
-	}
+    private final List<FieldContext> fieldContexts;
 
-	public void add(String fieldName) {
-		doAdd( fieldName );
-		firstOfContext = fieldContexts.size() - 1;
-	}
+    //when a varargs of fields are passed, apply the same customization for all.
+    //keep the index of the first context in this queue
+    private int firstOfContext;
 
-	private void doAdd(String fieldName) {
-		fieldContexts.add( new FieldContext( fieldName ) );
-	}
+    public FieldsContext(String[] fieldNames, QueryBuildingContext queryContext) {
+        this.queryContext = queryContext;
+        firstOfContext = 0;
+        if (fieldNames == null) {
+            fieldNames = NO_FIELD;
+        }
+        fieldContexts = new ArrayList<FieldContext>(fieldNames.length < 4 ? 4 : fieldNames.length);
+        for (String fieldName : fieldNames) {
+            doAdd(fieldName);
+        }
+    }
 
-	public void addAll(String... fieldNames) {
-		if ( fieldNames.length != 0 ) {
-			firstOfContext = fieldContexts.size();
-			for ( String fieldName : fieldNames ) {
-				doAdd( fieldName );
-			}
-		}
-	}
+    public void add(String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void boostedTo(float boost) {
-		for ( FieldContext fieldContext : getCurrentFieldContexts() ) {
-			fieldContext.boostedTo( boost );
-		}
-	}
+    private void doAdd(String fieldName) {
+        fieldContexts.add(new FieldContext(fieldName));
+    }
 
-	public void ignoreAnalyzer() {
-		for ( FieldContext fieldContext : getCurrentFieldContexts() ) {
-			fieldContext.setIgnoreAnalyzer( true );
-		}
-	}
+    public void addAll(String... fieldNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void ignoreFieldBridge() {
-		for ( FieldContext fieldContext : getCurrentFieldContexts() ) {
-			fieldContext.setIgnoreFieldBridge( true );
-		}
-	}
+    public void boostedTo(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private List<FieldContext> getCurrentFieldContexts() {
-		return fieldContexts.subList( firstOfContext, fieldContexts.size() );
-	}
+    public void ignoreAnalyzer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public FieldContext getFirst() {
-		return fieldContexts.get( 0 );
-	}
+    public void ignoreFieldBridge() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public int size() {
-		return fieldContexts.size();
-	}
+    private List<FieldContext> getCurrentFieldContexts() {
+        return fieldContexts.subList(firstOfContext, fieldContexts.size());
+    }
 
-	@Override
-	public Iterator<FieldContext> iterator() {
-		return fieldContexts.iterator();
-	}
+    public FieldContext getFirst() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public int size() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Iterator<FieldContext> iterator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -13,10 +13,8 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 @Deprecated
 public class LatitudeAnnotationProcessor implements PropertyMappingAnnotationProcessor<Latitude> {
 
-	@Override
-	public void process(PropertyMappingStep mapping, Latitude annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		mapping.marker( GeoPointBinder.latitude().markerSet( annotation.of() ) );
-	}
-
+    @Override
+    public void process(PropertyMappingStep mapping, Latitude annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

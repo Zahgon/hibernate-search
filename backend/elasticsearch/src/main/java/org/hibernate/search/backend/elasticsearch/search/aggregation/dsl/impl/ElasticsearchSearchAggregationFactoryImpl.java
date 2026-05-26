@@ -10,45 +10,27 @@ import org.hibernate.search.backend.elasticsearch.search.predicate.dsl.Elasticse
 import org.hibernate.search.engine.search.aggregation.dsl.AggregationFinalStep;
 import org.hibernate.search.engine.search.aggregation.dsl.spi.AbstractSearchAggregationFactory;
 import org.hibernate.search.engine.search.aggregation.dsl.spi.SearchAggregationDslContext;
-
 import com.google.gson.JsonObject;
 
-public class ElasticsearchSearchAggregationFactoryImpl<SR>
-		extends AbstractSearchAggregationFactory<
-				SR,
-				ElasticsearchSearchAggregationFactory<SR>,
-				ElasticsearchSearchAggregationIndexScope<?>,
-				ElasticsearchSearchPredicateFactory<SR>>
-		implements ElasticsearchSearchAggregationFactory<SR> {
+public class ElasticsearchSearchAggregationFactoryImpl<SR> extends AbstractSearchAggregationFactory<SR, ElasticsearchSearchAggregationFactory<SR>, ElasticsearchSearchAggregationIndexScope<?>, ElasticsearchSearchPredicateFactory<SR>> implements ElasticsearchSearchAggregationFactory<SR> {
 
-	public ElasticsearchSearchAggregationFactoryImpl(
-			SearchAggregationDslContext<SR,
-					ElasticsearchSearchAggregationIndexScope<?>,
-					ElasticsearchSearchPredicateFactory<SR>> dslContext) {
-		super( dslContext );
-	}
+    public ElasticsearchSearchAggregationFactoryImpl(SearchAggregationDslContext<SR, ElasticsearchSearchAggregationIndexScope<?>, ElasticsearchSearchPredicateFactory<SR>> dslContext) {
+        super(dslContext);
+    }
 
-	@Override
-	public ElasticsearchSearchAggregationFactory<SR> withRoot(String objectFieldPath) {
-		return new ElasticsearchSearchAggregationFactoryImpl<>( dslContext.rescope(
-				dslContext.scope().withRoot( objectFieldPath ),
-				dslContext.predicateFactory().withRoot( objectFieldPath ) ) );
-	}
+    @Override
+    public ElasticsearchSearchAggregationFactory<SR> withRoot(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AggregationFinalStep<JsonObject> fromJson(JsonObject jsonObject) {
-		return new ElasticsearchJsonAggregationFinalStep(
-				dslContext.scope().aggregationBuilders().fromJson( jsonObject )
-		);
-	}
+    @Override
+    public AggregationFinalStep<JsonObject> fromJson(JsonObject jsonObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AggregationFinalStep<JsonObject> fromJson(String jsonString) {
-		return new ElasticsearchJsonAggregationFinalStep(
-				dslContext.scope().aggregationBuilders().fromJson( jsonString )
-		);
-	}
-
-	// TODO HSEARCH-3661 implement extensions to the aggregation DSL for Elasticsearch
-
+    @Override
+    public AggregationFinalStep<JsonObject> fromJson(String jsonString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+    // TODO HSEARCH-3661 implement extensions to the aggregation DSL for Elasticsearch
 }

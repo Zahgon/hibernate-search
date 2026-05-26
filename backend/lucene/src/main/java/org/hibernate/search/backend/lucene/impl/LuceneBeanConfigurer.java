@@ -20,35 +20,9 @@ import org.hibernate.search.engine.environment.bean.spi.BeanConfigurationContext
 import org.hibernate.search.engine.environment.bean.spi.BeanConfigurer;
 
 public class LuceneBeanConfigurer implements BeanConfigurer {
-	@Override
-	public void configure(BeanConfigurationContext context) {
-		context.define(
-				BackendFactory.class, LuceneBackendSettings.TYPE_NAME,
-				beanResolver -> BeanHolder.of( new LuceneBackendFactory() )
-		);
-		context.define(
-				DirectoryProvider.class, LocalFileSystemDirectoryProvider.NAME,
-				beanResolver -> BeanHolder.of( new LocalFileSystemDirectoryProvider() )
-		);
-		context.define(
-				DirectoryProvider.class, LocalHeapDirectoryProvider.NAME,
-				beanResolver -> BeanHolder.of( new LocalHeapDirectoryProvider() )
-		);
-		context.define(
-				ShardingStrategy.class, NoShardingStrategy.NAME,
-				beanResolver -> BeanHolder.of( new NoShardingStrategy() )
-		);
-		context.define(
-				ShardingStrategy.class, HashShardingStrategy.NAME,
-				beanResolver -> BeanHolder.of( new HashShardingStrategy() )
-		);
-		context.define(
-				ShardingStrategy.class, ExplicitShardingStrategy.NAME,
-				beanResolver -> BeanHolder.of( new ExplicitShardingStrategy() )
-		);
-		context.define(
-				LuceneWorkExecutorProvider.class, DefaultLuceneWorkExecutorProvider.DEFAULT_BEAN_NAME,
-				beanResolver -> BeanHolder.of( new DefaultLuceneWorkExecutorProvider() )
-		);
-	}
+
+    @Override
+    public void configure(BeanConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

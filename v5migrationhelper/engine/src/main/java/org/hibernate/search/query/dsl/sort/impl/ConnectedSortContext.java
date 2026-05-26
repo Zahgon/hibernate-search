@@ -11,7 +11,6 @@ import org.hibernate.search.query.dsl.sort.SortFieldContext;
 import org.hibernate.search.query.dsl.sort.SortNativeContext;
 import org.hibernate.search.query.dsl.sort.SortOrderTermination;
 import org.hibernate.search.query.dsl.sort.SortScoreContext;
-
 import org.apache.lucene.search.SortField;
 
 /**
@@ -19,37 +18,32 @@ import org.apache.lucene.search.SortField;
  */
 public class ConnectedSortContext extends AbstractConnectedSortContext implements SortContext {
 
-	public ConnectedSortContext(QueryBuildingContext queryContext) {
-		super( queryContext, new SortFieldStates( queryContext ) );
-	}
+    public ConnectedSortContext(QueryBuildingContext queryContext) {
+        super(queryContext, new SortFieldStates(queryContext));
+    }
 
-	@Override
-	public SortScoreContext byScore() {
-		states.setCurrentType( SortField.Type.SCORE );
-		return new ConnectedSortScoreContext( queryContext, states );
-	}
+    @Override
+    public SortScoreContext byScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortOrderTermination byIndexOrder() {
-		states.setCurrentType( SortField.Type.DOC );
-		return new ConnectedSortOrderTermination( queryContext, states );
-	}
+    @Override
+    public SortOrderTermination byIndexOrder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortFieldContext byField(String field) {
-		states.setCurrentName( field );
-		return new ConnectedSortFieldContext( queryContext, states );
-	}
+    @Override
+    public SortFieldContext byField(String field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortDistanceNoFieldContext byDistance() {
-		return new ConnectedSortDistanceNoFieldContext( queryContext, states );
-	}
+    @Override
+    public SortDistanceNoFieldContext byDistance() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortNativeContext byNative(SortField sortField) {
-		states.setCurrentSortFieldNativeSortDescription( sortField );
-		return new ConnectedSortNativeContext( queryContext, states );
-	}
-
+    @Override
+    public SortNativeContext byNative(SortField sortField) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

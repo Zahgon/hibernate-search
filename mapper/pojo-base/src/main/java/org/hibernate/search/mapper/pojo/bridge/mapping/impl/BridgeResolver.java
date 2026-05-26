@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.mapper.pojo.bridge.IdentifierBridge;
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
@@ -88,298 +87,194 @@ import org.hibernate.search.mapper.pojo.model.typepattern.impl.TypePatternMatche
 
 public final class BridgeResolver {
 
-	private final Map<PojoRawTypeIdentifier<?>, IdentifierBinder> exactRawTypeIdentifierBridgeMappings;
-	private final Map<PojoRawTypeIdentifier<?>, ValueBinder> exactRawTypeValueBridgeMappings;
+    private final Map<PojoRawTypeIdentifier<?>, IdentifierBinder> exactRawTypeIdentifierBridgeMappings;
 
-	private final List<TypePatternBinderMapping<IdentifierBinder>> typePatternIdentifierBridgeMappings;
-	private final List<TypePatternBinderMapping<ValueBinder>> typePatternValueBridgeMappings;
+    private final Map<PojoRawTypeIdentifier<?>, ValueBinder> exactRawTypeValueBridgeMappings;
 
-	private BridgeResolver(Builder builder) {
-		this.exactRawTypeIdentifierBridgeMappings = new HashMap<>( builder.exactRawTypeIdentifierBridgeMappings );
-		this.exactRawTypeValueBridgeMappings = new HashMap<>( builder.exactRawTypeValueBridgeMappings );
-		this.typePatternIdentifierBridgeMappings = new ArrayList<>( builder.typePatternIdentifierBridgeMappings );
-		this.typePatternValueBridgeMappings = new ArrayList<>( builder.typePatternValueBridgeMappings );
-		// Last added patterns get priority over the previous ones: we'll try them first.
-		Collections.reverse( typePatternIdentifierBridgeMappings );
-		Collections.reverse( typePatternValueBridgeMappings );
-	}
+    private final List<TypePatternBinderMapping<IdentifierBinder>> typePatternIdentifierBridgeMappings;
 
-	public IdentifierBinder resolveIdentifierBinderForType(PojoTypeModel<?> sourceType) {
-		IdentifierBinder result = getBinderOrNull(
-				sourceType,
-				exactRawTypeIdentifierBridgeMappings,
-				typePatternIdentifierBridgeMappings
-		);
-		if ( result == null ) {
-			throw MappingLog.INSTANCE.unableToResolveDefaultIdentifierBridgeFromSourceType( sourceType );
-		}
-		return result;
-	}
+    private final List<TypePatternBinderMapping<ValueBinder>> typePatternValueBridgeMappings;
 
-	public ValueBinder resolveValueBinderForType(PojoTypeModel<?> sourceType) {
-		ValueBinder result = getBinderOrNull(
-				sourceType,
-				exactRawTypeValueBridgeMappings,
-				typePatternValueBridgeMappings
-		);
-		if ( result == null ) {
-			throw MappingLog.INSTANCE.unableToResolveDefaultValueBridgeFromSourceType( sourceType );
-		}
-		return result;
-	}
+    private BridgeResolver(Builder builder) {
+        this.exactRawTypeIdentifierBridgeMappings = new HashMap<>(builder.exactRawTypeIdentifierBridgeMappings);
+        this.exactRawTypeValueBridgeMappings = new HashMap<>(builder.exactRawTypeValueBridgeMappings);
+        this.typePatternIdentifierBridgeMappings = new ArrayList<>(builder.typePatternIdentifierBridgeMappings);
+        this.typePatternValueBridgeMappings = new ArrayList<>(builder.typePatternValueBridgeMappings);
+        // Last added patterns get priority over the previous ones: we'll try them first.
+        Collections.reverse(typePatternIdentifierBridgeMappings);
+        Collections.reverse(typePatternValueBridgeMappings);
+    }
 
-	private static <B> B getBinderOrNull(PojoTypeModel<?> sourceType,
-			Map<PojoRawTypeIdentifier<?>, B> exactRawTypeBridgeMappings,
-			List<TypePatternBinderMapping<B>> typePatternBinderMappings) {
-		PojoRawTypeIdentifier<?> rawType = sourceType.rawType().typeIdentifier();
-		B result = exactRawTypeBridgeMappings.get( rawType );
+    public IdentifierBinder resolveIdentifierBinderForType(PojoTypeModel<?> sourceType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( result == null ) {
-			Iterator<TypePatternBinderMapping<B>> mappingIterator = typePatternBinderMappings.iterator();
-			while ( result == null && mappingIterator.hasNext() ) {
-				result = mappingIterator.next().getBinderIfMatching( sourceType );
-			}
-		}
+    public ValueBinder resolveValueBinderForType(PojoTypeModel<?> sourceType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return result;
-	}
+    private static <B> B getBinderOrNull(PojoTypeModel<?> sourceType, Map<PojoRawTypeIdentifier<?>, B> exactRawTypeBridgeMappings, List<TypePatternBinderMapping<B>> typePatternBinderMappings) {
+        PojoRawTypeIdentifier<?> rawType = sourceType.rawType().typeIdentifier();
+        B result = exactRawTypeBridgeMappings.get(rawType);
+        if (result == null) {
+            Iterator<TypePatternBinderMapping<B>> mappingIterator = typePatternBinderMappings.iterator();
+            while (result == null && mappingIterator.hasNext()) {
+                result = mappingIterator.next().getBinderIfMatching(sourceType);
+            }
+        }
+        return result;
+    }
 
-	private static final class TypePatternBinderMapping<B> {
-		private final TypePatternMatcher matcher;
-		private final B binder;
+    private static final class TypePatternBinderMapping<B> {
 
-		TypePatternBinderMapping(TypePatternMatcher matcher, B binder) {
-			this.matcher = matcher;
-			this.binder = binder;
-		}
+        private final TypePatternMatcher matcher;
 
-		B getBinderIfMatching(PojoTypeModel<?> typeModel) {
-			if ( matcher.matches( typeModel ) ) {
-				return binder;
-			}
-			else {
-				return null;
-			}
-		}
-	}
+        private final B binder;
 
-	public static class Builder implements BridgesConfigurationContext {
-		private final PojoBootstrapIntrospector introspector;
-		private final TypePatternMatcherFactory typePatternMatcherFactory;
+        TypePatternBinderMapping(TypePatternMatcher matcher, B binder) {
+            this.matcher = matcher;
+            this.binder = binder;
+        }
 
-		private final Map<PojoRawTypeIdentifier<?>, IdentifierBinder> exactRawTypeIdentifierBridgeMappings = new HashMap<>();
-		private final Map<PojoRawTypeIdentifier<?>, ValueBinder> exactRawTypeValueBridgeMappings = new HashMap<>();
+        B getBinderIfMatching(PojoTypeModel<?> typeModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private final List<TypePatternBinderMapping<IdentifierBinder>> typePatternIdentifierBridgeMappings = new ArrayList<>();
-		private final List<TypePatternBinderMapping<ValueBinder>> typePatternValueBridgeMappings = new ArrayList<>();
+    public static class Builder implements BridgesConfigurationContext {
 
-		public Builder(PojoBootstrapIntrospector introspector, TypePatternMatcherFactory typePatternMatcherFactory) {
-			this.introspector = introspector;
-			this.typePatternMatcherFactory = typePatternMatcherFactory;
-			addDefaults();
-		}
+        private final PojoBootstrapIntrospector introspector;
 
-		@Override
-		public <T> DefaultBridgeDefinitionStep<?, T> exactType(Class<T> clazz) {
-			return new ExactTypeDefaultBridgeDefinitionStep<>( introspector.typeModel( clazz ).typeIdentifier() );
-		}
+        private final TypePatternMatcherFactory typePatternMatcherFactory;
 
-		@Override
-		public <T> DefaultBinderDefinitionStep<?> subTypesOf(Class<T> clazz) {
-			TypePatternMatcher subTypesMatcher = typePatternMatcherFactory.createRawSuperTypeMatcher( clazz );
-			return new TypePatternDefaultBinderDefinitionStep( subTypesMatcher );
-		}
+        private final Map<PojoRawTypeIdentifier<?>, IdentifierBinder> exactRawTypeIdentifierBridgeMappings = new HashMap<>();
 
-		@Override
-		public <T> DefaultBinderDefinitionStep<?> strictSubTypesOf(Class<T> clazz) {
-			TypePatternMatcher strictSubTypesMatcher = typePatternMatcherFactory.createRawSuperTypeMatcher( clazz )
-					.and( typePatternMatcherFactory.createExactRawTypeMatcher( clazz ).negate() );
-			return new TypePatternDefaultBinderDefinitionStep( strictSubTypesMatcher );
-		}
+        private final Map<PojoRawTypeIdentifier<?>, ValueBinder> exactRawTypeValueBridgeMappings = new HashMap<>();
 
-		public BridgeResolver build() {
-			return new BridgeResolver( this );
-		}
+        private final List<TypePatternBinderMapping<IdentifierBinder>> typePatternIdentifierBridgeMappings = new ArrayList<>();
 
-		private void addDefaults() {
-			// java.lang
-			exactType( String.class )
-					.valueBridge( DefaultStringBridge.INSTANCE )
-					.identifierBridge( DefaultStringBridge.INSTANCE );
-			exactType( Character.class )
-					.valueBridge( DefaultCharacterBridge.INSTANCE )
-					.identifierBridge( DefaultCharacterBridge.INSTANCE );
-			exactType( Boolean.class )
-					.valueBridge( DefaultBooleanBridge.INSTANCE )
-					.identifierBridge( DefaultBooleanBridge.INSTANCE );
-			exactType( Byte.class )
-					.valueBridge( DefaultByteBridge.INSTANCE )
-					.identifierBridge( DefaultByteBridge.INSTANCE );
-			exactType( Short.class )
-					.valueBridge( DefaultShortBridge.INSTANCE )
-					.identifierBridge( DefaultShortBridge.INSTANCE );
-			exactType( Integer.class )
-					.valueBridge( DefaultIntegerBridge.INSTANCE )
-					.identifierBridge( DefaultIntegerBridge.INSTANCE );
-			exactType( Long.class )
-					.valueBridge( DefaultLongBridge.INSTANCE )
-					.identifierBridge( DefaultLongBridge.INSTANCE );
-			exactType( Float.class )
-					.valueBridge( DefaultFloatBridge.INSTANCE )
-					.identifierBridge( DefaultFloatBridge.INSTANCE );
-			exactType( Double.class )
-					.valueBridge( DefaultDoubleBridge.INSTANCE )
-					.identifierBridge( DefaultDoubleBridge.INSTANCE );
-			strictSubTypesOf( Enum.class )
-					.valueBinder( DefaultEnumBridge.Binder.INSTANCE )
-					.identifierBinder( DefaultEnumBridge.Binder.INSTANCE );
+        private final List<TypePatternBinderMapping<ValueBinder>> typePatternValueBridgeMappings = new ArrayList<>();
 
-			// java.math
-			exactType( BigInteger.class )
-					.valueBridge( DefaultBigIntegerBridge.INSTANCE )
-					.identifierBridge( DefaultBigIntegerBridge.INSTANCE );
-			exactType( BigDecimal.class )
-					.valueBridge( DefaultBigDecimalBridge.INSTANCE )
-					.identifierBridge( DefaultBigDecimalBridge.INSTANCE );
+        public Builder(PojoBootstrapIntrospector introspector, TypePatternMatcherFactory typePatternMatcherFactory) {
+            this.introspector = introspector;
+            this.typePatternMatcherFactory = typePatternMatcherFactory;
+            addDefaults();
+        }
 
-			// java.time
-			exactType( LocalDate.class )
-					.valueBridge( DefaultLocalDateBridge.INSTANCE )
-					.identifierBridge( DefaultLocalDateBridge.INSTANCE );
-			exactType( Instant.class )
-					.valueBridge( DefaultInstantBridge.INSTANCE )
-					.identifierBridge( DefaultInstantBridge.INSTANCE );
-			exactType( LocalDateTime.class )
-					.valueBridge( DefaultLocalDateTimeBridge.INSTANCE )
-					.identifierBridge( DefaultLocalDateTimeBridge.INSTANCE );
-			exactType( LocalTime.class )
-					.valueBridge( DefaultLocalTimeBridge.INSTANCE )
-					.identifierBridge( DefaultLocalTimeBridge.INSTANCE );
-			exactType( ZonedDateTime.class )
-					.valueBridge( DefaultZonedDateTimeBridge.INSTANCE )
-					.identifierBridge( DefaultZonedDateTimeBridge.INSTANCE );
-			exactType( Year.class )
-					.valueBridge( DefaultYearBridge.INSTANCE )
-					.identifierBridge( DefaultYearBridge.INSTANCE );
-			exactType( YearMonth.class )
-					.valueBridge( DefaultYearMonthBridge.INSTANCE )
-					.identifierBridge( DefaultYearMonthBridge.INSTANCE );
-			exactType( MonthDay.class )
-					.valueBridge( DefaultMonthDayBridge.INSTANCE )
-					.identifierBridge( DefaultMonthDayBridge.INSTANCE );
-			exactType( OffsetDateTime.class )
-					.valueBridge( DefaultOffsetDateTimeBridge.INSTANCE )
-					.identifierBridge( DefaultOffsetDateTimeBridge.INSTANCE );
-			exactType( OffsetTime.class )
-					.valueBridge( DefaultOffsetTimeBridge.INSTANCE )
-					.identifierBridge( DefaultOffsetTimeBridge.INSTANCE );
-			exactType( ZoneOffset.class )
-					.valueBridge( DefaultZoneOffsetBridge.INSTANCE )
-					.identifierBridge( DefaultZoneOffsetBridge.INSTANCE );
-			exactType( ZoneId.class )
-					.valueBridge( DefaultZoneIdBridge.INSTANCE )
-					.identifierBridge( DefaultZoneIdBridge.INSTANCE );
-			exactType( Period.class )
-					.valueBridge( DefaultPeriodBridge.INSTANCE )
-					.identifierBridge( DefaultPeriodBridge.INSTANCE );
-			exactType( Duration.class )
-					.valueBridge( DefaultDurationBridge.INSTANCE )
-					.identifierBridge( DefaultDurationBridge.INSTANCE );
+        @Override
+        public <T> DefaultBridgeDefinitionStep<?, T> exactType(Class<T> clazz) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// java.util
-			exactType( UUID.class )
-					.valueBridge( DefaultUUIDBridge.INSTANCE )
-					.identifierBridge( DefaultUUIDBridge.INSTANCE );
-			exactType( Date.class )
-					.valueBridge( DefaultJavaUtilDateBridge.INSTANCE )
-					.identifierBridge( DefaultJavaUtilDateBridge.INSTANCE );
-			exactType( Calendar.class )
-					.valueBridge( DefaultJavaUtilCalendarBridge.INSTANCE )
-					.identifierBridge( DefaultJavaUtilCalendarBridge.INSTANCE );
+        @Override
+        public <T> DefaultBinderDefinitionStep<?> subTypesOf(Class<T> clazz) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// java.sql
-			exactType( java.sql.Date.class )
-					.valueBridge( DefaultJavaSqlDateBridge.INSTANCE )
-					.identifierBridge( DefaultJavaSqlDateBridge.INSTANCE );
-			exactType( Timestamp.class )
-					.valueBridge( DefaultJavaSqlTimestampBridge.INSTANCE )
-					.identifierBridge( DefaultJavaSqlTimestampBridge.INSTANCE );
-			exactType( Time.class )
-					.valueBridge( DefaultJavaSqlTimeBridge.INSTANCE )
-					.identifierBridge( DefaultJavaSqlTimeBridge.INSTANCE );
+        @Override
+        public <T> DefaultBinderDefinitionStep<?> strictSubTypesOf(Class<T> clazz) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// java.net
-			exactType( URI.class )
-					.valueBridge( DefaultJavaNetURIBridge.INSTANCE )
-					.identifierBridge( DefaultJavaNetURIBridge.INSTANCE );
-			exactType( URL.class )
-					.valueBridge( DefaultJavaNetURLBridge.INSTANCE )
-					.identifierBridge( DefaultJavaNetURLBridge.INSTANCE );
+        public BridgeResolver build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// org.hibernate.search
-			subTypesOf( GeoPoint.class )
-					.valueBinder( new StaticValueBinder<>( GeoPoint.class, DefaultGeoPointBridge.INSTANCE ) );
-			exactType( GeoPoint.class )
-					.identifierBridge( DefaultGeoPointBridge.INSTANCE );
+        private void addDefaults() {
+            // java.lang
+            exactType(String.class).valueBridge(DefaultStringBridge.INSTANCE).identifierBridge(DefaultStringBridge.INSTANCE);
+            exactType(Character.class).valueBridge(DefaultCharacterBridge.INSTANCE).identifierBridge(DefaultCharacterBridge.INSTANCE);
+            exactType(Boolean.class).valueBridge(DefaultBooleanBridge.INSTANCE).identifierBridge(DefaultBooleanBridge.INSTANCE);
+            exactType(Byte.class).valueBridge(DefaultByteBridge.INSTANCE).identifierBridge(DefaultByteBridge.INSTANCE);
+            exactType(Short.class).valueBridge(DefaultShortBridge.INSTANCE).identifierBridge(DefaultShortBridge.INSTANCE);
+            exactType(Integer.class).valueBridge(DefaultIntegerBridge.INSTANCE).identifierBridge(DefaultIntegerBridge.INSTANCE);
+            exactType(Long.class).valueBridge(DefaultLongBridge.INSTANCE).identifierBridge(DefaultLongBridge.INSTANCE);
+            exactType(Float.class).valueBridge(DefaultFloatBridge.INSTANCE).identifierBridge(DefaultFloatBridge.INSTANCE);
+            exactType(Double.class).valueBridge(DefaultDoubleBridge.INSTANCE).identifierBridge(DefaultDoubleBridge.INSTANCE);
+            strictSubTypesOf(Enum.class).valueBinder(DefaultEnumBridge.Binder.INSTANCE).identifierBinder(DefaultEnumBridge.Binder.INSTANCE);
+            // java.math
+            exactType(BigInteger.class).valueBridge(DefaultBigIntegerBridge.INSTANCE).identifierBridge(DefaultBigIntegerBridge.INSTANCE);
+            exactType(BigDecimal.class).valueBridge(DefaultBigDecimalBridge.INSTANCE).identifierBridge(DefaultBigDecimalBridge.INSTANCE);
+            // java.time
+            exactType(LocalDate.class).valueBridge(DefaultLocalDateBridge.INSTANCE).identifierBridge(DefaultLocalDateBridge.INSTANCE);
+            exactType(Instant.class).valueBridge(DefaultInstantBridge.INSTANCE).identifierBridge(DefaultInstantBridge.INSTANCE);
+            exactType(LocalDateTime.class).valueBridge(DefaultLocalDateTimeBridge.INSTANCE).identifierBridge(DefaultLocalDateTimeBridge.INSTANCE);
+            exactType(LocalTime.class).valueBridge(DefaultLocalTimeBridge.INSTANCE).identifierBridge(DefaultLocalTimeBridge.INSTANCE);
+            exactType(ZonedDateTime.class).valueBridge(DefaultZonedDateTimeBridge.INSTANCE).identifierBridge(DefaultZonedDateTimeBridge.INSTANCE);
+            exactType(Year.class).valueBridge(DefaultYearBridge.INSTANCE).identifierBridge(DefaultYearBridge.INSTANCE);
+            exactType(YearMonth.class).valueBridge(DefaultYearMonthBridge.INSTANCE).identifierBridge(DefaultYearMonthBridge.INSTANCE);
+            exactType(MonthDay.class).valueBridge(DefaultMonthDayBridge.INSTANCE).identifierBridge(DefaultMonthDayBridge.INSTANCE);
+            exactType(OffsetDateTime.class).valueBridge(DefaultOffsetDateTimeBridge.INSTANCE).identifierBridge(DefaultOffsetDateTimeBridge.INSTANCE);
+            exactType(OffsetTime.class).valueBridge(DefaultOffsetTimeBridge.INSTANCE).identifierBridge(DefaultOffsetTimeBridge.INSTANCE);
+            exactType(ZoneOffset.class).valueBridge(DefaultZoneOffsetBridge.INSTANCE).identifierBridge(DefaultZoneOffsetBridge.INSTANCE);
+            exactType(ZoneId.class).valueBridge(DefaultZoneIdBridge.INSTANCE).identifierBridge(DefaultZoneIdBridge.INSTANCE);
+            exactType(Period.class).valueBridge(DefaultPeriodBridge.INSTANCE).identifierBridge(DefaultPeriodBridge.INSTANCE);
+            exactType(Duration.class).valueBridge(DefaultDurationBridge.INSTANCE).identifierBridge(DefaultDurationBridge.INSTANCE);
+            // java.util
+            exactType(UUID.class).valueBridge(DefaultUUIDBridge.INSTANCE).identifierBridge(DefaultUUIDBridge.INSTANCE);
+            exactType(Date.class).valueBridge(DefaultJavaUtilDateBridge.INSTANCE).identifierBridge(DefaultJavaUtilDateBridge.INSTANCE);
+            exactType(Calendar.class).valueBridge(DefaultJavaUtilCalendarBridge.INSTANCE).identifierBridge(DefaultJavaUtilCalendarBridge.INSTANCE);
+            // java.sql
+            exactType(java.sql.Date.class).valueBridge(DefaultJavaSqlDateBridge.INSTANCE).identifierBridge(DefaultJavaSqlDateBridge.INSTANCE);
+            exactType(Timestamp.class).valueBridge(DefaultJavaSqlTimestampBridge.INSTANCE).identifierBridge(DefaultJavaSqlTimestampBridge.INSTANCE);
+            exactType(Time.class).valueBridge(DefaultJavaSqlTimeBridge.INSTANCE).identifierBridge(DefaultJavaSqlTimeBridge.INSTANCE);
+            // java.net
+            exactType(URI.class).valueBridge(DefaultJavaNetURIBridge.INSTANCE).identifierBridge(DefaultJavaNetURIBridge.INSTANCE);
+            exactType(URL.class).valueBridge(DefaultJavaNetURLBridge.INSTANCE).identifierBridge(DefaultJavaNetURLBridge.INSTANCE);
+            // org.hibernate.search
+            subTypesOf(GeoPoint.class).valueBinder(new StaticValueBinder<>(GeoPoint.class, DefaultGeoPointBridge.INSTANCE));
+            exactType(GeoPoint.class).identifierBridge(DefaultGeoPointBridge.INSTANCE);
+            // arrays for vector fields:
+            exactType(byte[].class).valueBridge(DefaultByteArrayBridge.INSTANCE);
+            exactType(float[].class).valueBridge(DefaultFloatArrayBridge.INSTANCE);
+        }
 
-			// arrays for vector fields:
-			exactType( byte[].class )
-					.valueBridge( DefaultByteArrayBridge.INSTANCE );
-			exactType( float[].class )
-					.valueBridge( DefaultFloatArrayBridge.INSTANCE );
-		}
+        private class TypePatternDefaultBinderDefinitionStep implements DefaultBinderDefinitionStep<TypePatternDefaultBinderDefinitionStep> {
 
-		private class TypePatternDefaultBinderDefinitionStep
-				implements DefaultBinderDefinitionStep<TypePatternDefaultBinderDefinitionStep> {
-			private final TypePatternMatcher typePatternMatcher;
+            private final TypePatternMatcher typePatternMatcher;
 
-			private TypePatternDefaultBinderDefinitionStep(TypePatternMatcher typePatternMatcher) {
-				this.typePatternMatcher = typePatternMatcher;
-			}
+            private TypePatternDefaultBinderDefinitionStep(TypePatternMatcher typePatternMatcher) {
+                this.typePatternMatcher = typePatternMatcher;
+            }
 
-			@Override
-			public TypePatternDefaultBinderDefinitionStep identifierBinder(IdentifierBinder binder) {
-				typePatternIdentifierBridgeMappings.add( new TypePatternBinderMapping<>( typePatternMatcher, binder ) );
-				return this;
-			}
+            @Override
+            public TypePatternDefaultBinderDefinitionStep identifierBinder(IdentifierBinder binder) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-			@Override
-			public TypePatternDefaultBinderDefinitionStep valueBinder(ValueBinder binder) {
-				typePatternValueBridgeMappings.add( new TypePatternBinderMapping<>( typePatternMatcher, binder ) );
-				return this;
-			}
-		}
+            @Override
+            public TypePatternDefaultBinderDefinitionStep valueBinder(ValueBinder binder) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
 
-		private class ExactTypeDefaultBridgeDefinitionStep<T>
-				implements DefaultBridgeDefinitionStep<ExactTypeDefaultBridgeDefinitionStep<T>, T> {
-			private final PojoRawTypeIdentifier<T> typeIdentifier;
+        private class ExactTypeDefaultBridgeDefinitionStep<T> implements DefaultBridgeDefinitionStep<ExactTypeDefaultBridgeDefinitionStep<T>, T> {
 
-			private ExactTypeDefaultBridgeDefinitionStep(PojoRawTypeIdentifier<T> typeIdentifier) {
-				this.typeIdentifier = typeIdentifier;
-			}
+            private final PojoRawTypeIdentifier<T> typeIdentifier;
 
-			@Override
-			public ExactTypeDefaultBridgeDefinitionStep<T> identifierBinder(IdentifierBinder binder) {
-				exactRawTypeIdentifierBridgeMappings.put( typeIdentifier, binder );
-				return this;
-			}
+            private ExactTypeDefaultBridgeDefinitionStep(PojoRawTypeIdentifier<T> typeIdentifier) {
+                this.typeIdentifier = typeIdentifier;
+            }
 
-			@Override
-			public ExactTypeDefaultBridgeDefinitionStep<T> valueBinder(ValueBinder binder) {
-				exactRawTypeValueBridgeMappings.put( typeIdentifier, binder );
-				return this;
-			}
+            @Override
+            public ExactTypeDefaultBridgeDefinitionStep<T> identifierBinder(IdentifierBinder binder) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-			@Override
-			public ExactTypeDefaultBridgeDefinitionStep<T> identifierBridge(IdentifierBridge<T> bridge) {
-				return identifierBinder( new StaticIdentifierBinder<>( typeIdentifier.javaClass(), bridge ) );
-			}
+            @Override
+            public ExactTypeDefaultBridgeDefinitionStep<T> valueBinder(ValueBinder binder) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-			@Override
-			public ExactTypeDefaultBridgeDefinitionStep<T> valueBridge(ValueBridge<T, ?> bridge) {
-				return valueBinder( new StaticValueBinder<>( typeIdentifier.javaClass(), bridge ) );
-			}
-		}
-	}
+            @Override
+            public ExactTypeDefaultBridgeDefinitionStep<T> identifierBridge(IdentifierBridge<T> bridge) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
+            @Override
+            public ExactTypeDefaultBridgeDefinitionStep<T> valueBridge(ValueBridge<T, ?> bridge) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 }

@@ -9,29 +9,27 @@ import java.util.Map;
 
 public final class ReflectionHelper {
 
-	private static final Map<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS;
-	static {
-		Map<Class<?>, Class<?>> map = new HashMap<>();
-		map.put( boolean.class, Boolean.class );
-		map.put( byte.class, Byte.class );
-		map.put( char.class, Character.class );
-		map.put( double.class, Double.class );
-		map.put( float.class, Float.class );
-		map.put( int.class, Integer.class );
-		map.put( long.class, Long.class );
-		map.put( short.class, Short.class );
-		map.put( void.class, Void.class );
-		PRIMITIVES_TO_WRAPPERS = CollectionHelper.toImmutableMap( map );
-	}
+    private static final Map<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS;
 
-	private ReflectionHelper() {
-		// Private, don't use.
-	}
+    static {
+        Map<Class<?>, Class<?>> map = new HashMap<>();
+        map.put(boolean.class, Boolean.class);
+        map.put(byte.class, Byte.class);
+        map.put(char.class, Character.class);
+        map.put(double.class, Double.class);
+        map.put(float.class, Float.class);
+        map.put(int.class, Integer.class);
+        map.put(long.class, Long.class);
+        map.put(short.class, Short.class);
+        map.put(void.class, Void.class);
+        PRIMITIVES_TO_WRAPPERS = CollectionHelper.toImmutableMap(map);
+    }
 
-	public static Class<?> getPrimitiveWrapperType(Class<?> primitiveType) {
-		if ( !primitiveType.isPrimitive() ) {
-			throw new IllegalArgumentException( "Argument primitiveType must be a Class representing a primitive Java type" );
-		}
-		return PRIMITIVES_TO_WRAPPERS.get( primitiveType );
-	}
+    private ReflectionHelper() {
+        // Private, don't use.
+    }
+
+    public static Class<?> getPrimitiveWrapperType(Class<?> primitiveType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

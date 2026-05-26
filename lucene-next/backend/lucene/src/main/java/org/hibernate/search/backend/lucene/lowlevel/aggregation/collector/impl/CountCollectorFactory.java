@@ -9,24 +9,23 @@ import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorFact
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningLongMultiValuesSource;
 
-public class CountCollectorFactory
-		implements
-		CollectorFactory<AggregationFunctionCollector<Count>, Long, AggregationFunctionCollectorManager<Count>> {
+public class CountCollectorFactory implements CollectorFactory<AggregationFunctionCollector<Count>, Long, AggregationFunctionCollectorManager<Count>> {
 
-	private final JoiningLongMultiValuesSource source;
-	private final CollectorKey<AggregationFunctionCollector<Count>, Long> key = CollectorKey.create();
+    private final JoiningLongMultiValuesSource source;
 
-	public CountCollectorFactory(JoiningLongMultiValuesSource source) {
-		this.source = source;
-	}
+    private final CollectorKey<AggregationFunctionCollector<Count>, Long> key = CollectorKey.create();
 
-	@Override
-	public AggregationFunctionCollectorManager<Count> createCollectorManager(CollectorExecutionContext context) {
-		return new AggregationFunctionCollectorManager<>( source, Count::new );
-	}
+    public CountCollectorFactory(JoiningLongMultiValuesSource source) {
+        this.source = source;
+    }
 
-	@Override
-	public CollectorKey<AggregationFunctionCollector<Count>, Long> getCollectorKey() {
-		return key;
-	}
+    @Override
+    public AggregationFunctionCollectorManager<Count> createCollectorManager(CollectorExecutionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CollectorKey<AggregationFunctionCollector<Count>, Long> getCollectorKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

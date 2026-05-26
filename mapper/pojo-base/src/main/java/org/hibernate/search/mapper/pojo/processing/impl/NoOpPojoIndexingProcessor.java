@@ -10,20 +10,21 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
 class NoOpPojoIndexingProcessor extends PojoIndexingProcessor<Object> {
 
-	private static final NoOpPojoIndexingProcessor INSTANCE = new NoOpPojoIndexingProcessor();
+    private static final NoOpPojoIndexingProcessor INSTANCE = new NoOpPojoIndexingProcessor();
 
-	@SuppressWarnings("unchecked") // This instance works for any T
-	public static <T> PojoIndexingProcessor<T> get() {
-		return (PojoIndexingProcessor<T>) INSTANCE;
-	}
+    // This instance works for any T
+    @SuppressWarnings("unchecked")
+    public static <T> PojoIndexingProcessor<T> get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void process(DocumentElement target, Object source, PojoIndexingProcessorRootContext context) {
-		// No-op
-	}
+    @Override
+    public void process(DocumentElement target, Object source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "no op" );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

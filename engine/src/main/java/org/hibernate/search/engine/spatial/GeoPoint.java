@@ -10,24 +10,25 @@ package org.hibernate.search.engine.spatial;
  * @author Nicolas Helleringer
  */
 public interface GeoPoint {
-	/**
-	 * @return the latitude, in degrees
-	 */
-	double latitude();
 
-	/**
-	 * @return the longitude, in degrees
-	 */
-	double longitude();
+    /**
+     * @return the latitude, in degrees
+     */
+    double latitude();
 
-	/**
-	 * Create a {@link GeoPoint} from a latitude and a longitude.
-	 *
-	 * @param latitude The latitude of the GeoPoint, in degrees.
-	 * @param longitude The longitude of the GeoPoint, in degrees.
-	 * @return The corresponding {@link GeoPoint}.
-	 */
-	static GeoPoint of(double latitude, double longitude) {
-		return new ImmutableGeoPoint( latitude, longitude );
-	}
+    /**
+     * @return the longitude, in degrees
+     */
+    double longitude();
+
+    /**
+     * Create a {@link GeoPoint} from a latitude and a longitude.
+     *
+     * @param latitude The latitude of the GeoPoint, in degrees.
+     * @param longitude The longitude of the GeoPoint, in degrees.
+     * @return The corresponding {@link GeoPoint}.
+     */
+    static GeoPoint of(double latitude, double longitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -23,73 +23,26 @@ import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 import org.hibernate.search.engine.spatial.GeoPoint;
 
-class LuceneGeoPointIndexFieldTypeOptionsStep
-		extends AbstractLuceneStandardIndexFieldTypeOptionsStep<LuceneGeoPointIndexFieldTypeOptionsStep, GeoPoint> {
+class LuceneGeoPointIndexFieldTypeOptionsStep extends AbstractLuceneStandardIndexFieldTypeOptionsStep<LuceneGeoPointIndexFieldTypeOptionsStep, GeoPoint> {
 
-	private Sortable sortable = Sortable.DEFAULT;
+    private Sortable sortable = Sortable.DEFAULT;
 
-	LuceneGeoPointIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, GeoPoint.class, DefaultStringConverters.GEO_POINT );
-	}
+    LuceneGeoPointIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, GeoPoint.class, DefaultStringConverters.GEO_POINT);
+    }
 
-	@Override
-	public LuceneGeoPointIndexFieldTypeOptionsStep sortable(Sortable sortable) {
-		this.sortable = sortable;
-		return this;
-	}
+    @Override
+    public LuceneGeoPointIndexFieldTypeOptionsStep sortable(Sortable sortable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexValueFieldType<GeoPoint> toIndexFieldType() {
-		boolean resolvedSortable = resolveDefault( sortable );
-		boolean resolvedProjectable = resolveDefault( projectable );
-		boolean resolvedSearchable = resolveDefault( searchable );
-		boolean resolvedAggregable = resolveDefault( aggregable );
+    @Override
+    public LuceneIndexValueFieldType<GeoPoint> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-
-		Indexing indexing = resolvedSearchable ? Indexing.ENABLED : Indexing.DISABLED;
-		// When projectable, we need distance projections; thus we need docValues.
-		// CAUTION: we don't enable docValues when aggregable at the moment, because there are no GeoPoint aggregations...
-		DocValues docValues = resolvedSortable || resolvedProjectable ? DocValues.ENABLED : DocValues.DISABLED;
-		Storage storage = resolvedProjectable ? Storage.ENABLED : Storage.DISABLED;
-
-		LuceneGeoPointFieldCodec codec = new LuceneGeoPointFieldCodec( indexing, docValues, storage, indexNullAsValue );
-		builder.codec( codec );
-
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS,
-					DocValues.ENABLED.equals( docValues )
-							? new LuceneExistsPredicate.DocValuesOrNormsBasedFactory<>()
-							: new LuceneExistsPredicate.DefaultFactory<>() );
-			builder.queryElementFactory( PredicateTypeKeys.SPATIAL_WITHIN_CIRCLE,
-					new LuceneGeoPointSpatialWithinCirclePredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.SPATIAL_WITHIN_POLYGON,
-					new LuceneGeoPointSpatialWithinPolygonPredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.SPATIAL_WITHIN_BOUNDING_BOX,
-					new LuceneGeoPointSpatialWithinBoundingBoxPredicate.Factory() );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.DISTANCE, new LuceneGeoPointDistanceSort.Factory() );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new LuceneFieldProjection.Factory<>( codec ) );
-			builder.queryElementFactory( ProjectionTypeKeys.DISTANCE, new LuceneDistanceToFieldProjection.Factory( codec ) );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			// No supported aggregation at the moment.
-		}
-
-		return builder.build();
-	}
-
-	@Override
-	protected LuceneGeoPointIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneGeoPointIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

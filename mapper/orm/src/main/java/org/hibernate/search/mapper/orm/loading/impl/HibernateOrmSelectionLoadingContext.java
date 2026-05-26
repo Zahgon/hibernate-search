@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.loading.impl;
 
 import jakarta.persistence.EntityGraph;
-
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.graph.GraphSemantic;
 import org.hibernate.graph.RootGraph;
@@ -23,92 +22,86 @@ import org.hibernate.search.util.common.impl.Contracts;
 
 public final class HibernateOrmSelectionLoadingContext implements PojoSelectionLoadingContext {
 
-	private final HibernateOrmLoadingSessionContext sessionContext;
-	private final MutableEntityLoadingOptions loadingOptions;
-	private final EntityLoadingCacheLookupStrategy cacheLookupStrategy;
+    private final HibernateOrmLoadingSessionContext sessionContext;
 
-	private HibernateOrmSelectionLoadingContext(Builder builder) {
-		sessionContext = builder.sessionContext;
-		loadingOptions = builder.loadingOptions;
-		cacheLookupStrategy = builder.cacheLookupStrategy;
-	}
+    private final MutableEntityLoadingOptions loadingOptions;
 
-	@Override
-	public void checkOpen() {
-		try {
-			sessionContext.session().checkOpen();
-		}
-		catch (IllegalStateException e) {
-			throw OrmMiscLog.INSTANCE.hibernateSessionIsClosed( e );
-		}
-	}
+    private final EntityLoadingCacheLookupStrategy cacheLookupStrategy;
 
-	@Override
-	public PojoRuntimeIntrospector runtimeIntrospector() {
-		return sessionContext.runtimeIntrospector();
-	}
+    private HibernateOrmSelectionLoadingContext(Builder builder) {
+        sessionContext = builder.sessionContext;
+        loadingOptions = builder.loadingOptions;
+        cacheLookupStrategy = builder.cacheLookupStrategy;
+    }
 
-	public HibernateOrmLoadingSessionContext sessionContext() {
-		return sessionContext;
-	}
+    @Override
+    public void checkOpen() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SessionImplementor sessionImplementor() {
-		return sessionContext.session();
-	}
+    @Override
+    public PojoRuntimeIntrospector runtimeIntrospector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public MutableEntityLoadingOptions loadingOptions() {
-		return loadingOptions;
-	}
+    public HibernateOrmLoadingSessionContext sessionContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public EntityLoadingCacheLookupStrategy cacheLookupStrategy() {
-		return cacheLookupStrategy;
-	}
+    public SessionImplementor sessionImplementor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static final class Builder
-			implements PojoSelectionLoadingContextBuilder<SearchLoadingOptionsStep>, SearchLoadingOptionsStep {
-		private final HibernateOrmLoadingSessionContext sessionContext;
-		private final MutableEntityLoadingOptions loadingOptions;
-		private EntityLoadingCacheLookupStrategy cacheLookupStrategy;
+    public MutableEntityLoadingOptions loadingOptions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(HibernateOrmLoadingMappingContext mappingContext,
-				HibernateOrmLoadingSessionContext sessionContext) {
-			this.sessionContext = sessionContext;
-			this.loadingOptions = new MutableEntityLoadingOptions( mappingContext );
-			this.cacheLookupStrategy = mappingContext.cacheLookupStrategy();
-		}
+    public EntityLoadingCacheLookupStrategy cacheLookupStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public SearchLoadingOptionsStep toAPI() {
-			return this;
-		}
+    public static final class Builder implements PojoSelectionLoadingContextBuilder<SearchLoadingOptionsStep>, SearchLoadingOptionsStep {
 
-		@Override
-		public SearchLoadingOptionsStep fetchSize(int fetchSize) {
-			loadingOptions.fetchSize( fetchSize );
-			return this;
-		}
+        private final HibernateOrmLoadingSessionContext sessionContext;
 
-		@Override
-		public SearchLoadingOptionsStep cacheLookupStrategy(EntityLoadingCacheLookupStrategy strategy) {
-			this.cacheLookupStrategy = strategy;
-			return this;
-		}
+        private final MutableEntityLoadingOptions loadingOptions;
 
-		@Override
-		public SearchLoadingOptionsStep graph(EntityGraph<?> graph, GraphSemantic semantic) {
-			loadingOptions.entityGraphHint( new EntityGraphHint<>( (RootGraph<?>) graph, semantic ), false );
-			return this;
-		}
+        private EntityLoadingCacheLookupStrategy cacheLookupStrategy;
 
-		@Override
-		public SearchLoadingOptionsStep graph(String graphName, GraphSemantic semantic) {
-			Contracts.assertNotNull( graphName, "graphName" );
-			return graph( sessionContext.session().getEntityGraph( graphName ), semantic );
-		}
+        public Builder(HibernateOrmLoadingMappingContext mappingContext, HibernateOrmLoadingSessionContext sessionContext) {
+            this.sessionContext = sessionContext;
+            this.loadingOptions = new MutableEntityLoadingOptions(mappingContext);
+            this.cacheLookupStrategy = mappingContext.cacheLookupStrategy();
+        }
 
-		@Override
-		public PojoSelectionLoadingContext build() {
-			return new HibernateOrmSelectionLoadingContext( this );
-		}
-	}
+        @Override
+        public SearchLoadingOptionsStep toAPI() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchLoadingOptionsStep fetchSize(int fetchSize) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchLoadingOptionsStep cacheLookupStrategy(EntityLoadingCacheLookupStrategy strategy) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchLoadingOptionsStep graph(EntityGraph<?> graph, GraphSemantic semantic) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchLoadingOptionsStep graph(String graphName, GraphSemantic semantic) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public PojoSelectionLoadingContext build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

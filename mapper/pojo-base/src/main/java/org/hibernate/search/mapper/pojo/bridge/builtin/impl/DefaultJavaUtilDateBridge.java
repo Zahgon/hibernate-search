@@ -9,21 +9,19 @@ import java.util.Date;
 
 public final class DefaultJavaUtilDateBridge extends AbstractConvertingDelegatingDefaultBridge<Date, Instant> {
 
-	public static final DefaultJavaUtilDateBridge INSTANCE = new DefaultJavaUtilDateBridge();
+    public static final DefaultJavaUtilDateBridge INSTANCE = new DefaultJavaUtilDateBridge();
 
-	public DefaultJavaUtilDateBridge() {
-		super( DefaultInstantBridge.INSTANCE );
-	}
+    public DefaultJavaUtilDateBridge() {
+        super(DefaultInstantBridge.INSTANCE);
+    }
 
-	@Override
-	protected Instant toConvertedValue(Date value) {
-		// java.sql.* types do not support toInstant(). See HSEARCH-3670
-		return Instant.ofEpochMilli( value.getTime() );
-	}
+    @Override
+    protected Instant toConvertedValue(Date value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Date fromConvertedValue(Instant value) {
-		return Date.from( value );
-	}
-
+    @Override
+    protected Date fromConvertedValue(Instant value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.projection.definition.spi;
 
 import java.util.List;
-
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
@@ -16,89 +15,86 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 @Incubating
 public abstract class FieldProjectionDefinition<P, F> extends AbstractProjectionDefinition<P> {
 
-	protected final String fieldPath;
-	protected final Class<F> fieldType;
-	protected final ValueModel valueModel;
+    protected final String fieldPath;
 
-	private FieldProjectionDefinition(String fieldPath, Class<F> fieldType, ValueModel valueModel) {
-		this.fieldPath = fieldPath;
-		this.fieldType = fieldType;
-		this.valueModel = valueModel;
-	}
+    protected final Class<F> fieldType;
 
-	@Override
-	protected String type() {
-		return "field";
-	}
+    protected final ValueModel valueModel;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		super.appendTo( appender );
-		appender.attribute( "fieldPath", fieldPath )
-				.attribute( "fieldType", fieldType )
-				.attribute( "multi", multi() )
-				.attribute( "valueModel", valueModel );
-	}
+    private FieldProjectionDefinition(String fieldPath, Class<F> fieldType, ValueModel valueModel) {
+        this.fieldPath = fieldPath;
+        this.fieldType = fieldType;
+        this.valueModel = valueModel;
+    }
 
-	protected abstract boolean multi();
+    @Override
+    protected String type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Deprecated(since = "8.0")
-	@Incubating
-	public static final class SingleValued<F> extends FieldProjectionDefinition<F, F> {
-		public SingleValued(String fieldPath, Class<F> fieldType, ValueModel valueModel) {
-			super( fieldPath, fieldType, valueModel );
-		}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected boolean multi() {
-			return false;
-		}
+    protected abstract boolean multi();
 
-		@Override
-		public SearchProjection<F> create(ProjectionDefinitionContext context) {
-			return context.projection().field( fieldPath, fieldType, valueModel ).toProjection();
-		}
-	}
+    @Deprecated(since = "8.0")
+    @Incubating
+    public static final class SingleValued<F> extends FieldProjectionDefinition<F, F> {
 
-	@Deprecated(since = "8.0")
-	@Incubating
-	public static final class MultiValued<F> extends FieldProjectionDefinition<List<F>, F> {
+        public SingleValued(String fieldPath, Class<F> fieldType, ValueModel valueModel) {
+            super(fieldPath, fieldType, valueModel);
+        }
 
-		public MultiValued(String fieldPath, Class<F> fieldType, ValueModel valueModel) {
-			super( fieldPath, fieldType, valueModel );
-		}
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected boolean multi() {
-			return true;
-		}
+        @Override
+        public SearchProjection<F> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public SearchProjection<List<F>> create(ProjectionDefinitionContext context) {
-			return context.projection().field( fieldPath, fieldType, valueModel )
-					.collector( ProjectionCollector.list() ).toProjection();
-		}
-	}
+    @Deprecated(since = "8.0")
+    @Incubating
+    public static final class MultiValued<F> extends FieldProjectionDefinition<List<F>, F> {
 
-	@Incubating
-	public static final class AccumulatedValued<C, F> extends FieldProjectionDefinition<C, F> {
-		private final ProjectionCollector.Provider<F, C> collector;
+        public MultiValued(String fieldPath, Class<F> fieldType, ValueModel valueModel) {
+            super(fieldPath, fieldType, valueModel);
+        }
 
-		public AccumulatedValued(String fieldPath, Class<F> fieldType, ProjectionCollector.Provider<F, C> collector,
-				ValueModel valueModel) {
-			super( fieldPath, fieldType, valueModel );
-			this.collector = collector;
-		}
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected boolean multi() {
-			return !collector.isSingleValued();
-		}
+        @Override
+        public SearchProjection<List<F>> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public SearchProjection<C> create(ProjectionDefinitionContext context) {
-			return context.projection().field( fieldPath, fieldType, valueModel )
-					.collector( collector ).toProjection();
-		}
-	}
+    @Incubating
+    public static final class AccumulatedValued<C, F> extends FieldProjectionDefinition<C, F> {
+
+        private final ProjectionCollector.Provider<F, C> collector;
+
+        public AccumulatedValued(String fieldPath, Class<F> fieldType, ProjectionCollector.Provider<F, C> collector, ValueModel valueModel) {
+            super(fieldPath, fieldType, valueModel);
+            this.collector = collector;
+        }
+
+        @Override
+        protected boolean multi() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<C> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

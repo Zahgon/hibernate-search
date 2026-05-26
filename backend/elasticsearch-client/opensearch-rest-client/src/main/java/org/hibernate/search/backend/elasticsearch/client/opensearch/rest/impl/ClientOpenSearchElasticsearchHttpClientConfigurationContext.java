@@ -8,37 +8,34 @@ import org.hibernate.search.backend.elasticsearch.client.common.spi.Elasticsearc
 import org.hibernate.search.backend.elasticsearch.client.opensearch.rest.ElasticsearchHttpClientConfigurationContext;
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.environment.bean.BeanResolver;
-
 import org.apache.hc.client5.http.impl.async.HttpAsyncClientBuilder;
 
-final class ClientOpenSearchElasticsearchHttpClientConfigurationContext
-		implements ElasticsearchHttpClientConfigurationContext, ElasticsearchRequestInterceptorProviderContext {
-	private final BeanResolver beanResolver;
-	private final ConfigurationPropertySource configurationPropertySource;
-	private final HttpAsyncClientBuilder clientBuilder;
+final class ClientOpenSearchElasticsearchHttpClientConfigurationContext implements ElasticsearchHttpClientConfigurationContext, ElasticsearchRequestInterceptorProviderContext {
 
-	ClientOpenSearchElasticsearchHttpClientConfigurationContext(
-			BeanResolver beanResolver,
-			ConfigurationPropertySource configurationPropertySource,
-			HttpAsyncClientBuilder clientBuilder) {
-		this.beanResolver = beanResolver;
-		this.configurationPropertySource = configurationPropertySource;
-		this.clientBuilder = clientBuilder;
-	}
+    private final BeanResolver beanResolver;
 
-	@Override
-	public BeanResolver beanResolver() {
-		return beanResolver;
-	}
+    private final ConfigurationPropertySource configurationPropertySource;
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return configurationPropertySource;
-	}
+    private final HttpAsyncClientBuilder clientBuilder;
 
-	@Override
-	public HttpAsyncClientBuilder clientBuilder() {
-		return clientBuilder;
-	}
+    ClientOpenSearchElasticsearchHttpClientConfigurationContext(BeanResolver beanResolver, ConfigurationPropertySource configurationPropertySource, HttpAsyncClientBuilder clientBuilder) {
+        this.beanResolver = beanResolver;
+        this.configurationPropertySource = configurationPropertySource;
+        this.clientBuilder = clientBuilder;
+    }
 
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public HttpAsyncClientBuilder clientBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

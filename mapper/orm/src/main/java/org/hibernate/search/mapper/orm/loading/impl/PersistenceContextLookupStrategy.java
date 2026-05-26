@@ -15,21 +15,20 @@ import org.hibernate.engine.spi.SessionImplementor;
  *
  * @author Emmanuel Bernard
  */
-class PersistenceContextLookupStrategy
-		implements EntityLoadingCacheLookupStrategyImplementor {
+class PersistenceContextLookupStrategy implements EntityLoadingCacheLookupStrategyImplementor {
 
-	static PersistenceContextLookupStrategy create(SessionImplementor session) {
-		return new PersistenceContextLookupStrategy( session );
-	}
+    static PersistenceContextLookupStrategy create(SessionImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final PersistenceContext persistenceContext;
+    private final PersistenceContext persistenceContext;
 
-	private PersistenceContextLookupStrategy(SessionImplementor session) {
-		this.persistenceContext = session.getPersistenceContext();
-	}
+    private PersistenceContextLookupStrategy(SessionImplementor session) {
+        this.persistenceContext = session.getPersistenceContext();
+    }
 
-	@Override
-	public Object lookup(EntityKey entityKey) {
-		return persistenceContext.getEntity( entityKey );
-	}
+    @Override
+    public Object lookup(EntityKey entityKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

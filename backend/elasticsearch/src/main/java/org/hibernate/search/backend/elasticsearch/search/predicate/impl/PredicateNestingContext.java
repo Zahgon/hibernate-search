@@ -5,26 +5,28 @@
 package org.hibernate.search.backend.elasticsearch.search.predicate.impl;
 
 public class PredicateNestingContext {
-	private static final PredicateNestingContext EMPTY = new PredicateNestingContext();
-	private final String nestedPath;
 
-	public static PredicateNestingContext simple() {
-		return EMPTY;
-	}
+    private static final PredicateNestingContext EMPTY = new PredicateNestingContext();
 
-	public static PredicateNestingContext nested(String nestedPath) {
-		return new PredicateNestingContext( nestedPath );
-	}
+    private final String nestedPath;
 
-	private PredicateNestingContext(String nestedPath) {
-		this.nestedPath = nestedPath;
-	}
+    public static PredicateNestingContext simple() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private PredicateNestingContext() {
-		this( null );
-	}
+    public static PredicateNestingContext nested(String nestedPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String getNestedPath() {
-		return nestedPath;
-	}
+    private PredicateNestingContext(String nestedPath) {
+        this.nestedPath = nestedPath;
+    }
+
+    private PredicateNestingContext() {
+        this(null);
+    }
+
+    public String getNestedPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

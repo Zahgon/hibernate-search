@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.search.projection.impl;
 
 import java.io.IOException;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.TopDocsDataCollectorExecutionContext;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.Values;
@@ -21,7 +20,6 @@ import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.spi.DistanceToFieldProjectionBuilder;
 import org.hibernate.search.engine.spatial.DistanceUnit;
 import org.hibernate.search.engine.spatial.GeoPoint;
-
 import org.apache.lucene.index.DocValues;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.LeafReaderContext;
@@ -35,201 +33,151 @@ import org.apache.lucene.util.SloppyMath;
  */
 public class LuceneDistanceToFieldProjection<P> extends AbstractLuceneProjection<P> {
 
-	private static final ProjectionConverter<Double, Double> NO_OP_DOUBLE_CONVERTER =
-			ProjectionConverter.passThrough( Double.class );
+    private static final ProjectionConverter<Double, Double> NO_OP_DOUBLE_CONVERTER = ProjectionConverter.passThrough(Double.class);
 
-	private final String absoluteFieldPath;
-	private final String nestedDocumentPath;
-	private final String requiredContextAbsoluteFieldPath;
+    private final String absoluteFieldPath;
 
-	private final LuceneFieldCodec<GeoPoint, ?> codec;
+    private final String nestedDocumentPath;
 
-	private final GeoPoint center;
-	private final DistanceUnit unit;
+    private final String requiredContextAbsoluteFieldPath;
 
-	private final ProjectionCollector.Provider<Double, P> collectorProvider;
+    private final LuceneFieldCodec<GeoPoint, ?> codec;
 
-	private final LuceneFieldProjection<Double, Double, P, ?> fieldProjection;
+    private final GeoPoint center;
 
-	private LuceneDistanceToFieldProjection(Builder builder,
-			ProjectionCollector.Provider<Double, P> collectorProvider) {
-		super( builder );
-		this.absoluteFieldPath = builder.field.absolutePath();
-		this.nestedDocumentPath = builder.field.nestedDocumentPath();
-		this.requiredContextAbsoluteFieldPath = collectorProvider.isSingleValued()
-				? builder.field.closestMultiValuedParentAbsolutePath()
-				: null;
-		this.codec = builder.codec;
-		this.center = builder.center;
-		this.unit = builder.unit;
-		this.collectorProvider = collectorProvider;
-		if ( builder.field.multiValued() ) {
-			// For multi-valued fields, use a field projection, because we need order to be preserved.
-			this.fieldProjection = new LuceneFieldProjection<>(
-					builder.scope, builder.field,
-					this::computeDistanceWithUnit, NO_OP_DOUBLE_CONVERTER, collectorProvider
-			);
-		}
-		else {
-			// For single-valued fields, we can use the docvalues.
-			this.fieldProjection = null;
-		}
-	}
+    private final DistanceUnit unit;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "absoluteFieldPath=" + absoluteFieldPath
-				+ ", center=" + center
-				+ ", collectorProvider=" + collectorProvider
-				+ "]";
-	}
+    private final ProjectionCollector.Provider<Double, P> collectorProvider;
 
-	@Override
-	public Extractor<?, P> request(ProjectionRequestContext context) {
-		if ( fieldProjection != null ) {
-			return fieldProjection.request( context );
-		}
-		else {
-			context.checkValidField( absoluteFieldPath );
-			if ( !context.projectionCardinalityCorrectlyAddressed( requiredContextAbsoluteFieldPath ) ) {
-				throw QueryLog.INSTANCE.invalidSingleValuedProjectionOnValueFieldInMultiValuedObjectField(
-						absoluteFieldPath, requiredContextAbsoluteFieldPath );
-			}
-			return new DocValuesBasedDistanceExtractor<>( collectorProvider.get(),
-					context.absoluteCurrentNestedFieldPath() );
-		}
-	}
+    private final LuceneFieldProjection<Double, Double, P, ?> fieldProjection;
 
-	/**
-	 * @param <A> The type of the temporary storage for accumulated values, before and after being transformed.
-	 */
-	private class DocValuesBasedDistanceExtractor<A> implements Extractor<A, P> {
-		private final ProjectionCollector<Double, Double, A, P> collector;
-		private final String contextAbsoluteFieldPath;
+    private LuceneDistanceToFieldProjection(Builder builder, ProjectionCollector.Provider<Double, P> collectorProvider) {
+        super(builder);
+        this.absoluteFieldPath = builder.field.absolutePath();
+        this.nestedDocumentPath = builder.field.nestedDocumentPath();
+        this.requiredContextAbsoluteFieldPath = collectorProvider.isSingleValued() ? builder.field.closestMultiValuedParentAbsolutePath() : null;
+        this.codec = builder.codec;
+        this.center = builder.center;
+        this.unit = builder.unit;
+        this.collectorProvider = collectorProvider;
+        if (builder.field.multiValued()) {
+            // For multi-valued fields, use a field projection, because we need order to be preserved.
+            this.fieldProjection = new LuceneFieldProjection<>(builder.scope, builder.field, this::computeDistanceWithUnit, NO_OP_DOUBLE_CONVERTER, collectorProvider);
+        } else {
+            // For single-valued fields, we can use the docvalues.
+            this.fieldProjection = null;
+        }
+    }
 
-		private DocValuesBasedDistanceExtractor(ProjectionCollector<Double, Double, A, P> collector,
-				String contextAbsoluteFieldPath) {
-			this.collector = collector;
-			this.contextAbsoluteFieldPath = contextAbsoluteFieldPath;
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public String toString() {
-			return getClass().getSimpleName() + "["
-					+ "absoluteFieldPath=" + absoluteFieldPath
-					+ ", center=" + center
-					+ ", collector=" + collector
-					+ "]";
-		}
+    @Override
+    public Extractor<?, P> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public Values<A> values(ProjectionExtractContext context) {
-			// Note that if this method gets called, we're dealing with a single-valued projection,
-			// so we don't care that the order of doc values is not the same
-			// as the order of values in the original document.
-			return new DocValuesBasedDistanceValues( context.collectorExecutionContext() );
-		}
+    /**
+     * @param <A> The type of the temporary storage for accumulated values, before and after being transformed.
+     */
+    private class DocValuesBasedDistanceExtractor<A> implements Extractor<A, P> {
 
-		private class DocValuesBasedDistanceValues
-				extends AbstractNestingAwareAccumulatingValues<Double, A> {
-			private GeoPointDistanceDocValues currentLeafValues;
+        private final ProjectionCollector<Double, Double, A, P> collector;
 
-			public DocValuesBasedDistanceValues(TopDocsDataCollectorExecutionContext context) {
-				super( contextAbsoluteFieldPath, nestedDocumentPath,
-						DocValuesBasedDistanceExtractor.this.collector, context );
-			}
+        private final String contextAbsoluteFieldPath;
 
-			@Override
-			protected DocIdSetIterator doContext(LeafReaderContext context) throws IOException {
-				currentLeafValues = new GeoPointDistanceDocValues(
-						DocValues.getSortedNumeric( context.reader(), absoluteFieldPath ), center );
-				return currentLeafValues;
-			}
+        private DocValuesBasedDistanceExtractor(ProjectionCollector<Double, Double, A, P> collector, String contextAbsoluteFieldPath) {
+            this.collector = collector;
+            this.contextAbsoluteFieldPath = contextAbsoluteFieldPath;
+        }
 
-			@Override
-			protected A accumulate(A accumulated, int docId) throws IOException {
-				if ( currentLeafValues.advanceExact( docId ) ) {
-					for ( int i = 0; i < currentLeafValues.docValueCount(); i++ ) {
-						Double distanceOrNull = currentLeafValues.nextValue();
-						accumulated = collector.accumulate( accumulated, unit.fromMeters( distanceOrNull ) );
-					}
-				}
-				return accumulated;
-			}
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public P transform(LoadingResult<?> loadingResult, A extractedData,
-				ProjectionTransformContext context) {
-			// Nothing to transform: we take the values as they are.
-			return collector.finish( extractedData );
-		}
-	}
+        @Override
+        public Values<A> values(ProjectionExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private Double computeDistanceWithUnit(IndexableField field) {
-		GeoPoint decoded = codec.decode( field );
-		if ( decoded == null ) {
-			return null;
-		}
-		double distanceInMeters = SloppyMath.haversinMeters(
-				center.latitude(), center.longitude(),
-				decoded.latitude(), decoded.longitude()
-		);
-		return unit.fromMeters( distanceInMeters );
-	}
+        private class DocValuesBasedDistanceValues extends AbstractNestingAwareAccumulatingValues<Double, A> {
 
-	public static class Factory
-			extends
-			AbstractLuceneCodecAwareSearchQueryElementFactory<DistanceToFieldProjectionBuilder,
-					GeoPoint,
-					LuceneFieldCodec<GeoPoint, byte[]>> {
-		public Factory(LuceneFieldCodec<GeoPoint, byte[]> codec) {
-			super( codec );
-		}
+            private GeoPointDistanceDocValues currentLeafValues;
 
-		@Override
-		public Builder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			// Fail early if the nested structure differs in the case of multi-index search.
-			field.nestedPathHierarchy();
-			return new Builder( codec, scope, field );
-		}
-	}
+            public DocValuesBasedDistanceValues(TopDocsDataCollectorExecutionContext context) {
+                super(contextAbsoluteFieldPath, nestedDocumentPath, DocValuesBasedDistanceExtractor.this.collector, context);
+            }
 
-	public static class Builder extends AbstractBuilder<Double>
-			implements DistanceToFieldProjectionBuilder {
+            @Override
+            protected DocIdSetIterator doContext(LeafReaderContext context) throws IOException {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-		private final LuceneFieldCodec<GeoPoint, ?> codec;
+            @Override
+            protected A accumulate(A accumulated, int docId) throws IOException {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
 
-		private final LuceneSearchIndexValueFieldContext<GeoPoint> field;
+        @Override
+        public P transform(LoadingResult<?> loadingResult, A extractedData, ProjectionTransformContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private GeoPoint center;
-		private DistanceUnit unit = DistanceUnit.METERS;
+    private Double computeDistanceWithUnit(IndexableField field) {
+        GeoPoint decoded = codec.decode(field);
+        if (decoded == null) {
+            return null;
+        }
+        double distanceInMeters = SloppyMath.haversinMeters(center.latitude(), center.longitude(), decoded.latitude(), decoded.longitude());
+        return unit.fromMeters(distanceInMeters);
+    }
 
-		private Builder(LuceneFieldCodec<GeoPoint, ?> codec, LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			super( scope );
-			this.codec = codec;
-			this.field = field;
-		}
+    public static class Factory extends AbstractLuceneCodecAwareSearchQueryElementFactory<DistanceToFieldProjectionBuilder, GeoPoint, LuceneFieldCodec<GeoPoint, byte[]>> {
 
-		@Override
-		public void center(GeoPoint center) {
-			this.center = center;
-		}
+        public Factory(LuceneFieldCodec<GeoPoint, byte[]> codec) {
+            super(codec);
+        }
 
-		@Override
-		public void unit(DistanceUnit unit) {
-			this.unit = unit;
-		}
+        @Override
+        public Builder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public <P> SearchProjection<P> build(ProjectionCollector.Provider<Double, P> collectorProvider) {
-			if ( collectorProvider.isSingleValued() && field.multiValued() ) {
-				throw QueryLog.INSTANCE.invalidSingleValuedProjectionOnMultiValuedField( field.absolutePath(),
-						field.eventContext() );
-			}
-			return new LuceneDistanceToFieldProjection<>( this, collectorProvider );
-		}
-	}
+    public static class Builder extends AbstractBuilder<Double> implements DistanceToFieldProjectionBuilder {
+
+        private final LuceneFieldCodec<GeoPoint, ?> codec;
+
+        private final LuceneSearchIndexValueFieldContext<GeoPoint> field;
+
+        private GeoPoint center;
+
+        private DistanceUnit unit = DistanceUnit.METERS;
+
+        private Builder(LuceneFieldCodec<GeoPoint, ?> codec, LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            super(scope);
+            this.codec = codec;
+            this.field = field;
+        }
+
+        @Override
+        public void center(GeoPoint center) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void unit(DistanceUnit unit) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public <P> SearchProjection<P> build(ProjectionCollector.Provider<Double, P> collectorProvider) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

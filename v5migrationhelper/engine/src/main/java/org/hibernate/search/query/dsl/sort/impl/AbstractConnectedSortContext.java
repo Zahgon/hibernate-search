@@ -11,20 +11,20 @@ import org.hibernate.search.query.dsl.impl.QueryBuildingContext;
  */
 public class AbstractConnectedSortContext {
 
-	protected final QueryBuildingContext queryContext;
-	protected final SortFieldStates states;
+    protected final QueryBuildingContext queryContext;
 
-	public AbstractConnectedSortContext(QueryBuildingContext queryContext, SortFieldStates states) {
-		this.queryContext = queryContext;
-		this.states = states;
-	}
+    protected final SortFieldStates states;
 
-	protected SortFieldStates getStates() {
-		return states;
-	}
+    public AbstractConnectedSortContext(QueryBuildingContext queryContext, SortFieldStates states) {
+        this.queryContext = queryContext;
+        this.states = states;
+    }
 
-	protected QueryBuildingContext getQueryContext() {
-		return queryContext;
-	}
+    protected SortFieldStates getStates() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    protected QueryBuildingContext getQueryContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

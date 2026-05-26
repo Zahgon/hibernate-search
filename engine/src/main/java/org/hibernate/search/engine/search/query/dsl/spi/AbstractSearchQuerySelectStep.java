@@ -14,27 +14,16 @@ import org.hibernate.search.engine.search.query.dsl.SearchQueryOptionsStep;
 import org.hibernate.search.engine.search.query.dsl.SearchQuerySelectStep;
 import org.hibernate.search.engine.search.query.spi.SearchQueryIndexScope;
 
-public abstract class AbstractSearchQuerySelectStep<
-		SR,
-		N extends SearchQueryOptionsStep<SR, ?, E, LOS, ?, ?>,
-		R,
-		E,
-		LOS,
-		PJF extends TypedSearchProjectionFactory<SR, R, E>,
-		PDF extends TypedSearchPredicateFactory<SR>>
-		implements SearchQuerySelectStep<SR, N, R, E, LOS, PJF, PDF> {
+public abstract class AbstractSearchQuerySelectStep<SR, N extends SearchQueryOptionsStep<SR, ?, E, LOS, ?, ?>, R, E, LOS, PJF extends TypedSearchProjectionFactory<SR, R, E>, PDF extends TypedSearchPredicateFactory<SR>> implements SearchQuerySelectStep<SR, N, R, E, LOS, PJF, PDF> {
 
-	@Override
-	public <T> T extension(SearchQueryDslExtension<SR, T, R, E, LOS> extension) {
-		return DslExtensionState.returnIfSupported(
-				extension,
-				extension.extendOptional( this, scope(), sessionContext(), loadingContextBuilder() )
-		);
-	}
+    @Override
+    public <T> T extension(SearchQueryDslExtension<SR, T, R, E, LOS> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract SearchQueryIndexScope<SR, ?> scope();
+    protected abstract SearchQueryIndexScope<SR, ?> scope();
 
-	protected abstract BackendSessionContext sessionContext();
+    protected abstract BackendSessionContext sessionContext();
 
-	protected abstract SearchLoadingContextBuilder<E, LOS> loadingContextBuilder();
+    protected abstract SearchLoadingContextBuilder<E, LOS> loadingContextBuilder();
 }

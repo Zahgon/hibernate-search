@@ -10,11 +10,9 @@ import org.hibernate.search.engine.environment.bean.spi.BeanConfigurationContext
 import org.hibernate.search.engine.environment.bean.spi.BeanConfigurer;
 
 public class ClientOpenSearchElasticsearchClientBeanConfigurer implements BeanConfigurer {
-	@Override
-	public void configure(BeanConfigurationContext context) {
-		context.define(
-				ElasticsearchClientFactory.class, ClientOpenSearchElasticsearchClientFactory.NAME,
-				beanResolver -> BeanHolder.of( new ClientOpenSearchElasticsearchClientFactory() )
-		);
-	}
+
+    @Override
+    public void configure(BeanConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,37 +6,32 @@ package org.hibernate.search.mapper.orm.loading.spi;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hibernate.query.Query;
 
 public final class ConditionalExpression {
 
-	private final String hql;
-	private final Map<String, Object> params = new HashMap<>();
+    private final String hql;
 
-	public ConditionalExpression(String hql) {
-		this.hql = hql;
-	}
+    private final Map<String, Object> params = new HashMap<>();
 
-	@Override
-	public String toString() {
-		return "ConditionalExpression[" +
-				"hql='" + hql + '\'' +
-				", params=" + params +
-				']';
-	}
+    public ConditionalExpression(String hql) {
+        this.hql = hql;
+    }
 
-	public String hql() {
-		return hql;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void param(String name, Object value) {
-		params.put( name, value );
-	}
+    public String hql() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void applyParams(Query<?> query) {
-		for ( Map.Entry<String, Object> entry : params.entrySet() ) {
-			query.setParameter( entry.getKey(), entry.getValue() );
-		}
-	}
+    public void param(String name, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void applyParams(Query<?> query) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

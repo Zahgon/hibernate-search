@@ -5,9 +5,7 @@
 package org.hibernate.search.mapper.pojo.reporting.spi;
 
 import static org.hibernate.search.engine.reporting.spi.EventContexts.singleton;
-
 import java.lang.annotation.Annotation;
-
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPath;
 import org.hibernate.search.mapper.pojo.model.spi.PojoConstructorModel;
@@ -20,69 +18,42 @@ import org.hibernate.search.util.common.reporting.impl.AbstractSimpleEventContex
 
 public final class PojoEventContexts {
 
-	private static final PojoEventContextMessages MESSAGES = PojoEventContextMessages.INSTANCE;
+    private static final PojoEventContextMessages MESSAGES = PojoEventContextMessages.INSTANCE;
 
-	private static final EventContext PROJECTION_CONSTRUCTOR = singleton( MESSAGES::projectionConstructor );
+    private static final EventContext PROJECTION_CONSTRUCTOR = singleton(MESSAGES::projectionConstructor);
 
-	private PojoEventContexts() {
-	}
+    private PojoEventContexts() {
+    }
 
-	public static EventContext fromType(PojoRawTypeModel<?> typeModel) {
-		return EventContexts.fromType( typeModel );
-	}
+    public static EventContext fromType(PojoRawTypeModel<?> typeModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromType(PojoRawTypeIdentifier<?> typeIdentifier) {
-		return EventContexts.fromType( typeIdentifier );
-	}
+    public static EventContext fromType(PojoRawTypeIdentifier<?> typeIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext projectionConstructor() {
-		return PROJECTION_CONSTRUCTOR;
-	}
+    public static EventContext projectionConstructor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromConstructor(PojoConstructorModel<?> constructor) {
-		return EventContext.create( new AbstractSimpleEventContextElement<PojoConstructorModel<?>>( constructor ) {
-			@Override
-			public String render(PojoConstructorModel<?> constructor) {
-				return MESSAGES.constructor( constructor.parametersJavaTypes() );
-			}
-		} );
-	}
+    public static EventContext fromConstructor(PojoConstructorModel<?> constructor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromMethodParameter(PojoMethodParameterModel<?> parameter) {
-		return EventContext.create( new AbstractSimpleEventContextElement<PojoMethodParameterModel<?>>( parameter ) {
-			@Override
-			public String render(PojoMethodParameterModel<?> parameter) {
-				return MESSAGES.methodParameter( parameter.index(), parameter.name().orElse( MESSAGES.unknownName() ) );
-			}
-		} );
-	}
+    public static EventContext fromMethodParameter(PojoMethodParameterModel<?> parameter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromPath(PojoModelPath unboundPath) {
-		return EventContext.create( new AbstractSimpleEventContextElement<PojoModelPath>( unboundPath ) {
-			@Override
-			public String render(PojoModelPath param) {
-				String pathString = param == null ? "" : param.toPathString();
-				return MESSAGES.path( pathString );
-			}
-		} );
-	}
+    public static EventContext fromPath(PojoModelPath unboundPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromAnnotation(Annotation annotation) {
-		return EventContext.create( new AbstractSimpleEventContextElement<Annotation>( annotation ) {
-			@Override
-			public String render(Annotation annotation) {
-				String annotationString = annotation.toString();
-				return MESSAGES.annotation( annotationString );
-			}
-		} );
-	}
+    public static EventContext fromAnnotation(Annotation annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromAnnotationType(Class<? extends Annotation> annotationType) {
-		return EventContext.create( new AbstractSimpleEventContextElement<Class<? extends Annotation>>( annotationType ) {
-			@Override
-			public String render(Class<? extends Annotation> annotationType) {
-				return MESSAGES.annotationType( annotationType );
-			}
-		} );
-	}
+    public static EventContext fromAnnotationType(Class<? extends Annotation> annotationType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -14,97 +14,84 @@ import org.hibernate.search.backend.elasticsearch.search.predicate.impl.Abstract
 import org.hibernate.search.backend.elasticsearch.search.predicate.impl.PredicateRequestContext;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.PhrasePredicateBuilder;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 public class ElasticsearchTextPhrasePredicate extends AbstractElasticsearchSingleFieldPredicate {
 
-	private static final JsonObjectAccessor MATCH_PHRASE_ACCESSOR = JsonAccessor.root().property( "match_phrase" ).asObject();
+    private static final JsonObjectAccessor MATCH_PHRASE_ACCESSOR = JsonAccessor.root().property("match_phrase").asObject();
 
-	private static final JsonAccessor<Integer> SLOP_ACCESSOR = JsonAccessor.root().property( "slop" ).asInteger();
-	private static final JsonAccessor<JsonElement> QUERY_ACCESSOR = JsonAccessor.root().property( "query" );
-	private static final JsonAccessor<String> ANALYZER_ACCESSOR = JsonAccessor.root().property( "analyzer" ).asString();
+    private static final JsonAccessor<Integer> SLOP_ACCESSOR = JsonAccessor.root().property("slop").asInteger();
 
-	private final Integer slop;
-	private final JsonElement phrase;
-	private final String analyzer;
+    private static final JsonAccessor<JsonElement> QUERY_ACCESSOR = JsonAccessor.root().property("query");
 
-	private ElasticsearchTextPhrasePredicate(Builder builder) {
-		super( builder );
-		slop = builder.slop;
-		phrase = builder.phrase;
-		analyzer = builder.analyzer;
-	}
+    private static final JsonAccessor<String> ANALYZER_ACCESSOR = JsonAccessor.root().property("analyzer").asString();
 
-	@Override
-	protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject,
-			JsonObject innerObject) {
-		QUERY_ACCESSOR.set( innerObject, phrase );
-		if ( slop != null ) {
-			SLOP_ACCESSOR.set( innerObject, slop );
-		}
-		if ( analyzer != null ) {
-			ANALYZER_ACCESSOR.set( innerObject, analyzer );
-		}
+    private final Integer slop;
 
-		JsonObject middleObject = new JsonObject();
-		middleObject.add( absoluteFieldPath, innerObject );
+    private final JsonElement phrase;
 
-		MATCH_PHRASE_ACCESSOR.set( outerObject, middleObject );
-		return outerObject;
-	}
+    private final String analyzer;
 
-	public static class Factory
-			extends AbstractElasticsearchValueFieldSearchQueryElementFactory<PhrasePredicateBuilder, String> {
-		@Override
-		public PhrasePredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<String> field) {
-			return new Builder( scope, field );
-		}
-	}
+    private ElasticsearchTextPhrasePredicate(Builder builder) {
+        super(builder);
+        slop = builder.slop;
+        phrase = builder.phrase;
+        analyzer = builder.analyzer;
+    }
 
-	private static class Builder extends AbstractBuilder implements PhrasePredicateBuilder {
-		private final ElasticsearchSearchIndexValueFieldContext<String> field;
-		private Integer slop;
-		private JsonElement phrase;
-		private String analyzer;
+    @Override
+    protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Builder(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<String> field) {
-			super( scope, field );
-			this.field = field;
-		}
+    public static class Factory extends AbstractElasticsearchValueFieldSearchQueryElementFactory<PhrasePredicateBuilder, String> {
 
-		@Override
-		public void slop(int slop) {
-			this.slop = slop;
-		}
+        @Override
+        public PhrasePredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<String> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void phrase(String phrase) {
-			this.phrase = new JsonPrimitive( phrase );
-		}
+    private static class Builder extends AbstractBuilder implements PhrasePredicateBuilder {
 
-		@Override
-		public void analyzer(String analyzerName) {
-			this.analyzer = analyzerName;
-		}
+        private final ElasticsearchSearchIndexValueFieldContext<String> field;
 
-		@Override
-		public void skipAnalysis() {
-			analyzer( AnalyzerConstants.KEYWORD_ANALYZER );
-		}
+        private Integer slop;
 
-		@Override
-		public SearchPredicate build() {
-			if ( analyzer == null ) {
-				// Check analyzer compatibility for multi-index search
-				field.type().searchAnalyzerName();
-				field.type().normalizerName();
-			}
-			return new ElasticsearchTextPhrasePredicate( this );
-		}
-	}
+        private JsonElement phrase;
+
+        private String analyzer;
+
+        private Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<String> field) {
+            super(scope, field);
+            this.field = field;
+        }
+
+        @Override
+        public void slop(int slop) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void phrase(String phrase) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void analyzer(String analyzerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void skipAnalysis() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

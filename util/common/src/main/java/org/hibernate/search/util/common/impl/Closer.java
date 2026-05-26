@@ -65,76 +65,53 @@ package org.hibernate.search.util.common.impl;
  *
  * @param <E> The supertype of exceptions this closer can catch and re-throw,
  * besides {@link RuntimeException} and {@link Error}.
- *
  */
 public final class Closer<E extends Exception> extends AbstractCloser<Closer<E>, E> implements AutoCloseable {
 
-	private final CloseableState state;
+    private final CloseableState state;
 
-	public Closer() {
-		this( new CloseableState() );
-	}
+    public Closer() {
+        this(new CloseableState());
+    }
 
-	private Closer(CloseableState state) {
-		this.state = state;
-	}
+    private Closer(CloseableState state) {
+        this.state = state;
+    }
 
-	/**
-	 * @return A closer sharing the same state as {@code this}, allowing to handle
-	 * multiple exception types.
-	 * @see <a href="#splitting">splitting</a>
-	 */
-	public <E2 extends Exception> Closer<E2> split() {
-		return new Closer<>( state );
-	}
+    /**
+     * @return A closer sharing the same state as {@code this}, allowing to handle
+     * multiple exception types.
+     * @see <a href="#splitting">splitting</a>
+     */
+    public <E2 extends Exception> Closer<E2> split() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @throws E The first throwable caught when executing the {@code push} methods, if any.
-	 * Any throwable caught after the first will have been
-	 * {@link Throwable#addSuppressed(Throwable) suppressed}.
-	 */
-	@Override
-	public void close() throws E {
-		state.close( this );
-	}
+    /**
+     * @throws E The first throwable caught when executing the {@code push} methods, if any.
+     * Any throwable caught after the first will have been
+     * {@link Throwable#addSuppressed(Throwable) suppressed}.
+     */
+    @Override
+    public void close() throws E {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	CloseableState getState() {
-		return state;
-	}
+    @Override
+    CloseableState getState() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Closer<E> getSelf() {
-		return this;
-	}
+    @Override
+    Closer<E> getSelf() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static class CloseableState extends State {
+    static class CloseableState extends State {
 
-		@SuppressWarnings("unchecked")
-		<E extends Exception> void close(Closer<E> source) throws E {
-			if ( firstThrowable != null && source == firstThrower ) {
-				try {
-					if ( firstThrowable instanceof RuntimeException ) {
-						throw (RuntimeException) firstThrowable;
-					}
-					else if ( firstThrowable instanceof Error ) {
-						throw (Error) firstThrowable;
-					}
-					else {
-						/*
-						 * At this point we know that throwable is an instance of E,
-						 * because that's the only checked exception that the source
-						 * can catch.
-						 */
-						throw (E) firstThrowable;
-					}
-				}
-				finally {
-					// Ensure the next calls to Closer.close won't throw
-					this.firstThrower = null;
-					this.firstThrowable = null;
-				}
-			}
-		}
-	}
+        @SuppressWarnings("unchecked")
+        <E extends Exception> void close(Closer<E> source) throws E {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

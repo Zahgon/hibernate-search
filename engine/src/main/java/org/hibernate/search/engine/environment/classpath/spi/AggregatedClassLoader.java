@@ -25,106 +25,50 @@ import java.util.LinkedHashSet;
  * @author Sanne Grinovero
  */
 public final class AggregatedClassLoader extends ClassLoader {
-	private ClassLoader[] individualClassLoaders;
 
-	public static AggregatedClassLoader createDefault() {
-		final LinkedHashSet<ClassLoader> orderedClassLoaderSet = new LinkedHashSet<>();
+    private ClassLoader[] individualClassLoaders;
 
-		//  adding known class-loaders...
-		orderedClassLoaderSet.add( AggregatedClassLoader.class.getClassLoader() );
+    public static AggregatedClassLoader createDefault() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// then the TCCL, if one...
-		final ClassLoader tccl = locateTCCL();
-		if ( tccl != null ) {
-			orderedClassLoaderSet.add( tccl );
-		}
+    private AggregatedClassLoader(ClassLoader... classLoaders) {
+        super(null);
+        individualClassLoaders = classLoaders;
+    }
 
-		// finally the system classloader
-		final ClassLoader sysClassLoader = locateSystemClassLoader();
-		if ( sysClassLoader != null ) {
-			orderedClassLoaderSet.add( sysClassLoader );
-		}
+    @Override
+    public Enumeration<URL> getResources(String name) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// now build the aggregated class loader...
-		return new AggregatedClassLoader(
-				orderedClassLoaderSet.toArray( new ClassLoader[0] )
-		);
-	}
+    @Override
+    protected URL findResource(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private AggregatedClassLoader(ClassLoader... classLoaders) {
-		super( null );
-		individualClassLoaders = classLoaders;
-	}
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Enumeration<URL> getResources(String name) throws IOException {
-		final HashSet<URL> resourceUrls = new HashSet<>();
+    void addAllTo(Collection<ClassLoader> classLoaders) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		for ( ClassLoader classLoader : individualClassLoaders ) {
-			final Enumeration<URL> urls = classLoader.getResources( name );
-			while ( urls.hasMoreElements() ) {
-				resourceUrls.add( urls.nextElement() );
-			}
-		}
+    private static ClassLoader locateSystemClassLoader() {
+        try {
+            return ClassLoader.getSystemClassLoader();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-		return new Enumeration<URL>() {
-			final Iterator<URL> resourceUrlIterator = resourceUrls.iterator();
-
-			@Override
-			public boolean hasMoreElements() {
-				return resourceUrlIterator.hasNext();
-			}
-
-			@Override
-			public URL nextElement() {
-				return resourceUrlIterator.next();
-			}
-		};
-	}
-
-	@Override
-	protected URL findResource(String name) {
-		for ( ClassLoader classLoader : individualClassLoaders ) {
-			final URL resource = classLoader.getResource( name );
-			if ( resource != null ) {
-				return resource;
-			}
-		}
-		return super.findResource( name );
-	}
-
-	@Override
-	protected Class<?> findClass(String name) throws ClassNotFoundException {
-		for ( ClassLoader classLoader : individualClassLoaders ) {
-			try {
-				return classLoader.loadClass( name );
-			}
-			catch (Exception | LinkageError ignore) {
-				// Ignore
-			}
-		}
-		throw new ClassNotFoundException( "Could not load requested class : " + name );
-	}
-
-	void addAllTo(Collection<ClassLoader> classLoaders) {
-		Collections.addAll( classLoaders, individualClassLoaders );
-	}
-
-	private static ClassLoader locateSystemClassLoader() {
-		try {
-			return ClassLoader.getSystemClassLoader();
-		}
-		catch (Exception e) {
-			return null;
-		}
-	}
-
-	private static ClassLoader locateTCCL() {
-		try {
-			return Thread.currentThread().getContextClassLoader();
-		}
-		catch (Exception e) {
-			return null;
-		}
-	}
+    private static ClassLoader locateTCCL() {
+        try {
+            return Thread.currentThread().getContextClassLoader();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

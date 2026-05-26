@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processin
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.RoutingBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.impl.BeanDelegatingBinder;
@@ -19,27 +18,8 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMapp
 
 public class IndexedProcessor implements TypeMappingAnnotationProcessor<Indexed> {
 
-	@Override
-	public void process(TypeMappingStep mappingContext, Indexed annotation,
-			TypeMappingAnnotationProcessorContext context) {
-		String indexName = context.toNullIfDefault( annotation.index(), "" );
-		String backendName = context.toNullIfDefault( annotation.backend(), "" );
-		TypeMappingIndexedStep indexedStep = mappingContext.indexed().backend( backendName ).index( indexName )
-				.enabled( annotation.enabled() );
-
-		RoutingBinderRef routingBinderReferenceAnnotation = annotation.routingBinder();
-		Optional<BeanReference<? extends RoutingBinder>> routingBinderReference = context.toBeanReference(
-				RoutingBinder.class,
-				RoutingBinderRef.UndefinedRoutingBinderImplementationType.class,
-				routingBinderReferenceAnnotation.type(), routingBinderReferenceAnnotation.name(),
-				routingBinderReferenceAnnotation.retrieval()
-		);
-
-		if ( !routingBinderReference.isPresent() ) {
-			return;
-		}
-
-		Map<String, Object> params = context.toMap( routingBinderReferenceAnnotation.params() );
-		indexedStep.routingBinder( new BeanDelegatingBinder( routingBinderReference.get() ), params );
-	}
+    @Override
+    public void process(TypeMappingStep mappingContext, Indexed annotation, TypeMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

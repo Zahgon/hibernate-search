@@ -6,9 +6,7 @@ package org.hibernate.search.mapper.orm.loading.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import jakarta.persistence.FindOption;
-
 import org.hibernate.MultiIdentifierLoadAccess;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -18,65 +16,62 @@ import org.hibernate.search.mapper.orm.loading.spi.ConditionalExpression;
 import org.hibernate.search.mapper.orm.loading.spi.HibernateOrmQueryLoader;
 
 class HibernateOrmQueryLoaderImpl<E, I> implements HibernateOrmQueryLoader<E, I> {
-	private final TypeQueryFactory<E, I> queryFactory;
-	private final Set<Class<? extends E>> includedTypesFilter;
-	private final EntityDomainType<?> entityDomainType;
-	private final List<ConditionalExpression> conditionalExpressions;
-	private final String order;
 
-	public HibernateOrmQueryLoaderImpl(TypeQueryFactory<E, I> queryFactory,
-			Set<Class<? extends E>> includedTypesFilter) {
-		this.queryFactory = queryFactory;
-		this.includedTypesFilter = includedTypesFilter;
-		this.entityDomainType = null;
-		this.conditionalExpressions = List.of();
-		this.order = null;
-	}
+    private final TypeQueryFactory<E, I> queryFactory;
 
-	public HibernateOrmQueryLoaderImpl(TypeQueryFactory<E, I> queryFactory,
-			EntityDomainType<?> entityDomainType, Set<Class<? extends E>> includedTypesFilter,
-			List<ConditionalExpression> conditionalExpressions, String order) {
-		this.queryFactory = queryFactory;
-		this.includedTypesFilter = includedTypesFilter;
-		this.entityDomainType = entityDomainType;
-		this.conditionalExpressions = conditionalExpressions;
-		this.order = order;
-	}
+    private final Set<Class<? extends E>> includedTypesFilter;
 
-	@Override
-	public Query<Long> createCountQuery(SharedSessionContractImplementor session) {
-		return conditionalExpressions.isEmpty()
-				? queryFactory.createQueryForCount( session, includedTypesFilter )
-				: queryFactory.createQueryForCount( session, entityDomainType, includedTypesFilter, conditionalExpressions );
-	}
+    private final EntityDomainType<?> entityDomainType;
 
-	@Override
-	public Query<I> createIdentifiersQuery(SharedSessionContractImplementor session) {
-		return conditionalExpressions.isEmpty() && order == null
-				? queryFactory.createQueryForIdentifierListing( session, includedTypesFilter )
-				: queryFactory.createQueryForIdentifierListing( session, entityDomainType, includedTypesFilter,
-						conditionalExpressions, order );
-	}
+    private final List<ConditionalExpression> conditionalExpressions;
 
-	@Override
-	public Query<E> createLoadingQuery(SessionImplementor session, String idParameterName) {
-		return queryFactory.createQueryForLoadByUniqueProperty( session, idParameterName );
-	}
+    private final String order;
 
-	@SuppressWarnings("removal")
-	@Deprecated(forRemoval = true, since = "8.2")
-	@Override
-	public MultiIdentifierLoadAccess<E> createMultiIdentifierLoadAccess(SessionImplementor session) {
-		return queryFactory.createMultiIdentifierLoadAccess( session );
-	}
+    public HibernateOrmQueryLoaderImpl(TypeQueryFactory<E, I> queryFactory, Set<Class<? extends E>> includedTypesFilter) {
+        this.queryFactory = queryFactory;
+        this.includedTypesFilter = includedTypesFilter;
+        this.entityDomainType = null;
+        this.conditionalExpressions = List.of();
+        this.order = null;
+    }
 
-	@Override
-	public List<E> findMultiple(SessionImplementor session, List<?> ids, FindOption... options) {
-		return queryFactory.findMultiple( session, ids, options );
-	}
+    public HibernateOrmQueryLoaderImpl(TypeQueryFactory<E, I> queryFactory, EntityDomainType<?> entityDomainType, Set<Class<? extends E>> includedTypesFilter, List<ConditionalExpression> conditionalExpressions, String order) {
+        this.queryFactory = queryFactory;
+        this.includedTypesFilter = includedTypesFilter;
+        this.entityDomainType = entityDomainType;
+        this.conditionalExpressions = conditionalExpressions;
+        this.order = order;
+    }
 
-	@Override
-	public boolean uniquePropertyIsTheEntityId() {
-		return queryFactory.uniquePropertyIsTheEntityId();
-	}
+    @Override
+    public Query<Long> createCountQuery(SharedSessionContractImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Query<I> createIdentifiersQuery(SharedSessionContractImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Query<E> createLoadingQuery(SessionImplementor session, String idParameterName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true, since = "8.2")
+    @Override
+    public MultiIdentifierLoadAccess<E> createMultiIdentifierLoadAccess(SessionImplementor session) {
+        return queryFactory.createMultiIdentifierLoadAccess(session);
+    }
+
+    @Override
+    public List<E> findMultiple(SessionImplementor session, List<?> ids, FindOption... options) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean uniquePropertyIsTheEntityId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

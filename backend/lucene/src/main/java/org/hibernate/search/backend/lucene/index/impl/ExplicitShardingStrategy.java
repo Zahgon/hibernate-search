@@ -7,7 +7,6 @@ package org.hibernate.search.backend.lucene.index.impl;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.cfg.LuceneIndexSettings;
 import org.hibernate.search.backend.lucene.index.spi.ShardingStrategy;
 import org.hibernate.search.backend.lucene.index.spi.ShardingStrategyInitializationContext;
@@ -17,43 +16,30 @@ import org.hibernate.search.engine.cfg.spi.OptionalConfigurationProperty;
 
 public class ExplicitShardingStrategy implements ShardingStrategy {
 
-	public static final String NAME = "explicit";
+    public static final String NAME = "explicit";
 
-	private static final OptionalConfigurationProperty<List<String>> SHARD_IDENTIFIERS =
-			ConfigurationProperty.forKey( LuceneIndexSettings.ShardingRadicals.SHARD_IDENTIFIERS )
-					.asString().multivalued()
-					.build();
+    private static final OptionalConfigurationProperty<List<String>> SHARD_IDENTIFIERS = ConfigurationProperty.forKey(LuceneIndexSettings.ShardingRadicals.SHARD_IDENTIFIERS).asString().multivalued().build();
 
-	private Set<String> shardIdSet;
+    private Set<String> shardIdSet;
 
-	@Override
-	public void initialize(ShardingStrategyInitializationContext context) {
-		List<String> shardIdentifiers = SHARD_IDENTIFIERS.getOrThrow(
-				context.configurationPropertySource(),
-				() -> ConfigurationLog.INSTANCE.missingPropertyValueForShardingStrategy( NAME )
-		);
-		this.shardIdSet = new LinkedHashSet<>( shardIdentifiers );
-		context.shardIdentifiers( shardIdSet );
-	}
+    @Override
+    public void initialize(ShardingStrategyInitializationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toShardIdentifier(String documentId, String routingKey) {
-		// Ignore the document ID: the routing key must be a shard identifier
-		checkShardIdentifier( routingKey );
-		return routingKey;
-	}
+    @Override
+    public String toShardIdentifier(String documentId, String routingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> toShardIdentifiers(Set<String> routingKeys) {
-		for ( String routingKey : routingKeys ) {
-			checkShardIdentifier( routingKey );
-		}
-		return routingKeys;
-	}
+    @Override
+    public Set<String> toShardIdentifiers(Set<String> routingKeys) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void checkShardIdentifier(String routingKey) {
-		if ( !shardIdSet.contains( routingKey ) ) {
-			throw ConfigurationLog.INSTANCE.invalidRoutingKeyForExplicitShardingStrategy( routingKey, shardIdSet );
-		}
-	}
+    private void checkShardIdentifier(String routingKey) {
+        if (!shardIdSet.contains(routingKey)) {
+            throw ConfigurationLog.INSTANCE.invalidRoutingKeyForExplicitShardingStrategy(routingKey, shardIdSet);
+        }
+    }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.index.IndexStatus;
 import org.hibernate.search.backend.elasticsearch.index.layout.impl.IndexNames;
@@ -31,162 +30,90 @@ import org.hibernate.search.util.common.impl.Throwables;
  */
 final class ElasticsearchSchemaAccessor {
 
-	private final ElasticsearchWorkFactory workFactory;
+    private final ElasticsearchWorkFactory workFactory;
 
-	private final ElasticsearchParallelWorkOrchestrator orchestrator;
+    private final ElasticsearchParallelWorkOrchestrator orchestrator;
 
-	public ElasticsearchSchemaAccessor(ElasticsearchWorkFactory workFactory,
-			ElasticsearchParallelWorkOrchestrator orchestrator) {
-		this.workFactory = workFactory;
-		this.orchestrator = orchestrator;
-	}
+    public ElasticsearchSchemaAccessor(ElasticsearchWorkFactory workFactory, ElasticsearchParallelWorkOrchestrator orchestrator) {
+        this.workFactory = workFactory;
+        this.orchestrator = orchestrator;
+    }
 
-	public CompletableFuture<?> createIndexAssumeNonExisting(URLEncodedString primaryIndexName,
-			Map<String, IndexAliasDefinition> aliases, IndexSettings settings, RootTypeMapping mapping,
-			OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().createIndex( primaryIndexName )
-				.aliases( aliases )
-				.settings( settings )
-				.mapping( mapping )
-				.build();
-		return execute( work, operationSubmitter );
-	}
+    public CompletableFuture<?> createIndexAssumeNonExisting(URLEncodedString primaryIndexName, Map<String, IndexAliasDefinition> aliases, IndexSettings settings, RootTypeMapping mapping, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param primaryIndexName The name of the created index.
-	 * @param aliases The aliases for the newly created index.
-	 * @param settings The settings for the newly created index.
-	 * @param mapping The root mapping for the newly created index.
-	 * @return A future holding {@code true} if the index was actually created, {@code false} if it already existed.
-	 */
-	public CompletableFuture<Boolean> createIndexIgnoreExisting(URLEncodedString primaryIndexName,
-			Map<String, IndexAliasDefinition> aliases, IndexSettings settings,
-			RootTypeMapping mapping, OperationSubmitter operationSubmitter) {
-		NonBulkableWork<CreateIndexResult> work = getWorkFactory().createIndex( primaryIndexName )
-				.aliases( aliases )
-				.settings( settings )
-				.mapping( mapping )
-				.ignoreExisting()
-				.build();
-		return execute( work, operationSubmitter ).thenApply( CreateIndexResult.CREATED::equals );
-	}
+    /**
+     * @param primaryIndexName The name of the created index.
+     * @param aliases The aliases for the newly created index.
+     * @param settings The settings for the newly created index.
+     * @param mapping The root mapping for the newly created index.
+     * @return A future holding {@code true} if the index was actually created, {@code false} if it already existed.
+     */
+    public CompletableFuture<Boolean> createIndexIgnoreExisting(URLEncodedString primaryIndexName, Map<String, IndexAliasDefinition> aliases, IndexSettings settings, RootTypeMapping mapping, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<ExistingIndexMetadata> getCurrentIndexMetadata(IndexNames indexNames,
-			OperationSubmitter operationSubmitter) {
-		return getCurrentIndexMetadata( indexNames, false, operationSubmitter );
-	}
+    public CompletableFuture<ExistingIndexMetadata> getCurrentIndexMetadata(IndexNames indexNames, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<ExistingIndexMetadata> getCurrentIndexMetadataOrNull(IndexNames indexNames,
-			OperationSubmitter operationSubmitter) {
-		return getCurrentIndexMetadata( indexNames, true, operationSubmitter );
-	}
+    public CompletableFuture<ExistingIndexMetadata> getCurrentIndexMetadataOrNull(IndexNames indexNames, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private CompletableFuture<ExistingIndexMetadata> getCurrentIndexMetadata(IndexNames indexNames, boolean allowNull,
-			OperationSubmitter operationSubmitter) {
-		NonBulkableWork<List<ExistingIndexMetadata>> work = getWorkFactory().getIndexMetadata()
-				.index( indexNames.write() )
-				.index( indexNames.read() )
-				.build();
-		return execute( work, operationSubmitter )
-				.exceptionally( Futures.handler( e -> {
-					throw ElasticsearchClientLog.INSTANCE.elasticsearchIndexMetadataRetrievalFailed( e.getMessage(),
-							Throwables.expectException( e ) );
-				} ) )
-				.thenApply( list -> {
-					if ( list.isEmpty() ) {
-						if ( allowNull ) {
-							return null;
-						}
-						else {
-							throw ElasticsearchClientLog.INSTANCE.indexMissing( indexNames.write(), indexNames.read() );
-						}
-					}
-					if ( list.size() > 1 ) {
-						throw ElasticsearchClientLog.INSTANCE.elasticsearchIndexNameAndAliasesMatchMultipleIndexes(
-								indexNames.write(), indexNames.read(),
-								list.stream().map( ExistingIndexMetadata::getPrimaryName ).collect( Collectors.toSet() )
-						);
-					}
-					return list.get( 0 );
-				} );
-	}
+    private CompletableFuture<ExistingIndexMetadata> getCurrentIndexMetadata(IndexNames indexNames, boolean allowNull, OperationSubmitter operationSubmitter) {
+        NonBulkableWork<List<ExistingIndexMetadata>> work = getWorkFactory().getIndexMetadata().index(indexNames.write()).index(indexNames.read()).build();
+        return execute(work, operationSubmitter).exceptionally(Futures.handler(e -> {
+            throw ElasticsearchClientLog.INSTANCE.elasticsearchIndexMetadataRetrievalFailed(e.getMessage(), Throwables.expectException(e));
+        })).thenApply(list -> {
+            if (list.isEmpty()) {
+                if (allowNull) {
+                    return null;
+                } else {
+                    throw ElasticsearchClientLog.INSTANCE.indexMissing(indexNames.write(), indexNames.read());
+                }
+            }
+            if (list.size() > 1) {
+                throw ElasticsearchClientLog.INSTANCE.elasticsearchIndexNameAndAliasesMatchMultipleIndexes(indexNames.write(), indexNames.read(), list.stream().map(ExistingIndexMetadata::getPrimaryName).collect(Collectors.toSet()));
+            }
+            return list.get(0);
+        });
+    }
 
-	public CompletableFuture<?> updateAliases(URLEncodedString indexName, Map<String, IndexAliasDefinition> aliases,
-			OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().putIndexAliases( indexName, aliases ).build();
-		return execute( work, operationSubmitter )
-				.exceptionally( Futures.handler( e -> {
-					throw ElasticsearchClientLog.INSTANCE.elasticsearchAliasUpdateFailed( indexName.original, e.getMessage(),
-							Throwables.expectException( e ) );
-				} ) );
-	}
+    public CompletableFuture<?> updateAliases(URLEncodedString indexName, Map<String, IndexAliasDefinition> aliases, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<?> updateSettings(URLEncodedString indexName, IndexSettings settings,
-			OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().putIndexSettings( indexName, settings ).build();
-		return execute( work, operationSubmitter )
-				.exceptionally( Futures.handler( e -> {
-					throw ElasticsearchClientLog.INSTANCE.elasticsearchSettingsUpdateFailed( indexName.original, e.getMessage(),
-							Throwables.expectException( e ) );
-				} ) );
-	}
+    public CompletableFuture<?> updateSettings(URLEncodedString indexName, IndexSettings settings, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<?> updateMapping(URLEncodedString indexName, RootTypeMapping mapping,
-			OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().putIndexTypeMapping( indexName, mapping ).build();
-		return execute( work, operationSubmitter )
-				.exceptionally( Futures.handler( e -> {
-					throw ElasticsearchClientLog.INSTANCE.elasticsearchMappingUpdateFailed(
-							indexName.original, e.getMessage(), Throwables.expectException( e )
-					);
-				} ) );
-	}
+    public CompletableFuture<?> updateMapping(URLEncodedString indexName, RootTypeMapping mapping, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<?> waitForIndexStatus(IndexNames indexNames,
-			ElasticsearchIndexLifecycleExecutionOptions executionOptions,
-			OperationSubmitter operationSubmitter) {
-		IndexStatus requiredIndexStatus = executionOptions.getRequiredStatus();
-		if ( requiredIndexStatus == null ) {
-			return CompletableFuture.completedFuture( null );
-		}
-		int requiredStatusTimeoutInMs = executionOptions.getRequiredStatusTimeoutInMs();
+    public CompletableFuture<?> waitForIndexStatus(IndexNames indexNames, ElasticsearchIndexLifecycleExecutionOptions executionOptions, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		URLEncodedString name = indexNames.write();
+    public CompletableFuture<?> dropIndexIfExisting(URLEncodedString indexName, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		NonBulkableWork<?> work =
-				getWorkFactory().waitForIndexStatus( name, requiredIndexStatus, requiredStatusTimeoutInMs )
-						.build();
-		return execute( work, operationSubmitter )
-				.exceptionally( Futures.handler( e -> {
-					throw ElasticsearchClientLog.INSTANCE.unexpectedIndexStatus(
-							name, requiredIndexStatus.externalRepresentation(), requiredStatusTimeoutInMs,
-							Throwables.expectException( e )
-					);
-				} ) );
-	}
+    public CompletableFuture<?> closeIndex(URLEncodedString indexName, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<?> dropIndexIfExisting(URLEncodedString indexName, OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().dropIndex( indexName ).ignoreIndexNotFound().build();
-		return execute( work, operationSubmitter );
-	}
+    public CompletableFuture<?> openIndex(URLEncodedString indexName, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public CompletableFuture<?> closeIndex(URLEncodedString indexName, OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().closeIndex( indexName ).build();
-		return execute( work, operationSubmitter )
-				.thenRun( () -> ElasticsearchClientLog.INSTANCE.closedIndex( indexName ) );
-	}
+    private ElasticsearchWorkFactory getWorkFactory() {
+        return workFactory;
+    }
 
-	public CompletableFuture<?> openIndex(URLEncodedString indexName, OperationSubmitter operationSubmitter) {
-		NonBulkableWork<?> work = getWorkFactory().openIndex( indexName ).build();
-		return execute( work, operationSubmitter )
-				.thenRun( () -> ElasticsearchClientLog.INSTANCE.openedIndex( indexName ) );
-	}
-
-	private ElasticsearchWorkFactory getWorkFactory() {
-		return workFactory;
-	}
-
-	private <T> CompletableFuture<T> execute(NonBulkableWork<T> work, OperationSubmitter operationSubmitter) {
-		return orchestrator.submit( work, operationSubmitter );
-	}
+    private <T> CompletableFuture<T> execute(NonBulkableWork<T> work, OperationSubmitter operationSubmitter) {
+        return orchestrator.submit(work, operationSubmitter);
+    }
 }

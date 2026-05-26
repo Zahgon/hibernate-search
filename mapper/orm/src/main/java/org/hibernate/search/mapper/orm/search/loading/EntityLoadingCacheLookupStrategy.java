@@ -16,51 +16,43 @@ import org.hibernate.search.mapper.orm.logging.impl.ConfigurationLog;
  */
 public enum EntityLoadingCacheLookupStrategy {
 
-	/**
-	 * When a search query returns entities,
-	 * do not check any cache
-	 * and load all the entities through an SQL query.
-	 * <p>
-	 * This is the default strategy.
-	 */
-	SKIP( "skip" ),
+    /**
+     * When a search query returns entities,
+     * do not check any cache
+     * and load all the entities through an SQL query.
+     * <p>
+     * This is the default strategy.
+     */
+    SKIP("skip"),
+    /**
+     * When a search query returns entities,
+     * first check the persistence context to retrieve entities that are already in the session,
+     * then load the entities that were not found in the session through an SQL query.
+     */
+    PERSISTENCE_CONTEXT("persistence-context"),
+    /**
+     * When a search query returns entities,
+     * first check the persistence context to retrieve entities that are already in the session,
+     * then check the second level cache to retrieve entities that are in the 2LC but not in the session,
+     * then load the entities that were not found in the session or 2LC through an SQL query.
+     */
+    PERSISTENCE_CONTEXT_THEN_SECOND_LEVEL_CACHE("persistence-context-then-second-level-cache");
 
-	/**
-	 * When a search query returns entities,
-	 * first check the persistence context to retrieve entities that are already in the session,
-	 * then load the entities that were not found in the session through an SQL query.
-	 */
-	PERSISTENCE_CONTEXT( "persistence-context" ),
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static EntityLoadingCacheLookupStrategy of(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * When a search query returns entities,
-	 * first check the persistence context to retrieve entities that are already in the session,
-	 * then check the second level cache to retrieve entities that are in the 2LC but not in the session,
-	 * then load the entities that were not found in the session or 2LC through an SQL query.
-	 */
-	PERSISTENCE_CONTEXT_THEN_SECOND_LEVEL_CACHE( "persistence-context-then-second-level-cache" );
+    private final String externalRepresentation;
 
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static EntityLoadingCacheLookupStrategy of(String value) {
-		return ParseUtils.parseDiscreteValues(
-				EntityLoadingCacheLookupStrategy.values(),
-				EntityLoadingCacheLookupStrategy::externalRepresentation,
-				ConfigurationLog.INSTANCE::invalidEntityLoadingCacheLookupStrategyName,
-				value
-		);
-	}
+    EntityLoadingCacheLookupStrategy(String externalRepresentation) {
+        this.externalRepresentation = externalRepresentation;
+    }
 
-	private final String externalRepresentation;
-
-	EntityLoadingCacheLookupStrategy(String externalRepresentation) {
-		this.externalRepresentation = externalRepresentation;
-	}
-
-	/**
-	 * @return The expected string representation in configuration properties.
-	 */
-	public String externalRepresentation() {
-		return externalRepresentation;
-	}
-
+    /**
+     * @return The expected string representation in configuration properties.
+     */
+    public String externalRepresentation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

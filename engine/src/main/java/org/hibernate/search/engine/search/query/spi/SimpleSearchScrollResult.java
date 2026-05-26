@@ -6,49 +6,51 @@ package org.hibernate.search.engine.search.query.spi;
 
 import java.time.Duration;
 import java.util.List;
-
 import org.hibernate.search.engine.search.query.SearchResultTotal;
 import org.hibernate.search.engine.search.query.SearchScrollResult;
 
 public class SimpleSearchScrollResult<H> implements SearchScrollResult<H> {
 
-	private final SearchResultTotal resultTotal;
-	private final boolean hasHits;
-	private final List<H> hits;
-	private final Duration took;
-	private final boolean timedOut;
+    private final SearchResultTotal resultTotal;
 
-	public SimpleSearchScrollResult(SearchResultTotal resultTotal, boolean hasHits, List<H> hits,
-			Duration took, Boolean timedOut) {
-		this.resultTotal = resultTotal;
-		this.hasHits = hasHits;
-		this.hits = hits;
-		this.took = took;
-		this.timedOut = timedOut;
-	}
+    private final boolean hasHits;
 
-	@Override
-	public SearchResultTotal total() {
-		return resultTotal;
-	}
+    private final List<H> hits;
 
-	@Override
-	public boolean hasHits() {
-		return hasHits;
-	}
+    private final Duration took;
 
-	@Override
-	public List<H> hits() {
-		return hits;
-	}
+    private final boolean timedOut;
 
-	@Override
-	public Duration took() {
-		return took;
-	}
+    public SimpleSearchScrollResult(SearchResultTotal resultTotal, boolean hasHits, List<H> hits, Duration took, Boolean timedOut) {
+        this.resultTotal = resultTotal;
+        this.hasHits = hasHits;
+        this.hits = hits;
+        this.took = took;
+        this.timedOut = timedOut;
+    }
 
-	@Override
-	public boolean timedOut() {
-		return timedOut;
-	}
+    @Override
+    public SearchResultTotal total() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean hasHits() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public List<H> hits() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Duration took() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean timedOut() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

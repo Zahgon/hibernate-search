@@ -15,15 +15,13 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
  */
 public class ActiveSessionFactoryRegistryUpdater implements Integrator {
 
-	@Override
-	public void integrate(Metadata metadata, BootstrapContext bootstrapContext,
-			SessionFactoryImplementor sessionFactory) {
-		ActiveSessionFactoryRegistry.getInstance().register( sessionFactory );
-	}
+    @Override
+    public void integrate(Metadata metadata, BootstrapContext bootstrapContext, SessionFactoryImplementor sessionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void disintegrate(SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
-		ActiveSessionFactoryRegistry.getInstance().unregister( sessionFactory );
-	}
-
+    @Override
+    public void disintegrate(SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

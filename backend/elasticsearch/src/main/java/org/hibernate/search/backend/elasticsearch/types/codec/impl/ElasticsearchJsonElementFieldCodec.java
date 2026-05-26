@@ -11,53 +11,39 @@ import com.google.gson.JsonPrimitive;
 
 public class ElasticsearchJsonElementFieldCodec implements ElasticsearchFieldCodec<JsonElement> {
 
-	private final Gson gson;
+    private final Gson gson;
 
-	public ElasticsearchJsonElementFieldCodec(Gson gson) {
-		this.gson = gson;
-	}
+    public ElasticsearchJsonElementFieldCodec(Gson gson) {
+        this.gson = gson;
+    }
 
-	@Override
-	public JsonElement encode(JsonElement value) {
-		if ( value == null ) {
-			return JsonNull.INSTANCE;
-		}
-		return value;
-	}
+    @Override
+    public JsonElement encode(JsonElement value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonElement decode(JsonElement element) {
-		if ( element == null || element.isJsonNull() ) {
-			return null;
-		}
-		return element;
-	}
+    @Override
+    public JsonElement decode(JsonElement element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonElement decode(Double value) {
-		return new JsonPrimitive( value );
-	}
+    @Override
+    public JsonElement decode(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ElasticsearchFieldCodec<?> other) {
-		if ( other == this ) {
-			return true;
-		}
-		if ( other == null || !getClass().equals( other.getClass() ) ) {
-			return false;
-		}
+    @Override
+    public boolean isCompatibleWith(ElasticsearchFieldCodec<?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchJsonElementFieldCodec castedOther = (ElasticsearchJsonElementFieldCodec) other;
-		return gson.equals( castedOther.gson );
-	}
+    @Override
+    public JsonElement fromJsonStringToElement(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonElement fromJsonStringToElement(String value) {
-		return gson.fromJson( value, JsonElement.class );
-	}
-
-	@Override
-	public String fromJsonElementToString(JsonElement value) {
-		return gson.toJson( value );
-	}
+    @Override
+    public String fromJsonElementToString(JsonElement value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

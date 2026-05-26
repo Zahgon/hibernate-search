@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.bridge.binding.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.mapper.pojo.bridge.RoutingBridge;
@@ -19,65 +18,50 @@ import org.hibernate.search.mapper.pojo.model.impl.PojoModelTypeRootElement;
 import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
-public class RoutingBindingContextImpl<E> extends AbstractCompositeBindingContext
-		implements RoutingBindingContext {
+public class RoutingBindingContextImpl<E> extends AbstractCompositeBindingContext implements RoutingBindingContext {
 
-	private final PojoBootstrapIntrospector introspector;
+    private final PojoBootstrapIntrospector introspector;
 
-	private final PojoRawTypeModel<E> indexedEntityType;
-	private final PojoModelTypeRootElement<E> pojoModelTypeRootElement;
-	private final PojoRoutingIndexingDependencyConfigurationContextImpl<E> dependencyContext;
+    private final PojoRawTypeModel<E> indexedEntityType;
 
-	private BeanHolder<? extends RoutingBridge<? super E>> routingBridgeHolder;
+    private final PojoModelTypeRootElement<E> pojoModelTypeRootElement;
 
-	public RoutingBindingContextImpl(BeanResolver beanResolver, PojoBootstrapIntrospector introspector,
-			PojoRawTypeModel<E> indexedEntityType, PojoModelTypeRootElement<E> pojoModelTypeRootElement,
-			PojoRoutingIndexingDependencyConfigurationContextImpl<E> dependencyContext,
-			Map<String, Object> params) {
-		super( beanResolver, params );
-		this.introspector = introspector;
-		this.indexedEntityType = indexedEntityType;
-		this.pojoModelTypeRootElement = pojoModelTypeRootElement;
-		this.dependencyContext = dependencyContext;
-	}
+    private final PojoRoutingIndexingDependencyConfigurationContextImpl<E> dependencyContext;
 
-	@Override
-	public <E2> void bridge(Class<E2> expectedType, RoutingBridge<E2> bridge) {
-		bridge( expectedType, BeanHolder.of( bridge ) );
-	}
+    private BeanHolder<? extends RoutingBridge<? super E>> routingBridgeHolder;
 
-	@Override
-	@SuppressWarnings({
-			"unchecked" /*Checked using reflection*/,
-			"resource" /* For the eclipse-compiler: complains on bridge not bing closed */ })
-	public <E2> void bridge(Class<E2> expectedType, BeanHolder<? extends RoutingBridge<E2>> bridgeHolder) {
-		PojoRawTypeModel<E2> expectedTypeModel = introspector.typeModel( expectedType );
-		if ( !indexedEntityType.isSubTypeOf( expectedTypeModel ) ) {
-			throw MappingLog.INSTANCE.invalidInputTypeForRoutingBridge( bridgeHolder.get(), indexedEntityType,
-					expectedTypeModel );
-		}
-		routingBridgeHolder = (BeanHolder<? extends RoutingBridge<? super E>>) bridgeHolder;
-	}
+    public RoutingBindingContextImpl(BeanResolver beanResolver, PojoBootstrapIntrospector introspector, PojoRawTypeModel<E> indexedEntityType, PojoModelTypeRootElement<E> pojoModelTypeRootElement, PojoRoutingIndexingDependencyConfigurationContextImpl<E> dependencyContext, Map<String, Object> params) {
+        super(beanResolver, params);
+        this.introspector = introspector;
+        this.indexedEntityType = indexedEntityType;
+        this.pojoModelTypeRootElement = pojoModelTypeRootElement;
+        this.dependencyContext = dependencyContext;
+    }
 
-	@Override
-	public PojoModelType bridgedElement() {
-		return pojoModelTypeRootElement;
-	}
+    @Override
+    public <E2> void bridge(Class<E2> expectedType, RoutingBridge<E2> bridge) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoRoutingIndexingDependencyConfigurationContext dependencies() {
-		return dependencyContext;
-	}
+    @Override
+    @SuppressWarnings({ "unchecked", /*Checked using reflection*/
+    "resource" /* For the eclipse-compiler: complains on bridge not bing closed */
+    })
+    public <E2> void bridge(Class<E2> expectedType, BeanHolder<? extends RoutingBridge<E2>> bridgeHolder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BoundRoutingBridge<E> applyBinder(RoutingBinder binder) {
-		binder.bind( this );
+    @Override
+    public PojoModelType bridgedElement() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( routingBridgeHolder == null ) {
-			throw MappingLog.INSTANCE.missingBridgeForBinder( binder );
-		}
+    @Override
+    public PojoRoutingIndexingDependencyConfigurationContext dependencies() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		checkBridgeDependencies( pojoModelTypeRootElement, dependencyContext );
-
-		return new BoundRoutingBridge<>( routingBridgeHolder, pojoModelTypeRootElement, dependencyContext );
-	}
+    public BoundRoutingBridge<E> applyBinder(RoutingBinder binder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

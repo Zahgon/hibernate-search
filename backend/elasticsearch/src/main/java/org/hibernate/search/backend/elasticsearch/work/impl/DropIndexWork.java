@@ -10,44 +10,36 @@ import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEnco
 
 public class DropIndexWork extends AbstractNonBulkableWork<Void> {
 
-	protected DropIndexWork(Builder builder) {
-		super( builder );
-	}
+    protected DropIndexWork(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		return null;
-	}
+    @Override
+    protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder
-			extends AbstractBuilder<Builder> {
-		private final URLEncodedString indexName;
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		public Builder(URLEncodedString indexName) {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-			this.indexName = indexName;
-		}
+        private final URLEncodedString indexName;
 
-		public Builder ignoreIndexNotFound() {
-			this.resultAssessor = ElasticsearchRequestSuccessAssessor.builder()
-					.ignoreErrorTypes( "index_not_found_exception" )
-					.build();
+        public Builder(URLEncodedString indexName) {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+            this.indexName = indexName;
+        }
 
-			return this;
-		}
+        public Builder ignoreIndexNotFound() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.delete()
-							.pathComponent( indexName );
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return builder.build();
-		}
-
-		@Override
-		public DropIndexWork build() {
-			return new DropIndexWork( this );
-		}
-	}
+        @Override
+        public DropIndexWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

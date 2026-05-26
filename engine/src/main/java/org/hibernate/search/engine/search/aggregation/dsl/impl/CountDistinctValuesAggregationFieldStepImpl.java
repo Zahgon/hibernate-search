@@ -13,19 +13,16 @@ import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFact
 
 @SuppressWarnings("removal")
 @Deprecated(since = "8.1", forRemoval = true)
-public class CountDistinctValuesAggregationFieldStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>>
-		implements CountDistinctValuesAggregationFieldStep<SR, PDF> {
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+public class CountDistinctValuesAggregationFieldStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>> implements CountDistinctValuesAggregationFieldStep<SR, PDF> {
 
-	public CountDistinctValuesAggregationFieldStepImpl(SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.dslContext = dslContext;
-	}
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-	@Override
-	public CountDistinctValuesAggregationOptionsStep<SR, ?, PDF> field(String fieldPath) {
-		CountValuesAggregationBuilder builder = dslContext.scope()
-				.fieldQueryElement( fieldPath, AggregationTypeKeys.COUNT ).builder();
-		builder.distinct( true );
-		return new CountDistinctValuesAggregationOptionsStepImpl<>( builder, dslContext );
-	}
+    public CountDistinctValuesAggregationFieldStepImpl(SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.dslContext = dslContext;
+    }
+
+    @Override
+    public CountDistinctValuesAggregationOptionsStep<SR, ?, PDF> field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

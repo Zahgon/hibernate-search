@@ -19,62 +19,34 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 public class NearRealTimeIOStrategy extends IOStrategy {
 
-	private static final ConfigurationProperty<Integer> COMMIT_INTERVAL =
-			ConfigurationProperty.forKey( LuceneIndexSettings.IO_COMMIT_INTERVAL )
-					.asIntegerPositiveOrZero()
-					.withDefault( LuceneIndexSettings.Defaults.IO_COMMIT_INTERVAL )
-					.build();
+    private static final ConfigurationProperty<Integer> COMMIT_INTERVAL = ConfigurationProperty.forKey(LuceneIndexSettings.IO_COMMIT_INTERVAL).asIntegerPositiveOrZero().withDefault(LuceneIndexSettings.Defaults.IO_COMMIT_INTERVAL).build();
 
-	private static final ConfigurationProperty<Integer> REFRESH_INTERVAL =
-			ConfigurationProperty.forKey( LuceneIndexSettings.IO_REFRESH_INTERVAL )
-					.asIntegerPositiveOrZero()
-					.withDefault( LuceneIndexSettings.Defaults.IO_REFRESH_INTERVAL )
-					.build();
+    private static final ConfigurationProperty<Integer> REFRESH_INTERVAL = ConfigurationProperty.forKey(LuceneIndexSettings.IO_REFRESH_INTERVAL).asIntegerPositiveOrZero().withDefault(LuceneIndexSettings.Defaults.IO_REFRESH_INTERVAL).build();
 
-	public static NearRealTimeIOStrategy create(ConfigurationPropertySource propertySource,
-			TimingSource timingSource, BackendThreads threads, FailureHandler failureHandler) {
-		int commitInterval = COMMIT_INTERVAL.get( propertySource );
-		int refreshInterval = REFRESH_INTERVAL.get( propertySource );
-		return new NearRealTimeIOStrategy(
-				timingSource, commitInterval, refreshInterval,
-				threads, failureHandler
-		);
-	}
+    public static NearRealTimeIOStrategy create(ConfigurationPropertySource propertySource, TimingSource timingSource, BackendThreads threads, FailureHandler failureHandler) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final TimingSource timingSource;
-	private final int commitInterval;
-	private final int refreshInterval;
+    private final TimingSource timingSource;
 
-	private NearRealTimeIOStrategy(TimingSource timingSource, int commitInterval, int refreshInterval,
-			BackendThreads threads,
-			FailureHandler failureHandler) {
-		super( threads, failureHandler );
-		this.timingSource = timingSource;
-		this.commitInterval = commitInterval;
-		this.refreshInterval = refreshInterval;
-	}
+    private final int commitInterval;
 
-	@Override
-	IndexWriterProvider createIndexWriterProvider(String indexName, EventContext eventContext,
-			DirectoryHolder directoryHolder, IndexWriterConfigSource configSource) {
-		if ( commitInterval != 0 ) {
-			timingSource.ensureTimeEstimateIsInitialized();
-		}
-		return new IndexWriterProvider(
-				indexName, eventContext,
-				directoryHolder, configSource,
-				timingSource, commitInterval, threads,
-				failureHandler
-		);
-	}
+    private final int refreshInterval;
 
-	@Override
-	IndexReaderProvider createIndexReaderProvider(DirectoryHolder directoryHolder,
-			IndexWriterProvider indexWriterProvider) {
-		if ( refreshInterval != 0 ) {
-			timingSource.ensureTimeEstimateIsInitialized();
-		}
-		return new NearRealTimeIndexReaderProvider( indexWriterProvider, timingSource, refreshInterval );
-	}
+    private NearRealTimeIOStrategy(TimingSource timingSource, int commitInterval, int refreshInterval, BackendThreads threads, FailureHandler failureHandler) {
+        super(threads, failureHandler);
+        this.timingSource = timingSource;
+        this.commitInterval = commitInterval;
+        this.refreshInterval = refreshInterval;
+    }
 
+    @Override
+    IndexWriterProvider createIndexWriterProvider(String indexName, EventContext eventContext, DirectoryHolder directoryHolder, IndexWriterConfigSource configSource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    IndexReaderProvider createIndexReaderProvider(DirectoryHolder directoryHolder, IndexWriterProvider indexWriterProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

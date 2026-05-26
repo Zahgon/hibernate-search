@@ -17,56 +17,37 @@ import org.hibernate.search.util.common.impl.Closer;
 
 public class ConfiguredIndexingPlanSynchronizationStrategyHolder {
 
-	private static final OptionalConfigurationProperty<
-			BeanReference<? extends IndexingPlanSynchronizationStrategy>> INDEXING_PLAN_SYNCHRONIZATION_STRATEGY =
-					ConfigurationProperty.forKey( StandalonePojoMapperSettings.Radicals.INDEXING_PLAN_SYNCHRONIZATION_STRATEGY )
-							.asBeanReference( IndexingPlanSynchronizationStrategy.class )
-							.build();
+    private static final OptionalConfigurationProperty<BeanReference<? extends IndexingPlanSynchronizationStrategy>> INDEXING_PLAN_SYNCHRONIZATION_STRATEGY = ConfigurationProperty.forKey(StandalonePojoMapperSettings.Radicals.INDEXING_PLAN_SYNCHRONIZATION_STRATEGY).asBeanReference(IndexingPlanSynchronizationStrategy.class).build();
 
-	private final StandalonePojoSearchSessionMappingContext mappingContext;
-	private BeanHolder<? extends IndexingPlanSynchronizationStrategy> defaultSynchronizationStrategyHolder;
-	private ConfiguredIndexingPlanSynchronizationStrategy defaultSynchronizationStrategy;
+    private final StandalonePojoSearchSessionMappingContext mappingContext;
 
-	public ConfiguredIndexingPlanSynchronizationStrategyHolder(
-			StandalonePojoSearchSessionMappingContext mappingContext) {
-		this.mappingContext = mappingContext;
-	}
+    private BeanHolder<? extends IndexingPlanSynchronizationStrategy> defaultSynchronizationStrategyHolder;
 
-	public void start(MappingStartContext context) {
-		this.defaultSynchronizationStrategyHolder = INDEXING_PLAN_SYNCHRONIZATION_STRATEGY.getAndTransform(
-				context.configurationPropertySource(),
-				referenceOptional -> context.beanResolver().resolve( referenceOptional.orElse(
-						StandalonePojoMapperSettings.Defaults.INDEXING_PLAN_SYNCHRONIZATION_STRATEGY ) )
-		);
+    private ConfiguredIndexingPlanSynchronizationStrategy defaultSynchronizationStrategy;
 
-		this.defaultSynchronizationStrategy = configure( defaultSynchronizationStrategyHolder.get() );
-	}
+    public ConfiguredIndexingPlanSynchronizationStrategyHolder(StandalonePojoSearchSessionMappingContext mappingContext) {
+        this.mappingContext = mappingContext;
+    }
 
-	public ConfiguredIndexingPlanSynchronizationStrategy defaultSynchronizationStrategy() {
-		return defaultSynchronizationStrategy;
-	}
+    public void start(MappingStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfiguredIndexingPlanSynchronizationStrategy configureOverriddenSynchronizationStrategy(
-			IndexingPlanSynchronizationStrategy synchronizationStrategy) {
-		if ( synchronizationStrategy == null ) {
-			return defaultSynchronizationStrategy();
-		}
-		return configure( synchronizationStrategy );
-	}
+    public ConfiguredIndexingPlanSynchronizationStrategy defaultSynchronizationStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private ConfiguredIndexingPlanSynchronizationStrategy configure(
-			IndexingPlanSynchronizationStrategy synchronizationStrategy) {
-		ConfiguredIndexingPlanSynchronizationStrategy.Builder builder =
-				new ConfiguredIndexingPlanSynchronizationStrategy.Builder(
-						mappingContext.failureHandler()
-				);
-		synchronizationStrategy.apply( builder );
-		return builder.build();
-	}
+    public ConfiguredIndexingPlanSynchronizationStrategy configureOverriddenSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( BeanHolder::close, defaultSynchronizationStrategyHolder );
-		}
-	}
+    private ConfiguredIndexingPlanSynchronizationStrategy configure(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
+        ConfiguredIndexingPlanSynchronizationStrategy.Builder builder = new ConfiguredIndexingPlanSynchronizationStrategy.Builder(mappingContext.failureHandler());
+        synchronizationStrategy.apply(builder);
+        return builder.build();
+    }
+
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,9 +10,9 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface TypedSortFieldReference<SR, T> extends SortFieldReference<SR> {
 
-	Class<T> sortType();
+    Class<T> sortType();
 
-	default ValueModel valueModel() {
-		return ValueModel.MAPPING;
-	}
+    default ValueModel valueModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

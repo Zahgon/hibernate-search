@@ -13,20 +13,16 @@ import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.util.common.impl.Contracts;
 
-public class MaxAggregationFieldStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>>
-		implements MaxAggregationFieldStep<SR, PDF> {
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+public class MaxAggregationFieldStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>> implements MaxAggregationFieldStep<SR, PDF> {
 
-	public MaxAggregationFieldStepImpl(SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.dslContext = dslContext;
-	}
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-	@Override
-	public <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(String fieldPath, Class<F> type, ValueModel valueModel) {
-		Contracts.assertNotNull( fieldPath, "fieldPath" );
-		Contracts.assertNotNull( type, "type" );
-		FieldMetricAggregationBuilder<F> builder = dslContext.scope()
-				.fieldQueryElement( fieldPath, AggregationTypeKeys.MAX ).type( type, valueModel );
-		return new MaxAggregationOptionsStepImpl<>( builder, dslContext );
-	}
+    public MaxAggregationFieldStepImpl(SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.dslContext = dslContext;
+    }
+
+    @Override
+    public <F> MaxAggregationOptionsStep<SR, ?, PDF, F> field(String fieldPath, Class<F> type, ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

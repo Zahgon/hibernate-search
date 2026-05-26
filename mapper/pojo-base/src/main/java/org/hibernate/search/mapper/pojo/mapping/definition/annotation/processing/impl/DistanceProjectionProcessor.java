@@ -12,13 +12,8 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.builtin.Distan
 
 public final class DistanceProjectionProcessor implements MethodParameterMappingAnnotationProcessor<DistanceProjection> {
 
-	@Override
-	public void process(MethodParameterMappingStep mapping, DistanceProjection annotation,
-			MethodParameterMappingAnnotationProcessorContext context) {
-		mapping.projection( DistanceProjectionBinder.create(
-				context.toNullIfDefault( annotation.path(), "" ),
-				annotation.fromParam()
-		).unit( annotation.unit() ) );
-	}
-
+    @Override
+    public void process(MethodParameterMappingStep mapping, DistanceProjection annotation, MethodParameterMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

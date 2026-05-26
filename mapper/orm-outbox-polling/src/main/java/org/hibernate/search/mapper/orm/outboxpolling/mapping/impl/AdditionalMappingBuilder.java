@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiConsumer;
-
 import jakarta.persistence.AccessType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Index;
-
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.boot.models.HibernateAnnotations;
 import org.hibernate.boot.models.JpaAnnotations;
@@ -34,157 +32,73 @@ import org.hibernate.models.spi.MutableMemberDetails;
 
 public class AdditionalMappingBuilder {
 
-	private final MetadataBuildingContext buildingContext;
-	private final Class<?> type;
-	private final String name;
-	private final List<BiConsumer<ModelsContext, MutableClassDetails>> contributors = new ArrayList<>();
+    private final MetadataBuildingContext buildingContext;
 
-	public AdditionalMappingBuilder(MetadataBuildingContext buildingContext, Class<?> type, String name) {
-		this.buildingContext = buildingContext;
-		this.type = type;
-		this.name = name;
-	}
+    private final Class<?> type;
 
-	public AdditionalMappingBuilder table(String schema, String catalog, String table) {
-		contributors.add( (context, classDetails) -> {
-			TableJpaAnnotation tableUsage = (TableJpaAnnotation) classDetails.applyAnnotationUsage(
-					JpaAnnotations.TABLE,
-					context
-			);
-			tableUsage.schema( schema );
-			tableUsage.catalog( catalog );
-			tableUsage.name( table );
-		} );
-		return this;
-	}
+    private final String name;
 
-	public AdditionalMappingBuilder index(String name) {
-		return index( name, name );
-	}
+    private final List<BiConsumer<ModelsContext, MutableClassDetails>> contributors = new ArrayList<>();
 
-	public AdditionalMappingBuilder index(String name, String columns) {
-		contributors.add( (context, classDetails) -> {
-			TableJpaAnnotation tableUsage = (TableJpaAnnotation) classDetails.applyAnnotationUsage(
-					JpaAnnotations.TABLE,
-					context
-			);
+    public AdditionalMappingBuilder(MetadataBuildingContext buildingContext, Class<?> type, String name) {
+        this.buildingContext = buildingContext;
+        this.type = type;
+        this.name = name;
+    }
 
-			IndexJpaAnnotation indexUsage = JpaAnnotations.INDEX.createUsage( context );
-			indexUsage.name( name );
-			indexUsage.columnList( columns );
+    public AdditionalMappingBuilder table(String schema, String catalog, String table) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			tableUsage.indexes( new Index[] { indexUsage } );
-		} );
-		return this;
-	}
+    public AdditionalMappingBuilder index(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public AdditionalMappingBuilder attribute(String name, Integer length, Boolean nullable) {
-		return attribute( name, length, nullable, null );
-	}
+    public AdditionalMappingBuilder index(String name, String columns) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public AdditionalMappingBuilder attribute(String name, Integer length, Boolean nullable, Integer type) {
-		createAttribute( name, length, nullable, type );
-		return this;
-	}
+    public AdditionalMappingBuilder attribute(String name, Integer length, Boolean nullable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public AdditionalMappingBuilder tenantId(String name) {
-		contributors.add( (context, classDetails) -> {
-			final MutableMemberDetails field = (MutableMemberDetails) classDetails.findFieldByName( name );
-			field.applyAnnotationUsage( HibernateAnnotations.TENANT_ID, context );
-		} );
-		return this;
-	}
+    public AdditionalMappingBuilder attribute(String name, Integer length, Boolean nullable, Integer type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public AdditionalMappingBuilder enumAttribute(String name, Integer length, Boolean nullable) {
-		createAttribute( name, length, nullable );
-		contributors.add( (context, classDetails) -> {
-			final MutableMemberDetails field = (MutableMemberDetails) classDetails.findFieldByName( name );
-			EnumeratedJpaAnnotation entityUsage = (EnumeratedJpaAnnotation) field.applyAnnotationUsage(
-					JpaAnnotations.ENUMERATED,
-					context
-			);
-			entityUsage.value( EnumType.STRING );
-		} );
-		return this;
-	}
+    public AdditionalMappingBuilder tenantId(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public AdditionalMappingBuilder id(Integer type, String strategy) {
-		contributors.add( (context, classDetails) -> {
-			final MutableMemberDetails field = (MutableMemberDetails) classDetails.findFieldByName( "id" );
+    public AdditionalMappingBuilder enumAttribute(String name, Integer length, Boolean nullable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			field.applyAnnotationUsage( JpaAnnotations.ID, context );
+    public AdditionalMappingBuilder id(Integer type, String strategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			UuidGeneratorAnnotation uuidGeneratorUsage = (UuidGeneratorAnnotation) field.applyAnnotationUsage(
-					HibernateAnnotations.UUID_GENERATOR,
-					context
-			);
-			uuidGeneratorUsage.style(
-					UuidGenerator.Style.valueOf( strategy.toUpperCase( Locale.ROOT ) )
-			);
-			if ( type != null ) {
-				JdbcTypeCodeAnnotation jdbcTypeCodeUsage = (JdbcTypeCodeAnnotation) field.applyAnnotationUsage(
-						HibernateAnnotations.JDBC_TYPE_CODE,
-						context
-				);
-				jdbcTypeCodeUsage.value( type );
-			}
-		} );
+    public ClassDetails build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return this;
-	}
+    private void createAttribute(String name, Integer size, boolean nullable) {
+        createAttribute(name, size, nullable, null);
+    }
 
-	public ClassDetails build() {
-		ModelsContext context = buildingContext.getBootstrapContext().getModelsContext();
-		final MutableClassDetails classDetails = JdkBuilders.buildClassDetailsStatic(
-				type,
-				context
-		);
-
-		EntityJpaAnnotation entityUsage = (EntityJpaAnnotation) classDetails.applyAnnotationUsage(
-				JpaAnnotations.ENTITY,
-				context
-		);
-		entityUsage.name( name );
-		AccessJpaAnnotation accessUsage = (AccessJpaAnnotation) classDetails.applyAnnotationUsage(
-				JpaAnnotations.ACCESS,
-				context
-		);
-		accessUsage.value( AccessType.FIELD );
-
-		for ( BiConsumer<ModelsContext, MutableClassDetails> contributor : contributors ) {
-			contributor.accept( context, classDetails );
-		}
-
-		context.getClassDetailsRegistry()
-				.as( MutableClassDetailsRegistry.class )
-				.addClassDetails( type.getName(), classDetails );
-
-		return classDetails;
-	}
-
-	private void createAttribute(String name, Integer size, boolean nullable) {
-		createAttribute( name, size, nullable, null );
-	}
-
-	private void createAttribute(String name, Integer length, boolean nullable, Integer type) {
-		contributors.add( (context, classDetails) -> {
-			final MutableMemberDetails field = (MutableMemberDetails) classDetails.findFieldByName( name );
-			ColumnJpaAnnotation columnUsage = (ColumnJpaAnnotation) field.applyAnnotationUsage(
-					JpaAnnotations.COLUMN,
-					context
-			);
-
-			columnUsage.name( name );
-			columnUsage.nullable( nullable );
-			if ( length != null ) {
-				columnUsage.length( length );
-			}
-
-			if ( type != null ) {
-				JdbcTypeCodeAnnotation jdbcTypeCodeUsage =
-						(JdbcTypeCodeAnnotation) field.applyAnnotationUsage( HibernateAnnotations.JDBC_TYPE_CODE, context );
-				jdbcTypeCodeUsage.value( type );
-			}
-		} );
-	}
+    private void createAttribute(String name, Integer length, boolean nullable, Integer type) {
+        contributors.add((context, classDetails) -> {
+            final MutableMemberDetails field = (MutableMemberDetails) classDetails.findFieldByName(name);
+            ColumnJpaAnnotation columnUsage = (ColumnJpaAnnotation) field.applyAnnotationUsage(JpaAnnotations.COLUMN, context);
+            columnUsage.name(name);
+            columnUsage.nullable(nullable);
+            if (length != null) {
+                columnUsage.length(length);
+            }
+            if (type != null) {
+                JdbcTypeCodeAnnotation jdbcTypeCodeUsage = (JdbcTypeCodeAnnotation) field.applyAnnotationUsage(HibernateAnnotations.JDBC_TYPE_CODE, context);
+                jdbcTypeCodeUsage.value(type);
+            }
+        });
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.programmatic.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.ReindexOnUpdate;
 import org.hibernate.search.mapper.pojo.extractor.mapping.programmatic.ContainerExtractorPath;
 import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoPropertyMetadataContributor;
@@ -16,49 +15,36 @@ import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.Po
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorValueNode;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 
-class IndexingDependencyOptionsStepImpl
-		extends DelegatingPropertyMappingStep
-		implements IndexingDependencyOptionsStep, PojoPropertyMetadataContributor {
+class IndexingDependencyOptionsStepImpl extends DelegatingPropertyMappingStep implements IndexingDependencyOptionsStep, PojoPropertyMetadataContributor {
 
-	private ContainerExtractorPath extractorPath = ContainerExtractorPath.defaultExtractors();
-	private ReindexOnUpdate reindexOnUpdate = ReindexOnUpdate.DEFAULT;
-	// Use a LinkedHashSet for deterministic iteration
-	private Set<PojoModelPathValueNode> derivedFrom = null;
+    private ContainerExtractorPath extractorPath = ContainerExtractorPath.defaultExtractors();
 
-	IndexingDependencyOptionsStepImpl(PropertyMappingStep delegate) {
-		super( delegate );
-	}
+    private ReindexOnUpdate reindexOnUpdate = ReindexOnUpdate.DEFAULT;
 
-	@Override
-	public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorPropertyNode collector) {
-		PojoAdditionalMetadataCollectorValueNode collectorValueNode = collector.value( extractorPath );
-		if ( reindexOnUpdate != null ) {
-			collectorValueNode.reindexOnUpdate( reindexOnUpdate );
-		}
-		if ( derivedFrom != null ) {
-			collectorValueNode.derivedFrom( derivedFrom );
-		}
-	}
+    // Use a LinkedHashSet for deterministic iteration
+    private Set<PojoModelPathValueNode> derivedFrom = null;
 
-	@Override
-	public IndexingDependencyOptionsStep reindexOnUpdate(ReindexOnUpdate reindexOnUpdate) {
-		this.reindexOnUpdate = reindexOnUpdate;
-		return this;
-	}
+    IndexingDependencyOptionsStepImpl(PropertyMappingStep delegate) {
+        super(delegate);
+    }
 
-	@Override
-	public IndexingDependencyOptionsStep derivedFrom(PojoModelPathValueNode pojoModelPath) {
-		if ( derivedFrom == null ) {
-			// Use a LinkedHashSet for deterministic iteration
-			derivedFrom = new LinkedHashSet<>();
-		}
-		derivedFrom.add( pojoModelPath );
-		return this;
-	}
+    @Override
+    public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorPropertyNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexingDependencyOptionsStep extractors(ContainerExtractorPath extractorPath) {
-		this.extractorPath = extractorPath;
-		return this;
-	}
+    @Override
+    public IndexingDependencyOptionsStep reindexOnUpdate(ReindexOnUpdate reindexOnUpdate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public IndexingDependencyOptionsStep derivedFrom(PojoModelPathValueNode pojoModelPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public IndexingDependencyOptionsStep extractors(ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

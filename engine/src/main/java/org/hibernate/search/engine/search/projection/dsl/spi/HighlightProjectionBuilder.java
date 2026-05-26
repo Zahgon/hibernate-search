@@ -8,17 +8,18 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.SearchProjection;
 
 public abstract class HighlightProjectionBuilder {
-	protected final String path;
-	protected String highlighterName;
 
-	protected HighlightProjectionBuilder(String path) {
-		this.path = path;
-	}
+    protected final String path;
 
-	public HighlightProjectionBuilder highlighter(String highlighterName) {
-		this.highlighterName = highlighterName;
-		return this;
-	}
+    protected String highlighterName;
 
-	public abstract <V> SearchProjection<V> build(ProjectionCollector.Provider<String, V> collectorProvider);
+    protected HighlightProjectionBuilder(String path) {
+        this.path = path;
+    }
+
+    public HighlightProjectionBuilder highlighter(String highlighterName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public abstract <V> SearchProjection<V> build(ProjectionCollector.Provider<String, V> collectorProvider);
 }

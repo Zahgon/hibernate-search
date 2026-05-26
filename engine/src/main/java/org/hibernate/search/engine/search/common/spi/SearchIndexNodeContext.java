@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.common.spi;
 
 import java.util.List;
-
 import org.hibernate.search.util.common.SearchException;
 import org.hibernate.search.util.common.reporting.EventContext;
 import org.hibernate.search.util.common.reporting.spi.EventContextProvider;
@@ -18,46 +17,40 @@ import org.hibernate.search.util.common.reporting.spi.EventContextProvider;
  *
  * @param <SC> The type of the backend-specific search scope.
  */
-public interface SearchIndexNodeContext<SC extends SearchIndexScope<?>>
-		extends EventContextProvider {
+public interface SearchIndexNodeContext<SC extends SearchIndexScope<?>> extends EventContextProvider {
 
-	EventContext relativeEventContext();
+    EventContext relativeEventContext();
 
-	boolean isComposite();
+    boolean isComposite();
 
-	boolean isObjectField();
+    boolean isObjectField();
 
-	boolean isValueField();
+    boolean isValueField();
 
-	SearchIndexCompositeNodeContext<SC> toComposite();
+    SearchIndexCompositeNodeContext<SC> toComposite();
 
-	SearchIndexCompositeNodeContext<SC> toObjectField();
+    SearchIndexCompositeNodeContext<SC> toObjectField();
 
-	SearchIndexValueFieldContext<SC> toValueField();
+    SearchIndexValueFieldContext<SC> toValueField();
 
-	String absolutePath();
+    String absolutePath();
 
-	String[] absolutePathComponents();
+    String[] absolutePathComponents();
 
-	List<String> nestedPathHierarchy();
+    List<String> nestedPathHierarchy();
 
-	default String nestedDocumentPath() {
-		List<String> hierarchy = nestedPathHierarchy();
-		return ( hierarchy.isEmpty() ) ? null :
-		// nested path is the LAST element on the path hierarchy
-				hierarchy.get( hierarchy.size() - 1 );
-	}
+    default String nestedDocumentPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	String closestMultiValuedParentAbsolutePath();
+    String closestMultiValuedParentAbsolutePath();
 
-	boolean multiValued();
+    boolean multiValued();
 
-	boolean multiValuedInRoot();
+    boolean multiValuedInRoot();
 
-	// Query elements: predicates, sorts, projections, aggregations, ...
+    // Query elements: predicates, sorts, projections, aggregations, ...
+    <T> T queryElement(SearchQueryElementTypeKey<T> key, SC searchContext);
 
-	<T> T queryElement(SearchQueryElementTypeKey<T> key, SC searchContext);
-
-	SearchException cannotUseQueryElement(SearchQueryElementTypeKey<?> key, String hint, Exception causeOrNull);
-
+    SearchException cannotUseQueryElement(SearchQueryElementTypeKey<?> key, String hint, Exception causeOrNull);
 }

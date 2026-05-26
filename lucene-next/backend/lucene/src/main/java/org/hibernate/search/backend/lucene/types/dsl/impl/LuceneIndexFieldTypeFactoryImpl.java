@@ -16,7 +16,6 @@ import java.time.OffsetTime;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
-
 import org.hibernate.search.backend.lucene.analysis.model.impl.LuceneAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.lucene.logging.impl.MappingLog;
 import org.hibernate.search.backend.lucene.types.converter.LuceneFieldContributor;
@@ -33,243 +32,166 @@ import org.hibernate.search.engine.mapper.mapping.building.spi.IndexFieldTypeDef
 import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-public class LuceneIndexFieldTypeFactoryImpl
-		implements LuceneIndexFieldTypeFactory, LuceneIndexFieldTypeBuildContext {
+public class LuceneIndexFieldTypeFactoryImpl implements LuceneIndexFieldTypeFactory, LuceneIndexFieldTypeBuildContext {
 
-	private final EventContext eventContext;
-	private final BackendMapperContext backendMapperContext;
-	private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
-	private final IndexFieldTypeDefaultsProvider typeDefaultsProvider;
+    private final EventContext eventContext;
 
-	public LuceneIndexFieldTypeFactoryImpl(EventContext eventContext,
-			BackendMapperContext backendMapperContext, LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry,
-			IndexFieldTypeDefaultsProvider typeDefaultsProvider) {
-		this.eventContext = eventContext;
-		this.backendMapperContext = backendMapperContext;
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
-		this.typeDefaultsProvider = typeDefaultsProvider;
-	}
+    private final BackendMapperContext backendMapperContext;
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <F> StandardIndexFieldTypeOptionsStep<?, F> as(Class<F> valueType) {
-		if ( String.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asString();
-		}
-		else if ( Integer.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asInteger();
-		}
-		else if ( Long.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asLong();
-		}
-		else if ( Boolean.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asBoolean();
-		}
-		else if ( Byte.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asByte();
-		}
-		else if ( Short.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asShort();
-		}
-		else if ( Float.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asFloat();
-		}
-		else if ( Double.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asDouble();
-		}
-		else if ( LocalDate.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asLocalDate();
-		}
-		else if ( LocalDateTime.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asLocalDateTime();
-		}
-		else if ( LocalTime.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asLocalTime();
-		}
-		else if ( Instant.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asInstant();
-		}
-		else if ( ZonedDateTime.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asZonedDateTime();
-		}
-		else if ( Year.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asYear();
-		}
-		else if ( YearMonth.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asYearMonth();
-		}
-		else if ( MonthDay.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asMonthDay();
-		}
-		else if ( OffsetDateTime.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asOffsetDateTime();
-		}
-		else if ( OffsetTime.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asOffsetTime();
-		}
-		else if ( GeoPoint.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asGeoPoint();
-		}
-		else if ( BigDecimal.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asBigDecimal();
-		}
-		else if ( BigInteger.class.equals( valueType ) ) {
-			return (StandardIndexFieldTypeOptionsStep<?, F>) asBigInteger();
-		}
-		else {
-			throw MappingLog.INSTANCE.cannotGuessFieldType( valueType, getEventContext() );
-		}
-	}
+    private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	@SuppressWarnings("unchecked")
-	public <F> VectorFieldTypeOptionsStep<?, F> asVector(Class<F> valueType) {
-		if ( byte[].class.equals( valueType ) ) {
-			return (VectorFieldTypeOptionsStep<?, F>) asByteVector();
-		}
-		else if ( float[].class.equals( valueType ) ) {
-			return (VectorFieldTypeOptionsStep<?, F>) asFloatVector();
-		}
-		else {
-			throw MappingLog.INSTANCE.cannotGuessVectorFieldType( valueType, getEventContext() );
-		}
-	}
+    private final IndexFieldTypeDefaultsProvider typeDefaultsProvider;
 
-	@Override
-	public StringIndexFieldTypeOptionsStep<?> asString() {
-		return new LuceneStringIndexFieldTypeOptionsStep( this );
-	}
+    public LuceneIndexFieldTypeFactoryImpl(EventContext eventContext, BackendMapperContext backendMapperContext, LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry, IndexFieldTypeDefaultsProvider typeDefaultsProvider) {
+        this.eventContext = eventContext;
+        this.backendMapperContext = backendMapperContext;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        this.typeDefaultsProvider = typeDefaultsProvider;
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Integer> asInteger() {
-		return new LuceneIntegerIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public <F> StandardIndexFieldTypeOptionsStep<?, F> as(Class<F> valueType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Long> asLong() {
-		return new LuceneLongIndexFieldTypeOptionsStep( this );
-	}
+    @SuppressWarnings("unchecked")
+    public <F> VectorFieldTypeOptionsStep<?, F> asVector(Class<F> valueType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Boolean> asBoolean() {
-		return new LuceneBooleanIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StringIndexFieldTypeOptionsStep<?> asString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Byte> asByte() {
-		return new LuceneByteIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Integer> asInteger() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Short> asShort() {
-		return new LuceneShortIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Long> asLong() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Float> asFloat() {
-		return new LuceneFloatIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Boolean> asBoolean() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Double> asDouble() {
-		return new LuceneDoubleIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Byte> asByte() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, LocalDate> asLocalDate() {
-		return new LuceneLocalDateIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Short> asShort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, LocalDateTime> asLocalDateTime() {
-		return new LuceneLocalDateTimeIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Float> asFloat() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, LocalTime> asLocalTime() {
-		return new LuceneLocalTimeIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Double> asDouble() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Instant> asInstant() {
-		return new LuceneInstantIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, LocalDate> asLocalDate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, ZonedDateTime> asZonedDateTime() {
-		return new LuceneZonedDateTimeIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, LocalDateTime> asLocalDateTime() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, Year> asYear() {
-		return new LuceneYearIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, LocalTime> asLocalTime() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, YearMonth> asYearMonth() {
-		return new LuceneYearMonthIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Instant> asInstant() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, MonthDay> asMonthDay() {
-		return new LuceneMonthDayIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, ZonedDateTime> asZonedDateTime() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, OffsetDateTime> asOffsetDateTime() {
-		return new LuceneOffsetDateTimeIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, Year> asYear() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, OffsetTime> asOffsetTime() {
-		return new LuceneOffsetTimeIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, YearMonth> asYearMonth() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public StandardIndexFieldTypeOptionsStep<?, GeoPoint> asGeoPoint() {
-		return new LuceneGeoPointIndexFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, MonthDay> asMonthDay() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ScaledNumberIndexFieldTypeOptionsStep<?, BigDecimal> asBigDecimal() {
-		return new LuceneBigDecimalIndexFieldTypeOptionsStep( this, typeDefaultsProvider );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, OffsetDateTime> asOffsetDateTime() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ScaledNumberIndexFieldTypeOptionsStep<?, BigInteger> asBigInteger() {
-		return new LuceneBigIntegerIndexFieldTypeOptionsStep( this, typeDefaultsProvider );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, OffsetTime> asOffsetTime() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public VectorFieldTypeOptionsStep<?, byte[]> asByteVector() {
-		return new LuceneByteVectorFieldTypeOptionsStep( this );
-	}
+    @Override
+    public StandardIndexFieldTypeOptionsStep<?, GeoPoint> asGeoPoint() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public VectorFieldTypeOptionsStep<?, float[]> asFloatVector() {
-		return new LuceneFloatVectorFieldTypeOptionsStep( this );
-	}
+    @Override
+    public ScaledNumberIndexFieldTypeOptionsStep<?, BigDecimal> asBigDecimal() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <F> IndexFieldTypeOptionsStep<?, F> asNative(Class<F> indexFieldType,
-			LuceneFieldContributor<F> fieldContributor,
-			LuceneFieldValueExtractor<F> fieldValueExtractor) {
-		return new LuceneNativeIndexFieldTypeOptionsStep<>(
-				this, indexFieldType, fieldContributor, fieldValueExtractor
-		);
-	}
+    @Override
+    public ScaledNumberIndexFieldTypeOptionsStep<?, BigInteger> asBigInteger() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EventContext getEventContext() {
-		return eventContext;
-	}
+    @Override
+    public VectorFieldTypeOptionsStep<?, byte[]> asByteVector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneAnalysisDefinitionRegistry getAnalysisDefinitionRegistry() {
-		return analysisDefinitionRegistry;
-	}
+    @Override
+    public VectorFieldTypeOptionsStep<?, float[]> asFloatVector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BackendMappingHints hints() {
-		return backendMapperContext.hints();
-	}
+    @Override
+    public <F> IndexFieldTypeOptionsStep<?, F> asNative(Class<F> indexFieldType, LuceneFieldContributor<F> fieldContributor, LuceneFieldValueExtractor<F> fieldValueExtractor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public EventContext getEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public LuceneAnalysisDefinitionRegistry getAnalysisDefinitionRegistry() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BackendMappingHints hints() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

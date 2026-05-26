@@ -8,33 +8,29 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class JsonArrayAccessorImpl extends AbstractTypingJsonAccessor<JsonArray>
-		implements JsonArrayAccessor, JsonCompositeAccessor<JsonArray> {
+public class JsonArrayAccessorImpl extends AbstractTypingJsonAccessor<JsonArray> implements JsonArrayAccessor, JsonCompositeAccessor<JsonArray> {
 
-	public JsonArrayAccessorImpl(JsonAccessor<JsonElement> parentAccessor) {
-		super( parentAccessor );
-	}
+    public JsonArrayAccessorImpl(JsonAccessor<JsonElement> parentAccessor) {
+        super(parentAccessor);
+    }
 
-	@Override
-	protected JsonElementType<JsonArray> getExpectedElementType() {
-		return JsonElementTypes.ARRAY;
-	}
+    @Override
+    protected JsonElementType<JsonArray> getExpectedElementType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonArray getOrCreate(JsonObject root) {
-		return getOrCreate( root, JsonArray::new );
-	}
+    @Override
+    public JsonArray getOrCreate(JsonObject root) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public UnknownTypeJsonAccessor element(int index) {
-		return new ArrayElementJsonAccessor( this, index );
-	}
+    @Override
+    public UnknownTypeJsonAccessor element(int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addElementIfAbsent(JsonObject root, JsonElement newValue) {
-		JsonArray array = getOrCreate( root );
-		if ( !array.contains( newValue ) ) {
-			array.add( newValue );
-		}
-	}
+    @Override
+    public void addElementIfAbsent(JsonObject root, JsonElement newValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

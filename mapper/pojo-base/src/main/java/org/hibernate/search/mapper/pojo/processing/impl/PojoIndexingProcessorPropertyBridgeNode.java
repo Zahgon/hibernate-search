@@ -18,29 +18,24 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoIndexingProcessorPropertyBridgeNode<P> extends PojoIndexingProcessor<P> {
 
-	private final BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder;
+    private final BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder;
 
-	public PojoIndexingProcessorPropertyBridgeNode(BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder) {
-		this.bridgeHolder = bridgeHolder;
-	}
+    public PojoIndexingProcessorPropertyBridgeNode(BeanHolder<? extends PropertyBridge<? super P>> bridgeHolder) {
+        this.bridgeHolder = bridgeHolder;
+    }
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PropertyBridge::close, bridgeHolder, BeanHolder::get );
-			closer.push( BeanHolder::close, bridgeHolder );
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "apply property bridge" );
-		appender.attribute( "bridge", bridgeHolder );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final void process(DocumentElement target, P source, PojoIndexingProcessorRootContext context) {
-		bridgeHolder.get().write( target, source, context.sessionContext().propertyBridgeWriteContext() );
-	}
-
+    @Override
+    public final void process(DocumentElement target, P source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

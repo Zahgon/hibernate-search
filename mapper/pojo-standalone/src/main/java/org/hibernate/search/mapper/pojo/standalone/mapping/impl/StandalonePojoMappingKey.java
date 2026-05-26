@@ -7,12 +7,12 @@ package org.hibernate.search.mapper.pojo.standalone.mapping.impl;
 import org.hibernate.search.engine.mapper.mapping.building.spi.MappingKey;
 import org.hibernate.search.mapper.pojo.standalone.reporting.impl.StandalonePojoEventContextMessages;
 
-public final class StandalonePojoMappingKey
-		implements MappingKey<StandalonePojoMappingPartialBuildState, StandalonePojoMapping> {
-	private static final StandalonePojoEventContextMessages MESSAGES = StandalonePojoEventContextMessages.INSTANCE;
+public final class StandalonePojoMappingKey implements MappingKey<StandalonePojoMappingPartialBuildState, StandalonePojoMapping> {
 
-	@Override
-	public String render() {
-		return MESSAGES.mapping();
-	}
+    private static final StandalonePojoEventContextMessages MESSAGES = StandalonePojoEventContextMessages.INSTANCE;
+
+    @Override
+    public String render() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

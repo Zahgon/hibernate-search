@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.query.impl.Queries;
@@ -44,248 +43,145 @@ import org.hibernate.search.engine.search.timeout.spi.TimeoutManager;
 import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.util.common.impl.CollectionHelper;
 import org.hibernate.search.util.common.impl.Contracts;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-public class ElasticsearchSearchQueryBuilder<H>
-		implements SearchQueryBuilder<H>, ElasticsearchSearchSortCollector {
+public class ElasticsearchSearchQueryBuilder<H> implements SearchQueryBuilder<H>, ElasticsearchSearchSortCollector {
 
-	private static final JsonAccessor<JsonElement> REQUEST_SOURCE_ACCESSOR = JsonAccessor.root().property( "_source" );
+    private static final JsonAccessor<JsonElement> REQUEST_SOURCE_ACCESSOR = JsonAccessor.root().property("_source");
 
-	private final ElasticsearchWorkFactory workFactory;
-	private final ElasticsearchSearchResultExtractorFactory searchResultExtractorFactory;
-	private final ElasticsearchParallelWorkOrchestrator queryOrchestrator;
+    private final ElasticsearchWorkFactory workFactory;
 
-	private final ElasticsearchSearchIndexScope<?> scope;
-	private final BackendSessionContext sessionContext;
+    private final ElasticsearchSearchResultExtractorFactory searchResultExtractorFactory;
 
-	private final PredicateRequestContext rootPredicateContext;
-	private final SearchLoadingContextBuilder<?, ?> loadingContextBuilder;
-	private final ElasticsearchSearchProjection<H> rootProjection;
-	private final Integer scrollTimeout;
-	private final Set<String> routingKeys;
-	private ElasticsearchSearchPredicate elasticsearchPredicate;
-	private JsonArray jsonSort;
-	private List<ElasticsearchSearchSort> elasticsearchSearchSorts;
-	private Map<DistanceSortKey, Integer> distanceSorts;
-	private Map<AggregationKey<?>, ElasticsearchSearchAggregation<?>> aggregations;
-	private Long timeoutValue;
-	private TimeUnit timeoutUnit;
-	private boolean exceptionOnTimeout;
-	private Long totalHitCountThreshold;
-	private ElasticsearchSearchHighlighter queryHighlighter;
-	private final Map<String, ElasticsearchSearchHighlighter> namedHighlighters = new HashMap<>();
-	private final QueryParameters parameters = new QueryParameters();
-	private ElasticsearchSearchRequestTransformer requestTransformer;
+    private final ElasticsearchParallelWorkOrchestrator queryOrchestrator;
 
-	public ElasticsearchSearchQueryBuilder(
-			ElasticsearchWorkFactory workFactory,
-			ElasticsearchSearchResultExtractorFactory searchResultExtractorFactory,
-			ElasticsearchParallelWorkOrchestrator queryOrchestrator,
-			ElasticsearchSearchIndexScope<?> scope,
-			BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<?, ?> loadingContextBuilder,
-			ElasticsearchSearchProjection<H> rootProjection,
-			Integer scrollTimeout) {
-		this.workFactory = workFactory;
-		this.searchResultExtractorFactory = searchResultExtractorFactory;
-		this.queryOrchestrator = queryOrchestrator;
+    private final ElasticsearchSearchIndexScope<?> scope;
 
-		this.scope = scope;
-		this.sessionContext = sessionContext;
-		this.routingKeys = new HashSet<>();
+    private final BackendSessionContext sessionContext;
 
-		this.rootPredicateContext = new PredicateRequestContext( sessionContext, scope, routingKeys, parameters );
-		this.loadingContextBuilder = loadingContextBuilder;
-		this.rootProjection = rootProjection;
-		this.scrollTimeout = scrollTimeout;
-	}
+    private final PredicateRequestContext rootPredicateContext;
 
-	@Override
-	public void predicate(SearchPredicate predicate) {
-		this.elasticsearchPredicate = ElasticsearchSearchPredicate.from( scope, predicate );
-	}
+    private final SearchLoadingContextBuilder<?, ?> loadingContextBuilder;
 
-	@Override
-	public void sort(SearchSort sort) {
-		if ( elasticsearchSearchSorts == null ) {
-			elasticsearchSearchSorts = new ArrayList<>();
-		}
-		elasticsearchSearchSorts.add( ElasticsearchSearchSort.from( scope, sort ) );
-	}
+    private final ElasticsearchSearchProjection<H> rootProjection;
 
-	@Override
-	public <A> void aggregation(AggregationKey<A> key, SearchAggregation<A> aggregation) {
-		ElasticsearchSearchAggregation<A> casted = ElasticsearchSearchAggregation.from(
-				scope, aggregation );
+    private final Integer scrollTimeout;
 
-		if ( aggregations == null ) {
-			aggregations = new LinkedHashMap<>();
-		}
-		Object previous = aggregations.put( key, casted );
-		if ( previous != null ) {
-			throw QueryLog.INSTANCE.duplicateAggregationKey( key );
-		}
-	}
+    private final Set<String> routingKeys;
 
-	@Override
-	public void addRoutingKey(String routingKey) {
-		this.routingKeys.add( routingKey );
-	}
+    private ElasticsearchSearchPredicate elasticsearchPredicate;
 
-	@Override
-	public void truncateAfter(long timeout, TimeUnit timeUnit) {
-		// This will override any failAfter. Eventually we could allow the user to set both.
-		this.timeoutValue = timeout;
-		this.timeoutUnit = timeUnit;
-		this.exceptionOnTimeout = false;
-	}
+    private JsonArray jsonSort;
 
-	@Override
-	public void failAfter(long timeout, TimeUnit timeUnit) {
-		// This will override any truncateAfter. Eventually we could allow the user to set both.
-		this.timeoutValue = timeout;
-		this.timeoutUnit = timeUnit;
-		this.exceptionOnTimeout = true;
-	}
+    private List<ElasticsearchSearchSort> elasticsearchSearchSorts;
 
-	@Override
-	public void totalHitCountThreshold(long totalHitCountThreshold) {
-		this.totalHitCountThreshold = totalHitCountThreshold;
-	}
+    private Map<DistanceSortKey, Integer> distanceSorts;
 
-	@Override
-	public void highlighter(SearchHighlighter queryHighlighter) {
-		this.queryHighlighter = ElasticsearchSearchHighlighter.from( scope,
-				queryHighlighter
-		);
-	}
+    private Map<AggregationKey<?>, ElasticsearchSearchAggregation<?>> aggregations;
 
-	@Override
-	public void highlighter(String highlighterName, SearchHighlighter highlighter) {
-		if ( highlighterName == null || highlighterName.trim().isEmpty() ) {
-			throw QueryLog.INSTANCE.highlighterNameCannotBeBlank();
-		}
-		if (
-			this.namedHighlighters.put(
-					highlighterName,
-					ElasticsearchSearchHighlighter.from( scope, highlighter )
-			) != null
-		) {
-			throw QueryLog.INSTANCE.highlighterWithTheSameNameCannotBeAdded( highlighterName );
-		}
-	}
+    private Long timeoutValue;
 
-	@Override
-	public void param(String parameterName, Object value) {
-		parameters.add( parameterName, value );
-	}
+    private TimeUnit timeoutUnit;
 
-	@Override
-	public PredicateRequestContext getRootPredicateContext() {
-		return rootPredicateContext;
-	}
+    private boolean exceptionOnTimeout;
 
-	@Override
-	public void collectSort(JsonElement sort) {
-		if ( jsonSort == null ) {
-			jsonSort = new JsonArray();
-		}
-		this.jsonSort.add( sort );
-	}
+    private Long totalHitCountThreshold;
 
-	@Override
-	public void collectDistanceSort(JsonElement sort, String absoluteFieldPath, GeoPoint center) {
-		collectSort( sort );
+    private ElasticsearchSearchHighlighter queryHighlighter;
 
-		int index = jsonSort.size() - 1;
-		if ( distanceSorts == null ) {
-			distanceSorts = CollectionHelper.newHashMap( 3 );
-		}
+    private final Map<String, ElasticsearchSearchHighlighter> namedHighlighters = new HashMap<>();
 
-		distanceSorts.put( new DistanceSortKey( absoluteFieldPath, center ), index );
-	}
+    private final QueryParameters parameters = new QueryParameters();
 
-	public void requestTransformer(ElasticsearchSearchRequestTransformer transformer) {
-		Contracts.assertNotNull( transformer, "transformer" );
-		this.requestTransformer = transformer;
-	}
+    private ElasticsearchSearchRequestTransformer requestTransformer;
 
-	@Override
-	public ElasticsearchSearchQuery<H> build() {
-		JsonObject payload = new JsonObject();
+    public ElasticsearchSearchQueryBuilder(ElasticsearchWorkFactory workFactory, ElasticsearchSearchResultExtractorFactory searchResultExtractorFactory, ElasticsearchParallelWorkOrchestrator queryOrchestrator, ElasticsearchSearchIndexScope<?> scope, BackendSessionContext sessionContext, SearchLoadingContextBuilder<?, ?> loadingContextBuilder, ElasticsearchSearchProjection<H> rootProjection, Integer scrollTimeout) {
+        this.workFactory = workFactory;
+        this.searchResultExtractorFactory = searchResultExtractorFactory;
+        this.queryOrchestrator = queryOrchestrator;
+        this.scope = scope;
+        this.sessionContext = sessionContext;
+        this.routingKeys = new HashSet<>();
+        this.rootPredicateContext = new PredicateRequestContext(sessionContext, scope, routingKeys, parameters);
+        this.loadingContextBuilder = loadingContextBuilder;
+        this.rootProjection = rootProjection;
+        this.scrollTimeout = scrollTimeout;
+    }
 
-		SearchLoadingContext<?> loadingContext = loadingContextBuilder.build();
+    @Override
+    public void predicate(SearchPredicate predicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchSearchQueryRequestContext requestContext = new ElasticsearchSearchQueryRequestContext(
-				scope, sessionContext, loadingContext, rootPredicateContext, distanceSorts,
-				namedHighlighters, queryHighlighter, parameters
-		);
+    @Override
+    public void sort(SearchSort sort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JsonArray filters = rootPredicateContext.tenantAndRoutingFilters();
+    @Override
+    public <A> void aggregation(AggregationKey<A> key, SearchAggregation<A> aggregation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JsonObject jsonPredicate = elasticsearchPredicate.toJsonQuery( rootPredicateContext );
+    @Override
+    public void addRoutingKey(String routingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JsonObject jsonQuery = Queries.boolFilter( jsonPredicate, filters );
-		if ( jsonQuery != null ) {
-			payload.add( "query", jsonQuery );
-		}
+    @Override
+    public void truncateAfter(long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( elasticsearchSearchSorts != null ) {
-			for ( ElasticsearchSearchSort elasticsearchSearchSort : elasticsearchSearchSorts ) {
-				elasticsearchSearchSort.toJsonSorts( this );
-			}
-		}
+    @Override
+    public void failAfter(long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( jsonSort != null ) {
-			payload.add( "sort", jsonSort );
-		}
+    @Override
+    public void totalHitCountThreshold(long totalHitCountThreshold) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchSearchProjection.Extractor<?, H> rootExtractor = rootProjection.request( payload, requestContext );
+    @Override
+    public void highlighter(SearchHighlighter queryHighlighter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		List<ElasticsearchSearchAggregation.Extractor<?>> aggregationExtractors;
-		if ( aggregations != null ) {
-			aggregationExtractors = new ArrayList<>();
-			JsonObject jsonAggregations = new JsonObject();
+    @Override
+    public void highlighter(String highlighterName, SearchHighlighter highlighter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			for ( Map.Entry<AggregationKey<?>, ElasticsearchSearchAggregation<?>> entry : aggregations.entrySet() ) {
-				aggregationExtractors.add( entry.getValue().request( requestContext, entry.getKey(), jsonAggregations ) );
-			}
+    @Override
+    public void param(String parameterName, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			payload.add( "aggregations", jsonAggregations );
-		}
-		else {
-			aggregationExtractors = List.of();
-		}
+    @Override
+    public PredicateRequestContext getRootPredicateContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( queryHighlighter != null ) {
-			queryHighlighter.request( payload );
-		}
+    @Override
+    public void collectSort(JsonElement sort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( !REQUEST_SOURCE_ACCESSOR.get( payload ).isPresent() ) {
-			REQUEST_SOURCE_ACCESSOR.set( payload, new JsonPrimitive( Boolean.FALSE ) );
-		}
+    @Override
+    public void collectDistanceSort(JsonElement sort, String absoluteFieldPath, GeoPoint center) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		TimeoutManager timeoutManager = scope.createTimeoutManager(
-				timeoutValue, timeoutUnit, exceptionOnTimeout );
+    public void requestTransformer(ElasticsearchSearchRequestTransformer transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor =
-				searchResultExtractorFactory.createResultExtractor(
-						requestContext,
-						rootExtractor,
-						aggregationExtractors
-				);
-
-		return new ElasticsearchSearchQueryImpl<>(
-				workFactory, queryOrchestrator,
-				scope, sessionContext, loadingContext, routingKeys,
-				payload, requestTransformer,
-				searchResultExtractor,
-				timeoutManager,
-				scrollTimeout, totalHitCountThreshold
-		);
-	}
+    @Override
+    public ElasticsearchSearchQuery<H> build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

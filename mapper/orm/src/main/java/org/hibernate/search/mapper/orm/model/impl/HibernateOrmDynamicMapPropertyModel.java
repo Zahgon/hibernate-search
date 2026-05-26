@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.model.impl;
 
 import java.lang.annotation.Annotation;
 import java.util.stream.Stream;
-
 import org.hibernate.search.mapper.orm.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.model.spi.PojoPropertyModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
@@ -14,63 +13,46 @@ import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
 
 class HibernateOrmDynamicMapPropertyModel<T> implements PojoPropertyModel<T> {
 
-	private final HibernateOrmBootstrapIntrospector introspector;
-	private final HibernateOrmDynamicMapRawTypeModel holderTypeModel;
+    private final HibernateOrmBootstrapIntrospector introspector;
 
-	private final String name;
-	private final HibernateOrmBasicDynamicMapPropertyMetadata ormPropertyMetadata;
+    private final HibernateOrmDynamicMapRawTypeModel holderTypeModel;
 
-	private ValueReadHandle<T> handle;
-	private PojoTypeModel<T> typeModel;
+    private final String name;
 
-	HibernateOrmDynamicMapPropertyModel(HibernateOrmBootstrapIntrospector introspector,
-			HibernateOrmDynamicMapRawTypeModel holderTypeModel,
-			String name,
-			HibernateOrmBasicDynamicMapPropertyMetadata ormPropertyMetadata) {
-		this.introspector = introspector;
-		this.holderTypeModel = holderTypeModel;
-		this.name = name;
-		this.ormPropertyMetadata = ormPropertyMetadata;
-	}
+    private final HibernateOrmBasicDynamicMapPropertyMetadata ormPropertyMetadata;
 
-	@Override
-	public String name() {
-		return name;
-	}
+    private ValueReadHandle<T> handle;
 
-	@Override
-	public Stream<Annotation> annotations() {
-		return Stream.empty();
-	}
+    private PojoTypeModel<T> typeModel;
 
-	@Override
-	@SuppressWarnings("unchecked") // We will just trust ORM metadata on this one.
-	public PojoTypeModel<T> typeModel() {
-		if ( typeModel == null ) {
-			try {
-				typeModel = (PojoTypeModel<T>) ormPropertyMetadata.getTypeModelFactory().create( introspector );
-			}
-			catch (RuntimeException e) {
-				throw MappingLog.INSTANCE.errorRetrievingPropertyTypeModel( name(), holderTypeModel, e.getMessage(), e );
-			}
-		}
-		return typeModel;
-	}
+    HibernateOrmDynamicMapPropertyModel(HibernateOrmBootstrapIntrospector introspector, HibernateOrmDynamicMapRawTypeModel holderTypeModel, String name, HibernateOrmBasicDynamicMapPropertyMetadata ormPropertyMetadata) {
+        this.introspector = introspector;
+        this.holderTypeModel = holderTypeModel;
+        this.name = name;
+        this.ormPropertyMetadata = ormPropertyMetadata;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // We will just trust ORM metadata on this one.
-	public ValueReadHandle<T> handle() {
-		if ( handle == null ) {
-			try {
-				handle = (ValueReadHandle<T>) new HibernateOrmDynamicMapValueReadHandle<>(
-						name, typeModel().rawType().typeIdentifier().javaClass()
-				);
-			}
-			catch (RuntimeException e) {
-				throw MappingLog.INSTANCE.errorRetrievingPropertyTypeModel( name(), holderTypeModel, e.getMessage(), e );
-			}
-		}
-		return handle;
-	}
+    @Override
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public Stream<Annotation> annotations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    // We will just trust ORM metadata on this one.
+    @SuppressWarnings("unchecked")
+    public PojoTypeModel<T> typeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    // We will just trust ORM metadata on this one.
+    @SuppressWarnings("unchecked")
+    public ValueReadHandle<T> handle() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

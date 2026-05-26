@@ -10,15 +10,15 @@ import org.hibernate.search.engine.reporting.spi.ContextualFailureCollector;
 
 class MappingBuildContextImpl extends DelegatingBuildContext implements MappingBuildContext {
 
-	private final ContextualFailureCollector failureCollector;
+    private final ContextualFailureCollector failureCollector;
 
-	MappingBuildContextImpl(RootBuildContext delegate, MappingKey<?, ?> mappingKey) {
-		super( delegate );
-		failureCollector = delegate.getFailureCollector().withContext( mappingKey );
-	}
+    MappingBuildContextImpl(RootBuildContext delegate, MappingKey<?, ?> mappingKey) {
+        super(delegate);
+        failureCollector = delegate.getFailureCollector().withContext(mappingKey);
+    }
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return failureCollector;
-	}
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

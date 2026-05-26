@@ -15,22 +15,22 @@ import org.hibernate.search.backend.elasticsearch.work.impl.ElasticsearchWorkExe
  */
 class ElasticsearchWorkExecutionContextImpl implements ElasticsearchWorkExecutionContext {
 
-	private final ElasticsearchClient client;
-	private final GsonProvider gsonProvider;
+    private final ElasticsearchClient client;
 
-	public ElasticsearchWorkExecutionContextImpl(ElasticsearchClient client, GsonProvider gsonProvider) {
-		this.client = client;
-		this.gsonProvider = gsonProvider;
-	}
+    private final GsonProvider gsonProvider;
 
-	@Override
-	public ElasticsearchClient getClient() {
-		return client;
-	}
+    public ElasticsearchWorkExecutionContextImpl(ElasticsearchClient client, GsonProvider gsonProvider) {
+        this.client = client;
+        this.gsonProvider = gsonProvider;
+    }
 
-	@Override
-	public GsonProvider getGsonProvider() {
-		return gsonProvider;
-	}
+    @Override
+    public ElasticsearchClient getClient() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public GsonProvider getGsonProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

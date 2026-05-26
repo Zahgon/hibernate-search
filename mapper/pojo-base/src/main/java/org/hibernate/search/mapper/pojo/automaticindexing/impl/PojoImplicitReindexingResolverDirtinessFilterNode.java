@@ -17,35 +17,28 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoImplicitReindexingResolverDirtinessFilterNode<T> extends PojoImplicitReindexingResolverNode<T> {
 
-	private final PojoPathFilter dirtyPathFilter;
-	private final PojoImplicitReindexingResolverNode<T> nested;
+    private final PojoPathFilter dirtyPathFilter;
 
-	public PojoImplicitReindexingResolverDirtinessFilterNode(PojoPathFilter dirtyPathFilter,
-			PojoImplicitReindexingResolverNode<T> nested) {
-		Contracts.assertNotNull(
-				dirtyPathFilter, "dirtyPathFilter"
-		);
-		this.dirtyPathFilter = dirtyPathFilter;
-		this.nested = nested;
-	}
+    private final PojoImplicitReindexingResolverNode<T> nested;
 
-	@Override
-	public void close() {
-		nested.close();
-	}
+    public PojoImplicitReindexingResolverDirtinessFilterNode(PojoPathFilter dirtyPathFilter, PojoImplicitReindexingResolverNode<T> nested) {
+        Contracts.assertNotNull(dirtyPathFilter, "dirtyPathFilter");
+        this.dirtyPathFilter = dirtyPathFilter;
+        this.nested = nested;
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "reindex only if paths are dirty" );
-		appender.attribute( "dirtyPathFilter", dirtyPathFilter );
-		appender.attribute( "nested", nested );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			T dirty, PojoImplicitReindexingResolverRootContext context) {
-		if ( context.isDirtyForReindexingResolution( dirtyPathFilter ) ) {
-			nested.resolveEntitiesToReindex( collector, dirty, context );
-		}
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, T dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

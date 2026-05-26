@@ -8,19 +8,19 @@ import org.apache.lucene.search.LongValues;
 
 final class DocValuesUtils {
 
-	private DocValuesUtils() {
-	}
+    private DocValuesUtils() {
+    }
 
-	public static final LongValues LONG_VALUES_EMPTY = new LongValues() {
-		@Override
-		public long longValue() {
-			throw new UnsupportedOperationException();
-		}
+    public static final LongValues LONG_VALUES_EMPTY = new LongValues() {
 
-		@Override
-		public boolean advanceExact(int doc) {
-			return false;
-		}
-	};
+        @Override
+        public long longValue() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public boolean advanceExact(int doc) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 }

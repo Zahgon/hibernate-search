@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.orm.loading.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.model.domain.EntityDomainType;
 import org.hibernate.query.Query;
@@ -15,89 +14,72 @@ import org.hibernate.search.mapper.orm.loading.spi.ConditionalExpression;
 
 public abstract class ConditionalExpressionQueryFactory<E, I> implements TypeQueryFactory<E, I> {
 
-	private static final String TYPES_PARAM_NAME = "HIBERNATE_SEARCH_INCLUDED_TYPES_FILTER";
-	protected final Class<I> uniquePropertyType;
-	protected final String uniquePropertyName;
-	private final boolean uniquePropertyIsTheEntityId;
+    private static final String TYPES_PARAM_NAME = "HIBERNATE_SEARCH_INCLUDED_TYPES_FILTER";
 
-	public ConditionalExpressionQueryFactory(Class<I> uniquePropertyType, String uniquePropertyName,
-			boolean uniquePropertyIsTheEntityId) {
-		this.uniquePropertyType = uniquePropertyType;
-		this.uniquePropertyName = uniquePropertyName;
-		this.uniquePropertyIsTheEntityId = uniquePropertyIsTheEntityId;
-	}
+    protected final Class<I> uniquePropertyType;
 
-	@Override
-	public final boolean uniquePropertyIsTheEntityId() {
-		return uniquePropertyIsTheEntityId;
-	}
+    protected final String uniquePropertyName;
 
-	@Override
-	public Query<Long> createQueryForCount(SharedSessionContractImplementor session, EntityDomainType<?> entityDomainType,
-			Set<? extends Class<? extends E>> includedTypesFilter,
-			List<ConditionalExpression> conditionalExpressions) {
-		return createQueryWithConditionalExpressionsOrOrder( session,
-				"select count(e) from " + entityDomainType.getName() + " e",
-				Long.class, "e", includedTypesFilter, conditionalExpressions, null
-		);
-	}
+    private final boolean uniquePropertyIsTheEntityId;
 
-	@Override
-	public Query<I> createQueryForIdentifierListing(SharedSessionContractImplementor session,
-			EntityDomainType<?> entityDomainType,
-			Set<? extends Class<? extends E>> includedTypesFilter,
-			List<ConditionalExpression> conditionalExpressions, String order) {
-		return createQueryWithConditionalExpressionsOrOrder( session,
-				"select e." + uniquePropertyName + " from " + entityDomainType.getName() + " e",
-				uniquePropertyType, "e",
-				includedTypesFilter, conditionalExpressions, order
-		);
-	}
+    public ConditionalExpressionQueryFactory(Class<I> uniquePropertyType, String uniquePropertyName, boolean uniquePropertyIsTheEntityId) {
+        this.uniquePropertyType = uniquePropertyType;
+        this.uniquePropertyName = uniquePropertyName;
+        this.uniquePropertyIsTheEntityId = uniquePropertyIsTheEntityId;
+    }
 
-	private <T> Query<T> createQueryWithConditionalExpressionsOrOrder(SharedSessionContractImplementor session,
-			String hql, Class<T> returnedType, String entityAlias,
-			Set<? extends Class<? extends E>> includedTypesFilter,
-			List<ConditionalExpression> conditionalExpressions, String order) {
-		List<ConditionalExpression> allConditionalExpressions;
-		if ( !includedTypesFilter.isEmpty() ) {
-			ConditionalExpression typeFilter =
-					new ConditionalExpression( "type(" + entityAlias + ") in (:" + TYPES_PARAM_NAME + ")" );
-			typeFilter.param( TYPES_PARAM_NAME, includedTypesFilter );
-			allConditionalExpressions = new ArrayList<>();
-			allConditionalExpressions.add( typeFilter );
-			allConditionalExpressions.addAll( conditionalExpressions );
-		}
-		else {
-			allConditionalExpressions = conditionalExpressions;
-		}
-		return createQueryWithConditionalExpressionsOrOrder( session, hql, returnedType, allConditionalExpressions, order );
-	}
+    @Override
+    public final boolean uniquePropertyIsTheEntityId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <T> Query<T> createQueryWithConditionalExpressionsOrOrder(SharedSessionContractImplementor session,
-			String hql, Class<T> returnedType,
-			List<ConditionalExpression> conditionalExpressions, String order) {
-		StringBuilder hqlBuilder = new StringBuilder( hql );
-		if ( !conditionalExpressions.isEmpty() ) {
-			hqlBuilder.append( " where " );
-			boolean first = true;
-			for ( ConditionalExpression expression : conditionalExpressions ) {
-				if ( first ) {
-					first = false;
-				}
-				else {
-					hqlBuilder.append( " and " );
-				}
-				hqlBuilder.append( "(" ).append( expression.hql() ).append( ")" );
-			}
-		}
-		if ( order != null ) {
-			hqlBuilder.append( " order by " ).append( order );
-		}
-		@SuppressWarnings({ "deprecation", "removal" }) // QueryProducerImplementor is marked for removal, while the createQuery() is also present in other interfaces
-		Query<T> query = session.createQuery( hqlBuilder.toString(), returnedType );
-		for ( ConditionalExpression expression : conditionalExpressions ) {
-			expression.applyParams( query );
-		}
-		return query;
-	}
+    @Override
+    public Query<Long> createQueryForCount(SharedSessionContractImplementor session, EntityDomainType<?> entityDomainType, Set<? extends Class<? extends E>> includedTypesFilter, List<ConditionalExpression> conditionalExpressions) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Query<I> createQueryForIdentifierListing(SharedSessionContractImplementor session, EntityDomainType<?> entityDomainType, Set<? extends Class<? extends E>> includedTypesFilter, List<ConditionalExpression> conditionalExpressions, String order) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private <T> Query<T> createQueryWithConditionalExpressionsOrOrder(SharedSessionContractImplementor session, String hql, Class<T> returnedType, String entityAlias, Set<? extends Class<? extends E>> includedTypesFilter, List<ConditionalExpression> conditionalExpressions, String order) {
+        List<ConditionalExpression> allConditionalExpressions;
+        if (!includedTypesFilter.isEmpty()) {
+            ConditionalExpression typeFilter = new ConditionalExpression("type(" + entityAlias + ") in (:" + TYPES_PARAM_NAME + ")");
+            typeFilter.param(TYPES_PARAM_NAME, includedTypesFilter);
+            allConditionalExpressions = new ArrayList<>();
+            allConditionalExpressions.add(typeFilter);
+            allConditionalExpressions.addAll(conditionalExpressions);
+        } else {
+            allConditionalExpressions = conditionalExpressions;
+        }
+        return createQueryWithConditionalExpressionsOrOrder(session, hql, returnedType, allConditionalExpressions, order);
+    }
+
+    private <T> Query<T> createQueryWithConditionalExpressionsOrOrder(SharedSessionContractImplementor session, String hql, Class<T> returnedType, List<ConditionalExpression> conditionalExpressions, String order) {
+        StringBuilder hqlBuilder = new StringBuilder(hql);
+        if (!conditionalExpressions.isEmpty()) {
+            hqlBuilder.append(" where ");
+            boolean first = true;
+            for (ConditionalExpression expression : conditionalExpressions) {
+                if (first) {
+                    first = false;
+                } else {
+                    hqlBuilder.append(" and ");
+                }
+                hqlBuilder.append("(").append(expression.hql()).append(")");
+            }
+        }
+        if (order != null) {
+            hqlBuilder.append(" order by ").append(order);
+        }
+        // QueryProducerImplementor is marked for removal, while the createQuery() is also present in other interfaces
+        @SuppressWarnings({ "deprecation", "removal" })
+        Query<T> query = session.createQuery(hqlBuilder.toString(), returnedType);
+        for (ConditionalExpression expression : conditionalExpressions) {
+            expression.applyParams(query);
+        }
+        return query;
+    }
 }

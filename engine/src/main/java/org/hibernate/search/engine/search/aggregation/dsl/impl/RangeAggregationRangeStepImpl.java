@@ -7,7 +7,6 @@ package org.hibernate.search.engine.search.aggregation.dsl.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.dsl.RangeAggregationRangeMoreStep;
 import org.hibernate.search.engine.search.aggregation.dsl.RangeAggregationRangeStep;
@@ -19,60 +18,44 @@ import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFact
 import org.hibernate.search.util.common.data.Range;
 import org.hibernate.search.util.common.impl.Contracts;
 
-class RangeAggregationRangeStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>, F, A>
-		implements RangeAggregationRangeStep<SR, RangeAggregationRangeStepImpl<SR, PDF, F, A>, PDF, F, A>,
-		RangeAggregationRangeMoreStep<SR,
-				RangeAggregationRangeStepImpl<SR, PDF, F, A>,
-				RangeAggregationRangeStepImpl<SR, PDF, F, A>,
-				PDF,
-				F,
-				A> {
-	private final RangeAggregationBuilder<F, A> builder;
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+class RangeAggregationRangeStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>, F, A> implements RangeAggregationRangeStep<SR, RangeAggregationRangeStepImpl<SR, PDF, F, A>, PDF, F, A>, RangeAggregationRangeMoreStep<SR, RangeAggregationRangeStepImpl<SR, PDF, F, A>, RangeAggregationRangeStepImpl<SR, PDF, F, A>, PDF, F, A> {
 
-	RangeAggregationRangeStepImpl(RangeAggregationBuilder<F, A> builder,
-			SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.builder = builder;
-		this.dslContext = dslContext;
-	}
+    private final RangeAggregationBuilder<F, A> builder;
 
-	@Override
-	public RangeAggregationRangeStepImpl<SR, PDF, F, A> range(Range<? extends F> range) {
-		Contracts.assertNotNull( range, "range" );
-		builder.range( range );
-		return this;
-	}
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-	@Override
-	public RangeAggregationRangeStepImpl<SR, PDF, F, A> ranges(Collection<? extends Range<? extends F>> ranges) {
-		Contracts.assertNotNull( ranges, "ranges" );
-		for ( Range<? extends F> range : ranges ) {
-			range( range );
-		}
-		return this;
-	}
+    RangeAggregationRangeStepImpl(RangeAggregationBuilder<F, A> builder, SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.builder = builder;
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public RangeAggregationRangeStepImpl<SR, PDF, F, A> filter(
-			Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
-		SearchPredicate predicate = clauseContributor.apply( dslContext.predicateFactory() ).toPredicate();
+    @Override
+    public RangeAggregationRangeStepImpl<SR, PDF, F, A> range(Range<? extends F> range) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return filter( predicate );
-	}
+    @Override
+    public RangeAggregationRangeStepImpl<SR, PDF, F, A> ranges(Collection<? extends Range<? extends F>> ranges) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public RangeAggregationRangeStepImpl<SR, PDF, F, A> filter(SearchPredicate searchPredicate) {
-		builder.filter( searchPredicate );
-		return this;
-	}
+    @Override
+    public RangeAggregationRangeStepImpl<SR, PDF, F, A> filter(Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchAggregation<Map<Range<F>, A>> toAggregation() {
-		return builder.build();
-	}
+    @Override
+    public RangeAggregationRangeStepImpl<SR, PDF, F, A> filter(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> RangeAggregationRangeStepImpl<SR, PDF, F, T> value(SearchAggregation<T> aggregation) {
-		return new RangeAggregationRangeStepImpl<>( builder.withValue( aggregation ), dslContext );
-	}
+    @Override
+    public SearchAggregation<Map<Range<F>, A>> toAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <T> RangeAggregationRangeStepImpl<SR, PDF, F, T> value(SearchAggregation<T> aggregation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.engine.mapper.mapping.building.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-
 import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 import org.hibernate.search.engine.backend.document.model.dsl.spi.IndexCompositeNodeBuilder;
 import org.hibernate.search.engine.backend.document.model.dsl.spi.IndexRootBuilder;
@@ -14,31 +13,25 @@ import org.hibernate.search.engine.common.tree.spi.TreeNestingContext;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexedEmbeddedBindingContext;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexedEntityBindingMapperContext;
 
-class IndexedEmbeddedBindingContextImpl
-		extends AbstractIndexBindingContext<IndexCompositeNodeBuilder>
-		implements IndexedEmbeddedBindingContext {
-	private final Collection<IndexObjectFieldReference> parentIndexObjectReferences;
+class IndexedEmbeddedBindingContextImpl extends AbstractIndexBindingContext<IndexCompositeNodeBuilder> implements IndexedEmbeddedBindingContext {
 
-	private final boolean parentMultivaluedAndWithoutObjectField;
+    private final Collection<IndexObjectFieldReference> parentIndexObjectReferences;
 
-	IndexedEmbeddedBindingContextImpl(IndexedEntityBindingMapperContext mapperContext,
-			IndexRootBuilder indexRootBuilder,
-			IndexCompositeNodeBuilder indexCompositeNodeBuilder,
-			Collection<IndexObjectFieldReference> parentIndexObjectReferences,
-			TreeNestingContext nestingContext,
-			boolean parentMultivaluedAndWithoutObjectField) {
-		super( mapperContext, indexRootBuilder, indexCompositeNodeBuilder, nestingContext );
-		this.parentIndexObjectReferences = Collections.unmodifiableCollection( parentIndexObjectReferences );
-		this.parentMultivaluedAndWithoutObjectField = parentMultivaluedAndWithoutObjectField;
-	}
+    private final boolean parentMultivaluedAndWithoutObjectField;
 
-	@Override
-	public Collection<IndexObjectFieldReference> parentIndexObjectReferences() {
-		return parentIndexObjectReferences;
-	}
+    IndexedEmbeddedBindingContextImpl(IndexedEntityBindingMapperContext mapperContext, IndexRootBuilder indexRootBuilder, IndexCompositeNodeBuilder indexCompositeNodeBuilder, Collection<IndexObjectFieldReference> parentIndexObjectReferences, TreeNestingContext nestingContext, boolean parentMultivaluedAndWithoutObjectField) {
+        super(mapperContext, indexRootBuilder, indexCompositeNodeBuilder, nestingContext);
+        this.parentIndexObjectReferences = Collections.unmodifiableCollection(parentIndexObjectReferences);
+        this.parentMultivaluedAndWithoutObjectField = parentMultivaluedAndWithoutObjectField;
+    }
 
-	@Override
-	boolean isParentMultivaluedAndWithoutObjectField() {
-		return parentMultivaluedAndWithoutObjectField;
-	}
+    @Override
+    public Collection<IndexObjectFieldReference> parentIndexObjectReferences() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    boolean isParentMultivaluedAndWithoutObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -11,28 +11,28 @@ import org.hibernate.search.mapper.pojo.model.dependency.impl.PojoRoutingIndexin
 import org.hibernate.search.mapper.pojo.model.impl.PojoModelTypeRootElement;
 
 public class BoundRoutingBridge<T> {
-	private final BeanHolder<? extends RoutingBridge<? super T>> bridgeHolder;
-	private final PojoModelTypeRootElement<T> pojoModelRootElement;
-	private final PojoRoutingIndexingDependencyConfigurationContextImpl<T> pojoDependencyContext;
 
-	BoundRoutingBridge(BeanHolder<? extends RoutingBridge<? super T>> bridgeHolder,
-			PojoModelTypeRootElement<T> pojoModelRootElement,
-			PojoRoutingIndexingDependencyConfigurationContextImpl<T> pojoDependencyContext) {
-		this.bridgeHolder = bridgeHolder;
-		this.pojoModelRootElement = pojoModelRootElement;
-		this.pojoDependencyContext = pojoDependencyContext;
-	}
+    private final BeanHolder<? extends RoutingBridge<? super T>> bridgeHolder;
 
-	public BeanHolder<? extends RoutingBridge<? super T>> getBridgeHolder() {
-		return bridgeHolder;
-	}
+    private final PojoModelTypeRootElement<T> pojoModelRootElement;
 
-	public RoutingBridge<? super T> getBridge() {
-		return bridgeHolder.get();
-	}
+    private final PojoRoutingIndexingDependencyConfigurationContextImpl<T> pojoDependencyContext;
 
-	public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
-		pojoModelRootElement.contributeDependencies( dependencyCollector );
-		pojoDependencyContext.contributeDependencies( dependencyCollector );
-	}
+    BoundRoutingBridge(BeanHolder<? extends RoutingBridge<? super T>> bridgeHolder, PojoModelTypeRootElement<T> pojoModelRootElement, PojoRoutingIndexingDependencyConfigurationContextImpl<T> pojoDependencyContext) {
+        this.bridgeHolder = bridgeHolder;
+        this.pojoModelRootElement = pojoModelRootElement;
+        this.pojoDependencyContext = pojoDependencyContext;
+    }
+
+    public BeanHolder<? extends RoutingBridge<? super T>> getBridgeHolder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public RoutingBridge<? super T> getBridge() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

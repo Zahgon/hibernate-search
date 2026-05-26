@@ -14,29 +14,24 @@ import org.hibernate.search.spatial.Coordinates;
  * @author Emmanuel Bernard emmanuel@hibernate.org
  * @author Yoann Rodiere
  */
-public class ConnectedSortDistanceFieldContext extends AbstractConnectedSortContext
-		implements SortDistanceFieldContext, SortLatLongContext {
+public class ConnectedSortDistanceFieldContext extends AbstractConnectedSortContext implements SortDistanceFieldContext, SortLatLongContext {
 
-	public ConnectedSortDistanceFieldContext(QueryBuildingContext queryContext, SortFieldStates states) {
-		super( queryContext, states );
-	}
+    public ConnectedSortDistanceFieldContext(QueryBuildingContext queryContext, SortFieldStates states) {
+        super(queryContext, states);
+    }
 
-	@Override
-	public SortDistanceFieldAndReferenceContext fromCoordinates(Coordinates coordinates) {
-		getStates().setCoordinates( coordinates );
-		return new ConnectedSortDistanceFieldAndReferenceContext( getQueryContext(), getStates() );
-	}
+    @Override
+    public SortDistanceFieldAndReferenceContext fromCoordinates(Coordinates coordinates) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortLatLongContext fromLatitude(double latitude) {
-		getStates().setCurrentLatitude( latitude );
-		return this;
-	}
+    @Override
+    public SortLatLongContext fromLatitude(double latitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SortDistanceFieldAndReferenceContext andLongitude(double longitude) {
-		getStates().setCurrentLongitude( longitude );
-		return new ConnectedSortDistanceFieldAndReferenceContext( getQueryContext(), getStates() );
-	}
-
+    @Override
+    public SortDistanceFieldAndReferenceContext andLongitude(double longitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

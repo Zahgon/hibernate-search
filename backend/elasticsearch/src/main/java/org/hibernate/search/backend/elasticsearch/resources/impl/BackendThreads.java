@@ -18,76 +18,41 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 public class BackendThreads {
 
-	private static final ConfigurationProperty<
-			BeanReference<? extends ElasticsearchWorkExecutorProvider>> BACKEND_WORK_EXECUTOR_PROVIDER =
-					ConfigurationProperty.forKey( ElasticsearchBackendSpiSettings.Radicals.BACKEND_WORK_EXECUTOR_PROVIDER )
-							.asBeanReference( ElasticsearchWorkExecutorProvider.class )
-							.withDefault( ElasticsearchBackendSpiSettings.Defaults.BACKEND_WORK_EXECUTOR_PROVIDER )
-							.build();
-	private final String prefix;
+    private static final ConfigurationProperty<BeanReference<? extends ElasticsearchWorkExecutorProvider>> BACKEND_WORK_EXECUTOR_PROVIDER = ConfigurationProperty.forKey(ElasticsearchBackendSpiSettings.Radicals.BACKEND_WORK_EXECUTOR_PROVIDER).asBeanReference(ElasticsearchWorkExecutorProvider.class).withDefault(ElasticsearchBackendSpiSettings.Defaults.BACKEND_WORK_EXECUTOR_PROVIDER).build();
 
-	private ThreadPoolProvider threadPoolProvider;
-	private SimpleScheduledExecutor workExecutor;
+    private final String prefix;
 
-	public BackendThreads(String prefix) {
-		this.prefix = prefix;
-	}
+    private ThreadPoolProvider threadPoolProvider;
 
-	public void onStart(ConfigurationPropertySource propertySource, BeanResolver beanResolver,
-			ThreadPoolProvider threadPoolProvider) {
-		if ( this.workExecutor != null ) {
-			// Already started
-			return;
-		}
-		this.threadPoolProvider = threadPoolProvider;
+    private SimpleScheduledExecutor workExecutor;
 
-		try ( BeanHolder<? extends ElasticsearchWorkExecutorProvider> provider = BACKEND_WORK_EXECUTOR_PROVIDER.getAndTransform(
-				propertySource, beanResolver::resolve ) ) {
-			this.workExecutor = provider.get().workExecutor( new ElasticsearchWorkExecutorProvider.Context() {
-				@Override
-				public ThreadPoolProvider threadPoolProvider() {
-					return threadPoolProvider;
-				}
+    public BackendThreads(String prefix) {
+        this.prefix = prefix;
+    }
 
-				@Override
-				public ConfigurationPropertySource propertySource() {
-					return propertySource;
-				}
+    public void onStart(ConfigurationPropertySource propertySource, BeanResolver beanResolver, ThreadPoolProvider threadPoolProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				@Override
-				public String recommendedThreadNamePrefix() {
-					return prefix + " - Worker thread";
-				}
-			} );
-		}
-	}
+    public void onStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void onStop() {
-		if ( workExecutor != null ) {
-			workExecutor.shutdownNow();
-		}
-	}
+    public String getPrefix() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String getPrefix() {
-		return prefix;
-	}
+    public ThreadProvider getThreadProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ThreadProvider getThreadProvider() {
-		checkStarted();
-		return threadPoolProvider.threadProvider();
-	}
+    public SimpleScheduledExecutor getWorkExecutor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SimpleScheduledExecutor getWorkExecutor() {
-		checkStarted();
-		return workExecutor;
-	}
-
-	private void checkStarted() {
-		if ( workExecutor == null ) {
-			throw new AssertionFailure(
-					"Attempt to retrieve the executor or related information before the backend was started."
-			);
-		}
-	}
-
+    private void checkStarted() {
+        if (workExecutor == null) {
+            throw new AssertionFailure("Attempt to retrieve the executor or related information before the backend was started.");
+        }
+    }
 }

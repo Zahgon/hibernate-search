@@ -5,16 +5,14 @@
 package org.hibernate.search.mapper.orm.outboxpolling.event.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.util.common.spi.ToStringTreeAppendable;
 
 public abstract class OutboxEventFinderProvider implements ToStringTreeAppendable {
 
-	@Override
-	public String toString() {
-		return toStringTree();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract OutboxEventFinder create(Optional<OutboxEventPredicate> predicate);
-
+    public abstract OutboxEventFinder create(Optional<OutboxEventPredicate> predicate);
 }

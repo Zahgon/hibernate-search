@@ -8,108 +8,72 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.backend.common.spi.FieldPaths;
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.util.common.SearchException;
 
-public abstract class AbstractMultiIndexSearchIndexCompositeNodeContext<
-		S extends SearchIndexCompositeNodeContext<SC>,
-		SC extends SearchIndexScope<?>,
-		NT extends SearchIndexCompositeNodeTypeContext<SC, S>,
-		F extends SearchIndexNodeContext<SC>>
-		extends AbstractMultiIndexSearchIndexNodeContext<S, SC, NT>
-		implements SearchIndexCompositeNodeContext<SC>, SearchIndexCompositeNodeTypeContext<SC, S> {
+public abstract class AbstractMultiIndexSearchIndexCompositeNodeContext<S extends SearchIndexCompositeNodeContext<SC>, SC extends SearchIndexScope<?>, NT extends SearchIndexCompositeNodeTypeContext<SC, S>, F extends SearchIndexNodeContext<SC>> extends AbstractMultiIndexSearchIndexNodeContext<S, SC, NT> implements SearchIndexCompositeNodeContext<SC>, SearchIndexCompositeNodeTypeContext<SC, S> {
 
-	private Map<String, F> staticChildrenByName;
+    private Map<String, F> staticChildrenByName;
 
-	public AbstractMultiIndexSearchIndexCompositeNodeContext(SC scope, String absolutePath,
-			List<? extends S> nodeForEachIndex) {
-		super( scope, absolutePath, nodeForEachIndex );
-	}
+    public AbstractMultiIndexSearchIndexCompositeNodeContext(SC scope, String absolutePath, List<? extends S> nodeForEachIndex) {
+        super(scope, absolutePath, nodeForEachIndex);
+    }
 
-	@Override
-	public final NT type() {
-		return selfAsNodeType();
-	}
+    @Override
+    public final NT type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final boolean isComposite() {
-		return true;
-	}
+    @Override
+    public final boolean isComposite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isObjectField() {
-		return absolutePath != null;
-	}
+    @Override
+    public boolean isObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final boolean isValueField() {
-		return false;
-	}
+    @Override
+    public final boolean isValueField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final S toComposite() {
-		return self();
-	}
+    @Override
+    public final S toComposite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public S toObjectField() {
-		if ( isObjectField() ) {
-			return self();
-		}
-		else {
-			return SearchIndexSchemaElementContextHelper.throwingToObjectField( this );
-		}
-	}
+    @Override
+    public S toObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexValueFieldContext<SC> toValueField() {
-		return SearchIndexSchemaElementContextHelper.throwingToValueField( this );
-	}
+    @Override
+    public SearchIndexValueFieldContext<SC> toValueField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final String absolutePath(String relativeFieldName) {
-		return FieldPaths.compose( absolutePath(), relativeFieldName );
-	}
+    @Override
+    public final String absolutePath(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final boolean nested() {
-		return fromTypeIfCompatible( SearchIndexCompositeNodeTypeContext::nested, Object::equals,
-				"nested" );
-	}
+    @Override
+    public final boolean nested() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Map<String, F> staticChildrenByName() {
-		if ( staticChildrenByName != null ) {
-			return staticChildrenByName;
-		}
+    @Override
+    public final Map<String, F> staticChildrenByName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, F> result = new TreeMap<>();
-		Function<String, F> createChildFieldContext = this::childInScope;
-		for ( S nodeForIndex : nodeForEachIndex ) {
-			for ( String childRelativeName : nodeForIndex.staticChildrenByName().keySet() ) {
-				try {
-					result.computeIfAbsent( childRelativeName, createChildFieldContext );
-				}
-				catch (SearchException e) {
-					throw QueryLog.INSTANCE.inconsistentConfigurationInContextForSearch( relativeEventContext(),
-							e.getMessage(),
-							indexesEventContext(), e );
-				}
-			}
-		}
-		// Only set this field to a non-null value at the end,
-		// so that if there was a conflict and we threw an exception,
-		// the next call to this method will go through the loop again and throw an exception again.
-		staticChildrenByName = result;
-		return staticChildrenByName;
-	}
+    protected abstract F childInScope(String childRelativeName);
 
-	protected abstract F childInScope(String childRelativeName);
-
-	@Override
-	final SearchIndexSchemaElementContextHelper helper() {
-		return SearchIndexSchemaElementContextHelper.COMPOSITE;
-	}
+    @Override
+    final SearchIndexSchemaElementContextHelper helper() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

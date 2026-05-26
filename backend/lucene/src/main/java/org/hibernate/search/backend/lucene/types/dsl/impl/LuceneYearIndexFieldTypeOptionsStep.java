@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.dsl.impl;
 
 import java.time.Year;
-
 import org.hibernate.search.backend.lucene.types.codec.impl.AbstractLuceneNumericFieldCodec;
 import org.hibernate.search.backend.lucene.types.codec.impl.DocValues;
 import org.hibernate.search.backend.lucene.types.codec.impl.Indexing;
@@ -13,26 +12,24 @@ import org.hibernate.search.backend.lucene.types.codec.impl.LuceneYearFieldCodec
 import org.hibernate.search.backend.lucene.types.codec.impl.Storage;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 
-class LuceneYearIndexFieldTypeOptionsStep
-		extends AbstractLuceneTemporalIndexFieldTypeOptionsStep<LuceneYearIndexFieldTypeOptionsStep, Year> {
+class LuceneYearIndexFieldTypeOptionsStep extends AbstractLuceneTemporalIndexFieldTypeOptionsStep<LuceneYearIndexFieldTypeOptionsStep, Year> {
 
-	LuceneYearIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Year.class, DefaultStringConverters.YEAR );
-	}
+    LuceneYearIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Year.class, DefaultStringConverters.YEAR);
+    }
 
-	@Override
-	protected LuceneYearIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneYearIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneNumericFieldCodec<Year, ?> createCodec(Indexing indexing, DocValues docValues,
-			Storage storage, Year indexNullAsValue) {
-		return new LuceneYearFieldCodec( indexing, docValues, storage, indexNullAsValue );
-	}
+    @Override
+    protected AbstractLuceneNumericFieldCodec<Year, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, Year indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected boolean sumAggregationSupported() {
-		return false;
-	}
+    @Override
+    protected boolean sumAggregationSupported() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

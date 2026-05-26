@@ -13,15 +13,9 @@ import org.hibernate.search.engine.reporting.FailureHandler;
 import org.hibernate.search.engine.reporting.impl.LogFailureHandler;
 
 public class EngineBeanConfigurer implements BeanConfigurer {
-	@Override
-	public void configure(BeanConfigurationContext context) {
-		context.define(
-				ThreadProvider.class, EmbeddedThreadProvider.NAME,
-				beanResolver -> BeanHolder.of( new EmbeddedThreadProvider() )
-		);
-		context.define(
-				FailureHandler.class, LogFailureHandler.NAME,
-				beanResolver -> BeanHolder.of( new LogFailureHandler() )
-		);
-	}
+
+    @Override
+    public void configure(BeanConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

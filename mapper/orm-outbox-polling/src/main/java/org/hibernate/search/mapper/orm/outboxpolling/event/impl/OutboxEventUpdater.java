@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.search.engine.reporting.EntityIndexingFailureContext;
 import org.hibernate.search.engine.reporting.FailureHandler;
@@ -20,90 +19,53 @@ import org.hibernate.search.util.common.SearchException;
 
 public class OutboxEventUpdater {
 
-	private static final int MAX_RETRIES = 3;
+    private static final int MAX_RETRIES = 3;
 
-	private final FailureHandler failureHandler;
-	private final OutboxEventLoader loader;
-	private final OutboxEventProcessingPlan processingPlan;
-	private final SessionImplementor session;
-	private final String processorName;
-	private final int retryAfter;
-	private final Set<UUID> eventsIds;
-	private final Set<UUID> failedEventIds;
+    private final FailureHandler failureHandler;
 
-	public OutboxEventUpdater(FailureHandler failureHandler, OutboxEventLoader loader,
-			OutboxEventProcessingPlan processingPlan, SessionImplementor session, String processorName, int retryAfter) {
-		this.failureHandler = failureHandler;
-		this.loader = loader;
-		this.processingPlan = processingPlan;
-		this.session = session;
-		this.processorName = processorName;
-		this.retryAfter = retryAfter;
-		this.eventsIds = processingPlan.getEvents().stream().map( OutboxEvent::getId )
-				.collect( Collectors.toSet() );
-		this.failedEventIds = processingPlan.getFailedEvents().stream().map( OutboxEvent::getId )
-				.collect( Collectors.toSet() );
-	}
+    private final OutboxEventLoader loader;
 
-	public boolean thereAreStillEventsToProcess() {
-		return !eventsIds.isEmpty();
-	}
+    private final OutboxEventProcessingPlan processingPlan;
 
-	public Set<UUID> eventsToProcess() {
-		return Collections.unmodifiableSet( eventsIds );
-	}
+    private final SessionImplementor session;
 
-	public void process() {
-		List<OutboxEvent> lockedEvents = loader.loadLocking( session, eventsIds, processorName );
-		List<OutboxEvent> eventToDelete = new ArrayList<>( lockedEvents );
+    private final String processorName;
 
-		for ( OutboxEvent event : lockedEvents ) {
-			UUID id = event.getId();
-			// Make sure we consider the event as processed in "thereAreStillEventsToProcess()"
-			eventsIds.remove( id );
+    private final int retryAfter;
 
-			if ( !failedEventIds.contains( id ) ) {
-				// The event was processed successfully; we will simply delete it.
-				continue;
-			}
+    private final Set<UUID> eventsIds;
 
-			// We won't delete this event.
-			eventToDelete.remove( event );
+    private final Set<UUID> failedEventIds;
 
-			// Failed events have to be processed differently:
-			// we try to update their retry count instead of deleting them,
-			// so that the process will try to process them again.
-			int attempts = event.getRetries() + 1;
-			if ( attempts >= MAX_RETRIES ) {
-				notifyMaxRetriesReached( event );
-				event.setStatus( OutboxEvent.Status.ABORTED );
-			}
-			else {
-				// We will simply increment the retry count of this event,
-				// and the event processor will process it once more in the next batch
-				event.setRetries( attempts );
+    public OutboxEventUpdater(FailureHandler failureHandler, OutboxEventLoader loader, OutboxEventProcessingPlan processingPlan, SessionImplementor session, String processorName, int retryAfter) {
+        this.failureHandler = failureHandler;
+        this.loader = loader;
+        this.processingPlan = processingPlan;
+        this.session = session;
+        this.processorName = processorName;
+        this.retryAfter = retryAfter;
+        this.eventsIds = processingPlan.getEvents().stream().map(OutboxEvent::getId).collect(Collectors.toSet());
+        this.failedEventIds = processingPlan.getFailedEvents().stream().map(OutboxEvent::getId).collect(Collectors.toSet());
+    }
 
-				Instant processAfter = ( retryAfter > 0 ) ? Instant.now().plusSeconds( retryAfter ) : Instant.now();
-				event.setProcessAfter( processAfter );
+    public boolean thereAreStillEventsToProcess() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				OutboxPollingEventsLog.INSTANCE.backgroundIndexingRetry(
-						event.getId(), event.getEntityName(), event.getEntityId(), attempts, processAfter
-				);
-			}
-		}
+    public Set<UUID> eventsToProcess() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		for ( OutboxEvent event : eventToDelete ) {
-			session.remove( event );
-		}
-	}
+    public void process() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void notifyMaxRetriesReached(OutboxEvent failedEvent) {
-		EntityIndexingFailureContext.Builder builder = EntityIndexingFailureContext.builder();
-		SearchException exception = OutboxPollingEventsLog.INSTANCE.maxRetryExhausted( MAX_RETRIES );
-		builder.throwable( exception );
-		builder.failingOperation( "Processing an outbox event." );
-		builder.failingEntityReference( processingPlan.entityReference(
-				failedEvent.getEntityName(), failedEvent.getEntityId(), exception ) );
-		failureHandler.handle( builder.build() );
-	}
+    private void notifyMaxRetriesReached(OutboxEvent failedEvent) {
+        EntityIndexingFailureContext.Builder builder = EntityIndexingFailureContext.builder();
+        SearchException exception = OutboxPollingEventsLog.INSTANCE.maxRetryExhausted(MAX_RETRIES);
+        builder.throwable(exception);
+        builder.failingOperation("Processing an outbox event.");
+        builder.failingEntityReference(processingPlan.entityReference(failedEvent.getEntityName(), failedEvent.getEntityId(), exception));
+        failureHandler.handle(builder.build());
+    }
 }

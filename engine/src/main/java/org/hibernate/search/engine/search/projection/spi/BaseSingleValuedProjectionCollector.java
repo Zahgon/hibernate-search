@@ -15,53 +15,45 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  * @param <E> The type of extracted values to accumulate before being transformed.
  * @param <V> The type of values to accumulate obtained by transforming extracted values ({@code E}).
  */
-abstract class BaseSingleValuedProjectionCollector<E, V, R>
-		implements ProjectionCollector<E, V, Object, R> {
+abstract class BaseSingleValuedProjectionCollector<E, V, R> implements ProjectionCollector<E, V, Object, R> {
 
-	protected BaseSingleValuedProjectionCollector() {
-	}
+    protected BaseSingleValuedProjectionCollector() {
+    }
 
-	@Override
-	public final String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public final String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final E createInitial() {
-		return null;
-	}
+    @Override
+    public final E createInitial() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final E accumulate(Object accumulated, E value) {
-		if ( accumulated != null ) {
-			throw QueryLog.INSTANCE.unexpectedMultiValuedField( accumulated, value );
-		}
-		return value;
-	}
+    @Override
+    public final E accumulate(Object accumulated, E value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final int size(Object accumulated) {
-		return accumulated == null ? 0 : 1;
-	}
+    @Override
+    public final int size(Object accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public final E get(Object accumulated, int index) {
-		return (E) accumulated;
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public final E get(Object accumulated, int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Object transform(Object accumulated, int index, V transformed) {
-		if ( index != 0 ) {
-			throw new IndexOutOfBoundsException( "Invalid index passed to " + this + ": " + index );
-		}
-		return transformed;
-	}
+    @Override
+    public final Object transform(Object accumulated, int index, V transformed) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public final Object transformAll(Object accumulated, FromDocumentValueConverter<? super E, ? extends V> converter,
-			FromDocumentValueConvertContext context) {
-		return converter.fromDocumentValue( (E) accumulated, context );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public final Object transformAll(Object accumulated, FromDocumentValueConverter<? super E, ? extends V> converter, FromDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -16,69 +16,69 @@ import org.hibernate.search.engine.reporting.spi.FailureCollector;
 
 class RootBuildContext {
 
-	private final ConfigurationPropertySource propertySource;
+    private final ConfigurationPropertySource propertySource;
 
-	private final ClassResolver classResolver;
-	private final ResourceResolver resourceResolver;
-	private final BeanResolver beanResolver;
+    private final ClassResolver classResolver;
 
-	private final FailureCollector failureCollector;
-	private final ThreadPoolProvider threadPoolProvider;
-	private final FailureHandler failureHandler;
+    private final ResourceResolver resourceResolver;
 
-	private final EngineThreads engineThreads;
-	private final TimingSource timingSource;
+    private final BeanResolver beanResolver;
 
-	RootBuildContext(ConfigurationPropertySource propertySource,
-			ClassResolver classResolver, ResourceResolver resourceResolver,
-			BeanResolver beanResolver,
-			FailureCollector failureCollector,
-			ThreadPoolProvider threadPoolProvider, FailureHandler failureHandler,
-			EngineThreads engineThreads, TimingSource timingSource) {
-		this.propertySource = propertySource;
-		this.classResolver = classResolver;
-		this.resourceResolver = resourceResolver;
-		this.beanResolver = beanResolver;
-		this.failureCollector = failureCollector;
-		this.threadPoolProvider = threadPoolProvider;
-		this.failureHandler = failureHandler;
-		this.engineThreads = engineThreads;
-		this.timingSource = timingSource;
-	}
+    private final FailureCollector failureCollector;
 
-	ConfigurationPropertySource getConfigurationPropertySource() {
-		return propertySource;
-	}
+    private final ThreadPoolProvider threadPoolProvider;
 
-	ClassResolver getClassResolver() {
-		return classResolver;
-	}
+    private final FailureHandler failureHandler;
 
-	ResourceResolver getResourceResolver() {
-		return resourceResolver;
-	}
+    private final EngineThreads engineThreads;
 
-	BeanResolver getBeanResolver() {
-		return beanResolver;
-	}
+    private final TimingSource timingSource;
 
-	FailureCollector getFailureCollector() {
-		return failureCollector;
-	}
+    RootBuildContext(ConfigurationPropertySource propertySource, ClassResolver classResolver, ResourceResolver resourceResolver, BeanResolver beanResolver, FailureCollector failureCollector, ThreadPoolProvider threadPoolProvider, FailureHandler failureHandler, EngineThreads engineThreads, TimingSource timingSource) {
+        this.propertySource = propertySource;
+        this.classResolver = classResolver;
+        this.resourceResolver = resourceResolver;
+        this.beanResolver = beanResolver;
+        this.failureCollector = failureCollector;
+        this.threadPoolProvider = threadPoolProvider;
+        this.failureHandler = failureHandler;
+        this.engineThreads = engineThreads;
+        this.timingSource = timingSource;
+    }
 
-	ThreadPoolProvider getThreadPoolProvider() {
-		return threadPoolProvider;
-	}
+    ConfigurationPropertySource getConfigurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	FailureHandler getFailureHandler() {
-		return failureHandler;
-	}
+    ClassResolver getClassResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	EngineThreads getEngineThreads() {
-		return engineThreads;
-	}
+    ResourceResolver getResourceResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	TimingSource getTimingSource() {
-		return timingSource;
-	}
+    BeanResolver getBeanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    FailureCollector getFailureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    ThreadPoolProvider getThreadPoolProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    FailureHandler getFailureHandler() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    EngineThreads getEngineThreads() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    TimingSource getTimingSource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

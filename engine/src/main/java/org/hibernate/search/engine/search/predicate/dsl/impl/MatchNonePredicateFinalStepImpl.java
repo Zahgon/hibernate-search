@@ -10,18 +10,17 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.AbstractPredicateFin
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 import org.hibernate.search.engine.search.predicate.spi.MatchNonePredicateBuilder;
 
-public final class MatchNonePredicateFinalStepImpl extends AbstractPredicateFinalStep
-		implements MatchNonePredicateFinalStep {
+public final class MatchNonePredicateFinalStepImpl extends AbstractPredicateFinalStep implements MatchNonePredicateFinalStep {
 
-	private final MatchNonePredicateBuilder matchNoneBuilder;
+    private final MatchNonePredicateBuilder matchNoneBuilder;
 
-	public MatchNonePredicateFinalStepImpl(SearchPredicateDslContext<?> dslContext) {
-		super( dslContext );
-		this.matchNoneBuilder = dslContext.scope().predicateBuilders().matchNone();
-	}
+    public MatchNonePredicateFinalStepImpl(SearchPredicateDslContext<?> dslContext) {
+        super(dslContext);
+        this.matchNoneBuilder = dslContext.scope().predicateBuilders().matchNone();
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		return matchNoneBuilder.build();
-	}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -13,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexCompositeNode;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexModel;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexNode;
@@ -28,200 +27,152 @@ import org.hibernate.search.backend.lucene.scope.model.impl.LuceneSearchIndexSco
 import org.hibernate.search.backend.lucene.search.projection.dsl.DocumentTree;
 import org.hibernate.search.engine.backend.metamodel.IndexFieldDescriptor;
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.search.DocIdSetIterator;
 
-class LuceneDocumentTreeProjection extends AbstractLuceneProjection<DocumentTree>
-		implements LuceneSearchProjection.Extractor<DocumentTree, DocumentTree> {
+class LuceneDocumentTreeProjection extends AbstractLuceneProjection<DocumentTree> implements LuceneSearchProjection.Extractor<DocumentTree, DocumentTree> {
 
-	private final Set<String> nestedObjectsPaths;
-	private final List<LuceneIndexModel> models;
+    private final Set<String> nestedObjectsPaths;
 
-	LuceneDocumentTreeProjection(LuceneSearchIndexScopeImpl<?> scope) {
-		super( scope );
-		nestedObjectsPaths = new LinkedHashSet<>();
-		models = new ArrayList<>();
-		for ( LuceneScopeIndexManagerContext index : scope.indexes() ) {
-			var model = index.model();
-			models.add( model );
-			if ( model.hasNestedDocuments() ) {
-				for ( IndexFieldDescriptor field : model.root().staticChildren() ) {
-					collect( nestedObjectsPaths, field );
-				}
-			}
-		}
-	}
+    private final List<LuceneIndexModel> models;
 
-	private static void collect(Set<String> nestedPaths, IndexFieldDescriptor field) {
-		if ( field.isObjectField() ) {
-			if ( field.toObjectField().type().nested() ) {
-				nestedPaths.add( field.absolutePath() );
-			}
-			for ( IndexFieldDescriptor child : field.toObjectField().staticChildren() ) {
-				collect( nestedPaths, child );
-			}
-		}
-	}
+    LuceneDocumentTreeProjection(LuceneSearchIndexScopeImpl<?> scope) {
+        super(scope);
+        nestedObjectsPaths = new LinkedHashSet<>();
+        models = new ArrayList<>();
+        for (LuceneScopeIndexManagerContext index : scope.indexes()) {
+            var model = index.model();
+            models.add(model);
+            if (model.hasNestedDocuments()) {
+                for (IndexFieldDescriptor field : model.root().staticChildren()) {
+                    collect(nestedObjectsPaths, field);
+                }
+            }
+        }
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    private static void collect(Set<String> nestedPaths, IndexFieldDescriptor field) {
+        if (field.isObjectField()) {
+            if (field.toObjectField().type().nested()) {
+                nestedPaths.add(field.absolutePath());
+            }
+            for (IndexFieldDescriptor child : field.toObjectField().staticChildren()) {
+                collect(nestedPaths, child);
+            }
+        }
+    }
 
-	@Override
-	public Extractor<?, DocumentTree> request(ProjectionRequestContext context) {
-		context.checkNotNested(
-				LuceneProjectionTypeKeys.DOCUMENT,
-				LuceneSearchHints.INSTANCE.documentProjectionNestingNotSupportedHint()
-		);
-		context.requireAllStoredFields();
-		context.requireNestedObjects( nestedObjectsPaths );
-		return this;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Values<DocumentTree> values(ProjectionExtractContext context) {
-		List<ChildDocumentTreeValues> children = new ArrayList<>();
-		for ( LuceneIndexModel model : models ) {
-			children.addAll( createChildrenDocumentTrees( context, model.root() ) );
-		}
-		return new RootDocumentTreeValues( context.collectorExecutionContext().storedFieldsValuesDelegate(), children );
-	}
+    @Override
+    public Extractor<?, DocumentTree> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private List<ChildDocumentTreeValues> createChildrenDocumentTrees(ProjectionExtractContext context,
-			LuceneIndexCompositeNode node) {
-		List<ChildDocumentTreeValues> result = new ArrayList<>();
-		for ( LuceneIndexNode child : node.staticChildren() ) {
-			if ( child.isObjectField() && child.toObjectField().type().nested() ) {
-				result.add( new ChildDocumentTreeValues(
-						context.collectorExecutionContext(),
-						node.nestedDocumentPath(),
-						child.absolutePath(),
-						createChildrenDocumentTrees( context, child.toObjectField() )
-				) );
-			}
-		}
-		return result;
-	}
+    @Override
+    public Values<DocumentTree> values(ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DocumentTree transform(LoadingResult<?> loadingResult, DocumentTree extractedData,
-			ProjectionTransformContext context) {
-		return extractedData;
-	}
+    private List<ChildDocumentTreeValues> createChildrenDocumentTrees(ProjectionExtractContext context, LuceneIndexCompositeNode node) {
+        List<ChildDocumentTreeValues> result = new ArrayList<>();
+        for (LuceneIndexNode child : node.staticChildren()) {
+            if (child.isObjectField() && child.toObjectField().type().nested()) {
+                result.add(new ChildDocumentTreeValues(context.collectorExecutionContext(), node.nestedDocumentPath(), child.absolutePath(), createChildrenDocumentTrees(context, child.toObjectField())));
+            }
+        }
+        return result;
+    }
 
-	private static class RootDocumentTreeValues implements Values<DocumentTree> {
+    @Override
+    public DocumentTree transform(LoadingResult<?> loadingResult, DocumentTree extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final StoredFieldsValuesDelegate storedFieldsValuesDelegate;
-		private final List<ChildDocumentTreeValues> children;
+    private static class RootDocumentTreeValues implements Values<DocumentTree> {
 
-		private RootDocumentTreeValues(StoredFieldsValuesDelegate storedFieldsValuesDelegate,
-				List<ChildDocumentTreeValues> children) {
-			this.storedFieldsValuesDelegate = storedFieldsValuesDelegate;
-			this.children = children;
-		}
+        private final StoredFieldsValuesDelegate storedFieldsValuesDelegate;
 
-		@Override
-		public void context(LeafReaderContext context) throws IOException {
-			for ( ChildDocumentTreeValues child : children ) {
-				child.context( context );
-			}
-		}
+        private final List<ChildDocumentTreeValues> children;
 
-		@Override
-		public DocumentTree get(int doc) throws IOException {
-			Map<String, List<DocumentTree>> nested = new LinkedHashMap<>();
-			for ( ChildDocumentTreeValues child : children ) {
-				List<DocumentTree> nodes = child.get( doc );
-				if ( !nodes.isEmpty() ) {
-					nested.put( child.getPath(), nodes );
-				}
-			}
-			return new DocumentTreeImpl( storedFieldsValuesDelegate.get( doc ), Collections.unmodifiableMap( nested ) );
-		}
-	}
+        private RootDocumentTreeValues(StoredFieldsValuesDelegate storedFieldsValuesDelegate, List<ChildDocumentTreeValues> children) {
+            this.storedFieldsValuesDelegate = storedFieldsValuesDelegate;
+            this.children = children;
+        }
 
-	private static class ChildDocumentTreeValues implements Values<List<DocumentTree>> {
-		private final StoredFieldsValuesDelegate storedFieldsValuesDelegate;
-		private final String path;
-		private final NestedDocsProvider nestedDocsProvider;
-		private final List<ChildDocumentTreeValues> children;
+        @Override
+        public void context(LeafReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private ChildDocIds childDocIds;
+        @Override
+        public DocumentTree get(int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		public ChildDocumentTreeValues(TopDocsDataCollectorExecutionContext context, String parent, String path,
-				List<ChildDocumentTreeValues> children) {
-			this.storedFieldsValuesDelegate = context.storedFieldsValuesDelegate();
-			this.path = path;
-			this.children = children;
-			this.nestedDocsProvider = context.createNestedDocsProvider( parent, path );
-		}
+    private static class ChildDocumentTreeValues implements Values<List<DocumentTree>> {
 
-		@Override
-		public void context(LeafReaderContext context) throws IOException {
-			childDocIds = nestedDocsProvider.childDocs( context, null );
-			for ( ChildDocumentTreeValues child : children ) {
-				child.context( context );
-			}
-		}
+        private final StoredFieldsValuesDelegate storedFieldsValuesDelegate;
 
-		@Override
-		public List<DocumentTree> get(int doc) throws IOException {
-			List<DocumentTree> result = new ArrayList<>();
-			if ( childDocIds != null && childDocIds.advanceExactParent( doc ) ) {
-				for ( int currentChildDocId = childDocIds.nextChild();
-						currentChildDocId != DocIdSetIterator.NO_MORE_DOCS;
-						currentChildDocId = childDocIds.nextChild() ) {
+        private final String path;
 
-					Map<String, List<DocumentTree>> nested = new LinkedHashMap<>();
-					for ( ChildDocumentTreeValues child : children ) {
-						List<DocumentTree> nodes = child.get( currentChildDocId );
-						if ( !nodes.isEmpty() ) {
-							nested.put( child.getPath().substring( path.length() + 1, child.path.length() ), nodes );
-						}
-					}
+        private final NestedDocsProvider nestedDocsProvider;
 
-					result.add( new DocumentTreeImpl( storedFieldsValuesDelegate.get( currentChildDocId ),
-							Collections.unmodifiableMap( nested ) ) );
-				}
-			}
+        private final List<ChildDocumentTreeValues> children;
 
-			return Collections.unmodifiableList( result );
-		}
+        private ChildDocIds childDocIds;
 
-		public String getPath() {
-			return path;
-		}
-	}
+        public ChildDocumentTreeValues(TopDocsDataCollectorExecutionContext context, String parent, String path, List<ChildDocumentTreeValues> children) {
+            this.storedFieldsValuesDelegate = context.storedFieldsValuesDelegate();
+            this.path = path;
+            this.children = children;
+            this.nestedDocsProvider = context.createNestedDocsProvider(parent, path);
+        }
 
-	private static class DocumentTreeImpl implements DocumentTree {
+        @Override
+        public void context(LeafReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final Document document;
-		private final Map<String, Collection<DocumentTree>> nested;
+        @Override
+        public List<DocumentTree> get(int doc) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private DocumentTreeImpl(Document document, Map<String, Collection<DocumentTree>> nested) {
-			this.document = document;
-			this.nested = nested;
-		}
+        public String getPath() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public Document document() {
-			return document;
-		}
+    private static class DocumentTreeImpl implements DocumentTree {
 
-		@Override
-		public Map<String, Collection<DocumentTree>> nested() {
-			return nested;
-		}
+        private final Document document;
 
-		@Override
-		public String toString() {
-			return "DocumentTree{" +
-					"document=" + document +
-					", nested=" + nested +
-					'}';
-		}
-	}
+        private final Map<String, Collection<DocumentTree>> nested;
+
+        private DocumentTreeImpl(Document document, Map<String, Collection<DocumentTree>> nested) {
+            this.document = document;
+            this.nested = nested;
+        }
+
+        @Override
+        public Document document() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public Map<String, Collection<DocumentTree>> nested() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

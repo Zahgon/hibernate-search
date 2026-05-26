@@ -9,14 +9,15 @@ import org.hibernate.search.engine.reporting.spi.ContextualFailureCollector;
 import org.hibernate.search.mapper.orm.coordination.common.spi.CoordinationStrategyPreStopContext;
 
 public class CoordinationStrategyPreStopContextImpl implements CoordinationStrategyPreStopContext {
-	private final MappingPreStopContext delegate;
 
-	public CoordinationStrategyPreStopContextImpl(MappingPreStopContext delegate) {
-		this.delegate = delegate;
-	}
+    private final MappingPreStopContext delegate;
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return delegate.failureCollector();
-	}
+    public CoordinationStrategyPreStopContextImpl(MappingPreStopContext delegate) {
+        this.delegate = delegate;
+    }
+
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

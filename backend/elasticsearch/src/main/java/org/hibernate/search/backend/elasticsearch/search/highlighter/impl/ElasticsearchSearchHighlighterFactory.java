@@ -8,16 +8,14 @@ import org.hibernate.search.backend.elasticsearch.search.common.impl.Elasticsear
 import org.hibernate.search.engine.search.highlighter.dsl.spi.AbstractSearchHighlighterFactory;
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterBuilder;
 
-public class ElasticsearchSearchHighlighterFactory
-		extends AbstractSearchHighlighterFactory<ElasticsearchSearchIndexScope<?>> {
+public class ElasticsearchSearchHighlighterFactory extends AbstractSearchHighlighterFactory<ElasticsearchSearchIndexScope<?>> {
 
-	public ElasticsearchSearchHighlighterFactory(ElasticsearchSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    public ElasticsearchSearchHighlighterFactory(ElasticsearchSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	protected SearchHighlighterBuilder highlighterBuilder(
-			ElasticsearchSearchIndexScope<?> scope) {
-		return new ElasticsearchSearchHighlighterImpl.Builder( scope );
-	}
+    @Override
+    protected SearchHighlighterBuilder highlighterBuilder(ElasticsearchSearchIndexScope<?> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

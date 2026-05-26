@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.cache.impl.LuceneQueryCachingContext;
 import org.hibernate.search.backend.lucene.logging.impl.LuceneMiscLog;
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
@@ -23,157 +22,104 @@ import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.similarities.Similarity;
 
-public class LuceneSyncWorkOrchestratorImpl
-		extends AbstractWorkOrchestrator<LuceneSyncWorkOrchestratorImpl.WorkExecution<?>>
-		implements LuceneSyncWorkOrchestrator {
+public class LuceneSyncWorkOrchestratorImpl extends AbstractWorkOrchestrator<LuceneSyncWorkOrchestratorImpl.WorkExecution<?>> implements LuceneSyncWorkOrchestrator {
 
-	private final Similarity similarity;
-	private final LuceneQueryCachingContext cachingContext;
+    private final Similarity similarity;
 
-	public LuceneSyncWorkOrchestratorImpl(String name, Similarity similarity,
-			LuceneQueryCachingContext cachingContext) {
-		super( name );
-		this.similarity = similarity;
-		start( null ); // Nothing to start, just force the superclass to go to the right state.
-		this.cachingContext = cachingContext;
-	}
+    private final LuceneQueryCachingContext cachingContext;
 
-	@Override
-	public <T> T submit(Set<String> indexNames, Collection<? extends ReadIndexManagerContext> indexManagerContexts,
-			Set<String> routingKeys, ReadWork<T> work,
-			HibernateSearchMultiReader indexReader) {
-		WorkExecution<T> workExecution = new WorkExecution<>(
-				similarity, indexNames, indexManagerContexts, routingKeys, work, indexReader, cachingContext
-		);
-		Throwable throwable = null;
-		try {
-			submit( workExecution, OperationSubmitter.blocking() );
-			// If we get there, the task succeeded and we are sure there is a result.
-			return workExecution.getResult();
-		}
-		catch (Throwable t) {
-			// Just remember something went wrong
-			throwable = t;
-			throw t;
-		}
-		finally {
-			if ( throwable == null ) {
-				workExecution.close();
-			}
-			else {
-				// Take care not to erase the main error if closing the context fails: use addSuppressed() instead
-				new SuppressingCloser( throwable )
-						.push( workExecution );
-			}
-		}
-	}
+    public LuceneSyncWorkOrchestratorImpl(String name, Similarity similarity, LuceneQueryCachingContext cachingContext) {
+        super(name);
+        this.similarity = similarity;
+        // Nothing to start, just force the superclass to go to the right state.
+        start(null);
+        this.cachingContext = cachingContext;
+    }
 
-	@Override
-	protected void doStart(ConfigurationPropertySource propertySource) {
-		// Nothing to do
-	}
+    @Override
+    public <T> T submit(Set<String> indexNames, Collection<? extends ReadIndexManagerContext> indexManagerContexts, Set<String> routingKeys, ReadWork<T> work, HibernateSearchMultiReader indexReader) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected void doSubmit(WorkExecution<?> work, OperationSubmitter operationSubmitter) {
-		if ( !OperationSubmitter.blocking().equals( operationSubmitter ) ) {
-			throw LuceneMiscLog.INSTANCE.nonblockingOperationSubmitterNotSupported();
-		}
-		work.execute();
-	}
+    @Override
+    protected void doStart(ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected CompletableFuture<?> completion() {
-		// Works are executed synchronously.
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    protected void doSubmit(WorkExecution<?> work, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected void doStop() {
-		// Nothing to do
-	}
+    @Override
+    protected CompletableFuture<?> completion() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static class WorkExecution<T> implements AutoCloseable, ReadWorkExecutionContext {
-		private final Similarity similarity;
-		private final Set<String> indexNames;
-		private final HibernateSearchMultiReader indexReader;
-		private final ReadWork<T> work;
-		private final boolean closeIndexReader;
-		private final LuceneQueryCachingContext cachingContext;
+    @Override
+    protected void doStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private T result;
+    static class WorkExecution<T> implements AutoCloseable, ReadWorkExecutionContext {
 
-		WorkExecution(Similarity similarity, Set<String> indexNames,
-				Collection<? extends ReadIndexManagerContext> indexManagerContexts,
-				Set<String> routingKeys, ReadWork<T> work,
-				HibernateSearchMultiReader indexReader,
-				LuceneQueryCachingContext cachingContext) {
-			this.similarity = similarity;
-			this.indexNames = indexNames;
-			this.work = work;
+        private final Similarity similarity;
 
-			if ( indexReader == null ) {
-				this.indexReader = HibernateSearchMultiReader.open( indexNames, indexManagerContexts, routingKeys );
-				this.closeIndexReader = true;
-			}
-			else {
-				this.indexReader = indexReader;
-				this.closeIndexReader = false;
-			}
-			this.cachingContext = cachingContext;
-		}
+        private final Set<String> indexNames;
 
-		@Override
-		public IndexSearcher createSearcher() {
-			IndexSearcher searcher = new IndexSearcher( indexReader );
-			searcher.setSimilarity( similarity );
+        private final HibernateSearchMultiReader indexReader;
 
-			cachingContext.queryCache().ifPresent( searcher::setQueryCache );
-			if ( cachingContext.queryCachingPolicy().isPresent() ) {
-				searcher.setQueryCachingPolicy( cachingContext.queryCachingPolicy().get() );
-				// Note: Lucene 11 will not enable cache by default so policy won't get applied, let's warn users if this happens:
-				if ( searcher.getQueryCache() == null ) {
-					QueryLog.INSTANCE.ineffectiveQueryCachingPolicy();
-				}
-			}
+        private final ReadWork<T> work;
 
-			return searcher;
-		}
+        private final boolean closeIndexReader;
 
-		@Override
-		public IndexReaderMetadataResolver getIndexReaderMetadataResolver() {
-			return indexReader.getMetadataResolver();
-		}
+        private final LuceneQueryCachingContext cachingContext;
 
-		@Override
-		public EventContext getEventContext() {
-			return EventContexts.fromIndexNames( indexNames );
-		}
+        private T result;
 
-		public void execute() {
-			result = work.execute( this );
-		}
+        WorkExecution(Similarity similarity, Set<String> indexNames, Collection<? extends ReadIndexManagerContext> indexManagerContexts, Set<String> routingKeys, ReadWork<T> work, HibernateSearchMultiReader indexReader, LuceneQueryCachingContext cachingContext) {
+            this.similarity = similarity;
+            this.indexNames = indexNames;
+            this.work = work;
+            if (indexReader == null) {
+                this.indexReader = HibernateSearchMultiReader.open(indexNames, indexManagerContexts, routingKeys);
+                this.closeIndexReader = true;
+            } else {
+                this.indexReader = indexReader;
+                this.closeIndexReader = false;
+            }
+            this.cachingContext = cachingContext;
+        }
 
-		public T getResult() {
-			return result;
-		}
+        @Override
+        public IndexSearcher createSearcher() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void close() {
-			if ( !closeIndexReader ) {
-				return;
-			}
+        @Override
+        public IndexReaderMetadataResolver getIndexReaderMetadataResolver() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			try {
-				indexReader.close();
-			}
-			catch (IOException | RuntimeException e) {
-				LuceneMiscLog.INSTANCE.unableToCloseIndexReader( getEventContext(), e );
-			}
-		}
-	}
+        @Override
+        public EventContext getEventContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        public void execute() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public T getResult() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void close() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -7,7 +7,6 @@ package org.hibernate.search.engine.search.predicate.dsl.impl;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.GenericSimpleBooleanPredicateClausesStep;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
@@ -17,82 +16,72 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.AbstractPredicateFin
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 import org.hibernate.search.engine.search.predicate.spi.BooleanPredicateBuilder;
 
-public abstract class AbstractSimpleBooleanPredicateClausesStep<
-		SR,
-		S extends C,
-		C extends SimpleBooleanPredicateClausesCollector<SR, ?>>
-		extends AbstractPredicateFinalStep
-		implements GenericSimpleBooleanPredicateClausesStep<SR, S, C> {
+public abstract class AbstractSimpleBooleanPredicateClausesStep<SR, S extends C, C extends SimpleBooleanPredicateClausesCollector<SR, ?>> extends AbstractPredicateFinalStep implements GenericSimpleBooleanPredicateClausesStep<SR, S, C> {
 
-	public enum SimpleBooleanPredicateOperator
-			implements BiConsumer<BooleanPredicateBuilder, SearchPredicate> {
-		AND {
-			@Override
-			public void accept(BooleanPredicateBuilder builder,
-					SearchPredicate searchPredicate) {
-				builder.must( searchPredicate );
-			}
-		},
-		OR {
-			@Override
-			public void accept(BooleanPredicateBuilder builder,
-					SearchPredicate searchPredicate) {
-				builder.should( searchPredicate );
-			}
-		}
-	}
+    public enum SimpleBooleanPredicateOperator implements BiConsumer<BooleanPredicateBuilder, SearchPredicate> {
 
-	private final SimpleBooleanPredicateOperator operator;
+        AND {
 
-	private final BooleanPredicateBuilder builder;
+            @Override
+            public void accept(BooleanPredicateBuilder builder, SearchPredicate searchPredicate) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+        , OR {
 
-	private final TypedSearchPredicateFactory<SR> factory;
+            @Override
+            public void accept(BooleanPredicateBuilder builder, SearchPredicate searchPredicate) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
 
-	AbstractSimpleBooleanPredicateClausesStep(SimpleBooleanPredicateOperator operator,
-			SearchPredicateDslContext<?> dslContext,
-			TypedSearchPredicateFactory<SR> factory) {
-		super( dslContext );
-		this.operator = operator;
-		this.builder = dslContext.scope().predicateBuilders().bool();
-		this.factory = factory;
-	}
+    }
 
-	protected abstract S self();
+    private final SimpleBooleanPredicateOperator operator;
 
-	@Override
-	public S add(SearchPredicate searchPredicate) {
-		operator.accept( builder, searchPredicate );
-		return self();
-	}
+    private final BooleanPredicateBuilder builder;
 
-	@Override
-	public S add(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
-		return add( clauseContributor.apply( factory ) );
-	}
+    private final TypedSearchPredicateFactory<SR> factory;
 
-	public S boost(float boost) {
-		builder.boost( boost );
-		return self();
-	}
+    AbstractSimpleBooleanPredicateClausesStep(SimpleBooleanPredicateOperator operator, SearchPredicateDslContext<?> dslContext, TypedSearchPredicateFactory<SR> factory) {
+        super(dslContext);
+        this.operator = operator;
+        this.builder = dslContext.scope().predicateBuilders().bool();
+        this.factory = factory;
+    }
 
-	public S constantScore() {
-		builder.constantScore();
-		return self();
-	}
+    protected abstract S self();
 
-	@Override
-	public S with(Consumer<? super C> contributor) {
-		contributor.accept( self() );
-		return self();
-	}
+    @Override
+    public S add(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean hasClause() {
-		return builder.hasClause();
-	}
+    @Override
+    public S add(Function<? super TypedSearchPredicateFactory<SR>, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		return builder.build();
-	}
+    public S boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public S constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public S with(Consumer<? super C> contributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean hasClause() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

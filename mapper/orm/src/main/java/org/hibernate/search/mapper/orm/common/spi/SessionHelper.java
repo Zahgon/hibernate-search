@@ -14,15 +14,16 @@ import org.hibernate.engine.spi.SessionImplementor;
  */
 public final class SessionHelper {
 
-	private final SessionFactoryImplementor sessionFactory;
-	private final Object tenantId;
+    private final SessionFactoryImplementor sessionFactory;
 
-	public SessionHelper(SessionFactoryImplementor sessionFactory, Object tenantId) {
-		this.sessionFactory = sessionFactory;
-		this.tenantId = tenantId;
-	}
+    private final Object tenantId;
 
-	public SessionImplementor openSession() {
-		return (SessionImplementor) sessionFactory.withOptions().tenantIdentifier( tenantId ).openSession();
-	}
+    public SessionHelper(SessionFactoryImplementor sessionFactory, Object tenantId) {
+        this.sessionFactory = sessionFactory;
+        this.tenantId = tenantId;
+    }
+
+    public SessionImplementor openSession() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

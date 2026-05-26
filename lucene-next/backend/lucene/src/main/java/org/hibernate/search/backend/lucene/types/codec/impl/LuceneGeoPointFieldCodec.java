@@ -5,9 +5,7 @@
 package org.hibernate.search.backend.lucene.types.codec.impl;
 
 import java.util.Arrays;
-
 import org.hibernate.search.engine.spatial.GeoPoint;
-
 import org.apache.lucene.document.DoublePoint;
 import org.apache.lucene.document.LatLonDocValuesField;
 import org.apache.lucene.document.LatLonPoint;
@@ -17,101 +15,72 @@ import org.apache.lucene.util.BytesRef;
 
 public final class LuceneGeoPointFieldCodec implements LuceneFieldCodec<GeoPoint, byte[]> {
 
-	private final Indexing indexing;
-	private final DocValues docValues;
-	private final Storage storage;
-	private final GeoPoint indexNullAsValue;
+    private final Indexing indexing;
 
-	public LuceneGeoPointFieldCodec(Indexing indexing, DocValues docValues, Storage storage,
-			GeoPoint indexNullAsValue) {
-		this.indexing = indexing;
-		this.docValues = docValues;
-		this.storage = storage;
-		this.indexNullAsValue = indexNullAsValue;
-	}
+    private final DocValues docValues;
 
-	@Override
-	public void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, GeoPoint value) {
-		if ( value == null && indexNullAsValue != null ) {
-			value = indexNullAsValue;
-		}
+    private final Storage storage;
 
-		if ( value == null ) {
-			return;
-		}
+    private final GeoPoint indexNullAsValue;
 
-		if ( Indexing.ENABLED == indexing ) {
-			documentBuilder.addField( new LatLonPoint( absoluteFieldPath, value.latitude(), value.longitude() ) );
-		}
+    public LuceneGeoPointFieldCodec(Indexing indexing, DocValues docValues, Storage storage, GeoPoint indexNullAsValue) {
+        this.indexing = indexing;
+        this.docValues = docValues;
+        this.storage = storage;
+        this.indexNullAsValue = indexNullAsValue;
+    }
 
-		if ( DocValues.ENABLED == docValues ) {
-			documentBuilder.addField( new LatLonDocValuesField( absoluteFieldPath, value.latitude(), value.longitude() ) );
-		}
-		else {
-			// For the "exists" predicate
-			documentBuilder.addFieldName( absoluteFieldPath );
-		}
+    @Override
+    public void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, GeoPoint value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( Storage.ENABLED == storage ) {
-			documentBuilder.addField( new StoredField( absoluteFieldPath, toStoredBytes( value ) ) );
-		}
-	}
+    @Override
+    public GeoPoint decode(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public GeoPoint decode(IndexableField field) {
-		return fromStoredBytes( field.binaryValue() );
-	}
+    @Override
+    public byte[] raw(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public byte[] raw(IndexableField field) {
-		return field.binaryValue().bytes;
-	}
+    @Override
+    public GeoPoint decode(byte[] field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public GeoPoint decode(byte[] field) {
-		return fromBytes( field );
-	}
+    @Override
+    public byte[] encode(GeoPoint value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public byte[] encode(GeoPoint value) {
-		BytesRef storedBytes = toStoredBytes( value );
-		if ( storedBytes.offset == 0 ) {
-			return storedBytes.bytes;
-		}
-		else {
-			return Arrays.copyOfRange( storedBytes.bytes, storedBytes.offset, storedBytes.length );
-		}
-	}
+    @Override
+    public Class<byte[]> encodedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Class<byte[]> encodedType() {
-		return byte[].class;
-	}
+    @Override
+    public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		return LuceneGeoPointFieldCodec.class == obj.getClass();
-	}
+    private static BytesRef toStoredBytes(GeoPoint geoPoint) {
+        byte[] bytes = new byte[2 * Double.BYTES];
+        DoublePoint.encodeDimension(geoPoint.latitude(), bytes, 0);
+        DoublePoint.encodeDimension(geoPoint.longitude(), bytes, Double.BYTES);
+        return new BytesRef(bytes);
+    }
 
-	private static BytesRef toStoredBytes(GeoPoint geoPoint) {
-		byte[] bytes = new byte[2 * Double.BYTES];
-		DoublePoint.encodeDimension( geoPoint.latitude(), bytes, 0 );
-		DoublePoint.encodeDimension( geoPoint.longitude(), bytes, Double.BYTES );
-		return new BytesRef( bytes );
-	}
+    private static GeoPoint fromStoredBytes(BytesRef bytesRef) {
+        double latitude = DoublePoint.decodeDimension(bytesRef.bytes, bytesRef.offset);
+        double longitude = DoublePoint.decodeDimension(bytesRef.bytes, bytesRef.offset + Double.BYTES);
+        return GeoPoint.of(latitude, longitude);
+    }
 
-	private static GeoPoint fromStoredBytes(BytesRef bytesRef) {
-		double latitude = DoublePoint.decodeDimension( bytesRef.bytes, bytesRef.offset );
-		double longitude = DoublePoint.decodeDimension( bytesRef.bytes, bytesRef.offset + Double.BYTES );
-		return GeoPoint.of( latitude, longitude );
-	}
-
-	private static GeoPoint fromBytes(byte[] bytes) {
-		double latitude = DoublePoint.decodeDimension( bytes, 0 );
-		double longitude = DoublePoint.decodeDimension( bytes, Double.BYTES );
-		return GeoPoint.of( latitude, longitude );
-	}
+    private static GeoPoint fromBytes(byte[] bytes) {
+        double latitude = DoublePoint.decodeDimension(bytes, 0);
+        double longitude = DoublePoint.decodeDimension(bytes, Double.BYTES);
+        return GeoPoint.of(latitude, longitude);
+    }
 }

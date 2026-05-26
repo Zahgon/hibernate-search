@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.hibernate.search.engine.logging.impl.EngineMiscLog;
 import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.impl.Contracts;
@@ -17,144 +16,117 @@ import org.hibernate.search.util.common.spi.ClosingOperator;
 
 public class SavedState implements AutoCloseable {
 
-	private static final SavedState EMPTY = new SavedState.Builder().build();
+    private static final SavedState EMPTY = new SavedState.Builder().build();
 
-	public static SavedState empty() {
-		return EMPTY;
-	}
+    public static SavedState empty() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final Map<Key<?>, SavedValue<?, ?>> content;
+    private final Map<Key<?>, SavedValue<?, ?>> content;
 
-	private SavedState(Builder builder) {
-		this.content = builder.content;
-	}
+    private SavedState(Builder builder) {
+        this.content = builder.content;
+    }
 
-	@SuppressWarnings("unchecked") // values have always the corresponding key generic type
-	public <T> Optional<T> get(Key<T> key) {
-		SavedValue<?, ?> savedValue = content.get( key );
-		if ( savedValue == null ) {
-			return Optional.empty();
-		}
+    // values have always the corresponding key generic type
+    @SuppressWarnings("unchecked")
+    public <T> Optional<T> get(Key<T> key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		T value = (T) savedValue.value();
-		return Optional.ofNullable( value );
-	}
+    public static <T> Key<T> key(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <T> Key<T> key(String name) {
-		Contracts.assertNotNullNorEmpty( name, "name" );
-		return new Key<>( name );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.pushAll( entry -> entry.getValue().close( entry.getKey() ), content.entrySet() );
-		}
-	}
+    public static final class Key<T> {
 
-	public static final class Key<T> {
+        private final String name;
 
-		private final String name;
+        private Key(String name) {
+            this.name = name;
+        }
 
-		private Key(String name) {
-			this.name = name;
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String toString() {
-			return getClass().getSimpleName() + "[" + name + "]";
-		}
+        @Override
+        public boolean equals(Object o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean equals(Object o) {
-			if ( this == o ) {
-				return true;
-			}
-			if ( o == null || getClass() != o.getClass() ) {
-				return false;
-			}
-			Key<?> key = (Key<?>) o;
-			return Objects.equals( name, key.name );
-		}
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public int hashCode() {
-			return Objects.hash( name );
-		}
-	}
+    public static Builder builder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    private static void closeAll(Map<?, SavedState> map) {
+        try (Closer<RuntimeException> closer = new Closer<>()) {
+            closer.pushAll(entry -> {
+                try {
+                    entry.getValue().close();
+                } catch (RuntimeException e) {
+                    throw EngineMiscLog.INSTANCE.unableToCloseSavedValue(Throwables.safeToString(e, entry.toString()), e.getMessage(), e);
+                }
+            }, map.entrySet());
+        }
+    }
 
-	private static void closeAll(Map<?, SavedState> map) {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.pushAll( entry -> {
-				try {
-					entry.getValue().close();
-				}
-				catch (RuntimeException e) {
-					throw EngineMiscLog.INSTANCE.unableToCloseSavedValue( Throwables.safeToString( e, entry.toString() ),
-							e.getMessage(), e );
-				}
-			}, map.entrySet() );
-		}
-	}
+    public static final class Builder {
 
-	public static final class Builder {
+        private final Map<Key<?>, SavedValue<?, ?>> content = new LinkedHashMap<>();
 
-		private final Map<Key<?>, SavedValue<?, ?>> content = new LinkedHashMap<>();
+        private Builder() {
+        }
 
-		private Builder() {
-		}
+        public Builder put(Key<SavedState> key, SavedState value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public Builder put(Key<SavedState> key, SavedState value) {
-			return put( key, value, SavedState::close );
-		}
+        public Builder put(SavedState.Key<Map<String, SavedState>> key, Map<String, SavedState> value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public Builder put(SavedState.Key<Map<String, SavedState>> key, Map<String, SavedState> value) {
-			return put( key, value, SavedState::closeAll );
-		}
+        // values have always the corresponding key generic type
+        public <T> Builder put(Key<T> key, T value, ClosingOperator<T, ? extends Exception> closingOperator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		// values have always the corresponding key generic type
-		public <T> Builder put(Key<T> key, T value, ClosingOperator<T, ? extends Exception> closingOperator) {
-			content.put( key, new SavedValue<>( value, closingOperator ) );
-			return this;
-		}
+        public SavedState build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		public SavedState build() {
-			return new SavedState( this );
-		}
-	}
+    public static final class SavedValue<T, E extends Exception> {
 
-	public static final class SavedValue<T, E extends Exception> {
+        private final T value;
 
-		private final T value;
-		private final ClosingOperator<T, ? extends Exception> closingOperator;
+        private final ClosingOperator<T, ? extends Exception> closingOperator;
 
-		private boolean close = true;
+        private boolean close = true;
 
-		public SavedValue(T value, ClosingOperator<T, ? extends Exception> closingOperator) {
-			this.value = value;
-			this.closingOperator = closingOperator;
-		}
+        public SavedValue(T value, ClosingOperator<T, ? extends Exception> closingOperator) {
+            this.value = value;
+            this.closingOperator = closingOperator;
+        }
 
-		public T value() {
-			close = false;
-			return value;
-		}
+        public T value() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public void close(Key<?> key) {
-			if ( !close ) {
-				return;
-			}
-
-			try {
-				closingOperator.close( value );
-			}
-			catch (Exception e) {
-				throw EngineMiscLog.INSTANCE.unableToCloseSavedValue( key.name, e.getMessage(), e );
-			}
-		}
-	}
+        public void close(Key<?> key) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -11,16 +11,18 @@ package org.hibernate.search.mapper.pojo.model.path.impl;
  * @see PojoPathOrdinals
  */
 public final class PojoPathOrdinalReference {
-	public final int ordinal;
-	public final PojoPathOrdinals ordinals;
 
-	public PojoPathOrdinalReference(int ordinal, PojoPathOrdinals ordinals) {
-		this.ordinal = ordinal;
-		this.ordinals = ordinals;
-	}
+    public final int ordinal;
 
-	@Override
-	public String toString() {
-		return ordinal + " (" + ordinals.toPath( ordinal ) + ")";
-	}
+    public final PojoPathOrdinals ordinals;
+
+    public PojoPathOrdinalReference(int ordinal, PojoPathOrdinals ordinals) {
+        this.ordinal = ordinal;
+        this.ordinals = ordinals;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

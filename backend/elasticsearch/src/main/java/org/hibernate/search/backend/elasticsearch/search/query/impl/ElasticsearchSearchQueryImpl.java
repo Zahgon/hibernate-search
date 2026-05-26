@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
@@ -37,262 +36,149 @@ import org.hibernate.search.engine.search.query.spi.AbstractSearchQuery;
 import org.hibernate.search.engine.search.timeout.spi.TimeoutManager;
 import org.hibernate.search.util.common.impl.Contracts;
 import org.hibernate.search.util.common.impl.Futures;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class ElasticsearchSearchQueryImpl<H> extends AbstractSearchQuery<H, ElasticsearchSearchResult<H>>
-		implements ElasticsearchSearchQuery<H> {
+public class ElasticsearchSearchQueryImpl<H> extends AbstractSearchQuery<H, ElasticsearchSearchResult<H>> implements ElasticsearchSearchQuery<H> {
 
-	private final ElasticsearchWorkFactory workFactory;
-	private final ElasticsearchParallelWorkOrchestrator queryOrchestrator;
-	private final ElasticsearchSearchIndexScope<?> scope;
-	private final BackendSessionContext sessionContext;
-	private final SearchLoadingContext<?> loadingContext;
-	private final Set<String> routingKeys;
-	private final JsonObject payload;
-	private final ElasticsearchSearchRequestTransformer requestTransformer;
-	private final ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor;
-	private final Integer scrollTimeout;
-	private final Long totalHitCountThreshold;
+    private final ElasticsearchWorkFactory workFactory;
 
-	/**
-	 * ES limit for (limit + offset); any search query beyond that limit will be rejected.
-	 */
-	private final int maxResultWindow;
+    private final ElasticsearchParallelWorkOrchestrator queryOrchestrator;
 
-	private TimeoutManager timeoutManager;
+    private final ElasticsearchSearchIndexScope<?> scope;
 
-	ElasticsearchSearchQueryImpl(ElasticsearchWorkFactory workFactory,
-			ElasticsearchParallelWorkOrchestrator queryOrchestrator,
-			ElasticsearchSearchIndexScope<?> scope,
-			BackendSessionContext sessionContext,
-			SearchLoadingContext<?> loadingContext,
-			Set<String> routingKeys,
-			JsonObject payload,
-			ElasticsearchSearchRequestTransformer requestTransformer,
-			ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor,
-			TimeoutManager timeoutManager, Integer scrollTimeout, Long totalHitCountThreshold) {
-		this.workFactory = workFactory;
-		this.queryOrchestrator = queryOrchestrator;
-		this.scope = scope;
-		this.sessionContext = sessionContext;
-		this.loadingContext = loadingContext;
-		this.routingKeys = routingKeys;
-		this.payload = payload;
-		this.requestTransformer = requestTransformer;
-		this.searchResultExtractor = searchResultExtractor;
-		this.timeoutManager = timeoutManager;
-		this.scrollTimeout = scrollTimeout;
-		this.totalHitCountThreshold = totalHitCountThreshold;
-		this.maxResultWindow = scope.maxResultWindow();
-	}
+    private final BackendSessionContext sessionContext;
 
-	@Override
-	public String queryString() {
-		return payload.toString();
-	}
+    private final SearchLoadingContext<?> loadingContext;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + queryString() + "]";
-	}
+    private final Set<String> routingKeys;
 
-	@Override
-	public <Q> Q extension(SearchQueryExtension<Q, H> extension) {
-		return DslExtensionState.returnIfSupported(
-				extension, extension.extendOptional( this, loadingContext )
-		);
-	}
+    private final JsonObject payload;
 
-	@Override
-	public ElasticsearchSearchResult<H> fetch(Integer offset, Integer limit) {
-		timeoutManager.start();
-		Integer defaultedLimit = defaultedLimit( limit, offset );
-		NonBulkableWork<ElasticsearchLoadableSearchResult<H>> work = searchWorkBuilder()
-				.paging( defaultedLimit, offset )
-				.totalHitCountThreshold( totalHitCountThreshold )
-				.build();
+    private final ElasticsearchSearchRequestTransformer requestTransformer;
 
-		ElasticsearchSearchResultImpl<H> result = Futures.unwrappedExceptionJoin(
-				queryOrchestrator.submit( work, OperationSubmitter.blocking() ) )
-				/*
-				 * WARNING: the following call must run in the user thread.
-				 * If we introduce async query execution, we will have to add a loadAsync method here,
-				 * as well as in ProjectionHitMapper and EntityLoader.
-				 * This method may not be easy to implement for blocking mappers,
-				 * so we may choose to throw exceptions for those.
-				 */
-				.loadBlocking();
-		timeoutManager.stop();
+    private final ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor;
 
-		if ( limit == null && result.total().hitCountLowerBound() > defaultedLimit ) {
-			// user may not be aware of this defaultedLimit
-			QueryLog.INSTANCE.defaultedLimitedHits( defaultedLimit, result.total().hitCountLowerBound() );
-		}
-		return result;
-	}
+    private final Integer scrollTimeout;
 
-	@Override
-	public List<H> fetchHits(Integer offset, Integer limit) {
-		timeoutManager.start();
-		Integer defaultedLimit = defaultedLimit( limit, offset );
-		NonBulkableWork<ElasticsearchLoadableSearchResult<H>> work = searchWorkBuilder()
-				.paging( defaultedLimit, offset )
-				.disableTrackTotalHits()
-				.build();
+    private final Long totalHitCountThreshold;
 
-		ElasticsearchSearchResultImpl<H> result = Futures.unwrappedExceptionJoin(
-				queryOrchestrator.submit( work, OperationSubmitter.blocking() ) )
-				/*
-				 * WARNING: the following call must run in the user thread.
-				 * If we introduce async query execution, we will have to add a loadAsync method here,
-				 * as well as in ProjectionHitMapper and EntityLoader.
-				 * This method may not be easy to implement for blocking mappers,
-				 * so we may choose to throw exceptions for those.
-				 */
-				.loadBlocking();
-		timeoutManager.stop();
+    /**
+     * ES limit for (limit + offset); any search query beyond that limit will be rejected.
+     */
+    private final int maxResultWindow;
 
-		if ( limit == null && result.total().hitCountLowerBound() > defaultedLimit ) {
-			// user may not be aware of this defaultedLimit
-			QueryLog.INSTANCE.defaultedLimitedHits( defaultedLimit, result.total().hitCountLowerBound() );
-		}
-		return result.hits();
-	}
+    private TimeoutManager timeoutManager;
 
-	@Override
-	public long fetchTotalHitCount() {
-		timeoutManager.start();
+    ElasticsearchSearchQueryImpl(ElasticsearchWorkFactory workFactory, ElasticsearchParallelWorkOrchestrator queryOrchestrator, ElasticsearchSearchIndexScope<?> scope, BackendSessionContext sessionContext, SearchLoadingContext<?> loadingContext, Set<String> routingKeys, JsonObject payload, ElasticsearchSearchRequestTransformer requestTransformer, ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> searchResultExtractor, TimeoutManager timeoutManager, Integer scrollTimeout, Long totalHitCountThreshold) {
+        this.workFactory = workFactory;
+        this.queryOrchestrator = queryOrchestrator;
+        this.scope = scope;
+        this.sessionContext = sessionContext;
+        this.loadingContext = loadingContext;
+        this.routingKeys = routingKeys;
+        this.payload = payload;
+        this.requestTransformer = requestTransformer;
+        this.searchResultExtractor = searchResultExtractor;
+        this.timeoutManager = timeoutManager;
+        this.scrollTimeout = scrollTimeout;
+        this.totalHitCountThreshold = totalHitCountThreshold;
+        this.maxResultWindow = scope.maxResultWindow();
+    }
 
-		JsonObject filteredPayload = new JsonObject();
-		Optional<JsonObject> querySubTree = JsonAccessor.root().property( "query" ).asObject().get( payload );
-		if ( querySubTree.isPresent() ) {
-			filteredPayload.add( "query", querySubTree.get() );
-		}
+    @Override
+    public String queryString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		CountWork.Builder builder = workFactory.count();
-		for ( ElasticsearchSearchIndexContext index : scope.indexes() ) {
-			builder.index( index.names().read() );
-		}
-		builder.query( filteredPayload )
-				.routingKeys( routingKeys )
-				// soft timeout has no meaning for a count work
-				.deadline( timeoutManager.hardDeadlineOrNull() )
-				.requestTransformer(
-						ElasticsearchSearchRequestTransformerContextImpl.createTransformerFunction( requestTransformer )
-				);
-		NonBulkableWork<Long> work = builder.build();
-		Long result = Futures.unwrappedExceptionJoin( queryOrchestrator.submit( work, OperationSubmitter.blocking() ) );
-		timeoutManager.stop();
-		return result;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchScroll<H> scroll(int chunkSize) {
-		String scrollTimeoutString = this.scrollTimeout + "s";
+    @Override
+    public <Q> Q extension(SearchQueryExtension<Q, H> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> firstScroll = searchWorkBuilder()
-				.scrolling( chunkSize, scrollTimeoutString );
+    @Override
+    public ElasticsearchSearchResult<H> fetch(Integer offset, Integer limit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new ElasticsearchSearchScrollImpl<>( queryOrchestrator, workFactory, searchResultExtractor,
-				scrollTimeoutString, firstScroll, timeoutManager );
-	}
+    @Override
+    public List<H> fetchHits(Integer offset, Integer limit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonObject explain(Object id) {
-		Contracts.assertNotNull( id, "id" );
+    @Override
+    public long fetchTotalHitCount() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, ElasticsearchSearchIndexContext> mappedTypeNameToIndex =
-				scope.mappedTypeNameToIndex();
-		if ( mappedTypeNameToIndex.size() != 1 ) {
-			throw QueryLog.INSTANCE.explainRequiresTypeName( mappedTypeNameToIndex.keySet() );
-		}
+    @Override
+    public ElasticsearchSearchScroll<H> scroll(int chunkSize) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return doExplain( mappedTypeNameToIndex.values().iterator().next(), id );
-	}
+    @Override
+    public JsonObject explain(Object id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonObject explain(String typeName, Object id) {
-		Contracts.assertNotNull( typeName, "typeName" );
-		Contracts.assertNotNull( id, "id" );
+    @Override
+    public JsonObject explain(String typeName, Object id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, ElasticsearchSearchIndexContext> mappedTypeNameToIndex =
-				scope.mappedTypeNameToIndex();
-		ElasticsearchSearchIndexContext index = mappedTypeNameToIndex.get( typeName );
-		if ( index == null ) {
-			throw QueryLog.INSTANCE.explainRequiresTypeTargetedByQuery( mappedTypeNameToIndex.keySet(), typeName );
-		}
+    private SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> searchWorkBuilder() {
+        SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> builder = workFactory.search(payload, searchResultExtractor);
+        for (ElasticsearchSearchIndexContext index : scope.indexes()) {
+            builder.index(index.names().read());
+        }
+        builder.routingKeys(routingKeys).deadline(timeoutManager.deadlineOrNull(), timeoutManager.hasHardTimeout()).requestTransformer(ElasticsearchSearchRequestTransformerContextImpl.createTransformerFunction(requestTransformer));
+        return builder;
+    }
 
-		return doExplain( index, id );
-	}
-
-	private SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> searchWorkBuilder() {
-		SearchWork.Builder<ElasticsearchLoadableSearchResult<H>> builder =
-				workFactory.search( payload, searchResultExtractor );
-		for ( ElasticsearchSearchIndexContext index : scope.indexes() ) {
-			builder.index( index.names().read() );
-		}
-		builder
-				.routingKeys( routingKeys )
-				.deadline( timeoutManager.deadlineOrNull(), timeoutManager.hasHardTimeout() )
-				.requestTransformer(
-						ElasticsearchSearchRequestTransformerContextImpl.createTransformerFunction( requestTransformer )
-				);
-		return builder;
-	}
-
-	private Integer defaultedLimit(Integer limit, Integer offset) {
-		/*
+    private Integer defaultedLimit(Integer limit, Integer offset) {
+        /*
 		 * If the user has given a 'size' value, take it as is, let ES itself complain if it's too high;
 		 * if no value is given, take as much as possible, as by default only 10 rows would be returned.
 		 */
-		if ( limit != null ) {
-			return limit;
-		}
-		else {
-			// Elasticsearch has a default limit of 10, which is not what we want.
-			int maxLimitThatElasticsearchWillAccept = maxResultWindow;
-			if ( offset != null ) {
-				maxLimitThatElasticsearchWillAccept -= offset;
-			}
-			return maxLimitThatElasticsearchWillAccept;
-		}
-	}
+        if (limit != null) {
+            return limit;
+        } else {
+            // Elasticsearch has a default limit of 10, which is not what we want.
+            int maxLimitThatElasticsearchWillAccept = maxResultWindow;
+            if (offset != null) {
+                maxLimitThatElasticsearchWillAccept -= offset;
+            }
+            return maxLimitThatElasticsearchWillAccept;
+        }
+    }
 
-	private JsonObject doExplain(ElasticsearchSearchIndexContext index, Object id) {
-		JsonObject queryOnlyPayload = new JsonObject();
-		JsonElement query = payload.get( "query" );
-		if ( query != null ) {
-			queryOnlyPayload.add( "query", query );
-		}
+    private JsonObject doExplain(ElasticsearchSearchIndexContext index, Object id) {
+        JsonObject queryOnlyPayload = new JsonObject();
+        JsonElement query = payload.get("query");
+        if (query != null) {
+            queryOnlyPayload.add("query", query);
+        }
+        URLEncodedString elasticsearchId = toElasticsearchId(index, id);
+        URLEncodedString indexName = index.names().read();
+        NonBulkableWork<ExplainResult> work = workFactory.explain(indexName, elasticsearchId, queryOnlyPayload).routingKeys(routingKeys).requestTransformer(ElasticsearchSearchRequestTransformerContextImpl.createTransformerFunction(requestTransformer)).build();
+        ExplainResult explainResult = Futures.unwrappedExceptionJoin(queryOrchestrator.submit(work, OperationSubmitter.blocking()));
+        return explainResult.getJsonObject();
+    }
 
-		URLEncodedString elasticsearchId = toElasticsearchId( index, id );
+    private URLEncodedString toElasticsearchId(ElasticsearchSearchIndexContext index, Object id) {
+        DslConverter<?, String> converter = index.identifier().mappingDslConverter();
+        ToDocumentValueConvertContext convertContext = scope.toDocumentValueConvertContext();
+        String documentId = converter.unknownTypeToDocumentValue(id, convertContext);
+        return URLEncodedString.fromString(scope.documentIdHelper().toElasticsearchId(sessionContext.tenantIdentifier(), documentId));
+    }
 
-		URLEncodedString indexName = index.names().read();
-		NonBulkableWork<ExplainResult> work = workFactory.explain( indexName, elasticsearchId, queryOnlyPayload )
-				.routingKeys( routingKeys )
-				.requestTransformer(
-						ElasticsearchSearchRequestTransformerContextImpl.createTransformerFunction( requestTransformer )
-				)
-				.build();
-
-		ExplainResult explainResult =
-				Futures.unwrappedExceptionJoin( queryOrchestrator.submit( work, OperationSubmitter.blocking() ) );
-		return explainResult.getJsonObject();
-	}
-
-	private URLEncodedString toElasticsearchId(ElasticsearchSearchIndexContext index, Object id) {
-		DslConverter<?, String> converter = index.identifier().mappingDslConverter();
-		ToDocumentValueConvertContext convertContext = scope.toDocumentValueConvertContext();
-		String documentId = converter.unknownTypeToDocumentValue( id, convertContext );
-		return URLEncodedString.fromString( scope.documentIdHelper()
-				.toElasticsearchId( sessionContext.tenantIdentifier(), documentId ) );
-	}
-
-	@Override
-	public void failAfter(Long timeout, TimeUnit timeUnit) {
-		// replace the timeout manager on already created query instance
-		timeoutManager = scope.createTimeoutManager( timeout, timeUnit, true );
-	}
+    @Override
+    public void failAfter(Long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

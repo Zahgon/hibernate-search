@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
 import org.hibernate.search.backend.elasticsearch.ElasticsearchBackend;
 import org.hibernate.search.backend.elasticsearch.analysis.impl.ElasticsearchAnalysisPerformer;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
@@ -45,228 +44,148 @@ import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.impl.Futures;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import com.google.gson.JsonObject;
 
-class ElasticsearchIndexManagerImpl
-		implements IndexManagerImplementor,
-		ElasticsearchIndexManager, WorkExecutionIndexManagerContext {
+class ElasticsearchIndexManagerImpl implements IndexManagerImplementor, ElasticsearchIndexManager, WorkExecutionIndexManagerContext {
 
-	private static final OptionalConfigurationProperty<String> OBSOLETE_LIFECYCLE_STRATEGY =
-			ConfigurationProperty.forKey( "lifecycle.strategy" )
-					.asString()
-					.build();
+    private static final OptionalConfigurationProperty<String> OBSOLETE_LIFECYCLE_STRATEGY = ConfigurationProperty.forKey("lifecycle.strategy").asString().build();
 
-	private final IndexManagerBackendContext backendContext;
-	private final List<DocumentMetadataContributor> documentMetadataContributors;
-	private final ElasticsearchBatchingWorkOrchestrator indexingOrchestrator;
-	private final ElasticsearchIndexModel model;
+    private final IndexManagerBackendContext backendContext;
 
-	private ElasticsearchIndexSchemaManager schemaManager;
-	private ElasticsearchAnalysisPerformer analysisPerformer;
+    private final List<DocumentMetadataContributor> documentMetadataContributors;
 
-	ElasticsearchIndexManagerImpl(IndexManagerBackendContext backendContext,
-			ElasticsearchIndexModel model,
-			List<DocumentMetadataContributor> documentMetadataContributors) {
-		this.backendContext = backendContext;
-		this.model = model;
-		this.documentMetadataContributors = documentMetadataContributors;
-		this.indexingOrchestrator = backendContext.createIndexingOrchestrator( model.hibernateSearchIndexName() );
-	}
+    private final ElasticsearchBatchingWorkOrchestrator indexingOrchestrator;
 
-	@Override
-	public String toString() {
-		return new StringBuilder( getClass().getSimpleName() )
-				.append( "[" )
-				.append( "hibernateSearchName=" )
-				.append( model.hibernateSearchIndexName() )
-				.append( "]" )
-				.toString();
-	}
+    private final ElasticsearchIndexModel model;
 
-	@Override
-	public void start(IndexManagerStartContext context) {
-		try {
-			/*
-			 * Create the initializer and lifecycle strategy late to allow the behavior to change
-			 * after the first phase of bootstrap,
-			 * based on runtime data such as runtime user configuration or the detected ES version.
-			 * Useful for compile-time boot.
-			 */
+    private ElasticsearchIndexSchemaManager schemaManager;
 
-			model.onStart( backendContext );
+    private ElasticsearchAnalysisPerformer analysisPerformer;
 
-			schemaManager = backendContext.createSchemaManager(
-					model, context.configurationPropertySource()
-			);
+    ElasticsearchIndexManagerImpl(IndexManagerBackendContext backendContext, ElasticsearchIndexModel model, List<DocumentMetadataContributor> documentMetadataContributors) {
+        this.backendContext = backendContext;
+        this.model = model;
+        this.documentMetadataContributors = documentMetadataContributors;
+        this.indexingOrchestrator = backendContext.createIndexingOrchestrator(model.hibernateSearchIndexName());
+    }
 
-			// HSEARCH-3759: the lifecycle strategy is now the schema management strategy, at the mapper level
-			OBSOLETE_LIFECYCLE_STRATEGY.getAndMap(
-					context.configurationPropertySource(),
-					ignored -> {
-						throw DeprecationLog.INSTANCE.lifecycleStrategyMovedToMapper();
-					}
-			);
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			indexingOrchestrator.start( context.configurationPropertySource() );
+    @Override
+    public void start(IndexManagerStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			analysisPerformer = backendContext.createAnalysisPerformer( model );
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e )
-					.push( ElasticsearchBatchingWorkOrchestrator::stop, indexingOrchestrator );
-			throw e;
-		}
-	}
+    @Override
+    public CompletableFuture<?> preStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> preStop() {
-		return indexingOrchestrator.preStop();
-	}
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void stop() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ElasticsearchBatchingWorkOrchestrator::stop, indexingOrchestrator );
-			schemaManager = null;
-		}
-	}
+    @Override
+    public String getMappedTypeName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String getMappedTypeName() {
-		return model.mappedTypeName();
-	}
+    @Override
+    public URLEncodedString getElasticsearchIndexWriteName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public URLEncodedString getElasticsearchIndexWriteName() {
-		return model.names().write();
-	}
+    @Override
+    public String toElasticsearchId(String tenantId, String id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toElasticsearchId(String tenantId, String id) {
-		return backendContext.toElasticsearchId( tenantId, id );
-	}
+    @Override
+    public JsonObject createDocument(String tenantId, String id, DocumentContributor documentContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonObject createDocument(String tenantId, String id,
-			DocumentContributor documentContributor) {
-		ElasticsearchDocumentObjectBuilder builder = new ElasticsearchDocumentObjectBuilder( model );
-		documentContributor.contribute( builder );
-		JsonObject document = builder.build();
+    public ElasticsearchIndexModel model() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		for ( DocumentMetadataContributor contributor : documentMetadataContributors ) {
-			contributor.contribute( document, tenantId, id );
-		}
+    @Override
+    public IndexSchemaManager schemaManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return document;
-	}
+    @Override
+    public IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ElasticsearchIndexModel model() {
-		return model;
-	}
+    @Override
+    public IndexIndexer createIndexer(BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaManager schemaManager() {
-		return schemaManager;
-	}
+    @Override
+    public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
-		// The commit strategy is ignored, because Elasticsearch always commits changes to its transaction log.
-		return backendContext.createIndexingPlan(
-				indexingOrchestrator,
-				this,
-				sessionContext,
-				refreshStrategy
-		);
-	}
+    @Override
+    public <SR> IndexScopeBuilder<SR> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScopeType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexer createIndexer(BackendSessionContext sessionContext) {
-		return backendContext.createIndexer(
-				indexingOrchestrator, this, sessionContext
-		);
-	}
+    @Override
+    public void addTo(IndexScopeBuilder<?> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
-		return backendContext.createWorkspace( this, tenantIds );
-	}
+    @Override
+    public IndexManager toAPI() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR> IndexScopeBuilder<SR> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScopeType) {
-		return new ElasticsearchIndexScopeBuilder<>(
-				backendContext, mappingContext, rootScopeType, this
-		);
-	}
+    @Override
+    public ElasticsearchBackend backend() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addTo(IndexScopeBuilder<?> builder) {
-		if ( builder instanceof ElasticsearchIndexScopeBuilder<?> esBuilder ) {
-			esBuilder.add( backendContext, this );
-		}
-		else {
-			throw QueryLog.INSTANCE.cannotMixElasticsearchScopeWithOtherType(
-					builder, this, backendContext.getEventContext()
-			);
-		}
-	}
+    @Override
+    public ElasticsearchIndexDescriptor descriptor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexManager toAPI() {
-		return this;
-	}
+    @Override
+    public List<? extends AnalysisToken> analyze(String analyzerName, String terms) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchBackend backend() {
-		return backendContext.toAPI();
-	}
+    @Override
+    public AnalysisToken normalize(String normalizerName, String terms) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchIndexDescriptor descriptor() {
-		return model;
-	}
+    @Override
+    public CompletionStage<List<? extends AnalysisToken>> analyzeAsync(String analyzerName, String terms, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public List<? extends AnalysisToken> analyze(String analyzerName, String terms) {
-		return Futures.unwrappedExceptionJoin(
-				analyzeAsync( analyzerName, terms, OperationSubmitter.blocking() ).toCompletableFuture() );
-	}
+    @Override
+    public CompletionStage<AnalysisToken> normalizeAsync(String normalizerName, String terms, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AnalysisToken normalize(String normalizerName, String terms) {
-		return Futures.unwrappedExceptionJoin(
-				normalizeAsync( normalizerName, terms, OperationSubmitter.blocking() ).toCompletableFuture() );
-	}
+    @Override
+    // Checked using reflection
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletionStage<List<? extends AnalysisToken>> analyzeAsync(String analyzerName, String terms,
-			OperationSubmitter operationSubmitter) {
-		return analysisPerformer.analyze( analyzerName, terms, operationSubmitter );
-	}
-
-	@Override
-	public CompletionStage<AnalysisToken> normalizeAsync(String normalizerName, String terms,
-			OperationSubmitter operationSubmitter) {
-		return analysisPerformer.normalize( normalizerName, terms, operationSubmitter );
-	}
-
-	@Override
-	@SuppressWarnings("unchecked") // Checked using reflection
-	public <T> T unwrap(Class<T> clazz) {
-		if ( clazz.isAssignableFrom( ElasticsearchIndexManager.class ) ) {
-			return (T) this;
-		}
-		throw ElasticsearchMiscLog.INSTANCE.indexManagerUnwrappingWithUnknownType(
-				clazz, ElasticsearchIndexManager.class, getBackendAndIndexEventContext()
-		);
-	}
-
-	private EventContext getBackendAndIndexEventContext() {
-		return backendContext.getEventContext().append(
-				EventContexts.fromIndexName( model.hibernateSearchName() )
-		);
-	}
-
+    private EventContext getBackendAndIndexEventContext() {
+        return backendContext.getEventContext().append(EventContexts.fromIndexName(model.hibernateSearchName()));
+    }
 }

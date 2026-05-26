@@ -9,17 +9,18 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeIdentifier;
 
 class StandalonePojoContainedTypeContext<E> extends AbstractStandalonePojoTypeContext<E> {
 
-	private StandalonePojoContainedTypeContext(Builder<E> builder) {
-		super( builder );
-	}
+    private StandalonePojoContainedTypeContext(Builder<E> builder) {
+        super(builder);
+    }
 
-	static class Builder<E> extends AbstractBuilder<E> implements PojoContainedTypeExtendedMappingCollector {
-		Builder(PojoRawTypeIdentifier<E> typeIdentifier, String entityName) {
-			super( typeIdentifier, entityName );
-		}
+    static class Builder<E> extends AbstractBuilder<E> implements PojoContainedTypeExtendedMappingCollector {
 
-		StandalonePojoContainedTypeContext<E> build() {
-			return new StandalonePojoContainedTypeContext<>( this );
-		}
-	}
+        Builder(PojoRawTypeIdentifier<E> typeIdentifier, String entityName) {
+            super(typeIdentifier, entityName);
+        }
+
+        StandalonePojoContainedTypeContext<E> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

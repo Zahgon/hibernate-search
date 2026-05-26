@@ -9,54 +9,49 @@ import org.hibernate.search.engine.search.query.SearchResultTotal;
 
 public class SimpleSearchResultTotal implements SearchResultTotal {
 
-	public static SimpleSearchResultTotal of(long totalHitCount, boolean isExact) {
-		return new SimpleSearchResultTotal( totalHitCount, isExact );
-	}
+    public static SimpleSearchResultTotal of(long totalHitCount, boolean isExact) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static SimpleSearchResultTotal exact(long totalHitCount) {
-		return of( totalHitCount, true );
-	}
+    public static SimpleSearchResultTotal exact(long totalHitCount) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static SimpleSearchResultTotal lowerBound(long totalHitCount) {
-		return of( totalHitCount, false );
-	}
+    public static SimpleSearchResultTotal lowerBound(long totalHitCount) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final long totalHitCount;
-	private final boolean isExact;
+    private final long totalHitCount;
 
-	private SimpleSearchResultTotal(long totalHitCount, boolean isExact) {
-		this.totalHitCount = totalHitCount;
-		this.isExact = isExact;
-	}
+    private final boolean isExact;
 
-	@Override
-	public boolean isHitCountExact() {
-		return isExact;
-	}
+    private SimpleSearchResultTotal(long totalHitCount, boolean isExact) {
+        this.totalHitCount = totalHitCount;
+        this.isExact = isExact;
+    }
 
-	@Override
-	public boolean isHitCountLowerBound() {
-		return !isExact;
-	}
+    @Override
+    public boolean isHitCountExact() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long hitCount() {
-		if ( !isExact ) {
-			throw QueryLog.INSTANCE.notExactTotalHitCount();
-		}
-		return totalHitCount;
-	}
+    @Override
+    public boolean isHitCountLowerBound() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long hitCountLowerBound() {
-		return totalHitCount;
-	}
+    @Override
+    public long hitCount() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return "SimpleSearchResultTotal{" +
-				"totalHitCount=" + totalHitCount +
-				", isExact=" + isExact +
-				'}';
-	}
+    @Override
+    public long hitCountLowerBound() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

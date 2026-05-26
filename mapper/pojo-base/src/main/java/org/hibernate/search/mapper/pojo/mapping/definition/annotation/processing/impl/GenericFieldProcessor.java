@@ -17,54 +17,53 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class GenericFieldProcessor extends AbstractNonFullTextFieldAnnotationProcessor<GenericField> {
 
-	@Override
-	PropertyMappingNonFullTextFieldOptionsStep<?> initSortableFieldMappingContext(PropertyMappingStep mappingContext,
-			GenericField annotation, String fieldName) {
-		return mappingContext.genericField( fieldName );
-	}
+    @Override
+    PropertyMappingNonFullTextFieldOptionsStep<?> initSortableFieldMappingContext(PropertyMappingStep mappingContext, GenericField annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getName(GenericField annotation) {
-		return annotation.name();
-	}
+    @Override
+    String getName(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Projectable getProjectable(GenericField annotation) {
-		return annotation.projectable();
-	}
+    @Override
+    Projectable getProjectable(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Searchable getSearchable(GenericField annotation) {
-		return annotation.searchable();
-	}
+    @Override
+    Searchable getSearchable(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Sortable getSortable(GenericField annotation) {
-		return annotation.sortable();
-	}
+    @Override
+    Sortable getSortable(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Aggregable getAggregable(GenericField annotation) {
-		return annotation.aggregable();
-	}
+    @Override
+    Aggregable getAggregable(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getIndexNullAs(GenericField annotation) {
-		return annotation.indexNullAs();
-	}
+    @Override
+    String getIndexNullAs(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ValueBridgeRef getValueBridge(GenericField annotation) {
-		return annotation.valueBridge();
-	}
+    @Override
+    ValueBridgeRef getValueBridge(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ValueBinderRef getValueBinder(GenericField annotation) {
-		return annotation.valueBinder();
-	}
+    @Override
+    ValueBinderRef getValueBinder(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ContainerExtraction getExtraction(GenericField annotation) {
-		return annotation.extraction();
-	}
+    @Override
+    ContainerExtraction getExtraction(GenericField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

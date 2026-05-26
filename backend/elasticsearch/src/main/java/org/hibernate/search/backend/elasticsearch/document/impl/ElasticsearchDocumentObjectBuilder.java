@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.document.impl;
 
 import java.util.Objects;
-
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexCompositeNode;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexField;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexModel;
@@ -22,161 +21,108 @@ import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 import org.hibernate.search.engine.backend.document.model.spi.IndexFieldFilter;
 import org.hibernate.search.engine.backend.document.spi.NoOpDocumentElement;
 import org.hibernate.search.engine.common.tree.spi.TreeNodeInclusion;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchDocumentObjectBuilder implements DocumentElement {
 
-	private final ElasticsearchIndexModel model;
-	private final ElasticsearchIndexCompositeNode schemaNode;
-	private final JsonObject content;
+    private final ElasticsearchIndexModel model;
 
-	public ElasticsearchDocumentObjectBuilder(ElasticsearchIndexModel model) {
-		this( model, model.root(), new JsonObject() );
-	}
+    private final ElasticsearchIndexCompositeNode schemaNode;
 
-	ElasticsearchDocumentObjectBuilder(ElasticsearchIndexModel model, ElasticsearchIndexCompositeNode schemaNode,
-			JsonObject content) {
-		this.model = model;
-		this.schemaNode = schemaNode;
-		this.content = content;
-	}
+    private final JsonObject content;
 
-	@Override
-	public <F> void addValue(IndexFieldReference<F> fieldReference, F value) {
-		ElasticsearchIndexFieldReference<F> elasticsearchFieldReference = (ElasticsearchIndexFieldReference<F>) fieldReference;
+    public ElasticsearchDocumentObjectBuilder(ElasticsearchIndexModel model) {
+        this(model, model.root(), new JsonObject());
+    }
 
-		ElasticsearchIndexValueField<F> fieldSchemaNode = elasticsearchFieldReference.getSchemaNode();
-		addValue( fieldSchemaNode, value );
-	}
+    ElasticsearchDocumentObjectBuilder(ElasticsearchIndexModel model, ElasticsearchIndexCompositeNode schemaNode, JsonObject content) {
+        this.model = model;
+        this.schemaNode = schemaNode;
+        this.content = content;
+    }
 
-	@Override
-	public DocumentElement addObject(IndexObjectFieldReference fieldReference) {
-		ElasticsearchIndexObjectFieldReference elasticsearchFieldReference =
-				(ElasticsearchIndexObjectFieldReference) fieldReference;
+    @Override
+    public <F> void addValue(IndexFieldReference<F> fieldReference, F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchIndexObjectField fieldSchemaNode = elasticsearchFieldReference.getSchemaNode();
+    @Override
+    public DocumentElement addObject(IndexObjectFieldReference fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JsonObject jsonObject = new JsonObject();
-		return addObject( fieldSchemaNode, jsonObject );
-	}
+    @Override
+    public void addNullObject(IndexObjectFieldReference fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addNullObject(IndexObjectFieldReference fieldReference) {
-		ElasticsearchIndexObjectFieldReference elasticsearchFieldReference =
-				(ElasticsearchIndexObjectFieldReference) fieldReference;
+    @Override
+    public void addValue(String relativeFieldName, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		ElasticsearchIndexObjectField fieldSchemaNode = elasticsearchFieldReference.getSchemaNode();
+    @Override
+    public DocumentElement addObject(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		addObject( fieldSchemaNode, null );
-	}
+    @Override
+    public void addNullObject(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addValue(String relativeFieldName, Object value) {
-		String absoluteFieldPath = FieldPaths.compose( schemaNode.absolutePath(), relativeFieldName );
-		ElasticsearchIndexField node = model.fieldOrNull( absoluteFieldPath, IndexFieldFilter.ALL );
+    public JsonObject build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( node == null ) {
-			throw IndexingLog.INSTANCE.unknownFieldForIndexing( absoluteFieldPath, model.eventContext() );
-		}
+    private <F> void addValue(ElasticsearchIndexValueField<F> node, F value) {
+        ElasticsearchIndexCompositeNode expectedParentNode = node.parent();
+        checkTreeConsistency(expectedParentNode);
+        if (TreeNodeInclusion.EXCLUDED.equals(node.inclusion())) {
+            return;
+        }
+        ElasticsearchIndexValueFieldType<F> type = node.type();
+        String jsonPropertyName = node.relativeName();
+        if (!node.multiValued() && content.has(jsonPropertyName)) {
+            throw IndexingLog.INSTANCE.multipleValuesForSingleValuedField(node.absolutePath());
+        }
+        GsonUtils.setOrAppendToArray(content, jsonPropertyName, type.codec().encode(value));
+    }
 
-		addValueUnknownType( node.toValueField(), value );
-	}
+    // We check types explicitly using reflection
+    @SuppressWarnings("unchecked")
+    private void addValueUnknownType(ElasticsearchIndexValueField<?> node, Object value) {
+        if (value == null) {
+            addValue(node, null);
+        } else {
+            @SuppressWarnings("rawtypes")
+            ElasticsearchIndexValueField typeCheckedNode = node.withValueType(value.getClass(), model.eventContext());
+            addValue(typeCheckedNode, value);
+        }
+    }
 
-	@Override
-	public DocumentElement addObject(String relativeFieldName) {
-		String absoluteFieldPath = schemaNode.absolutePath( relativeFieldName );
-		ElasticsearchIndexField fieldSchemaNode =
-				model.fieldOrNull( absoluteFieldPath, IndexFieldFilter.ALL );
+    private DocumentElement addObject(ElasticsearchIndexObjectField node, JsonObject value) {
+        ElasticsearchIndexCompositeNode expectedParentNode = node.parent();
+        checkTreeConsistency(expectedParentNode);
+        if (TreeNodeInclusion.EXCLUDED.equals(node.inclusion())) {
+            return NoOpDocumentElement.get();
+        }
+        String jsonPropertyName = node.relativeName();
+        if (!node.multiValued() && content.has(jsonPropertyName)) {
+            throw IndexingLog.INSTANCE.multipleValuesForSingleValuedField(node.absolutePath());
+        }
+        GsonUtils.setOrAppendToArray(content, jsonPropertyName, value);
+        if (value == null) {
+            // Will not be used
+            return NoOpDocumentElement.get();
+        } else {
+            return new ElasticsearchDocumentObjectBuilder(model, node, value);
+        }
+    }
 
-		if ( fieldSchemaNode == null ) {
-			throw IndexingLog.INSTANCE.unknownFieldForIndexing( absoluteFieldPath, model.eventContext() );
-		}
-
-		ElasticsearchIndexObjectField objectFieldSchemaNode = fieldSchemaNode.toObjectField();
-
-		JsonObject jsonObject = new JsonObject();
-		addObject( objectFieldSchemaNode, jsonObject );
-
-		return new ElasticsearchDocumentObjectBuilder( model, objectFieldSchemaNode, jsonObject );
-	}
-
-	@Override
-	public void addNullObject(String relativeFieldName) {
-		String absoluteFieldPath = schemaNode.absolutePath( relativeFieldName );
-		ElasticsearchIndexField fieldSchemaNode =
-				model.fieldOrNull( absoluteFieldPath, IndexFieldFilter.ALL );
-
-		if ( fieldSchemaNode == null ) {
-			throw IndexingLog.INSTANCE.unknownFieldForIndexing( absoluteFieldPath, model.eventContext() );
-		}
-
-		ElasticsearchIndexObjectField objectFieldSchemaNode = fieldSchemaNode.toObjectField();
-
-		addObject( objectFieldSchemaNode, null );
-	}
-
-	public JsonObject build() {
-		return content;
-	}
-
-	private <F> void addValue(ElasticsearchIndexValueField<F> node, F value) {
-		ElasticsearchIndexCompositeNode expectedParentNode = node.parent();
-		checkTreeConsistency( expectedParentNode );
-
-		if ( TreeNodeInclusion.EXCLUDED.equals( node.inclusion() ) ) {
-			return;
-		}
-
-		ElasticsearchIndexValueFieldType<F> type = node.type();
-
-		String jsonPropertyName = node.relativeName();
-		if ( !node.multiValued() && content.has( jsonPropertyName ) ) {
-			throw IndexingLog.INSTANCE.multipleValuesForSingleValuedField( node.absolutePath() );
-		}
-		GsonUtils.setOrAppendToArray( content, jsonPropertyName, type.codec().encode( value ) );
-	}
-
-	@SuppressWarnings("unchecked") // We check types explicitly using reflection
-	private void addValueUnknownType(ElasticsearchIndexValueField<?> node, Object value) {
-		if ( value == null ) {
-			addValue( node, null );
-		}
-		else {
-			@SuppressWarnings("rawtypes")
-			ElasticsearchIndexValueField typeCheckedNode =
-					node.withValueType( value.getClass(), model.eventContext() );
-			addValue( typeCheckedNode, value );
-		}
-	}
-
-	private DocumentElement addObject(ElasticsearchIndexObjectField node, JsonObject value) {
-		ElasticsearchIndexCompositeNode expectedParentNode = node.parent();
-		checkTreeConsistency( expectedParentNode );
-
-		if ( TreeNodeInclusion.EXCLUDED.equals( node.inclusion() ) ) {
-			return NoOpDocumentElement.get();
-		}
-
-		String jsonPropertyName = node.relativeName();
-		if ( !node.multiValued() && content.has( jsonPropertyName ) ) {
-			throw IndexingLog.INSTANCE.multipleValuesForSingleValuedField( node.absolutePath() );
-		}
-		GsonUtils.setOrAppendToArray( content, jsonPropertyName, value );
-
-		if ( value == null ) {
-			return NoOpDocumentElement.get(); // Will not be used
-		}
-		else {
-			return new ElasticsearchDocumentObjectBuilder( model, node, value );
-		}
-	}
-
-	private void checkTreeConsistency(ElasticsearchIndexCompositeNode expectedParentNode) {
-		if ( !Objects.equals( expectedParentNode, schemaNode ) ) {
-			throw ElasticsearchClientLog.INSTANCE.invalidFieldForDocumentElement( expectedParentNode.absolutePath(),
-					schemaNode.absolutePath() );
-		}
-	}
-
+    private void checkTreeConsistency(ElasticsearchIndexCompositeNode expectedParentNode) {
+        if (!Objects.equals(expectedParentNode, schemaNode)) {
+            throw ElasticsearchClientLog.INSTANCE.invalidFieldForDocumentElement(expectedParentNode.absolutePath(), schemaNode.absolutePath());
+        }
+    }
 }

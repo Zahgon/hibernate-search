@@ -10,24 +10,22 @@ import org.hibernate.search.query.facet.FacetingRequest;
 /**
  * @author Hardy Ferentschik
  */
-public class ConnectedFacetRangeAboveContext<T> extends ConnectedFacetParameterContext
-		implements FacetRangeAboveContext<T> {
-	private final FacetBuildingContext context;
+public class ConnectedFacetRangeAboveContext<T> extends ConnectedFacetParameterContext implements FacetRangeAboveContext<T> {
 
-	public ConnectedFacetRangeAboveContext(FacetBuildingContext context) {
-		super( context );
-		this.context = context;
-	}
+    private final FacetBuildingContext context;
 
-	@Override
-	public FacetRangeAboveContext<T> excludeLimit() {
-		context.setIncludeRangeStart( false );
-		return this;
-	}
+    public ConnectedFacetRangeAboveContext(FacetBuildingContext context) {
+        super(context);
+        this.context = context;
+    }
 
-	@Override
-	public FacetingRequest createFacetingRequest() {
-		context.makeRange();
-		return context.getFacetingRequest();
-	}
+    @Override
+    public FacetRangeAboveContext<T> excludeLimit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public FacetingRequest createFacetingRequest() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

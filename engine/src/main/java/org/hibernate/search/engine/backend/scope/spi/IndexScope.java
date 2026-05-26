@@ -13,19 +13,18 @@ import org.hibernate.search.util.common.SearchException;
  */
 public interface IndexScope<SR> {
 
-	SearchQueryIndexScope<SR, ? extends SearchQueryIndexScope<?, ?>> searchScope();
+    SearchQueryIndexScope<SR, ? extends SearchQueryIndexScope<?, ?>> searchScope();
 
-	/**
-	 * Extend the current index scope with the given extension,
-	 * resulting in an extended index scope offering backend-specific utilities.
-	 *
-	 * @param extension The extension to apply.
-	 * @param <T> The type of index scope provided by the extension.
-	 * @return The extended index scope.
-	 * @throws SearchException If the extension cannot be applied (wrong underlying technology, ...).
-	 */
-	default <T> T extension(IndexScopeExtension<T> extension) {
-		return extension.extendOrFail( this );
-	}
-
+    /**
+     * Extend the current index scope with the given extension,
+     * resulting in an extended index scope offering backend-specific utilities.
+     *
+     * @param extension The extension to apply.
+     * @param <T> The type of index scope provided by the extension.
+     * @return The extended index scope.
+     * @throws SearchException If the extension cannot be applied (wrong underlying technology, ...).
+     */
+    default <T> T extension(IndexScopeExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

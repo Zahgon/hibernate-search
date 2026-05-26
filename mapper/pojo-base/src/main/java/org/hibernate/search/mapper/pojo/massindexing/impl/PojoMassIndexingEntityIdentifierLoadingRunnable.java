@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.massindexing.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.search.mapper.pojo.loading.spi.PojoMassIdentifierLoader;
 import org.hibernate.search.mapper.pojo.loading.spi.PojoMassIdentifierLoadingContext;
 import org.hibernate.search.mapper.pojo.loading.spi.PojoMassIdentifierSink;
@@ -17,109 +16,80 @@ import org.hibernate.search.mapper.pojo.massindexing.MassIndexingEnvironment;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingTypeGroupMonitor;
 import org.hibernate.search.mapper.pojo.reporting.impl.PojoMassIndexerMessages;
 
-public class PojoMassIndexingEntityIdentifierLoadingRunnable<E, I>
-		extends PojoMassIndexingFailureHandledRunnable {
+public class PojoMassIndexingEntityIdentifierLoadingRunnable<E, I> extends PojoMassIndexingFailureHandledRunnable {
 
-	private final MassIndexingTypeGroupMonitor typeGroupMonitor;
-	private final MassIndexingTypeGroupContext<E> massIndexingTypeGroupContext;
-	private final PojoMassIndexingIndexedTypeGroup<E> typeGroup;
-	private final PojoMassLoadingStrategy<E, I> loadingStrategy;
-	private final PojoProducerConsumerQueue<List<I>> identifierQueue;
-	private final MassIndexingEnvironment.EntityIdentifierLoadingContext identifierLoadingContext;
+    private final MassIndexingTypeGroupMonitor typeGroupMonitor;
 
-	public PojoMassIndexingEntityIdentifierLoadingRunnable(PojoMassIndexingNotifier notifier,
-			MassIndexingTypeGroupMonitor typeGroupMonitor,
-			MassIndexingTypeGroupContext<E> massIndexingTypeGroupContext, MassIndexingEnvironment environment,
-			PojoMassIndexingIndexedTypeGroup<E> typeGroup,
-			PojoMassLoadingStrategy<E, I> loadingStrategy,
-			PojoProducerConsumerQueue<List<I>> identifierQueue) {
-		super( notifier, environment );
-		this.typeGroupMonitor = typeGroupMonitor;
-		this.massIndexingTypeGroupContext = massIndexingTypeGroupContext;
-		this.loadingStrategy = loadingStrategy;
-		this.typeGroup = typeGroup;
-		this.identifierQueue = identifierQueue;
+    private final MassIndexingTypeGroupContext<E> massIndexingTypeGroupContext;
 
-		this.identifierLoadingContext = new EntityIdentifierLoadingContextImpl();
-	}
+    private final PojoMassIndexingIndexedTypeGroup<E> typeGroup;
 
-	@Override
-	protected void runWithFailureHandler() throws InterruptedException {
-		MassIndexingLog.INSTANCE.identifierLoadingStarted( typeGroup.notifiedGroupName() );
-		LoadingContext context = new LoadingContext();
-		try ( PojoMassIdentifierLoader loader = loadingStrategy.createIdentifierLoader( typeGroup.includedTypes(), context ) ) {
-			typeGroupMonitor.indexingStarted( massIndexingTypeGroupContext.withIdentifierLoader( loader ) );
-			do {
-				loader.loadNext();
-			}
-			while ( !context.done );
-			// Only do this when stopping normally,
-			// because this operation will block if the queue is full,
-			// resuming the thread only if the queue gets consumed (consumer still working)
-			// or if the thread is interrupted by the workspace (due to consumer failure).
-			identifierQueue.producerStopping();
-		}
-		MassIndexingLog.INSTANCE.identifierLoadingFinished( typeGroup.notifiedGroupName() );
-	}
+    private final PojoMassLoadingStrategy<E, I> loadingStrategy;
 
-	@Override
-	protected void cleanUpOnFailure() {
-		// Nothing to do
-	}
+    private final PojoProducerConsumerQueue<List<I>> identifierQueue;
 
-	@Override
-	protected void cleanUpOnInterruption() {
-		// Nothing to do
-	}
+    private final MassIndexingEnvironment.EntityIdentifierLoadingContext identifierLoadingContext;
 
-	@Override
-	protected MassIndexingEnvironment.Context createMassIndexingEnvironmentContext() {
-		return identifierLoadingContext;
-	}
+    public PojoMassIndexingEntityIdentifierLoadingRunnable(PojoMassIndexingNotifier notifier, MassIndexingTypeGroupMonitor typeGroupMonitor, MassIndexingTypeGroupContext<E> massIndexingTypeGroupContext, MassIndexingEnvironment environment, PojoMassIndexingIndexedTypeGroup<E> typeGroup, PojoMassLoadingStrategy<E, I> loadingStrategy, PojoProducerConsumerQueue<List<I>> identifierQueue) {
+        super(notifier, environment);
+        this.typeGroupMonitor = typeGroupMonitor;
+        this.massIndexingTypeGroupContext = massIndexingTypeGroupContext;
+        this.loadingStrategy = loadingStrategy;
+        this.typeGroup = typeGroup;
+        this.identifierQueue = identifierQueue;
+        this.identifierLoadingContext = new EntityIdentifierLoadingContextImpl();
+    }
 
-	@Override
-	protected boolean supportsThreadLifecycleHooks() {
-		return true;
-	}
+    @Override
+    protected void runWithFailureHandler() throws InterruptedException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected String operationName() {
-		return PojoMassIndexerMessages.INSTANCE.massIndexerFetchingIds( typeGroup.notifiedGroupName() );
-	}
+    @Override
+    protected void cleanUpOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private class LoadingContext implements PojoMassIdentifierLoadingContext<I> {
-		private boolean done = false;
+    @Override
+    protected void cleanUpOnInterruption() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public PojoMassLoadingContext parent() {
-			return massIndexingTypeGroupContext.massIndexingContext();
-		}
+    @Override
+    protected MassIndexingEnvironment.Context createMassIndexingEnvironmentContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public PojoMassIdentifierSink<I> createSink() {
-			return new PojoMassIdentifierSink<I>() {
-				@Override
-				public void accept(List<? extends I> batch) throws InterruptedException {
-					MassIndexingLog.INSTANCE.identifierLoadingLoadedIds( batch );
-					List<I> copy = new ArrayList<>( batch );
-					identifierQueue.put( copy );
-				}
+    @Override
+    protected boolean supportsThreadLifecycleHooks() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				@Override
-				public void complete() {
-					done = true;
-				}
-			};
-		}
+    @Override
+    protected String operationName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public String tenantIdentifier() {
-			return massIndexingTypeGroupContext.tenantIdentifier();
-		}
-	}
+    private class LoadingContext implements PojoMassIdentifierLoadingContext<I> {
 
-	private static final class EntityIdentifierLoadingContextImpl
-			implements MassIndexingEnvironment.EntityIdentifierLoadingContext {
-	}
+        private boolean done = false;
 
+        @Override
+        public PojoMassLoadingContext parent() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public PojoMassIdentifierSink<I> createSink() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public String tenantIdentifier() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static final class EntityIdentifierLoadingContextImpl implements MassIndexingEnvironment.EntityIdentifierLoadingContext {
+    }
 }

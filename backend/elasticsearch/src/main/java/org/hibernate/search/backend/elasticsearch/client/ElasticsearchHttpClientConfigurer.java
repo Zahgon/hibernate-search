@@ -22,29 +22,26 @@ import org.hibernate.search.backend.elasticsearch.client.impl.ElasticsearchHttpC
  */
 @SuppressWarnings("removal")
 @Deprecated(since = "8.2", forRemoval = true)
-public interface ElasticsearchHttpClientConfigurer
-		extends org.hibernate.search.backend.elasticsearch.client.rest4.ElasticsearchHttpClientConfigurer {
+public interface ElasticsearchHttpClientConfigurer extends org.hibernate.search.backend.elasticsearch.client.rest4.ElasticsearchHttpClientConfigurer {
 
-	/**
-	 * Configure the HTTP Client.
-	 * <p>
-	 * This method is called once for every configurer, each time an Elasticsearch client is set up.
-	 * <p>
-	 * Implementors should take care of only applying configuration if relevant:
-	 * there may be multiple, conflicting configurers in the path, so implementors should first check
-	 * (through a configuration property) whether they are needed or not before applying any modification.
-	 * For example an authentication configurer could decide not to do anything if no username is provided,
-	 * or if the configuration property {@code my.configurer.enabled} is {@code false}.
-	 *
-	 * @param context A configuration context giving access to the Apache HTTP client builder
-	 * and configuration properties in particular.
-	 */
-	void configure(ElasticsearchHttpClientConfigurationContext context);
+    /**
+     * Configure the HTTP Client.
+     * <p>
+     * This method is called once for every configurer, each time an Elasticsearch client is set up.
+     * <p>
+     * Implementors should take care of only applying configuration if relevant:
+     * there may be multiple, conflicting configurers in the path, so implementors should first check
+     * (through a configuration property) whether they are needed or not before applying any modification.
+     * For example an authentication configurer could decide not to do anything if no username is provided,
+     * or if the configuration property {@code my.configurer.enabled} is {@code false}.
+     *
+     * @param context A configuration context giving access to the Apache HTTP client builder
+     * and configuration properties in particular.
+     */
+    void configure(ElasticsearchHttpClientConfigurationContext context);
 
-	@Override
-	default void configure(
-			org.hibernate.search.backend.elasticsearch.client.rest4.ElasticsearchHttpClientConfigurationContext context) {
-		configure( new ElasticsearchHttpClientConfigurationContextDelegate( context ) );
-	}
-
+    @Override
+    default void configure(org.hibernate.search.backend.elasticsearch.client.rest4.ElasticsearchHttpClientConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

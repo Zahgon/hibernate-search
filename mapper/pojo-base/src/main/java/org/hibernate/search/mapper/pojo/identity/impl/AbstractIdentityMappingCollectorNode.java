@@ -12,35 +12,20 @@ import org.hibernate.search.mapper.pojo.reporting.spi.PojoEventContexts;
 
 abstract class AbstractIdentityMappingCollectorNode {
 
-	final PojoMappingHelper mappingHelper;
+    final PojoMappingHelper mappingHelper;
 
-	AbstractIdentityMappingCollectorNode(PojoMappingHelper mappingHelper) {
-		this.mappingHelper = mappingHelper;
-	}
+    AbstractIdentityMappingCollectorNode(PojoMappingHelper mappingHelper) {
+        this.mappingHelper = mappingHelper;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + getModelPath() + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract BoundPojoModelPath getModelPath();
+    abstract BoundPojoModelPath getModelPath();
 
-	public final ContextualFailureCollector failureCollector() {
-		BoundPojoModelPath modelPath = getModelPath();
-
-		ContextualFailureCollector failureCollector = mappingHelper.failureCollector()
-				.withContext(
-						PojoEventContexts.fromType( modelPath.getRootType().rawType() )
-				);
-
-		PojoModelPath unboundPath = modelPath.toUnboundPath();
-		if ( unboundPath != null ) {
-			failureCollector = failureCollector.withContext(
-					PojoEventContexts.fromPath( modelPath.toUnboundPath() )
-			);
-		}
-
-		return failureCollector;
-	}
-
+    public final ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

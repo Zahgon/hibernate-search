@@ -10,17 +10,16 @@ package org.hibernate.search.util.common.data.impl;
  * @param <T> The type of elements stored in each bucket.
  */
 public final class ModuloHashTable<T> extends HashTable<T> {
-	final HashFunction hashFunction;
 
-	public ModuloHashTable(HashFunction hashFunction, int size) {
-		super( size );
-		this.hashFunction = hashFunction;
-	}
+    final HashFunction hashFunction;
 
-	@Override
-	public int computeIndex(CharSequence key) {
-		// WARNING: NEVER CHANGE THIS IMPLEMENTATION
-		// This is used to persist data (picking a shard in a Lucene index in particular)
-		return Math.abs( hashFunction.hash( key ) % buckets.length );
-	}
+    public ModuloHashTable(HashFunction hashFunction, int size) {
+        super(size);
+        this.hashFunction = hashFunction;
+    }
+
+    @Override
+    public int computeIndex(CharSequence key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

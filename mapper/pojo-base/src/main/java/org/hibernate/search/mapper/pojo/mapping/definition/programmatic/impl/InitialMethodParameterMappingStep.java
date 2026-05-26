@@ -8,40 +8,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoSearchMappingMethodParameterNode;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep;
 import org.hibernate.search.mapper.pojo.model.spi.PojoMethodParameterModel;
 import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBinder;
 
-class InitialMethodParameterMappingStep
-		implements MethodParameterMappingStep, PojoSearchMappingMethodParameterNode {
+class InitialMethodParameterMappingStep implements MethodParameterMappingStep, PojoSearchMappingMethodParameterNode {
 
-	private final InitialConstructorMappingStep parent;
-	private final PojoMethodParameterModel<?> parameterModel;
+    private final InitialConstructorMappingStep parent;
 
-	private List<ProjectionBindingData> projectionDefinitions;
+    private final PojoMethodParameterModel<?> parameterModel;
 
-	InitialMethodParameterMappingStep(InitialConstructorMappingStep parent,
-			PojoMethodParameterModel<?> parameterModel) {
-		this.parent = parent;
-		this.parameterModel = parameterModel;
-	}
+    private List<ProjectionBindingData> projectionDefinitions;
 
-	@Override
-	public MethodParameterMappingStep projection(BeanReference<? extends ProjectionBinder> binder,
-			Map<String, Object> params) {
-		if ( projectionDefinitions == null ) {
-			projectionDefinitions = new ArrayList<>();
-		}
-		projectionDefinitions.add( new ProjectionBindingData( binder, params ) );
-		return this;
-	}
+    InitialMethodParameterMappingStep(InitialConstructorMappingStep parent, PojoMethodParameterModel<?> parameterModel) {
+        this.parent = parent;
+        this.parameterModel = parameterModel;
+    }
 
-	@Override
-	public List<ProjectionBindingData> projectionBindings() {
-		return projectionDefinitions == null ? Collections.emptyList() : projectionDefinitions;
-	}
+    @Override
+    public MethodParameterMappingStep projection(BeanReference<? extends ProjectionBinder> binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public List<ProjectionBindingData> projectionBindings() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

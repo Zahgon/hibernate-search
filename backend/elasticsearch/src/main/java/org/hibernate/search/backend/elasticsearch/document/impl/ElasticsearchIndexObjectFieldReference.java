@@ -9,19 +9,18 @@ import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 
 public class ElasticsearchIndexObjectFieldReference implements IndexObjectFieldReference {
 
-	private ElasticsearchIndexObjectField schemaNode;
+    private ElasticsearchIndexObjectField schemaNode;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName()
-				+ "[absolutePath=" + ( schemaNode == null ? null : schemaNode.absolutePath() ) + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setSchemaNode(ElasticsearchIndexObjectField schemaNode) {
-		this.schemaNode = schemaNode;
-	}
+    public void setSchemaNode(ElasticsearchIndexObjectField schemaNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ElasticsearchIndexObjectField getSchemaNode() {
-		return schemaNode;
-	}
+    ElasticsearchIndexObjectField getSchemaNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -18,47 +18,32 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoIndexingProcessorOriginalTypeNode<T> extends PojoIndexingProcessor<T> {
 
-	private final Iterable<IndexObjectFieldReference> parentIndexObjectReferences;
-	private final PojoIndexingProcessor<? super T> nested;
-	private final boolean isEntityType;
+    private final Iterable<IndexObjectFieldReference> parentIndexObjectReferences;
 
-	public PojoIndexingProcessorOriginalTypeNode(Iterable<IndexObjectFieldReference> parentIndexObjectReferences,
-			PojoIndexingProcessor<? super T> nested, boolean isEntityType) {
-		this.parentIndexObjectReferences = parentIndexObjectReferences;
-		this.nested = nested;
-		this.isEntityType = isEntityType;
-	}
+    private final PojoIndexingProcessor<? super T> nested;
 
-	@Override
-	public void close() {
-		nested.close();
-	}
+    private final boolean isEntityType;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process type" );
-		appender.attribute( "objectFieldsToCreate", parentIndexObjectReferences );
-		appender.attribute( "nested", nested );
-		appender.attribute( "isEntityType", isEntityType );
-	}
+    public PojoIndexingProcessorOriginalTypeNode(Iterable<IndexObjectFieldReference> parentIndexObjectReferences, PojoIndexingProcessor<? super T> nested, boolean isEntityType) {
+        this.parentIndexObjectReferences = parentIndexObjectReferences;
+        this.nested = nested;
+        this.isEntityType = isEntityType;
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // As long as T is not a proxy-specific interface, it will also be implemented by the unproxified object
-	public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
-		if ( source == null ) {
-			return;
-		}
-		source = (T) context.sessionContext().runtimeIntrospector().unproxy( source );
-		// "isEntityType" is just an optimization to avoid unnecessary calls to isDeleted(),
-		// which may be costly (reflection, ...)
-		if ( isEntityType && context.isDeleted( source ) ) {
-			return;
-		}
-		DocumentElement parentObject = target;
-		for ( IndexObjectFieldReference objectFieldReference : parentIndexObjectReferences ) {
-			parentObject = parentObject.addObject( objectFieldReference );
-		}
-		nested.process( parentObject, source, context );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    // As long as T is not a proxy-specific interface, it will also be implemented by the unproxified object
+    @SuppressWarnings("unchecked")
+    public final void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

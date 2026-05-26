@@ -19,66 +19,53 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class KeywordFieldProcessor extends AbstractNonFullTextFieldAnnotationProcessor<KeywordField> {
 
-	@Override
-	PropertyMappingNonFullTextFieldOptionsStep<?> initSortableFieldMappingContext(PropertyMappingStep mappingContext,
-			KeywordField annotation, String fieldName) {
-		PropertyMappingKeywordFieldOptionsStep fieldContext = mappingContext.keywordField( fieldName );
+    @Override
+    PropertyMappingNonFullTextFieldOptionsStep<?> initSortableFieldMappingContext(PropertyMappingStep mappingContext, KeywordField annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		String normalizer = annotation.normalizer();
-		if ( !normalizer.isEmpty() ) {
-			fieldContext.normalizer( annotation.normalizer() );
-		}
+    @Override
+    String getName(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Norms norms = annotation.norms();
-		if ( !Norms.DEFAULT.equals( norms ) ) {
-			fieldContext.norms( norms );
-		}
+    @Override
+    Projectable getProjectable(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return fieldContext;
-	}
+    @Override
+    Searchable getSearchable(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getName(KeywordField annotation) {
-		return annotation.name();
-	}
+    @Override
+    Sortable getSortable(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Projectable getProjectable(KeywordField annotation) {
-		return annotation.projectable();
-	}
+    @Override
+    Aggregable getAggregable(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Searchable getSearchable(KeywordField annotation) {
-		return annotation.searchable();
-	}
+    @Override
+    String getIndexNullAs(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Sortable getSortable(KeywordField annotation) {
-		return annotation.sortable();
-	}
+    @Override
+    ValueBridgeRef getValueBridge(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Aggregable getAggregable(KeywordField annotation) {
-		return annotation.aggregable();
-	}
+    @Override
+    ValueBinderRef getValueBinder(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getIndexNullAs(KeywordField annotation) {
-		return annotation.indexNullAs();
-	}
-
-	@Override
-	ValueBridgeRef getValueBridge(KeywordField annotation) {
-		return annotation.valueBridge();
-	}
-
-	@Override
-	ValueBinderRef getValueBinder(KeywordField annotation) {
-		return annotation.valueBinder();
-	}
-
-	@Override
-	ContainerExtraction getExtraction(KeywordField annotation) {
-		return annotation.extraction();
-	}
+    @Override
+    ContainerExtraction getExtraction(KeywordField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

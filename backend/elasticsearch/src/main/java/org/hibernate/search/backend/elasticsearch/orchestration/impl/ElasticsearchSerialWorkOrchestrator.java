@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.orchestration.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.work.impl.IndexingWork;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 
@@ -35,16 +34,13 @@ import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
  */
 public interface ElasticsearchSerialWorkOrchestrator {
 
-	default <T> CompletableFuture<T> submit(IndexingWork<T> work, OperationSubmitter operationSubmitter) {
-		CompletableFuture<T> future = new CompletableFuture<>();
-		submit( new ElasticsearchBatchedWork<>( work, future ), operationSubmitter );
-		return future;
-	}
+    default <T> CompletableFuture<T> submit(IndexingWork<T> work, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	default <T> void submit(CompletableFuture<T> future, IndexingWork<T> work, OperationSubmitter operationSubmitter) {
-		submit( new ElasticsearchBatchedWork<>( work, future ), operationSubmitter );
-	}
+    default <T> void submit(CompletableFuture<T> future, IndexingWork<T> work, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void submit(ElasticsearchBatchedWork<?> work, OperationSubmitter operationSubmitter);
-
+    void submit(ElasticsearchBatchedWork<?> work, OperationSubmitter operationSubmitter);
 }

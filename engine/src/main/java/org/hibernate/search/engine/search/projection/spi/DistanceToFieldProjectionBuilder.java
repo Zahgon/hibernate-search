@@ -11,15 +11,14 @@ import org.hibernate.search.engine.spatial.GeoPoint;
 
 public interface DistanceToFieldProjectionBuilder extends SearchProjectionBuilder<Double> {
 
-	void center(GeoPoint center);
+    void center(GeoPoint center);
 
-	void unit(DistanceUnit unit);
+    void unit(DistanceUnit unit);
 
-	@Override
-	default SearchProjection<Double> build() {
-		return build( ProjectionCollector.nullable() );
-	}
+    @Override
+    default SearchProjection<Double> build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	<P> SearchProjection<P> build(ProjectionCollector.Provider<Double, P> collectorProvider);
-
+    <P> SearchProjection<P> build(ProjectionCollector.Provider<Double, P> collectorProvider);
 }

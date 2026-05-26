@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.index.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.cfg.LuceneIndexSettings;
 import org.hibernate.search.backend.lucene.index.spi.ShardingStrategy;
 import org.hibernate.search.backend.lucene.index.spi.ShardingStrategyInitializationContext;
@@ -19,48 +18,28 @@ import org.hibernate.search.util.common.data.impl.SimpleHashFunction;
 
 public class HashShardingStrategy implements ShardingStrategy {
 
-	public static final String NAME = "hash";
+    public static final String NAME = "hash";
 
-	private static final OptionalConfigurationProperty<Integer> NUMBER_OF_SHARDS =
-			ConfigurationProperty.forKey( LuceneIndexSettings.ShardingRadicals.NUMBER_OF_SHARDS )
-					.asIntegerStrictlyPositive()
-					.build();
+    private static final OptionalConfigurationProperty<Integer> NUMBER_OF_SHARDS = ConfigurationProperty.forKey(LuceneIndexSettings.ShardingRadicals.NUMBER_OF_SHARDS).asIntegerStrictlyPositive().build();
 
-	private HashTable<String> shardIds;
+    private HashTable<String> shardIds;
 
-	@Override
-	public void initialize(ShardingStrategyInitializationContext context) {
-		int numberOfShards = NUMBER_OF_SHARDS.getOrThrow(
-				context.configurationPropertySource(),
-				() -> ConfigurationLog.INSTANCE.missingPropertyValueForShardingStrategy( NAME )
-		);
-		// Note the hash function / table implementations MUST NOT CHANGE,
-		// otherwise existing indexes will no longer work correctly.
-		this.shardIds = new ModuloHashTable<>( SimpleHashFunction.INSTANCE, numberOfShards );
-		Set<String> shardIdSet = new LinkedHashSet<>();
-		for ( int i = 0; i < numberOfShards; i++ ) {
-			String shardId = String.valueOf( i );
-			shardIds.set( i, shardId );
-			shardIdSet.add( shardId );
-		}
-		context.shardIdentifiers( shardIdSet );
-	}
+    @Override
+    public void initialize(ShardingStrategyInitializationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toShardIdentifier(String documentId, String routingKey) {
-		return toShardIdentifier( routingKey == null ? documentId : routingKey );
-	}
+    @Override
+    public String toShardIdentifier(String documentId, String routingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> toShardIdentifiers(Set<String> routingKeys) {
-		Set<String> matchingShardIds = new LinkedHashSet<>();
-		for ( String routingKey : routingKeys ) {
-			matchingShardIds.add( toShardIdentifier( routingKey ) );
-		}
-		return matchingShardIds;
-	}
+    @Override
+    public Set<String> toShardIdentifiers(Set<String> routingKeys) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private String toShardIdentifier(String routingKey) {
-		return shardIds.get( routingKey );
-	}
+    private String toShardIdentifier(String routingKey) {
+        return shardIds.get(routingKey);
+    }
 }

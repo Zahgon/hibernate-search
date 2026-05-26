@@ -5,9 +5,7 @@
 package org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.SerializeExtraProperties;
-
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -27,45 +25,45 @@ import com.google.gson.annotations.SerializedName;
 @JsonAdapter(ElasticsearchDenseVectorIndexOptionsJsonAdapterFactory.class)
 public class ElasticsearchDenseVectorIndexOptions {
 
-	private String type;
+    private String type;
 
-	private Integer m;
+    private Integer m;
 
-	@SerializedName("ef_construction")
-	private Integer efConstruction;
+    @SerializedName("ef_construction")
+    private Integer efConstruction;
 
-	@SerializeExtraProperties
-	private Map<String, JsonElement> extraAttributes;
+    @SerializeExtraProperties
+    private Map<String, JsonElement> extraAttributes;
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Integer getM() {
-		return m;
-	}
+    public Integer getM() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setM(Integer m) {
-		this.m = m;
-	}
+    public void setM(Integer m) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Integer getEfConstruction() {
-		return efConstruction;
-	}
+    public Integer getEfConstruction() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setEfConstruction(Integer efConstruction) {
-		this.efConstruction = efConstruction;
-	}
+    public void setEfConstruction(Integer efConstruction) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, JsonElement> getExtraAttributes() {
-		return extraAttributes;
-	}
+    public Map<String, JsonElement> getExtraAttributes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setExtraAttributes(Map<String, JsonElement> extraAttributes) {
-		this.extraAttributes = extraAttributes;
-	}
+    public void setExtraAttributes(Map<String, JsonElement> extraAttributes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

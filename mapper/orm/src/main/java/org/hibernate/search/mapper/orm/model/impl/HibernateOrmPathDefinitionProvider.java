@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
@@ -25,28 +24,30 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
  */
 public class HibernateOrmPathDefinitionProvider implements PojoPathDefinitionProvider {
 
-	private final PojoRawTypeModel<?> typeModel;
-	private final PersistentClass persistentClass;
-	private final List<String> propertyStringRepresentationByOrdinal;
-	private final HibernateOrmPathInterpreter interpreter = new HibernateOrmPathInterpreter();
+    private final PojoRawTypeModel<?> typeModel;
 
-	public HibernateOrmPathDefinitionProvider(PojoRawTypeModel<?> typeModel, PersistentClass persistentClass) {
-		this.typeModel = typeModel;
-		this.persistentClass = persistentClass;
-		this.propertyStringRepresentationByOrdinal = new ArrayList<>();
-		for ( Property property : persistentClass.getPropertyClosure() ) {
-			propertyStringRepresentationByOrdinal.add( property.getName() );
-		}
-	}
+    private final PersistentClass persistentClass;
 
-	@Override
-	public List<String> preDefinedOrdinals() {
-		return propertyStringRepresentationByOrdinal;
-	}
+    private final List<String> propertyStringRepresentationByOrdinal;
 
-	@Override
-	public PojoPathDefinition interpretPath(PojoModelPathValueNode source) {
-		return interpreter.interpretPath( typeModel, persistentClass, propertyStringRepresentationByOrdinal, source );
-	}
+    private final HibernateOrmPathInterpreter interpreter = new HibernateOrmPathInterpreter();
 
+    public HibernateOrmPathDefinitionProvider(PojoRawTypeModel<?> typeModel, PersistentClass persistentClass) {
+        this.typeModel = typeModel;
+        this.persistentClass = persistentClass;
+        this.propertyStringRepresentationByOrdinal = new ArrayList<>();
+        for (Property property : persistentClass.getPropertyClosure()) {
+            propertyStringRepresentationByOrdinal.add(property.getName());
+        }
+    }
+
+    @Override
+    public List<String> preDefinedOrdinals() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoPathDefinition interpretPath(PojoModelPathValueNode source) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

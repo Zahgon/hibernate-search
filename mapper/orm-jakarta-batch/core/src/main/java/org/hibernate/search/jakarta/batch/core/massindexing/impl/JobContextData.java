@@ -12,9 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
 import jakarta.persistence.EntityManagerFactory;
-
 import org.hibernate.search.jakarta.batch.core.massindexing.util.impl.EntityTypeDescriptor;
 import org.hibernate.search.mapper.orm.tenancy.spi.TenancyConfiguration;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingDefaultCleanOperation;
@@ -27,77 +25,64 @@ import org.hibernate.search.mapper.pojo.massindexing.MassIndexingDefaultCleanOpe
  */
 public class JobContextData {
 
-	private EntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-	/*
+    /*
 	 * In Jakarta Batch standard, only string values can be propagated using job properties, but class types are frequently
 	 * used too. So this map has string keys to facilitate lookup for values extracted from job properties.
 	 */
-	private Map<String, EntityTypeDescriptor<?, ?>> entityTypeDescriptorMap;
+    private Map<String, EntityTypeDescriptor<?, ?>> entityTypeDescriptorMap;
 
-	private TenancyConfiguration tenancyConfiguration;
-	private MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation;
+    private TenancyConfiguration tenancyConfiguration;
 
-	public JobContextData() {
-		entityTypeDescriptorMap = new HashMap<>();
-	}
+    private MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation;
 
-	public EntityManagerFactory getEntityManagerFactory() {
-		return entityManagerFactory;
-	}
+    public JobContextData() {
+        entityTypeDescriptorMap = new HashMap<>();
+    }
 
-	public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-		this.entityManagerFactory = entityManagerFactory;
-	}
+    public EntityManagerFactory getEntityManagerFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setEntityTypeDescriptors(Collection<EntityTypeDescriptor<?, ?>> descriptors) {
-		for ( EntityTypeDescriptor<?, ?> descriptor : descriptors ) {
-			entityTypeDescriptorMap.put( descriptor.jpaEntityName(), descriptor );
-		}
-	}
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setTenancyConfiguration(TenancyConfiguration tenancyConfiguration) {
-		this.tenancyConfiguration = tenancyConfiguration;
-	}
+    public void setEntityTypeDescriptors(Collection<EntityTypeDescriptor<?, ?>> descriptors) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public TenancyConfiguration getTenancyConfiguration() {
-		return tenancyConfiguration;
-	}
+    public void setTenancyConfiguration(TenancyConfiguration tenancyConfiguration) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public MassIndexingDefaultCleanOperation getMassIndexingDefaultCleanOperation() {
-		return massIndexingDefaultCleanOperation;
-	}
+    public TenancyConfiguration getTenancyConfiguration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setMassIndexingDefaultCleanOperation(MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation) {
-		this.massIndexingDefaultCleanOperation = massIndexingDefaultCleanOperation;
-	}
+    public MassIndexingDefaultCleanOperation getMassIndexingDefaultCleanOperation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public EntityTypeDescriptor<?, ?> getEntityTypeDescriptor(String entityName) {
-		EntityTypeDescriptor<?, ?> descriptor = entityTypeDescriptorMap.get( entityName );
-		if ( descriptor == null ) {
-			String msg = String.format( Locale.ROOT, "entity type %s not found.", entityName );
-			throw new NoSuchElementException( msg );
-		}
-		return descriptor;
-	}
+    public void setMassIndexingDefaultCleanOperation(MassIndexingDefaultCleanOperation massIndexingDefaultCleanOperation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public List<EntityTypeDescriptor<?, ?>> getEntityTypeDescriptors() {
-		return new ArrayList<>( entityTypeDescriptorMap.values() );
-	}
+    public EntityTypeDescriptor<?, ?> getEntityTypeDescriptor(String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public List<Class<?>> getEntityTypes() {
-		return entityTypeDescriptorMap.values().stream()
-				.map( EntityTypeDescriptor::javaClass )
-				.collect( Collectors.toList() );
-	}
+    public List<EntityTypeDescriptor<?, ?>> getEntityTypeDescriptors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return new StringBuilder()
-				.append( "JobContextData [" )
-				.append( "entityManagerFactory=" ).append( entityManagerFactory )
-				.append( ", entityTypeDescriptorMap=" ).append( entityTypeDescriptorMap )
-				.append( "]" )
-				.toString();
-	}
+    public List<Class<?>> getEntityTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

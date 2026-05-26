@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.backend.work.execution.DocumentCommitStrategy;
 import org.hibernate.search.engine.backend.work.execution.DocumentRefreshStrategy;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
@@ -19,71 +18,39 @@ import org.hibernate.search.mapper.pojo.work.IndexingPlanSynchronizationStrategy
 import org.hibernate.search.mapper.pojo.work.SearchIndexingPlanExecutionReport;
 
 @SuppressWarnings("deprecation")
-public class DelegatingAutomaticIndexingSynchronizationStrategy
-		implements org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategy {
+public class DelegatingAutomaticIndexingSynchronizationStrategy implements org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategy {
 
-	private final IndexingPlanSynchronizationStrategy delegate;
+    private final IndexingPlanSynchronizationStrategy delegate;
 
-	public DelegatingAutomaticIndexingSynchronizationStrategy(IndexingPlanSynchronizationStrategy delegate) {
-		this.delegate = delegate;
-	}
+    public DelegatingAutomaticIndexingSynchronizationStrategy(IndexingPlanSynchronizationStrategy delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void apply(
-			org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationConfigurationContext context) {
-		delegate.apply( new IndexingPlanSynchronizationStrategyConfigurationContext() {
-			@Override
-			public void documentCommitStrategy(DocumentCommitStrategy strategy) {
-				context.documentCommitStrategy( strategy );
-			}
+    @Override
+    public void apply(org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void documentRefreshStrategy(DocumentRefreshStrategy strategy) {
-				context.documentRefreshStrategy( strategy );
-			}
+    public IndexingPlanSynchronizationStrategy delegate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public void indexingFutureHandler(
-					Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> handler) {
-				context.indexingFutureHandler(
-						report -> handler
-								.accept( report.thenApply( HibernateOrmDelegatingSearchIndexingPlanExecutionReport::new ) )
-				);
-			}
+    private static class HibernateOrmDelegatingSearchIndexingPlanExecutionReport implements SearchIndexingPlanExecutionReport {
 
-			@Override
-			public FailureHandler failureHandler() {
-				return context.failureHandler();
-			}
+        private final org.hibernate.search.mapper.orm.work.SearchIndexingPlanExecutionReport report;
 
-			@Override
-			public void operationSubmitter(OperationSubmitter operationSubmitter) {
-				context.operationSubmitter( operationSubmitter );
-			}
-		} );
-	}
+        private HibernateOrmDelegatingSearchIndexingPlanExecutionReport(org.hibernate.search.mapper.orm.work.SearchIndexingPlanExecutionReport report) {
+            this.report = report;
+        }
 
-	public IndexingPlanSynchronizationStrategy delegate() {
-		return delegate;
-	}
+        @Override
+        public Optional<Throwable> throwable() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static class HibernateOrmDelegatingSearchIndexingPlanExecutionReport implements SearchIndexingPlanExecutionReport {
-
-		private final org.hibernate.search.mapper.orm.work.SearchIndexingPlanExecutionReport report;
-
-		private HibernateOrmDelegatingSearchIndexingPlanExecutionReport(
-				org.hibernate.search.mapper.orm.work.SearchIndexingPlanExecutionReport report) {
-			this.report = report;
-		}
-
-		@Override
-		public Optional<Throwable> throwable() {
-			return report.throwable();
-		}
-
-		@Override
-		public List<? extends EntityReference> failingEntities() {
-			return report.failingEntities();
-		}
-	}
+        @Override
+        public List<? extends EntityReference> failingEntities() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

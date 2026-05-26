@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexCompositeNode;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexField;
 import org.hibernate.search.backend.elasticsearch.logging.impl.MappingLog;
@@ -33,135 +32,83 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 
 public abstract class AbstractElasticsearchIndexCompositeNodeBuilder implements IndexCompositeNodeBuilder {
 
-	protected final ElasticsearchIndexCompositeNodeType.Builder typeBuilder;
+    protected final ElasticsearchIndexCompositeNodeType.Builder typeBuilder;
 
-	// Use a LinkedHashMap for deterministic iteration
-	private final Map<String, ElasticsearchIndexNodeContributor> fields = new LinkedHashMap<>();
-	private final Map<String, ElasticsearchIndexNodeContributor> templates = new LinkedHashMap<>();
-	private final Set<String> namedPredicates = new LinkedHashSet<>();
+    // Use a LinkedHashMap for deterministic iteration
+    private final Map<String, ElasticsearchIndexNodeContributor> fields = new LinkedHashMap<>();
 
-	protected AbstractElasticsearchIndexCompositeNodeBuilder(
-			ElasticsearchIndexCompositeNodeType.Builder typeBuilder) {
-		this.typeBuilder = typeBuilder;
-	}
+    private final Map<String, ElasticsearchIndexNodeContributor> templates = new LinkedHashMap<>();
 
-	@Override
-	public String toString() {
-		return new StringBuilder( getClass().getSimpleName() )
-				.append( "[" )
-				.append( "absolutePath=" ).append( getAbsolutePath() )
-				.append( "]" )
-				.toString();
-	}
+    private final Set<String> namedPredicates = new LinkedHashSet<>();
 
-	@Override
-	public <F> IndexSchemaFieldOptionsStep<?, IndexFieldReference<F>> addField(
-			String relativeFieldName, TreeNodeInclusion inclusion, IndexFieldType<F> indexFieldType) {
-		ElasticsearchIndexValueFieldType<F> fieldType = (ElasticsearchIndexValueFieldType<F>) indexFieldType;
-		ElasticsearchIndexValueFieldBuilder<F> childBuilder = new ElasticsearchIndexValueFieldBuilder<>(
-				this, relativeFieldName, inclusion, fieldType
-		);
-		putField( relativeFieldName, childBuilder );
-		return childBuilder;
-	}
+    protected AbstractElasticsearchIndexCompositeNodeBuilder(ElasticsearchIndexCompositeNodeType.Builder typeBuilder) {
+        this.typeBuilder = typeBuilder;
+    }
 
-	@Override
-	public IndexObjectFieldBuilder addObjectField(String relativeFieldName, TreeNodeInclusion inclusion,
-			ObjectStructure structure) {
-		ElasticsearchIndexObjectFieldBuilder objectFieldBuilder =
-				new ElasticsearchIndexObjectFieldBuilder( this, relativeFieldName, inclusion, structure );
-		putField( relativeFieldName, objectFieldBuilder );
-		return objectFieldBuilder;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaNamedPredicateOptionsStep addNamedPredicate(String name, TreeNodeInclusion inclusion,
-			PredicateDefinition definition) {
-		putNamedPredicate( name );
-		if ( TreeNodeInclusion.INCLUDED.equals( inclusion ) ) {
-			typeBuilder.queryElementFactory( PredicateTypeKeys.named( name ),
-					new ElasticsearchNamedPredicate.Factory( definition, name ) );
-		}
-		return new ElasticsearchIndexNamedPredicateOptions<>( inclusion, definition );
-	}
+    @Override
+    public <F> IndexSchemaFieldOptionsStep<?, IndexFieldReference<F>> addField(String relativeFieldName, TreeNodeInclusion inclusion, IndexFieldType<F> indexFieldType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaNamedPredicateOptionsStep addNamedPredicate(String name,
-			TreeNodeInclusion inclusion, TypedPredicateDefinition<?> definition) {
-		putNamedPredicate( name );
-		if ( TreeNodeInclusion.INCLUDED.equals( inclusion ) ) {
-			typeBuilder.queryElementFactory( PredicateTypeKeys.named( name ),
-					new ElasticsearchNamedPredicate.TypedFactory<>( definition, name ) );
-		}
-		return new ElasticsearchIndexNamedPredicateOptions<>( inclusion, definition );
-	}
+    @Override
+    public IndexObjectFieldBuilder addObjectField(String relativeFieldName, TreeNodeInclusion inclusion, ObjectStructure structure) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaFieldTemplateOptionsStep<?> addFieldTemplate(String templateName,
-			TreeNodeInclusion inclusion, IndexFieldType<?> indexFieldType, String prefix) {
-		String prefixedTemplateName = FieldPaths.prefix( prefix, templateName );
-		ElasticsearchIndexValueFieldType<?> fieldType = (ElasticsearchIndexValueFieldType<?>) indexFieldType;
-		ElasticsearchIndexValueFieldTemplateBuilder templateBuilder = new ElasticsearchIndexValueFieldTemplateBuilder(
-				this, prefixedTemplateName, inclusion, fieldType, prefix
-		);
-		putTemplate( prefixedTemplateName, templateBuilder );
-		return templateBuilder;
-	}
+    @Override
+    public IndexSchemaNamedPredicateOptionsStep addNamedPredicate(String name, TreeNodeInclusion inclusion, PredicateDefinition definition) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaFieldTemplateOptionsStep<?> addObjectFieldTemplate(String templateName,
-			ObjectStructure structure, String prefix, TreeNodeInclusion inclusion) {
-		String prefixedTemplateName = FieldPaths.prefix( prefix, templateName );
-		ElasticsearchIndexObjectFieldTemplateBuilder templateBuilder =
-				new ElasticsearchIndexObjectFieldTemplateBuilder(
-						this, prefixedTemplateName, inclusion, structure, prefix
-				);
-		if ( TreeNodeInclusion.INCLUDED.equals( inclusion ) ) {
-			putTemplate( prefixedTemplateName, templateBuilder );
-		}
-		return templateBuilder;
-	}
+    @Override
+    public IndexSchemaNamedPredicateOptionsStep addNamedPredicate(String name, TreeNodeInclusion inclusion, TypedPredicateDefinition<?> definition) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final void contributeChildren(AbstractTypeMapping mapping, ElasticsearchIndexCompositeNode node,
-			ElasticsearchIndexNodeCollector collector,
-			Map<String, ElasticsearchIndexField> staticChildrenByNameForParent) {
-		for ( Map.Entry<String, ElasticsearchIndexNodeContributor> entry : fields.entrySet() ) {
-			ElasticsearchIndexNodeContributor propertyContributor = entry.getValue();
-			propertyContributor.contribute( collector, node, staticChildrenByNameForParent, mapping );
-		}
-		// Contribute templates depth-first, so do ours after the children's.
-		// The reason is templates defined in children have more precise path globs and thus
-		// should be appear first in the list.
-		for ( ElasticsearchIndexNodeContributor template : templates.values() ) {
-			template.contribute( collector, node, staticChildrenByNameForParent, mapping );
-		}
-	}
+    @Override
+    public IndexSchemaFieldTemplateOptionsStep<?> addFieldTemplate(String templateName, TreeNodeInclusion inclusion, IndexFieldType<?> indexFieldType, String prefix) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract ElasticsearchIndexRootBuilder getRootNodeBuilder();
+    @Override
+    public IndexSchemaFieldTemplateOptionsStep<?> addObjectFieldTemplate(String templateName, ObjectStructure structure, String prefix, TreeNodeInclusion inclusion) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract String getAbsolutePath();
+    final void contributeChildren(AbstractTypeMapping mapping, ElasticsearchIndexCompositeNode node, ElasticsearchIndexNodeCollector collector, Map<String, ElasticsearchIndexField> staticChildrenByNameForParent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	final DynamicType resolveSelfDynamicType(DynamicType defaultDynamicType) {
-		return ( templates.isEmpty() ) ? defaultDynamicType : DynamicType.TRUE;
-	}
+    abstract ElasticsearchIndexRootBuilder getRootNodeBuilder();
 
-	private void putField(String name, ElasticsearchIndexNodeContributor contributor) {
-		Object previous = fields.putIfAbsent( name, contributor );
-		if ( previous != null ) {
-			throw MappingLog.INSTANCE.indexSchemaNodeNameConflict( name, eventContext() );
-		}
-	}
+    abstract String getAbsolutePath();
 
-	private void putTemplate(String name, ElasticsearchIndexNodeContributor contributor) {
-		Object previous = templates.putIfAbsent( name, contributor );
-		if ( previous != null ) {
-			throw MappingLog.INSTANCE.indexSchemaFieldTemplateNameConflict( name, eventContext() );
-		}
-	}
+    final DynamicType resolveSelfDynamicType(DynamicType defaultDynamicType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void putNamedPredicate(String name) {
-		if ( !namedPredicates.add( name ) ) {
-			throw MappingLog.INSTANCE.indexSchemaNamedPredicateNameConflict( name, eventContext() );
-		}
-	}
+    private void putField(String name, ElasticsearchIndexNodeContributor contributor) {
+        Object previous = fields.putIfAbsent(name, contributor);
+        if (previous != null) {
+            throw MappingLog.INSTANCE.indexSchemaNodeNameConflict(name, eventContext());
+        }
+    }
+
+    private void putTemplate(String name, ElasticsearchIndexNodeContributor contributor) {
+        Object previous = templates.putIfAbsent(name, contributor);
+        if (previous != null) {
+            throw MappingLog.INSTANCE.indexSchemaFieldTemplateNameConflict(name, eventContext());
+        }
+    }
+
+    private void putNamedPredicate(String name) {
+        if (!namedPredicates.add(name)) {
+            throw MappingLog.INSTANCE.indexSchemaNamedPredicateNameConflict(name, eventContext());
+        }
+    }
 }

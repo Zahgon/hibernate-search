@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.aggregation.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningLongMultiValuesSource;
 import org.hibernate.search.backend.lucene.search.aggregation.impl.AggregationExtractContext;
@@ -13,36 +12,33 @@ import org.hibernate.search.backend.lucene.search.aggregation.impl.AggregationRe
 
 public abstract class AbstractLuceneMetricNumericLongAggregation extends AbstractLuceneNestableAggregation<Long> {
 
-	private final Set<String> indexNames;
-	private final String absoluteFieldPath;
+    private final Set<String> indexNames;
 
-	AbstractLuceneMetricNumericLongAggregation(AbstractBuilder<Long> builder) {
-		super( builder );
-		this.indexNames = builder.scope.hibernateSearchIndexNames();
-		this.absoluteFieldPath = builder.field.absolutePath();
-	}
+    private final String absoluteFieldPath;
 
-	@Override
-	public Extractor<Long> request(AggregationRequestContext context) {
-		JoiningLongMultiValuesSource source = JoiningLongMultiValuesSource.fromField(
-				absoluteFieldPath, createNestedDocsProvider( context )
-		);
+    AbstractLuceneMetricNumericLongAggregation(AbstractBuilder<Long> builder) {
+        super(builder);
+        this.indexNames = builder.scope.hibernateSearchIndexNames();
+        this.absoluteFieldPath = builder.field.absolutePath();
+    }
 
-		return new LuceneNumericMetricLongAggregationExtractor( fillCollectors( source, context ) );
-	}
+    @Override
+    public Extractor<Long> request(AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract CollectorKey<?, Long> fillCollectors(JoiningLongMultiValuesSource source, AggregationRequestContext context);
+    abstract CollectorKey<?, Long> fillCollectors(JoiningLongMultiValuesSource source, AggregationRequestContext context);
 
-	@Override
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private record LuceneNumericMetricLongAggregationExtractor(CollectorKey<?, Long> collectorKey) implements Extractor<Long> {
+    private record LuceneNumericMetricLongAggregationExtractor(CollectorKey<?, Long> collectorKey) implements Extractor<Long> {
 
-		@Override
-		public Long extract(AggregationExtractContext context) {
-			return context.getCollectorResults( collectorKey );
-		}
-	}
+        @Override
+        public Long extract(AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

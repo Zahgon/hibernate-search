@@ -8,14 +8,14 @@ import org.hibernate.search.engine.mapper.model.spi.MappableTypeModel;
 
 public final class MappableTypeModelFormatter {
 
-	private final MappableTypeModel typeModel;
+    private final MappableTypeModel typeModel;
 
-	public MappableTypeModelFormatter(MappableTypeModel typeModel) {
-		this.typeModel = typeModel;
-	}
+    public MappableTypeModelFormatter(MappableTypeModel typeModel) {
+        this.typeModel = typeModel;
+    }
 
-	@Override
-	public String toString() {
-		return typeModel != null ? typeModel.name() : "null";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,11 +5,9 @@
 package org.hibernate.search.mapper.orm.scope.impl;
 
 import static org.hibernate.search.util.common.impl.CollectionHelper.asSetIgnoreNull;
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.engine.backend.scope.IndexScopeExtension;
 import org.hibernate.search.engine.search.aggregation.dsl.TypedSearchAggregationFactory;
 import org.hibernate.search.engine.search.highlighter.dsl.SearchHighlighterFactory;
@@ -39,133 +37,105 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoScopeWorkspace;
 @SuppressWarnings("deprecation")
 public class TypedSearchScopeImpl<SR, E> implements TypedSearchScope<SR, E>, BatchScopeContext<E> {
 
-	private final HibernateOrmScopeMappingContext mappingContext;
-	private final TenancyConfiguration tenancyConfiguration;
-	private final PojoScopeDelegate<SR,
-			EntityReference,
-			E,
-			SearchIndexedEntity<? extends E>> delegate;
+    private final HibernateOrmScopeMappingContext mappingContext;
 
-	public TypedSearchScopeImpl(HibernateOrmScopeMappingContext mappingContext,
-			TenancyConfiguration tenancyConfiguration,
-			PojoScopeDelegate<SR,
-					EntityReference,
-					E,
-					SearchIndexedEntity<? extends E>> delegate) {
-		this.mappingContext = mappingContext;
-		this.tenancyConfiguration = tenancyConfiguration;
-		this.delegate = delegate;
-	}
+    private final TenancyConfiguration tenancyConfiguration;
 
-	public SearchQuerySelectStep<SR,
-			?,
-			EntityReference,
-			E,
-			SearchLoadingOptionsStep,
-			?,
-			?> search(
-					HibernateOrmScopeSessionContext sessionContext,
-					HibernateOrmSelectionLoadingContext.Builder loadingContextBuilder) {
-		return delegate.search( sessionContext, loadingContextBuilder );
-	}
+    private final PojoScopeDelegate<SR, EntityReference, E, SearchIndexedEntity<? extends E>> delegate;
 
-	@Override
-	public TypedSearchPredicateFactory<SR> predicate() {
-		return delegate.predicate();
-	}
+    public TypedSearchScopeImpl(HibernateOrmScopeMappingContext mappingContext, TenancyConfiguration tenancyConfiguration, PojoScopeDelegate<SR, EntityReference, E, SearchIndexedEntity<? extends E>> delegate) {
+        this.mappingContext = mappingContext;
+        this.tenancyConfiguration = tenancyConfiguration;
+        this.delegate = delegate;
+    }
 
-	@Override
-	public TypedSearchSortFactory<SR> sort() {
-		return delegate.sort();
-	}
+    public SearchQuerySelectStep<SR, ?, EntityReference, E, SearchLoadingOptionsStep, ?, ?> search(HibernateOrmScopeSessionContext sessionContext, HibernateOrmSelectionLoadingContext.Builder loadingContextBuilder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchProjectionFactory<SR, EntityReference, E> projection() {
-		return delegate.projection();
-	}
+    @Override
+    public TypedSearchPredicateFactory<SR> predicate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchAggregationFactory<SR> aggregation() {
-		return delegate.aggregation();
-	}
+    @Override
+    public TypedSearchSortFactory<SR> sort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchHighlighterFactory highlighter() {
-		return delegate.highlighter();
-	}
+    @Override
+    public TypedSearchProjectionFactory<SR, EntityReference, E> projection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSchemaManager schemaManager() {
-		return new SearchSchemaManagerImpl( schemaManagerDelegate() );
-	}
+    @Override
+    public TypedSearchAggregationFactory<SR> aggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchWorkspace workspace() {
-		return workspace( null );
-	}
+    @Override
+    public SearchHighlighterFactory highlighter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("removal")
-	public SearchWorkspace workspace(String tenantId) {
-		return new SearchWorkspaceImpl( pojoWorkspace( tenantId ) );
-	}
+    @Override
+    public SearchSchemaManager schemaManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchWorkspace workspace(Object tenantId) {
-		return new SearchWorkspaceImpl( pojoWorkspace( tenancyConfiguration.convert( tenantId ) ) );
-	}
+    @Override
+    public SearchWorkspace workspace() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoScopeWorkspace pojoWorkspace(String tenantId) {
-		return delegate.workspace( tenantId );
-	}
+    @Override
+    @SuppressWarnings("removal")
+    public SearchWorkspace workspace(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexer massIndexer() {
-		return massIndexer( Collections.<Object>emptySet() );
-	}
+    @Override
+    public SearchWorkspace workspace(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("removal")
-	public MassIndexer massIndexer(String tenantId) {
-		return massIndexer( (Object) tenantId );
-	}
+    @Override
+    public PojoScopeWorkspace pojoWorkspace(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexer massIndexer(Object tenantId) {
-		return massIndexer( asSetIgnoreNull( tenantId ) );
-	}
+    @Override
+    public MassIndexer massIndexer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexer massIndexer(Set<?> tenantIds) {
-		Set<String> actualTenantIds;
-		if ( tenantIds.isEmpty() ) {
-			// Let's see if we are in multi-tenant environment and try to get the tenant ids
-			actualTenantIds = tenancyConfiguration.tenantIdsOrFail();
-		}
-		else {
-			actualTenantIds = tenantIds.stream().map( tenancyConfiguration::convert ).collect( Collectors.toUnmodifiableSet() );
-		}
+    @Override
+    @SuppressWarnings("removal")
+    public MassIndexer massIndexer(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		HibernateOrmMassIndexingContext massIndexingContext =
-				new HibernateOrmMassIndexingContext( mappingContext, actualTenantIds );
+    @Override
+    public MassIndexer massIndexer(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		PojoMassIndexer massIndexerDelegate = delegate.massIndexer( massIndexingContext );
+    @Override
+    public MassIndexer massIndexer(Set<?> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new HibernateOrmMassIndexer( massIndexerDelegate, massIndexingContext );
-	}
+    @Override
+    public Set<? extends SearchIndexedEntity<? extends E>> includedTypes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<? extends SearchIndexedEntity<? extends E>> includedTypes() {
-		return delegate.includedIndexedTypes();
-	}
+    @Override
+    public <T> T extension(IndexScopeExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(IndexScopeExtension<T> extension) {
-		return delegate.extension( extension );
-	}
-
-	public PojoScopeSchemaManager schemaManagerDelegate() {
-		return delegate.schemaManager();
-	}
+    public PojoScopeSchemaManager schemaManagerDelegate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

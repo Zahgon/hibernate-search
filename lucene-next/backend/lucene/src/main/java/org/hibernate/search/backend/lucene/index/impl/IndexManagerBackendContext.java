@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.index.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.LuceneBackend;
 import org.hibernate.search.backend.lucene.analysis.model.impl.LuceneAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.lucene.cfg.LuceneIndexSettings;
@@ -51,178 +50,104 @@ import org.hibernate.search.engine.common.timing.spi.TimingSource;
 import org.hibernate.search.engine.reporting.FailureHandler;
 import org.hibernate.search.engine.search.loading.spi.SearchLoadingContextBuilder;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import org.apache.lucene.search.similarities.Similarity;
 
 public class IndexManagerBackendContext implements WorkExecutionBackendContext, SearchBackendContext {
 
-	private static final ConfigurationProperty<IOStrategyName> IO_STRATEGY =
-			ConfigurationProperty.forKey( LuceneIndexSettings.IO_STRATEGY )
-					.as( IOStrategyName.class, IOStrategyName::of )
-					.withDefault( LuceneIndexSettings.Defaults.IO_STRATEGY )
-					.build();
+    private static final ConfigurationProperty<IOStrategyName> IO_STRATEGY = ConfigurationProperty.forKey(LuceneIndexSettings.IO_STRATEGY).as(IOStrategyName.class, IOStrategyName::of).withDefault(LuceneIndexSettings.Defaults.IO_STRATEGY).build();
 
-	private final LuceneBackend backendAPI;
-	private final EventContext eventContext;
+    private final LuceneBackend backendAPI;
 
-	private final BackendThreads threads;
-	private final Similarity similarity;
-	private final LuceneWorkFactory workFactory;
-	private final MultiTenancyStrategy multiTenancyStrategy;
-	private final TimingSource timingSource;
-	private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
-	private final FailureHandler failureHandler;
-	private final LuceneSyncWorkOrchestrator readOrchestrator;
+    private final EventContext eventContext;
 
-	public IndexManagerBackendContext(LuceneBackend backendAPI,
-			EventContext eventContext,
-			BackendThreads threads,
-			Similarity similarity,
-			LuceneWorkFactory workFactory,
-			MultiTenancyStrategy multiTenancyStrategy,
-			TimingSource timingSource,
-			LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry,
-			FailureHandler failureHandler,
-			LuceneSyncWorkOrchestrator readOrchestrator) {
-		this.backendAPI = backendAPI;
-		this.eventContext = eventContext;
-		this.threads = threads;
-		this.similarity = similarity;
-		this.multiTenancyStrategy = multiTenancyStrategy;
-		this.timingSource = timingSource;
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
-		this.workFactory = workFactory;
-		this.failureHandler = failureHandler;
-		this.readOrchestrator = readOrchestrator;
-	}
+    private final BackendThreads threads;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + eventContext + "]";
-	}
+    private final Similarity similarity;
 
-	@Override
-	public IndexIndexingPlan createIndexingPlan(
-			WorkExecutionIndexManagerContext indexManagerContext,
-			LuceneIndexEntryFactory indexEntryFactory,
-			BackendSessionContext sessionContext,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
-		multiTenancyStrategy.checkTenantId( sessionContext.tenantIdentifier(), eventContext );
+    private final LuceneWorkFactory workFactory;
 
-		return new LuceneIndexIndexingPlan(
-				workFactory,
-				indexManagerContext,
-				indexEntryFactory,
-				sessionContext,
-				commitStrategy, refreshStrategy
-		);
-	}
+    private final MultiTenancyStrategy multiTenancyStrategy;
 
-	@Override
-	public IndexIndexer createIndexer(
-			WorkExecutionIndexManagerContext indexManagerContext,
-			LuceneIndexEntryFactory indexEntryFactory,
-			BackendSessionContext sessionContext) {
-		multiTenancyStrategy.checkTenantId( sessionContext.tenantIdentifier(), eventContext );
+    private final TimingSource timingSource;
 
-		return new LuceneIndexIndexer(
-				workFactory,
-				indexEntryFactory,
-				indexManagerContext,
-				sessionContext
-		);
-	}
+    private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	@Override
-	public IndexWorkspace createWorkspace(WorkExecutionIndexManagerContext indexManagerContext,
-			Set<String> tenantIds) {
-		multiTenancyStrategy.checkTenantId( tenantIds, eventContext );
+    private final FailureHandler failureHandler;
 
-		return new LuceneIndexWorkspace( workFactory, indexManagerContext, tenantIds );
-	}
+    private final LuceneSyncWorkOrchestrator readOrchestrator;
 
-	@Override
-	public <SR> LuceneSearchQueryIndexScope<SR, ?> createSearchContext(BackendMappingContext mappingContext,
-			Class<SR> scopeRootType, Set<? extends LuceneScopeIndexManagerContext> indexManagerContexts) {
-		return new LuceneSearchIndexScopeImpl<>( mappingContext, scopeRootType, this, analysisDefinitionRegistry,
-				multiTenancyStrategy, timingSource, indexManagerContexts );
-	}
+    public IndexManagerBackendContext(LuceneBackend backendAPI, EventContext eventContext, BackendThreads threads, Similarity similarity, LuceneWorkFactory workFactory, MultiTenancyStrategy multiTenancyStrategy, TimingSource timingSource, LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry, FailureHandler failureHandler, LuceneSyncWorkOrchestrator readOrchestrator) {
+        this.backendAPI = backendAPI;
+        this.eventContext = eventContext;
+        this.threads = threads;
+        this.similarity = similarity;
+        this.multiTenancyStrategy = multiTenancyStrategy;
+        this.timingSource = timingSource;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        this.workFactory = workFactory;
+        this.failureHandler = failureHandler;
+        this.readOrchestrator = readOrchestrator;
+    }
 
-	@Override
-	public <H> LuceneSearchQueryBuilder<H> createSearchQueryBuilder(
-			LuceneSearchQueryIndexScope<?, ?> scope,
-			BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<?, ?> loadingContextBuilder,
-			LuceneSearchProjection<H> rootProjection) {
-		multiTenancyStrategy.checkTenantId( sessionContext.tenantIdentifier(), eventContext );
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new LuceneSearchQueryBuilder<>(
-				workFactory,
-				readOrchestrator,
-				scope,
-				sessionContext,
-				loadingContextBuilder,
-				rootProjection
-		);
-	}
+    @Override
+    public IndexIndexingPlan createIndexingPlan(WorkExecutionIndexManagerContext indexManagerContext, LuceneIndexEntryFactory indexEntryFactory, BackendSessionContext sessionContext, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneBackend toAPI() {
-		return backendAPI;
-	}
+    @Override
+    public IndexIndexer createIndexer(WorkExecutionIndexManagerContext indexManagerContext, LuceneIndexEntryFactory indexEntryFactory, BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	EventContext getEventContext() {
-		return eventContext;
-	}
+    @Override
+    public IndexWorkspace createWorkspace(WorkExecutionIndexManagerContext indexManagerContext, Set<String> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneIndexEntryFactory createLuceneIndexEntryFactory(LuceneIndexModel model) {
-		return new LuceneIndexEntryFactory( model, multiTenancyStrategy );
-	}
+    @Override
+    public <SR> LuceneSearchQueryIndexScope<SR, ?> createSearchContext(BackendMappingContext mappingContext, Class<SR> scopeRootType, Set<? extends LuceneScopeIndexManagerContext> indexManagerContexts) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	IOStrategy createIOStrategy(ConfigurationPropertySource propertySource) {
-		switch ( IO_STRATEGY.get( propertySource ) ) {
-			case DEBUG:
-				return DebugIOStrategy.create( threads, failureHandler );
-			case NEAR_REAL_TIME:
-			default:
-				return NearRealTimeIOStrategy.create( propertySource, timingSource, threads, failureHandler );
-		}
-	}
+    @Override
+    public <H> LuceneSearchQueryBuilder<H> createSearchQueryBuilder(LuceneSearchQueryIndexScope<?, ?> scope, BackendSessionContext sessionContext, SearchLoadingContextBuilder<?, ?> loadingContextBuilder, LuceneSearchProjection<H> rootProjection) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneIndexSchemaManager createSchemaManager(String indexName, SchemaManagementIndexManagerContext context) {
-		return new LuceneIndexSchemaManager( indexName, workFactory, context );
-	}
+    LuceneBackend toAPI() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	IndexAccessorImpl createIndexAccessor(LuceneIndexModel model, EventContext shardEventContext,
-			DirectoryHolder directoryHolder, IOStrategy ioStrategy,
-			ConfigurationPropertySource propertySource) {
-		String indexName = model.hibernateSearchName();
-		IndexWriterConfigSource writerConfigSource = IndexWriterConfigSource.create(
-				similarity, model.getIndexingAnalyzer(), model.codec(), propertySource, shardEventContext
-		);
-		return ioStrategy.createIndexAccessor(
-				indexName, shardEventContext, directoryHolder, writerConfigSource
-		);
-	}
+    EventContext getEventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneParallelWorkOrchestratorImpl createIndexManagementOrchestrator(EventContext eventContext,
-			IndexAccessorImpl indexAccessor) {
-		return new LuceneParallelWorkOrchestratorImpl(
-				"Lucene index management orchestrator for " + eventContext.render(),
-				eventContext,
-				indexAccessor,
-				threads
-		);
-	}
+    LuceneIndexEntryFactory createLuceneIndexEntryFactory(LuceneIndexModel model) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneSerialWorkOrchestratorImpl createIndexingOrchestrator(EventContext eventContext,
-			IndexAccessorImpl indexAccessor) {
-		return new LuceneSerialWorkOrchestratorImpl(
-				"Lucene indexing orchestrator for " + eventContext.render(),
-				new LuceneBatchedWorkProcessor(
-						eventContext, indexAccessor
-				),
-				threads,
-				failureHandler
-		);
-	}
+    IOStrategy createIOStrategy(ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    LuceneIndexSchemaManager createSchemaManager(String indexName, SchemaManagementIndexManagerContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    IndexAccessorImpl createIndexAccessor(LuceneIndexModel model, EventContext shardEventContext, DirectoryHolder directoryHolder, IOStrategy ioStrategy, ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    LuceneParallelWorkOrchestratorImpl createIndexManagementOrchestrator(EventContext eventContext, IndexAccessorImpl indexAccessor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    LuceneSerialWorkOrchestratorImpl createIndexingOrchestrator(EventContext eventContext, IndexAccessorImpl indexAccessor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

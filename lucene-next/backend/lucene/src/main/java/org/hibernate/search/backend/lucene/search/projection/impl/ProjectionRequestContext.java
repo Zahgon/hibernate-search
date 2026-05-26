@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.search.projection.impl;
 
 import java.util.Collection;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.search.extraction.impl.ExtractionRequirements;
 import org.hibernate.search.backend.lucene.search.highlighter.impl.LuceneAbstractSearchHighlighter;
@@ -18,106 +17,80 @@ import org.hibernate.search.engine.search.query.spi.QueryParameters;
 
 public final class ProjectionRequestContext {
 
-	private final ExtractionRequirements.Builder extractionRequirementsBuilder;
-	private final String absoluteCurrentNestedFieldPath;
-	private final String absoluteCurrentFieldPath;
-	private final LuceneAbstractSearchHighlighter globalHighlighter;
-	private final Map<String, LuceneAbstractSearchHighlighter> namedHighlighters;
-	private final QueryParameters parameters;
+    private final ExtractionRequirements.Builder extractionRequirementsBuilder;
 
-	public ProjectionRequestContext(ExtractionRequirements.Builder extractionRequirementsBuilder,
-			LuceneAbstractSearchHighlighter globalHighlighter, Map<String, LuceneAbstractSearchHighlighter> namedHighlighters,
-			QueryParameters parameters) {
-		this( extractionRequirementsBuilder, globalHighlighter, namedHighlighters, parameters, null, null );
-	}
+    private final String absoluteCurrentNestedFieldPath;
 
-	private ProjectionRequestContext(ExtractionRequirements.Builder extractionRequirementsBuilder,
-			LuceneAbstractSearchHighlighter globalHighlighter, Map<String, LuceneAbstractSearchHighlighter> namedHighlighters,
-			QueryParameters parameters,
-			String absoluteCurrentFieldPath, String absoluteCurrentNestedFieldPath) {
-		this.extractionRequirementsBuilder = extractionRequirementsBuilder;
-		this.globalHighlighter = globalHighlighter;
-		this.namedHighlighters = namedHighlighters;
-		this.parameters = parameters;
-		this.absoluteCurrentNestedFieldPath = absoluteCurrentNestedFieldPath;
-		this.absoluteCurrentFieldPath = absoluteCurrentFieldPath;
-	}
+    private final String absoluteCurrentFieldPath;
 
-	public void requireAllStoredFields() {
-		extractionRequirementsBuilder.requireAllStoredFields();
-	}
+    private final LuceneAbstractSearchHighlighter globalHighlighter;
 
-	public void requireNestedObjects(Collection<String> paths) {
-		extractionRequirementsBuilder.requireNestedObjects( paths );
-	}
+    private final Map<String, LuceneAbstractSearchHighlighter> namedHighlighters;
 
-	public void requireStoredField(String absoluteFieldPath, String nestedDocumentPath) {
-		extractionRequirementsBuilder.requireStoredField( absoluteFieldPath, nestedDocumentPath );
-	}
+    private final QueryParameters parameters;
 
-	public void requireScore() {
-		extractionRequirementsBuilder.requireScore();
-	}
+    public ProjectionRequestContext(ExtractionRequirements.Builder extractionRequirementsBuilder, LuceneAbstractSearchHighlighter globalHighlighter, Map<String, LuceneAbstractSearchHighlighter> namedHighlighters, QueryParameters parameters) {
+        this(extractionRequirementsBuilder, globalHighlighter, namedHighlighters, parameters, null, null);
+    }
 
-	public void checkValidField(String absoluteFieldPath) {
-		if ( !FieldPaths.isStrictPrefix( absoluteCurrentNestedFieldPath, absoluteFieldPath ) ) {
-			throw QueryLog.INSTANCE.invalidContextForProjectionOnField( absoluteFieldPath, absoluteCurrentNestedFieldPath );
-		}
-	}
+    private ProjectionRequestContext(ExtractionRequirements.Builder extractionRequirementsBuilder, LuceneAbstractSearchHighlighter globalHighlighter, Map<String, LuceneAbstractSearchHighlighter> namedHighlighters, QueryParameters parameters, String absoluteCurrentFieldPath, String absoluteCurrentNestedFieldPath) {
+        this.extractionRequirementsBuilder = extractionRequirementsBuilder;
+        this.globalHighlighter = globalHighlighter;
+        this.namedHighlighters = namedHighlighters;
+        this.parameters = parameters;
+        this.absoluteCurrentNestedFieldPath = absoluteCurrentNestedFieldPath;
+        this.absoluteCurrentFieldPath = absoluteCurrentFieldPath;
+    }
 
-	void checkNotNested(SearchQueryElementTypeKey<?> projectionKey, String hint) {
-		if ( absoluteCurrentFieldPath() != null ) {
-			throw QueryLog.INSTANCE.cannotUseProjectionInNestedContext(
-					projectionKey.toString(),
-					hint,
-					EventContexts.indexSchemaRoot()
-			);
-		}
-	}
+    public void requireAllStoredFields() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ProjectionRequestContext root() {
-		return new ProjectionRequestContext( extractionRequirementsBuilder, globalHighlighter, namedHighlighters, parameters );
-	}
+    public void requireNestedObjects(Collection<String> paths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ProjectionRequestContext forField(String absoluteFieldPath, boolean nestedObject) {
-		checkValidField( absoluteFieldPath );
-		return new ProjectionRequestContext(
-				extractionRequirementsBuilder, globalHighlighter, namedHighlighters, parameters,
-				absoluteFieldPath, nestedObject ? absoluteFieldPath : absoluteCurrentFieldPath
-		);
-	}
+    public void requireStoredField(String absoluteFieldPath, String nestedDocumentPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String absoluteCurrentNestedFieldPath() {
-		return absoluteCurrentNestedFieldPath;
-	}
+    public void requireScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean projectionCardinalityCorrectlyAddressed(String requiredContextAbsoluteFieldPath) {
-		String absoluteCurrentNestedFieldPath = absoluteCurrentNestedFieldPath();
-		return requiredContextAbsoluteFieldPath == null
-				|| requiredContextAbsoluteFieldPath.equals( absoluteCurrentNestedFieldPath )
-				|| ( absoluteCurrentNestedFieldPath != null
-						&& absoluteCurrentNestedFieldPath.startsWith( requiredContextAbsoluteFieldPath + "." ) );
+    public void checkValidField(String absoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	}
+    void checkNotNested(SearchQueryElementTypeKey<?> projectionKey, String hint) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String absoluteCurrentFieldPath() {
-		return absoluteCurrentFieldPath;
-	}
+    public ProjectionRequestContext root() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public LuceneAbstractSearchHighlighter highlighter(String name) {
-		if ( name == null ) {
-			return globalHighlighter == null ? LuceneAbstractSearchHighlighter.defaultHighlighter() : globalHighlighter;
-		}
-		else {
-			LuceneAbstractSearchHighlighter highlighter = namedHighlighters.get( name );
-			if ( highlighter == null ) {
-				throw QueryLog.INSTANCE.cannotFindHighlighterWithName( name, namedHighlighters.keySet() );
-			}
-			return highlighter;
-		}
-	}
+    public ProjectionRequestContext forField(String absoluteFieldPath, boolean nestedObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public NamedValues queryParameters() {
-		return parameters;
-	}
+    public String absoluteCurrentNestedFieldPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public boolean projectionCardinalityCorrectlyAddressed(String requiredContextAbsoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public String absoluteCurrentFieldPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public LuceneAbstractSearchHighlighter highlighter(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public NamedValues queryParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

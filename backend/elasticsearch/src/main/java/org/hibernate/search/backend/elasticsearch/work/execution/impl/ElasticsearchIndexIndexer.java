@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.work.execution.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.orchestration.impl.ElasticsearchSerialWorkOrchestrator;
 import org.hibernate.search.backend.elasticsearch.work.factory.impl.ElasticsearchWorkFactory;
 import org.hibernate.search.backend.elasticsearch.work.impl.SingleDocumentIndexingWork;
@@ -16,79 +15,47 @@ import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.backend.work.execution.spi.DocumentContributor;
 import org.hibernate.search.engine.backend.work.execution.spi.DocumentReferenceProvider;
 import org.hibernate.search.engine.backend.work.execution.spi.IndexIndexer;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchIndexIndexer implements IndexIndexer {
 
-	private final ElasticsearchWorkFactory workFactory;
-	private final ElasticsearchSerialWorkOrchestrator orchestrator;
-	private final WorkExecutionIndexManagerContext indexManagerContext;
-	private final String tenantId;
+    private final ElasticsearchWorkFactory workFactory;
 
-	public ElasticsearchIndexIndexer(ElasticsearchWorkFactory workFactory,
-			ElasticsearchSerialWorkOrchestrator orchestrator,
-			WorkExecutionIndexManagerContext indexManagerContext,
-			BackendSessionContext sessionContext) {
-		this.workFactory = workFactory;
-		this.orchestrator = orchestrator;
-		this.indexManagerContext = indexManagerContext;
-		this.tenantId = sessionContext.tenantIdentifier();
-	}
+    private final ElasticsearchSerialWorkOrchestrator orchestrator;
 
-	@Override
-	public CompletableFuture<?> add(DocumentReferenceProvider referenceProvider,
-			DocumentContributor documentContributor,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		return index( referenceProvider, documentContributor, refreshStrategy, operationSubmitter );
-	}
+    private final WorkExecutionIndexManagerContext indexManagerContext;
 
-	@Override
-	public CompletableFuture<?> addOrUpdate(DocumentReferenceProvider referenceProvider,
-			DocumentContributor documentContributor,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		return index( referenceProvider, documentContributor, refreshStrategy, operationSubmitter );
-	}
+    private final String tenantId;
 
-	@Override
-	public CompletableFuture<?> delete(DocumentReferenceProvider referenceProvider,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		String id = referenceProvider.identifier();
-		String elasticsearchId = indexManagerContext.toElasticsearchId( tenantId, id );
-		String routingKey = referenceProvider.routingKey();
+    public ElasticsearchIndexIndexer(ElasticsearchWorkFactory workFactory, ElasticsearchSerialWorkOrchestrator orchestrator, WorkExecutionIndexManagerContext indexManagerContext, BackendSessionContext sessionContext) {
+        this.workFactory = workFactory;
+        this.orchestrator = orchestrator;
+        this.indexManagerContext = indexManagerContext;
+        this.tenantId = sessionContext.tenantIdentifier();
+    }
 
-		SingleDocumentIndexingWork work = workFactory.delete(
-				indexManagerContext.getMappedTypeName(), referenceProvider.entityIdentifier(),
-				indexManagerContext.getElasticsearchIndexWriteName(),
-				elasticsearchId, routingKey
-		)
-				// The commit strategy is ignored, because Elasticsearch always commits changes to its transaction log.
-				.refresh( refreshStrategy )
-				.build();
-		return orchestrator.submit( work, operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<?> add(DocumentReferenceProvider referenceProvider, DocumentContributor documentContributor, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private CompletableFuture<?> index(DocumentReferenceProvider referenceProvider,
-			DocumentContributor documentContributor,
-			DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		String id = referenceProvider.identifier();
-		String elasticsearchId = indexManagerContext.toElasticsearchId( tenantId, id );
-		String routingKey = referenceProvider.routingKey();
+    @Override
+    public CompletableFuture<?> addOrUpdate(DocumentReferenceProvider referenceProvider, DocumentContributor documentContributor, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		JsonObject document = indexManagerContext.createDocument( tenantId, id, documentContributor );
+    @Override
+    public CompletableFuture<?> delete(DocumentReferenceProvider referenceProvider, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		SingleDocumentIndexingWork work = workFactory.index(
-				indexManagerContext.getMappedTypeName(), referenceProvider.entityIdentifier(),
-				indexManagerContext.getElasticsearchIndexWriteName(),
-				elasticsearchId, routingKey, document
-		)
-				// The commit strategy is ignored, because Elasticsearch always commits changes to its transaction log.
-				.refresh( refreshStrategy )
-				.build();
-		return orchestrator.submit( work, operationSubmitter );
-	}
+    private CompletableFuture<?> index(DocumentReferenceProvider referenceProvider, DocumentContributor documentContributor, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        String id = referenceProvider.identifier();
+        String elasticsearchId = indexManagerContext.toElasticsearchId(tenantId, id);
+        String routingKey = referenceProvider.routingKey();
+        JsonObject document = indexManagerContext.createDocument(tenantId, id, documentContributor);
+        SingleDocumentIndexingWork work = workFactory.index(indexManagerContext.getMappedTypeName(), referenceProvider.entityIdentifier(), indexManagerContext.getElasticsearchIndexWriteName(), elasticsearchId, routingKey, document).// The commit strategy is ignored, because Elasticsearch always commits changes to its transaction log.
+        refresh(refreshStrategy).build();
+        return orchestrator.submit(work, operationSubmitter);
+    }
 }

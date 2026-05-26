@@ -9,20 +9,19 @@ import java.time.Instant;
 
 public final class DefaultJavaSqlTimeBridge extends AbstractConvertingDelegatingDefaultBridge<Time, Instant> {
 
-	public static final DefaultJavaSqlTimeBridge INSTANCE = new DefaultJavaSqlTimeBridge();
+    public static final DefaultJavaSqlTimeBridge INSTANCE = new DefaultJavaSqlTimeBridge();
 
-	public DefaultJavaSqlTimeBridge() {
-		super( DefaultInstantBridge.INSTANCE );
-	}
+    public DefaultJavaSqlTimeBridge() {
+        super(DefaultInstantBridge.INSTANCE);
+    }
 
-	@Override
-	protected Instant toConvertedValue(Time value) {
-		return Instant.ofEpochMilli( value.getTime() );
-	}
+    @Override
+    protected Instant toConvertedValue(Time value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Time fromConvertedValue(Instant value) {
-		return new Time( value.toEpochMilli() );
-	}
-
+    @Override
+    protected Time fromConvertedValue(Instant value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

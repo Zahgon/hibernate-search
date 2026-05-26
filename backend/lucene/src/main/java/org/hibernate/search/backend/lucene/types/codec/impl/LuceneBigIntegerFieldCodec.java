@@ -7,102 +7,83 @@ package org.hibernate.search.backend.lucene.types.codec.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-
 import org.hibernate.search.backend.lucene.logging.impl.IndexingLog;
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneLongDomain;
 import org.hibernate.search.backend.lucene.types.lowlevel.impl.LuceneNumericDomain;
 import org.hibernate.search.engine.cfg.spi.NumberScaleConstants;
-
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableField;
 
 public final class LuceneBigIntegerFieldCodec extends AbstractLuceneNumericFieldCodec<BigInteger, Long> {
 
+    private final int decimalScale;
 
-	private final int decimalScale;
-	private final BigDecimal minScaledValue;
-	private final BigDecimal maxScaledValue;
+    private final BigDecimal minScaledValue;
 
-	public LuceneBigIntegerFieldCodec(Indexing indexing, DocValues docValues, Storage storage,
-			BigInteger indexNullAsValue, int decimalScale) {
-		super( indexing, docValues, storage, indexNullAsValue );
-		this.decimalScale = decimalScale;
-		this.minScaledValue = new BigDecimal( NumberScaleConstants.MIN_LONG_AS_BIGINTEGER, decimalScale );
-		this.maxScaledValue = new BigDecimal( NumberScaleConstants.MAX_LONG_AS_BIGINTEGER, decimalScale );
-	}
+    private final BigDecimal maxScaledValue;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "decimalScale=" + decimalScale
-				+ "]";
-	}
+    public LuceneBigIntegerFieldCodec(Indexing indexing, DocValues docValues, Storage storage, BigInteger indexNullAsValue, int decimalScale) {
+        super(indexing, docValues, storage, indexNullAsValue);
+        this.decimalScale = decimalScale;
+        this.minScaledValue = new BigDecimal(NumberScaleConstants.MIN_LONG_AS_BIGINTEGER, decimalScale);
+        this.maxScaledValue = new BigDecimal(NumberScaleConstants.MAX_LONG_AS_BIGINTEGER, decimalScale);
+    }
 
-	@Override
-	void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, BigInteger value,
-			Long encodedValue) {
-		documentBuilder.addField( new StoredField( absoluteFieldPath, value.toString() ) );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BigInteger decode(IndexableField field) {
-		return new BigInteger( field.stringValue() );
-	}
+    @Override
+    void addStoredToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, BigInteger value, Long encodedValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long raw(IndexableField field) {
-		// because we are reading a string value, but we expect to return a long...
-		return encode( decode( field ) );
-	}
+    @Override
+    public BigInteger decode(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long encode(BigInteger value) {
-		BigDecimal decimal = new BigDecimal( value );
-		if ( decimal.compareTo( minScaledValue ) < 0 || decimal.compareTo( maxScaledValue ) > 0 ) {
-			throw IndexingLog.INSTANCE.scaledNumberTooLarge( value, minScaledValue, maxScaledValue );
-		}
+    @Override
+    public Long raw(IndexableField field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return unscale( decimal );
-	}
+    @Override
+    public Long encode(BigInteger value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BigInteger decode(Long encoded) {
-		return scale( encoded ).toBigInteger();
-	}
+    @Override
+    public BigInteger decode(Long encoded) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneNumericDomain<Long> getDomain() {
-		return LuceneLongDomain.get();
-	}
+    @Override
+    public LuceneNumericDomain<Long> getDomain() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		if ( !super.isCompatibleWith( obj ) ) {
-			return false;
-		}
+    @Override
+    public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		LuceneBigIntegerFieldCodec other = (LuceneBigIntegerFieldCodec) obj;
-		return decimalScale == other.decimalScale;
-	}
+    private Long unscale(BigDecimal decimal) {
+        // See tck.DecimalScaleIT#roundingMode
+        return decimal.setScale(decimalScale, RoundingMode.HALF_UP).unscaledValue().longValue();
+    }
 
-	private Long unscale(BigDecimal decimal) {
-		// See tck.DecimalScaleIT#roundingMode
-		return decimal.setScale( decimalScale, RoundingMode.HALF_UP ).unscaledValue().longValue();
-	}
+    private BigDecimal scale(Long value) {
+        return new BigDecimal(BigInteger.valueOf(value), decimalScale);
+    }
 
-	private BigDecimal scale(Long value) {
-		return new BigDecimal( BigInteger.valueOf( value ), decimalScale );
-	}
+    public Class<Long> encodedType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Class<Long> encodedType() {
-		return Long.class;
-	}
-
-	@Override
-	public Double sortedDocValueToDouble(Long value) {
-		return scale( value ).doubleValue();
-	}
+    @Override
+    public Double sortedDocValueToDouble(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.work.factory.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.client.common.gson.spi.GsonProvider;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.index.IndexStatus;
@@ -37,7 +36,6 @@ import org.hibernate.search.backend.elasticsearch.work.impl.RefreshWork;
 import org.hibernate.search.backend.elasticsearch.work.impl.ScrollWork;
 import org.hibernate.search.backend.elasticsearch.work.impl.SearchWork;
 import org.hibernate.search.backend.elasticsearch.work.impl.WaitForIndexStatusWork;
-
 import com.google.gson.JsonObject;
 
 /**
@@ -45,158 +43,147 @@ import com.google.gson.JsonObject;
  */
 public class Elasticsearch7WorkFactory implements ElasticsearchWorkFactory {
 
-	protected final GsonProvider gsonProvider;
-	private final Boolean ignoreShardFailures;
+    protected final GsonProvider gsonProvider;
 
-	public Elasticsearch7WorkFactory(GsonProvider gsonProvider, Boolean ignoreShardFailures) {
-		this.gsonProvider = gsonProvider;
-		this.ignoreShardFailures = ignoreShardFailures;
-	}
+    private final Boolean ignoreShardFailures;
 
-	@Override
-	public IndexWork.Builder index(String entityTypeName, Object entityIdentifier,
-			URLEncodedString elasticsearchIndexName,
-			String documentIdentifier, String routingKey, JsonObject document) {
-		return IndexWork.Builder.create( entityTypeName, entityIdentifier,
-				elasticsearchIndexName, documentIdentifier, routingKey, document );
-	}
+    public Elasticsearch7WorkFactory(GsonProvider gsonProvider, Boolean ignoreShardFailures) {
+        this.gsonProvider = gsonProvider;
+        this.ignoreShardFailures = ignoreShardFailures;
+    }
 
-	@Override
-	public DeleteWork.Builder delete(String entityTypeName, Object entityIdentifier,
-			URLEncodedString elasticsearchIndexName, String documentIdentifier, String routingKey) {
-		return DeleteWork.Builder.create( entityTypeName, entityIdentifier,
-				elasticsearchIndexName, documentIdentifier, routingKey );
-	}
+    @Override
+    public IndexWork.Builder index(String entityTypeName, Object entityIdentifier, URLEncodedString elasticsearchIndexName, String documentIdentifier, String routingKey, JsonObject document) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isDeleteByQuerySupported() {
-		return true;
-	}
+    @Override
+    public DeleteWork.Builder delete(String entityTypeName, Object entityIdentifier, URLEncodedString elasticsearchIndexName, String documentIdentifier, String routingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DeleteByQueryWork.Builder deleteByQuery(URLEncodedString indexName, JsonObject payload) {
-		return new DeleteByQueryWork.Builder( indexName, payload, this );
-	}
+    @Override
+    public boolean isDeleteByQuerySupported() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isFlushSupported() {
-		return true;
-	}
+    @Override
+    public DeleteByQueryWork.Builder deleteByQuery(URLEncodedString indexName, JsonObject payload) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FlushWork.Builder flush() {
-		return new FlushWork.Builder();
-	}
+    @Override
+    public boolean isFlushSupported() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isRefreshSupported() {
-		return true;
-	}
+    @Override
+    public FlushWork.Builder flush() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public RefreshWork.Builder refresh() {
-		return new RefreshWork.Builder();
-	}
+    @Override
+    public boolean isRefreshSupported() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isMergeSegmentsSupported() {
-		return true;
-	}
+    @Override
+    public RefreshWork.Builder refresh() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ForceMergeWork.Builder mergeSegments() {
-		return new ForceMergeWork.Builder();
-	}
+    @Override
+    public boolean isMergeSegmentsSupported() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public BulkWork.Builder bulk(List<? extends BulkableWork<?>> bulkableWorks) {
-		return new BulkWork.Builder( bulkableWorks );
-	}
+    @Override
+    public ForceMergeWork.Builder mergeSegments() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchWork.Builder<T> search(JsonObject payload, ElasticsearchSearchResultExtractor<T> searchResultExtractor) {
-		SearchWork.Builder<T> builder = SearchWork.Builder.create( payload, searchResultExtractor );
-		if ( ignoreShardFailures ) {
-			builder.ignoreShardFailures();
-		}
-		return builder;
-	}
+    @Override
+    public BulkWork.Builder bulk(List<? extends BulkableWork<?>> bulkableWorks) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CountWork.Builder count() {
-		return new CountWork.Builder();
-	}
+    @Override
+    public <T> SearchWork.Builder<T> search(JsonObject payload, ElasticsearchSearchResultExtractor<T> searchResultExtractor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ExplainWork.Builder explain(URLEncodedString indexName, URLEncodedString id, JsonObject payload) {
-		return ExplainWork.Builder.create( indexName, id, payload );
-	}
+    @Override
+    public CountWork.Builder count() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> ScrollWork.Builder<T> scroll(String scrollId, String scrollTimeout,
-			ElasticsearchSearchResultExtractor<T> searchResultExtractor) {
-		return new ScrollWork.Builder<>( scrollId, scrollTimeout, searchResultExtractor );
-	}
+    @Override
+    public ExplainWork.Builder explain(URLEncodedString indexName, URLEncodedString id, JsonObject payload) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ClearScrollWork.Builder clearScroll(String scrollId) {
-		return new ClearScrollWork.Builder( scrollId );
-	}
+    @Override
+    public <T> ScrollWork.Builder<T> scroll(String scrollId, String scrollTimeout, ElasticsearchSearchResultExtractor<T> searchResultExtractor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CreateIndexWork.Builder createIndex(URLEncodedString indexName) {
-		return CreateIndexWork.Builder.create( gsonProvider, indexName );
-	}
+    @Override
+    public ClearScrollWork.Builder clearScroll(String scrollId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DropIndexWork.Builder dropIndex(URLEncodedString indexName) {
-		return new DropIndexWork.Builder( indexName );
-	}
+    @Override
+    public CreateIndexWork.Builder createIndex(URLEncodedString indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public OpenIndexWork.Builder openIndex(URLEncodedString indexName) {
-		return new OpenIndexWork.Builder( indexName );
-	}
+    @Override
+    public DropIndexWork.Builder dropIndex(URLEncodedString indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CloseIndexWork.Builder closeIndex(URLEncodedString indexName) {
-		return new CloseIndexWork.Builder( indexName );
-	}
+    @Override
+    public OpenIndexWork.Builder openIndex(URLEncodedString indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public GetIndexMetadataWork.Builder getIndexMetadata() {
-		return GetIndexMetadataWork.Builder.create();
-	}
+    @Override
+    public CloseIndexWork.Builder closeIndex(URLEncodedString indexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PutIndexSettingsWork.Builder putIndexSettings(URLEncodedString indexName, IndexSettings settings) {
-		return new PutIndexSettingsWork.Builder( gsonProvider, indexName, settings );
-	}
+    @Override
+    public GetIndexMetadataWork.Builder getIndexMetadata() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PutIndexMappingWork.Builder putIndexTypeMapping(URLEncodedString indexName, RootTypeMapping mapping) {
-		return PutIndexMappingWork.Builder.create( gsonProvider, indexName, mapping );
-	}
+    @Override
+    public PutIndexSettingsWork.Builder putIndexSettings(URLEncodedString indexName, IndexSettings settings) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isWaitForIndexStatusSupported() {
-		return true;
-	}
+    @Override
+    public PutIndexMappingWork.Builder putIndexTypeMapping(URLEncodedString indexName, RootTypeMapping mapping) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WaitForIndexStatusWork.Builder waitForIndexStatus(URLEncodedString indexName, IndexStatus requiredStatus,
-			int requiredStatusTimeoutInMs) {
-		return new WaitForIndexStatusWork.Builder( indexName, requiredStatus, requiredStatusTimeoutInMs );
-	}
+    @Override
+    public boolean isWaitForIndexStatusSupported() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PutIndexAliasesWork.Builder putIndexAliases(URLEncodedString indexName,
-			Map<String, IndexAliasDefinition> aliases) {
-		return new PutIndexAliasesWork.Builder( gsonProvider, indexName, aliases );
-	}
+    @Override
+    public WaitForIndexStatusWork.Builder waitForIndexStatus(URLEncodedString indexName, IndexStatus requiredStatus, int requiredStatusTimeoutInMs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AnalyzeWork.Builder analyze(URLEncodedString indexName, String text, String analyzer, String normalizer) {
-		return AnalyzeWork.Builder.create( indexName, text, analyzer, normalizer );
-	}
+    @Override
+    public PutIndexAliasesWork.Builder putIndexAliases(URLEncodedString indexName, Map<String, IndexAliasDefinition> aliases) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public AnalyzeWork.Builder analyze(URLEncodedString indexName, String text, String analyzer, String normalizer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

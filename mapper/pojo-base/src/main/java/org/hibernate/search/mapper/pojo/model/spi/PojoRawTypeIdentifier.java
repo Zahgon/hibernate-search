@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.model.spi;
 
 import java.util.Objects;
-
 import org.hibernate.search.util.common.impl.Contracts;
 
 /**
@@ -18,56 +17,47 @@ import org.hibernate.search.util.common.impl.Contracts;
  */
 public final class PojoRawTypeIdentifier<T> {
 
-	public static <T> PojoRawTypeIdentifier<T> of(Class<T> javaClass) {
-		return new PojoRawTypeIdentifier<>( javaClass, null );
-	}
+    public static <T> PojoRawTypeIdentifier<T> of(Class<T> javaClass) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <T> PojoRawTypeIdentifier<T> of(Class<T> javaClass, String label) {
-		return new PojoRawTypeIdentifier<>( javaClass, label );
-	}
+    public static <T> PojoRawTypeIdentifier<T> of(Class<T> javaClass, String label) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final Class<T> javaClass;
-	private final String name;
+    private final Class<T> javaClass;
 
-	private PojoRawTypeIdentifier(Class<T> javaClass, String name) {
-		Contracts.assertNotNull( javaClass, "javaClass" );
-		this.javaClass = javaClass;
-		this.name = name;
-	}
+    private final String name;
 
-	@Override
-	public String toString() {
-		if ( name == null ) {
-			return javaClass.getName();
-		}
-		else {
-			return name + " (" + javaClass.getName() + ")";
-		}
-	}
+    private PojoRawTypeIdentifier(Class<T> javaClass, String name) {
+        Contracts.assertNotNull(javaClass, "javaClass");
+        this.javaClass = javaClass;
+        this.name = name;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( !( obj instanceof PojoRawTypeIdentifier ) ) {
-			return false;
-		}
-		PojoRawTypeIdentifier<?> other = (PojoRawTypeIdentifier<?>) obj;
-		return javaClass.equals( other.javaClass )
-				&& Objects.equals( name, other.name );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( javaClass, name );
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The exact Java {@link Class} for this type.
-	 */
-	public Class<T> javaClass() {
-		return javaClass;
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public boolean isNamed() {
-		return name != null;
-	}
+    /**
+     * @return The exact Java {@link Class} for this type.
+     */
+    public Class<T> javaClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public boolean isNamed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

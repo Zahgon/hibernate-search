@@ -5,89 +5,60 @@
 package org.hibernate.search.engine.backend.common.spi;
 
 import java.util.Optional;
-
 import org.hibernate.search.util.common.pattern.spi.SimpleGlobPattern;
 
 public class FieldPaths {
 
-	public static final char PATH_SEPARATOR = '.';
-	public static final String PATH_SEPARATOR_STRING = String.valueOf( PATH_SEPARATOR );
-	public static final String PATH_SEPARATOR_REGEX_STRING = "\\.";
+    public static final char PATH_SEPARATOR = '.';
 
-	private FieldPaths() {
-	}
+    public static final String PATH_SEPARATOR_STRING = String.valueOf(PATH_SEPARATOR);
 
-	public static String prefix(String prefix, String relativeFieldName) {
-		if ( prefix == null ) {
-			return relativeFieldName;
-		}
+    public static final String PATH_SEPARATOR_REGEX_STRING = "\\.";
 
-		return prefix + relativeFieldName;
-	}
+    private FieldPaths() {
+    }
 
-	public static SimpleGlobPattern prefix(String prefix, SimpleGlobPattern relativeFieldPathGlob) {
-		if ( prefix == null ) {
-			return relativeFieldPathGlob;
-		}
+    public static String prefix(String prefix, String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return relativeFieldPathGlob.prependLiteral( prefix );
-	}
+    public static SimpleGlobPattern prefix(String prefix, SimpleGlobPattern relativeFieldPathGlob) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static String compose(String absolutePath, String relativeFieldName) {
-		if ( absolutePath == null ) {
-			return relativeFieldName;
-		}
+    public static String compose(String absolutePath, String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return absolutePath + PATH_SEPARATOR + relativeFieldName;
-	}
+    public static SimpleGlobPattern compose(String absolutePath, SimpleGlobPattern relativeFieldPathGlob) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static SimpleGlobPattern compose(String absolutePath, SimpleGlobPattern relativeFieldPathGlob) {
-		if ( absolutePath == null ) {
-			return relativeFieldPathGlob;
-		}
+    public static SimpleGlobPattern absolutize(String absoluteParentPath, String prefix, SimpleGlobPattern relativeFieldPathGlob) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return relativeFieldPathGlob.prependLiteral( absolutePath + PATH_SEPARATOR );
-	}
+    public static RelativizedPath relativize(String absolutePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static SimpleGlobPattern absolutize(String absoluteParentPath, String prefix,
-			SimpleGlobPattern relativeFieldPathGlob) {
-		return compose( absoluteParentPath, prefix( prefix, relativeFieldPathGlob ) );
-	}
+    public static boolean isStrictPrefix(String prefixCandidatePath, String path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static RelativizedPath relativize(String absolutePath) {
-		int lastSeparatorIndex = absolutePath.lastIndexOf( PATH_SEPARATOR );
-		if ( lastSeparatorIndex < 0 ) {
-			return new RelativizedPath( Optional.empty(), absolutePath );
-		}
+    public static String[] split(String absoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return new RelativizedPath(
-				Optional.of( absolutePath.substring( 0, lastSeparatorIndex ) ),
-				absolutePath.substring( lastSeparatorIndex + 1 )
-		);
-	}
+    public static final class RelativizedPath {
 
-	public static boolean isStrictPrefix(String prefixCandidatePath, String path) {
-		if ( prefixCandidatePath == null ) {
-			return !path.isEmpty();
-		}
-		if ( prefixCandidatePath.length() >= path.length() ) {
-			return false;
-		}
-		return path.startsWith( prefixCandidatePath )
-				&& path.charAt( prefixCandidatePath.length() ) == PATH_SEPARATOR;
-	}
+        public final Optional<String> parentPath;
 
-	public static String[] split(String absoluteFieldPath) {
-		return absoluteFieldPath.split( PATH_SEPARATOR_REGEX_STRING );
-	}
+        public final String relativePath;
 
-	public static final class RelativizedPath {
-		public final Optional<String> parentPath;
-		public final String relativePath;
-
-		private RelativizedPath(Optional<String> parentPath, String relativePath) {
-			this.parentPath = parentPath;
-			this.relativePath = relativePath;
-		}
-	}
+        private RelativizedPath(Optional<String> parentPath, String relativePath) {
+            this.parentPath = parentPath;
+            this.relativePath = relativePath;
+        }
+    }
 }

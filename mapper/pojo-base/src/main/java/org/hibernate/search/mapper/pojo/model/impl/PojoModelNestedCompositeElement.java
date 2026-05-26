@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.model.impl;
 
 import java.util.Collection;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.AbstractPojoIndexingDependencyCollectorDirectValueNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorPropertyNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorTypeNode;
@@ -23,52 +22,44 @@ import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
  */
 class PojoModelNestedCompositeElement<T, P> extends AbstractPojoModelCompositeElement<P> implements PojoModelProperty {
 
-	private final AbstractPojoModelCompositeElement<T> parent;
-	private final BoundPojoModelPathValueNode<T, P, P> modelPath;
-	private final PojoPropertyAdditionalMetadata propertyAdditionalMetadata;
+    private final AbstractPojoModelCompositeElement<T> parent;
 
-	PojoModelNestedCompositeElement(AbstractPojoModelCompositeElement<T> parent,
-			BoundPojoModelPathPropertyNode<T, P> modelPath,
-			PojoPropertyAdditionalMetadata propertyAdditionalMetadata) {
-		super( parent );
-		this.parent = parent;
-		this.modelPath = modelPath.valueWithoutExtractors();
-		this.propertyAdditionalMetadata = propertyAdditionalMetadata;
-	}
+    private final BoundPojoModelPathValueNode<T, P, P> modelPath;
 
-	@Override
-	public <M> Collection<M> markers(Class<M> markerType) {
-		return propertyAdditionalMetadata.getMarkers( markerType );
-	}
+    private final PojoPropertyAdditionalMetadata propertyAdditionalMetadata;
 
-	@Override
-	public String name() {
-		return modelPath.getParent().getPropertyModel().name();
-	}
+    PojoModelNestedCompositeElement(AbstractPojoModelCompositeElement<T> parent, BoundPojoModelPathPropertyNode<T, P> modelPath, PojoPropertyAdditionalMetadata propertyAdditionalMetadata) {
+        super(parent);
+        this.parent = parent;
+        this.modelPath = modelPath.valueWithoutExtractors();
+        this.propertyAdditionalMetadata = propertyAdditionalMetadata;
+    }
 
-	public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
-		if ( hasAccessor() ) {
-			@SuppressWarnings("unchecked") // We used the same property as in modelPath, on the same type. The result must have the same type.
-			PojoIndexingDependencyCollectorPropertyNode<T, P> collectorPropertyNode =
-					(PojoIndexingDependencyCollectorPropertyNode<T, P>) dependencyCollector.property( name() );
-			AbstractPojoIndexingDependencyCollectorDirectValueNode<P, P> collectorValueNode =
-					collectorPropertyNode.value( modelPath.getBoundExtractorPath() );
-			collectorValueNode.collectDependency();
-			contributePropertyDependencies( collectorValueNode.type() );
-		}
-	}
+    @Override
+    public <M> Collection<M> markers(Class<M> markerType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PojoElementAccessor<P> doCreateAccessor() {
-		return new PojoPropertyElementAccessor<>( parent.createAccessor(), getHandle(), modelPath.toUnboundPath() );
-	}
+    @Override
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	BoundPojoModelPathTypeNode<P> getModelPathTypeNode() {
-		return modelPath.type();
-	}
+    public void contributeDependencies(PojoIndexingDependencyCollectorTypeNode<T> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ValueReadHandle<P> getHandle() {
-		return modelPath.getParent().getPropertyModel().handle();
-	}
+    @Override
+    PojoElementAccessor<P> doCreateAccessor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    BoundPojoModelPathTypeNode<P> getModelPathTypeNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    ValueReadHandle<P> getHandle() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

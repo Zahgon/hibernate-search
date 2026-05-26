@@ -12,9 +12,8 @@ import com.google.gson.LongSerializationPolicy;
  */
 public class Elasticsearch7SearchSyntax extends Elasticsearch81SearchSyntax {
 
-	@Override
-	public JsonElement encodeLongForAggregation(Long value) {
-		// Workaround for https://github.com/elastic/elasticsearch/issues/81529
-		return LongSerializationPolicy.STRING.serialize( value );
-	}
+    @Override
+    public JsonElement encodeLongForAggregation(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

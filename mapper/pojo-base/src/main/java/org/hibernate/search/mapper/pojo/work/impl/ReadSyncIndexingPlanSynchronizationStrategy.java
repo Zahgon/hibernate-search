@@ -16,27 +16,18 @@ import org.hibernate.search.util.common.impl.Futures;
 @Incubating
 public final class ReadSyncIndexingPlanSynchronizationStrategy implements IndexingPlanSynchronizationStrategy {
 
-	public static final IndexingPlanSynchronizationStrategy INSTANCE = new ReadSyncIndexingPlanSynchronizationStrategy();
+    public static final IndexingPlanSynchronizationStrategy INSTANCE = new ReadSyncIndexingPlanSynchronizationStrategy();
 
-	private ReadSyncIndexingPlanSynchronizationStrategy() {
-	}
+    private ReadSyncIndexingPlanSynchronizationStrategy() {
+    }
 
-	@Override
-	public String toString() {
-		return IndexingPlanSynchronizationStrategy.class.getSimpleName() + ".readSync()";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void apply(IndexingPlanSynchronizationStrategyConfigurationContext context) {
-		// Request indexing to force a refresh, but not necessarily a commit.
-		context.documentCommitStrategy( DocumentCommitStrategy.NONE );
-		context.documentRefreshStrategy( DocumentRefreshStrategy.FORCE );
-		context.indexingFutureHandler( future -> {
-			// Wait for the result of indexing, so that we're sure changes were applied and refreshed.
-			SearchIndexingPlanExecutionReport report = Futures.unwrappedExceptionJoin( future );
-			report.throwable().ifPresent( t -> {
-				throw IndexingLog.INSTANCE.indexingFailure( t.getMessage(), report.failingEntities(), t );
-			} );
-		} );
-	}
+    @Override
+    public void apply(IndexingPlanSynchronizationStrategyConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -11,38 +11,39 @@ import org.hibernate.search.engine.environment.thread.spi.ThreadPoolProvider;
 import org.hibernate.search.engine.reporting.spi.ContextualFailureCollector;
 
 class BackendStartContextImpl implements BackendStartContext {
-	private final ContextualFailureCollector failureCollector;
-	private final BeanResolver beanResolver;
-	private final ConfigurationPropertySource configurationPropertySource;
-	private final ThreadPoolProvider threadPoolProvider;
 
-	BackendStartContextImpl(ContextualFailureCollector failureCollector,
-			BeanResolver beanResolver,
-			ConfigurationPropertySource configurationPropertySource,
-			ThreadPoolProvider threadPoolProvider) {
-		this.failureCollector = failureCollector;
-		this.beanResolver = beanResolver;
-		this.configurationPropertySource = configurationPropertySource;
-		this.threadPoolProvider = threadPoolProvider;
-	}
+    private final ContextualFailureCollector failureCollector;
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return failureCollector;
-	}
+    private final BeanResolver beanResolver;
 
-	@Override
-	public BeanResolver beanResolver() {
-		return beanResolver;
-	}
+    private final ConfigurationPropertySource configurationPropertySource;
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return configurationPropertySource;
-	}
+    private final ThreadPoolProvider threadPoolProvider;
 
-	@Override
-	public ThreadPoolProvider threadPoolProvider() {
-		return threadPoolProvider;
-	}
+    BackendStartContextImpl(ContextualFailureCollector failureCollector, BeanResolver beanResolver, ConfigurationPropertySource configurationPropertySource, ThreadPoolProvider threadPoolProvider) {
+        this.failureCollector = failureCollector;
+        this.beanResolver = beanResolver;
+        this.configurationPropertySource = configurationPropertySource;
+        this.threadPoolProvider = threadPoolProvider;
+    }
+
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ThreadPoolProvider threadPoolProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

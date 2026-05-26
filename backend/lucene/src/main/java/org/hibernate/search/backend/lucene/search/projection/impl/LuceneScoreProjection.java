@@ -11,36 +11,29 @@ import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexS
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-class LuceneScoreProjection extends AbstractLuceneProjection<Float>
-		implements LuceneSearchProjection.Extractor<Float, Float> {
+class LuceneScoreProjection extends AbstractLuceneProjection<Float> implements LuceneSearchProjection.Extractor<Float, Float> {
 
-	LuceneScoreProjection(LuceneSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    LuceneScoreProjection(LuceneSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, Float> request(ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.SCORE,
-				LuceneSearchHints.INSTANCE.scoreProjectionNestingNotSupportedHint()
-		);
-		context.requireScore();
-		return this;
-	}
+    @Override
+    public Extractor<?, Float> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Values<Float> values(ProjectionExtractContext context) {
-		return new ScoreValues( context.collectorExecutionContext() );
-	}
+    @Override
+    public Values<Float> values(ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Float transform(LoadingResult<?> loadingResult, Float extractedData,
-			ProjectionTransformContext context) {
-		return extractedData;
-	}
+    @Override
+    public Float transform(LoadingResult<?> loadingResult, Float extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

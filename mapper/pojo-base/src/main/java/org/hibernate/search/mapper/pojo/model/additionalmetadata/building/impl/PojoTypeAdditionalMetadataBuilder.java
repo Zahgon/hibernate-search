@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorPropertyNode;
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorTypeNode;
@@ -23,69 +22,43 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
 class PojoTypeAdditionalMetadataBuilder implements PojoAdditionalMetadataCollectorTypeNode {
 
-	private final BeanResolver beanResolver;
-	private final PojoRawTypeModel<?> rawTypeModel;
+    private final BeanResolver beanResolver;
 
-	private PojoEntityTypeAdditionalMetadataBuilder entityTypeMetadataBuilder;
-	private PojoIndexedTypeAdditionalMetadataBuilder indexedTypeMetadataBuilder;
-	// Use a LinkedHashMap for deterministic iteration
-	private final Map<String, List<Consumer<PojoAdditionalMetadataCollectorPropertyNode>>> propertyContributors =
-			new LinkedHashMap<>();
+    private final PojoRawTypeModel<?> rawTypeModel;
 
-	PojoTypeAdditionalMetadataBuilder(BeanResolver beanResolver, PojoRawTypeModel<?> rawTypeModel) {
-		this.beanResolver = beanResolver;
-		this.rawTypeModel = rawTypeModel;
-	}
+    private PojoEntityTypeAdditionalMetadataBuilder entityTypeMetadataBuilder;
 
-	@Override
-	public PojoRawTypeIdentifier<?> typeIdentifier() {
-		return rawTypeModel.typeIdentifier();
-	}
+    private PojoIndexedTypeAdditionalMetadataBuilder indexedTypeMetadataBuilder;
 
-	@Override
-	public PojoEntityTypeAdditionalMetadataBuilder markAsEntity() {
-		if ( entityTypeMetadataBuilder == null ) {
-			entityTypeMetadataBuilder = new PojoEntityTypeAdditionalMetadataBuilder();
-		}
-		return entityTypeMetadataBuilder;
-	}
+    // Use a LinkedHashMap for deterministic iteration
+    private final Map<String, List<Consumer<PojoAdditionalMetadataCollectorPropertyNode>>> propertyContributors = new LinkedHashMap<>();
 
-	@Override
-	public PojoIndexedTypeAdditionalMetadataBuilder markAsIndexed() {
-		if ( indexedTypeMetadataBuilder == null ) {
-			indexedTypeMetadataBuilder = new PojoIndexedTypeAdditionalMetadataBuilder();
-		}
-		return indexedTypeMetadataBuilder;
-	}
+    PojoTypeAdditionalMetadataBuilder(BeanResolver beanResolver, PojoRawTypeModel<?> rawTypeModel) {
+        this.beanResolver = beanResolver;
+        this.rawTypeModel = rawTypeModel;
+    }
 
-	@Override
-	public void property(String propertyName,
-			Consumer<PojoAdditionalMetadataCollectorPropertyNode> propertyMetadataContributor) {
-		propertyContributors.computeIfAbsent( propertyName, ignored -> new ArrayList<>() )
-				.add( propertyMetadataContributor );
-	}
+    @Override
+    public PojoRawTypeIdentifier<?> typeIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PojoTypeAdditionalMetadata build() {
-		Map<String, Supplier<PojoPropertyAdditionalMetadata>> propertiesAdditionalMetadataSuppliers = new HashMap<>();
-		for ( Map.Entry<String, List<Consumer<PojoAdditionalMetadataCollectorPropertyNode>>> entry : propertyContributors
-				.entrySet() ) {
-			String propertyName = entry.getKey();
-			List<Consumer<PojoAdditionalMetadataCollectorPropertyNode>> contributors = entry.getValue();
-			propertiesAdditionalMetadataSuppliers.put( propertyName, () -> {
-				PojoPropertyAdditionalMetadataBuilder builder =
-						new PojoPropertyAdditionalMetadataBuilder( beanResolver );
-				for ( Consumer<PojoAdditionalMetadataCollectorPropertyNode> contributor : contributors ) {
-					contributor.accept( builder );
-				}
-				return builder.build();
-			} );
-		}
-		return new PojoTypeAdditionalMetadata(
-				entityTypeMetadataBuilder == null
-						? Optional.empty()
-						: Optional.of( entityTypeMetadataBuilder.build( rawTypeModel ) ),
-				indexedTypeMetadataBuilder == null ? Optional.empty() : indexedTypeMetadataBuilder.build(),
-				propertiesAdditionalMetadataSuppliers
-		);
-	}
+    @Override
+    public PojoEntityTypeAdditionalMetadataBuilder markAsEntity() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoIndexedTypeAdditionalMetadataBuilder markAsIndexed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void property(String propertyName, Consumer<PojoAdditionalMetadataCollectorPropertyNode> propertyMetadataContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PojoTypeAdditionalMetadata build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

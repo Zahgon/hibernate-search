@@ -13,11 +13,9 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.logging.impl.ElasticsearchMiscLog;
 import org.hibernate.search.backend.elasticsearch.schema.management.ElasticsearchIndexSchemaExport;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -26,52 +24,41 @@ import com.google.gson.stream.JsonWriter;
 
 public class ElasticsearchIndexSchemaExportImpl implements ElasticsearchIndexSchemaExport {
 
-	private final Gson userFacingGson;
-	private final String indexName;
-	private final ElasticsearchRequest request;
+    private final Gson userFacingGson;
 
-	public ElasticsearchIndexSchemaExportImpl(Gson userFacingGson, String indexName,
-			ElasticsearchRequest request) {
-		this.userFacingGson = userFacingGson;
-		this.indexName = indexName;
-		this.request = request;
-	}
+    private final String indexName;
 
-	@Override
-	public void toFiles(Path targetDirectory) {
-		JsonObject queryParams = new JsonObject();
-		for ( Map.Entry<String, String> entry : request.parameters().entrySet() ) {
-			queryParams.addProperty( entry.getKey(), entry.getValue() );
-		}
-		List<JsonObject> parts = request.bodyParts();
-		JsonElement body = parts.size() == 1
-				? parts.get( 0 )
-				: parts.stream().collect( JsonArray::new, JsonArray::add, JsonArray::addAll );
+    private final ElasticsearchRequest request;
 
-		write( targetDirectory, "create-index.json", body );
-		write( targetDirectory, "create-index-query-params.json", queryParams );
-	}
+    public ElasticsearchIndexSchemaExportImpl(Gson userFacingGson, String indexName, ElasticsearchRequest request) {
+        this.userFacingGson = userFacingGson;
+        this.indexName = indexName;
+        this.request = request;
+    }
 
-	private void write(Path path, String filename, JsonElement data) {
-		try ( OutputStream outputStream = Files.newOutputStream( Files.createDirectories( path ).resolve( filename ) );
-				OutputStreamWriter writer = new OutputStreamWriter( outputStream, StandardCharsets.UTF_8 );
-				JsonWriter jsonWriter = new JsonWriter( writer ) ) {
-			userFacingGson.toJson( data, jsonWriter );
-			jsonWriter.flush();
-		}
-		catch (IOException e) {
-			throw ElasticsearchMiscLog.INSTANCE.unableToExportSchema( indexName, e.getMessage(), e );
-		}
-	}
+    @Override
+    public void toFiles(Path targetDirectory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Map<String, String> parameters() {
-		return Collections.unmodifiableMap( request.parameters() );
-	}
+    private void write(Path path, String filename, JsonElement data) {
+        try (OutputStream outputStream = Files.newOutputStream(Files.createDirectories(path).resolve(filename));
+            OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+            JsonWriter jsonWriter = new JsonWriter(writer)) {
+            userFacingGson.toJson(data, jsonWriter);
+            jsonWriter.flush();
+        } catch (IOException e) {
+            throw ElasticsearchMiscLog.INSTANCE.unableToExportSchema(indexName, e.getMessage(), e);
+        }
+    }
 
-	@Override
-	public List<JsonObject> bodyParts() {
-		return Collections.unmodifiableList( request.bodyParts() );
-	}
+    @Override
+    public Map<String, String> parameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public List<JsonObject> bodyParts() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -20,38 +20,39 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBind
  * @see org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentReferenceProjection
  */
 public final class DocumentReferenceProjectionBinder implements ProjectionBinder {
-	private static final DocumentReferenceProjectionBinder INSTANCE = new DocumentReferenceProjectionBinder();
 
-	/**
-	 * Creates a {@link DocumentReferenceProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @return The binder.
-	 */
-	public static DocumentReferenceProjectionBinder create() {
-		return INSTANCE;
-	}
+    private static final DocumentReferenceProjectionBinder INSTANCE = new DocumentReferenceProjectionBinder();
 
-	private DocumentReferenceProjectionBinder() {
-	}
+    /**
+     * Creates a {@link DocumentReferenceProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @return The binder.
+     */
+    public static DocumentReferenceProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		context.definition( DocumentReference.class, Definition.INSTANCE );
-	}
+    private DocumentReferenceProjectionBinder() {
+    }
 
-	private static class Definition extends AbstractProjectionDefinition<DocumentReference> {
-		public static final Definition INSTANCE = new Definition();
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		protected String type() {
-			return "document-reference";
-		}
+    private static class Definition extends AbstractProjectionDefinition<DocumentReference> {
 
-		@Override
-		public SearchProjection<DocumentReference> create(ProjectionDefinitionContext context) {
-			return context.projection().documentReference().toProjection();
-		}
-	}
+        public static final Definition INSTANCE = new Definition();
 
+        @Override
+        protected String type() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchProjection<DocumentReference> create(ProjectionDefinitionContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

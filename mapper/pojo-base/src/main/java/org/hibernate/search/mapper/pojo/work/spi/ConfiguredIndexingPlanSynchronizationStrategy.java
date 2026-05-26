@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.work.spi;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.backend.work.execution.DocumentCommitStrategy;
 import org.hibernate.search.engine.backend.work.execution.DocumentRefreshStrategy;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
@@ -20,80 +19,77 @@ import org.hibernate.search.util.common.impl.Contracts;
 @Incubating
 public class ConfiguredIndexingPlanSynchronizationStrategy {
 
-	private final DocumentCommitStrategy documentCommitStrategy;
-	private final DocumentRefreshStrategy documentRefreshStrategy;
-	private final Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> indexingFutureHandler;
-	private final OperationSubmitter operationSubmitter;
+    private final DocumentCommitStrategy documentCommitStrategy;
 
-	protected ConfiguredIndexingPlanSynchronizationStrategy(Builder configurationContext) {
-		this.documentCommitStrategy = configurationContext.documentCommitStrategy;
-		this.documentRefreshStrategy = configurationContext.documentRefreshStrategy;
-		this.indexingFutureHandler = configurationContext.indexingFutureHandler;
-		this.operationSubmitter = configurationContext.operationSubmitter;
-	}
+    private final DocumentRefreshStrategy documentRefreshStrategy;
 
-	public DocumentCommitStrategy documentCommitStrategy() {
-		return documentCommitStrategy;
-	}
+    private final Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> indexingFutureHandler;
 
-	public DocumentRefreshStrategy documentRefreshStrategy() {
-		return documentRefreshStrategy;
-	}
+    private final OperationSubmitter operationSubmitter;
 
-	public void executeAndSynchronize(PojoIndexingPlan indexingPlan) {
-		CompletableFuture<SearchIndexingPlanExecutionReport> reportFuture =
-				indexingPlan.executeAndReport( operationSubmitter )
-						.thenApply( DelegatingSearchIndexingPlanExecutionReport::new );
-		indexingFutureHandler.accept( reportFuture );
-	}
+    protected ConfiguredIndexingPlanSynchronizationStrategy(Builder configurationContext) {
+        this.documentCommitStrategy = configurationContext.documentCommitStrategy;
+        this.documentRefreshStrategy = configurationContext.documentRefreshStrategy;
+        this.indexingFutureHandler = configurationContext.indexingFutureHandler;
+        this.operationSubmitter = configurationContext.operationSubmitter;
+    }
 
-	public static final class Builder
-			implements IndexingPlanSynchronizationStrategyConfigurationContext {
+    public DocumentCommitStrategy documentCommitStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final FailureHandler failureHandler;
+    public DocumentRefreshStrategy documentRefreshStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private DocumentCommitStrategy documentCommitStrategy = DocumentCommitStrategy.NONE;
-		private DocumentRefreshStrategy documentRefreshStrategy = DocumentRefreshStrategy.NONE;
-		private Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> indexingFutureHandler =
-				future -> {};
-		private OperationSubmitter operationSubmitter = OperationSubmitter.blocking();
+    public void executeAndSynchronize(PojoIndexingPlan indexingPlan) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(FailureHandler failureHandler) {
-			this.failureHandler = failureHandler;
-		}
+    public static final class Builder implements IndexingPlanSynchronizationStrategyConfigurationContext {
 
-		@Override
-		public void documentCommitStrategy(DocumentCommitStrategy strategy) {
-			Contracts.assertNotNull( strategy, "strategy" );
-			this.documentCommitStrategy = strategy;
-		}
+        private final FailureHandler failureHandler;
 
-		@Override
-		public void documentRefreshStrategy(DocumentRefreshStrategy strategy) {
-			Contracts.assertNotNull( strategy, "strategy" );
-			this.documentRefreshStrategy = strategy;
-		}
+        private DocumentCommitStrategy documentCommitStrategy = DocumentCommitStrategy.NONE;
 
-		@Override
-		public void indexingFutureHandler(
-				Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> handler) {
-			Contracts.assertNotNull( handler, "handler" );
-			this.indexingFutureHandler = handler;
-		}
+        private DocumentRefreshStrategy documentRefreshStrategy = DocumentRefreshStrategy.NONE;
 
-		@Override
-		public FailureHandler failureHandler() {
-			return failureHandler;
-		}
+        private Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> indexingFutureHandler = future -> {
+        };
 
-		@Override
-		public void operationSubmitter(OperationSubmitter operationSubmitter) {
-			this.operationSubmitter = operationSubmitter;
-		}
+        private OperationSubmitter operationSubmitter = OperationSubmitter.blocking();
 
-		public ConfiguredIndexingPlanSynchronizationStrategy build() {
-			return new ConfiguredIndexingPlanSynchronizationStrategy( this );
-		}
-	}
+        public Builder(FailureHandler failureHandler) {
+            this.failureHandler = failureHandler;
+        }
 
+        @Override
+        public void documentCommitStrategy(DocumentCommitStrategy strategy) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void documentRefreshStrategy(DocumentRefreshStrategy strategy) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void indexingFutureHandler(Consumer<? super CompletableFuture<? extends SearchIndexingPlanExecutionReport>> handler) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public FailureHandler failureHandler() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void operationSubmitter(OperationSubmitter operationSubmitter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public ConfiguredIndexingPlanSynchronizationStrategy build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

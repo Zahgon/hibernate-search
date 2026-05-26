@@ -10,28 +10,15 @@ import org.hibernate.search.backend.lucene.search.predicate.dsl.LuceneSearchPred
 import org.hibernate.search.engine.search.aggregation.dsl.spi.AbstractSearchAggregationFactory;
 import org.hibernate.search.engine.search.aggregation.dsl.spi.SearchAggregationDslContext;
 
-public class LuceneSearchAggregationFactoryImpl<SR>
-		extends AbstractSearchAggregationFactory<
-				SR,
-				LuceneSearchAggregationFactory<SR>,
-				LuceneSearchAggregationIndexScope<?>,
-				LuceneSearchPredicateFactory<SR>>
-		implements LuceneSearchAggregationFactory<SR> {
+public class LuceneSearchAggregationFactoryImpl<SR> extends AbstractSearchAggregationFactory<SR, LuceneSearchAggregationFactory<SR>, LuceneSearchAggregationIndexScope<?>, LuceneSearchPredicateFactory<SR>> implements LuceneSearchAggregationFactory<SR> {
 
-	public LuceneSearchAggregationFactoryImpl(
-			SearchAggregationDslContext<SR,
-					LuceneSearchAggregationIndexScope<?>,
-					LuceneSearchPredicateFactory<SR>> dslContext) {
-		super( dslContext );
-	}
+    public LuceneSearchAggregationFactoryImpl(SearchAggregationDslContext<SR, LuceneSearchAggregationIndexScope<?>, LuceneSearchPredicateFactory<SR>> dslContext) {
+        super(dslContext);
+    }
 
-	@Override
-	public LuceneSearchAggregationFactory<SR> withRoot(String objectFieldPath) {
-		return new LuceneSearchAggregationFactoryImpl<>( dslContext.rescope(
-				dslContext.scope().withRoot( objectFieldPath ),
-				dslContext.predicateFactory().withRoot( objectFieldPath ) ) );
-	}
-
-	// Empty: no extension at the moment.
-
+    @Override
+    public LuceneSearchAggregationFactory<SR> withRoot(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+    // Empty: no extension at the moment.
 }

@@ -13,31 +13,32 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public class BoundPojoModelPathCastedTypeNode<T, U> extends BoundPojoModelPathTypeNode<U> {
 
-	private final BoundPojoModelPathValueNode<?, ?, T> parent;
-	private final PojoTypeModel<U> typeModel;
+    private final BoundPojoModelPathValueNode<?, ?, T> parent;
 
-	BoundPojoModelPathCastedTypeNode(BoundPojoModelPathValueNode<?, ?, T> parent, PojoTypeModel<U> typeModel) {
-		this.parent = parent;
-		this.typeModel = typeModel;
-	}
+    private final PojoTypeModel<U> typeModel;
 
-	@Override
-	public BoundPojoModelPathValueNode<?, ?, T> getParent() {
-		return parent;
-	}
+    BoundPojoModelPathCastedTypeNode(BoundPojoModelPathValueNode<?, ?, T> parent, PojoTypeModel<U> typeModel) {
+        this.parent = parent;
+        this.typeModel = typeModel;
+    }
 
-	@Override
-	public PojoTypeModel<U> getTypeModel() {
-		return typeModel;
-	}
+    @Override
+    public BoundPojoModelPathValueNode<?, ?, T> getParent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <U2> BoundPojoModelPathCastedTypeNode<T, ? extends U2> castTo(PojoRawTypeModel<U2> typeModel) {
-		return new BoundPojoModelPathCastedTypeNode<>( getParent(), typeModel.cast( getTypeModel() ) );
-	}
+    @Override
+    public PojoTypeModel<U> getTypeModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(StringBuilder builder) {
-		builder.append( "casted type " ).append( getTypeModel() );
-	}
+    @Override
+    public <U2> BoundPojoModelPathCastedTypeNode<T, ? extends U2> castTo(PojoRawTypeModel<U2> typeModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    void appendSelfPath(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

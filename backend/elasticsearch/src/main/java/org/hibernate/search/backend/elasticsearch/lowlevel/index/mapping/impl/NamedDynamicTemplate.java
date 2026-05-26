@@ -16,25 +16,25 @@ import com.google.gson.annotations.JsonAdapter;
 @JsonAdapter(NamedDynamicTemplateJsonAdapterFactory.class)
 public class NamedDynamicTemplate {
 
-	public final String name;
+    public final String name;
 
-	public final DynamicTemplate template;
+    public final DynamicTemplate template;
 
-	public NamedDynamicTemplate(String name, DynamicTemplate template) {
-		this.name = name;
-		this.template = template;
-	}
+    public NamedDynamicTemplate(String name, DynamicTemplate template) {
+        this.name = name;
+        this.template = template;
+    }
 
-	@Override
-	public String toString() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson( this );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public DynamicTemplate getTemplate() {
-		return template;
-	}
+    public DynamicTemplate getTemplate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

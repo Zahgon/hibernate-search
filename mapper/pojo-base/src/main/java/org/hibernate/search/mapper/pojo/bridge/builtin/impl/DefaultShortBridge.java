@@ -8,19 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultShortBridge extends AbstractPassThroughDefaultBridge<Short> {
 
-	public static final DefaultShortBridge INSTANCE = new DefaultShortBridge();
+    public static final DefaultShortBridge INSTANCE = new DefaultShortBridge();
 
-	private DefaultShortBridge() {
-	}
+    private DefaultShortBridge() {
+    }
 
-	@Override
-	protected String toString(Short value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Short value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Short fromString(String value) {
-		return ParseUtils.parseShort( value );
-	}
-
+    @Override
+    protected Short fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

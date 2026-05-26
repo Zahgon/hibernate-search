@@ -10,43 +10,42 @@ import org.hibernate.search.engine.search.sort.spi.CompositeSortBuilder;
 import org.hibernate.search.engine.search.sort.spi.ScoreSortBuilder;
 import org.hibernate.search.engine.search.sort.spi.SearchSortBuilderFactory;
 import org.hibernate.search.engine.search.sort.spi.WithParametersSortBuilder;
-
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 
 public class LuceneSearchSortBuilderFactory implements SearchSortBuilderFactory {
 
-	private final LuceneSearchIndexScope<?> scope;
+    private final LuceneSearchIndexScope<?> scope;
 
-	public LuceneSearchSortBuilderFactory(LuceneSearchIndexScope<?> scope) {
-		this.scope = scope;
-	}
+    public LuceneSearchSortBuilderFactory(LuceneSearchIndexScope<?> scope) {
+        this.scope = scope;
+    }
 
-	@Override
-	public ScoreSortBuilder score() {
-		return new LuceneScoreSort.Builder( scope );
-	}
+    @Override
+    public ScoreSortBuilder score() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSort indexOrder() {
-		return new LuceneIndexOrderSort( scope );
-	}
+    @Override
+    public SearchSort indexOrder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeSortBuilder composite() {
-		return new LuceneCompositeSort.Builder( scope );
-	}
+    @Override
+    public CompositeSortBuilder composite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WithParametersSortBuilder withParameters() {
-		return new LuceneWithParametersSort.Builder( scope );
-	}
+    @Override
+    public WithParametersSortBuilder withParameters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public LuceneSearchSort fromLuceneSortField(SortField luceneSortField) {
-		return new LuceneUserProvidedLuceneSortFieldSort( scope, luceneSortField );
-	}
+    public LuceneSearchSort fromLuceneSortField(SortField luceneSortField) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public LuceneSearchSort fromLuceneSort(Sort luceneSort) {
-		return new LuceneUserProvidedLuceneSortSort( scope, luceneSort );
-	}
+    public LuceneSearchSort fromLuceneSort(Sort luceneSort) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

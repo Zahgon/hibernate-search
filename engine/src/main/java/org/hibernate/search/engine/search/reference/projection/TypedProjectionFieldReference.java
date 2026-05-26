@@ -10,9 +10,9 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface TypedProjectionFieldReference<SR, T> extends ProjectionFieldReference<SR> {
 
-	Class<T> projectionType();
+    Class<T> projectionType();
 
-	default ValueModel valueModel() {
-		return ValueModel.MAPPING;
-	}
+    default ValueModel valueModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

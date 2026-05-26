@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.work.result.impl;
 
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.impl.IndexMetadata;
-
 import com.google.gson.GsonBuilder;
 
 /**
@@ -13,28 +12,28 @@ import com.google.gson.GsonBuilder;
  */
 public final class ExistingIndexMetadata {
 
-	private final String primaryName;
+    private final String primaryName;
 
-	private final IndexMetadata metadata;
+    private final IndexMetadata metadata;
 
-	public ExistingIndexMetadata(String primaryName, IndexMetadata metadata) {
-		this.primaryName = primaryName;
-		this.metadata = metadata;
-	}
+    public ExistingIndexMetadata(String primaryName, IndexMetadata metadata) {
+        this.primaryName = primaryName;
+        this.metadata = metadata;
+    }
 
-	@Override
-	public String toString() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson( this );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The primary name of the index, i.e. its un-aliased name.
-	 */
-	public String getPrimaryName() {
-		return primaryName;
-	}
+    /**
+     * @return The primary name of the index, i.e. its un-aliased name.
+     */
+    public String getPrimaryName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public IndexMetadata getMetadata() {
-		return metadata;
-	}
+    public IndexMetadata getMetadata() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

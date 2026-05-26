@@ -20,35 +20,30 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoIndexingProcessorContainerElementNode<C, V> extends PojoIndexingProcessor<C> {
 
-	private final ContainerExtractorHolder<C, V> extractorHolder;
-	private final PojoIndexingProcessor<? super V> nested;
-	private final ValueProcessor<DocumentElement, ? super C, PojoIndexingProcessorRootContext> extractingDelegate;
+    private final ContainerExtractorHolder<C, V> extractorHolder;
 
-	public PojoIndexingProcessorContainerElementNode(ContainerExtractorHolder<C, V> extractorHolder,
-			PojoIndexingProcessor<? super V> nested) {
-		this.extractorHolder = extractorHolder;
-		this.nested = nested;
-		this.extractingDelegate = extractorHolder
-				.wrap( (target, value, sessionContext, extractionContext) -> nested.process( target, value, sessionContext ) );
-	}
+    private final PojoIndexingProcessor<? super V> nested;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ContainerExtractorHolder::close, extractorHolder );
-			closer.push( PojoIndexingProcessor::close, nested );
-		}
-	}
+    private final ValueProcessor<DocumentElement, ? super C, PojoIndexingProcessorRootContext> extractingDelegate;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process container element" );
-		appender.attribute( "extractor", extractorHolder );
-		appender.attribute( "nested", nested );
-	}
+    public PojoIndexingProcessorContainerElementNode(ContainerExtractorHolder<C, V> extractorHolder, PojoIndexingProcessor<? super V> nested) {
+        this.extractorHolder = extractorHolder;
+        this.nested = nested;
+        this.extractingDelegate = extractorHolder.wrap((target, value, sessionContext, extractionContext) -> nested.process(target, value, sessionContext));
+    }
 
-	@Override
-	public final void process(DocumentElement target, C source, PojoIndexingProcessorRootContext context) {
-		extractingDelegate.process( target, source, context, PojoIndexingProcessorContainerExtractionContext.INSTANCE );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public final void process(DocumentElement target, C source, PojoIndexingProcessorRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

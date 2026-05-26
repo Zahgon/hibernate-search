@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.query.spi;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.engine.search.query.SearchQuery;
 import org.hibernate.search.engine.search.query.SearchResult;
@@ -19,48 +18,36 @@ import org.hibernate.search.engine.search.query.SearchResult;
  */
 public abstract class AbstractSearchQuery<H, R extends SearchResult<H>> implements SearchQueryImplementor<H> {
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "(" + queryString() + ")";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public R fetchAll() {
-		return fetch( null, null );
-	}
+    @Override
+    public R fetchAll() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public R fetch(Integer limit) {
-		return fetch( null, limit );
-	}
+    @Override
+    public R fetch(Integer limit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public abstract R fetch(Integer offset, Integer limit);
+    @Override
+    public abstract R fetch(Integer offset, Integer limit);
 
-	@Override
-	public List<H> fetchAllHits() {
-		return fetchHits( null, null );
-	}
+    @Override
+    public List<H> fetchAllHits() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public List<H> fetchHits(Integer limit) {
-		return fetchHits( null, limit );
-	}
+    @Override
+    public List<H> fetchHits(Integer limit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<H> fetchSingleHit() {
-		// We don't need to fetch more than two elements to detect a problem
-		List<H> hits = fetchHits( 2 );
-		int fetchedHitCount = hits.size();
-		if ( fetchedHitCount == 0 ) {
-			return Optional.empty();
-		}
-		else if ( fetchedHitCount > 1 ) {
-			throw QueryLog.INSTANCE.nonSingleHit();
-		}
-		else {
-			return Optional.of( hits.get( 0 ) );
-		}
-	}
-
+    @Override
+    public Optional<H> fetchSingleHit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

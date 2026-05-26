@@ -47,40 +47,36 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface AlternativeBinder extends TypeBinder {
 
-	/**
-	 * @param id The identifier of the alternative.
-	 * This is used to differentiate between multiple alternative discriminators:
-	 * {@link AlternativeDiscriminatorBinder#id(String) assign an id when building each discriminator marker},
-	 * then select the same id here.
-	 * @return {@code this}, for method chaining.
-	 */
-	AlternativeBinder alternativeId(String id);
+    /**
+     * @param id The identifier of the alternative.
+     * This is used to differentiate between multiple alternative discriminators:
+     * {@link AlternativeDiscriminatorBinder#id(String) assign an id when building each discriminator marker},
+     * then select the same id here.
+     * @return {@code this}, for method chaining.
+     */
+    AlternativeBinder alternativeId(String id);
 
-	/**
-	 * @param discriminatorType The expected type of alternative discriminator values.
-	 * The alternative discriminator is designated through the {@link #alternativeDiscriminator()} marker.
-	 * @param fieldValueSourcePropertyName The expected type of the field value source,
-	 * i.e. the property bound to a different field based on the discriminator.
-	 * @param fieldValueSourcePropertyType The expected type of the field value source.
-	 * @param delegateRef A reference to the {@link AlternativeBinderDelegate},
-	 * responsible for binding one field per alternative and creating an {@link AlternativeValueBridge}.
-	 * @return An {@link AlternativeBinder}.
-	 * @param <D> The expected type of alternative discriminator values.
-	 * @param <P> The expected type of the field value source.
-	 */
-	static <D, P> AlternativeBinder create(Class<D> discriminatorType,
-			String fieldValueSourcePropertyName, Class<P> fieldValueSourcePropertyType,
-			BeanReference<? extends AlternativeBinderDelegate<D, P>> delegateRef) {
-		return new AlternativeBinderImpl<>( discriminatorType, fieldValueSourcePropertyName,
-				fieldValueSourcePropertyType, delegateRef );
-	}
+    /**
+     * @param discriminatorType The expected type of alternative discriminator values.
+     * The alternative discriminator is designated through the {@link #alternativeDiscriminator()} marker.
+     * @param fieldValueSourcePropertyName The expected type of the field value source,
+     * i.e. the property bound to a different field based on the discriminator.
+     * @param fieldValueSourcePropertyType The expected type of the field value source.
+     * @param delegateRef A reference to the {@link AlternativeBinderDelegate},
+     * responsible for binding one field per alternative and creating an {@link AlternativeValueBridge}.
+     * @return An {@link AlternativeBinder}.
+     * @param <D> The expected type of alternative discriminator values.
+     * @param <P> The expected type of the field value source.
+     */
+    static <D, P> AlternativeBinder create(Class<D> discriminatorType, String fieldValueSourcePropertyName, Class<P> fieldValueSourcePropertyType, BeanReference<? extends AlternativeBinderDelegate<D, P>> delegateRef) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A {@link MarkerBinder} for the alternative discriminator, to be applied on a property.
-	 * @see LatitudeLongitudeMarkerBinder
-	 */
-	static AlternativeDiscriminatorBinder alternativeDiscriminator() {
-		return new AlternativeDiscriminatorBinderImpl();
-	}
-
+    /**
+     * @return A {@link MarkerBinder} for the alternative discriminator, to be applied on a property.
+     * @see LatitudeLongitudeMarkerBinder
+     */
+    static AlternativeDiscriminatorBinder alternativeDiscriminator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

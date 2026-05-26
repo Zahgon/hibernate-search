@@ -8,7 +8,6 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
 import org.hibernate.search.engine.backend.common.spi.MultiEntityOperationExecutionReport;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 import org.hibernate.search.engine.backend.work.execution.spi.DocumentReferenceProvider;
@@ -27,89 +26,55 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
  */
 final class PojoTypeIndexingPlanIndexDelegate<I, E> implements PojoTypeIndexingPlanDelegate<I, E> {
 
-	private final PojoWorkIndexedTypeContext<I, E> typeContext;
-	private final PojoWorkSessionContext sessionContext;
-	private final PojoIndexingProcessorRootContext processorContext;
-	private final IndexIndexingPlan indexPlan;
+    private final PojoWorkIndexedTypeContext<I, E> typeContext;
 
-	PojoTypeIndexingPlanIndexDelegate(PojoWorkIndexedTypeContext<I, E> typeContext,
-			PojoWorkSessionContext sessionContext, PojoIndexingProcessorRootContext processorContext,
-			IndexIndexingPlan indexPlan) {
-		this.typeContext = typeContext;
-		this.sessionContext = sessionContext;
-		this.processorContext = processorContext;
-		this.indexPlan = indexPlan;
-	}
+    private final PojoWorkSessionContext sessionContext;
 
-	@Override
-	public boolean isDirtyForAddOrUpdate(boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPathsOrNull) {
-		// We will execute the addOrUpdate below
-		// if the dirty paths require the entity itself to be reindexed,
-		// but not if they only require reindexing some containing entities.
-		// Contained entities will be handled through reindexing resolution.
-		return forceSelfDirty
-				|| dirtyPathsOrNull != null && typeContext.dirtySelfFilter().test( dirtyPathsOrNull );
-	}
+    private final PojoIndexingProcessorRootContext processorContext;
 
-	@Override
-	public void add(I identifier, DocumentRouteDescriptor route, Supplier<E> entitySupplier) {
-		String documentIdentifier = typeContext.toDocumentIdentifier( sessionContext, identifier );
-		DocumentReferenceProvider referenceProvider = new PojoDocumentReferenceProvider( documentIdentifier,
-				route.routingKey(), identifier );
-		indexPlan.add( referenceProvider,
-				typeContext.toDocumentContributor( sessionContext, processorContext, identifier, entitySupplier ) );
-	}
+    private final IndexIndexingPlan indexPlan;
 
-	@Override
-	public void addOrUpdate(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier,
-			boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths,
-			boolean updatedBecauseOfContained, boolean updateBecauseOfDirty) {
-		String documentIdentifier = typeContext.toDocumentIdentifier( sessionContext, identifier );
-		delegateDeletePrevious( identifier, documentIdentifier, routes.previousRoutes() );
-		if ( routes.currentRoute() == null ) {
-			// The routing bridge decided the entity should not be indexed.
-			// We should have deleted it using the "previous routes" (if it was actually indexed previously),
-			// and we don't have anything else to do.
-			return;
-		}
-		DocumentReferenceProvider referenceProvider = new PojoDocumentReferenceProvider( documentIdentifier,
-				routes.currentRoute().routingKey(), identifier );
-		indexPlan.addOrUpdate( referenceProvider,
-				typeContext.toDocumentContributor( sessionContext, processorContext, identifier, entitySupplier ) );
-	}
+    PojoTypeIndexingPlanIndexDelegate(PojoWorkIndexedTypeContext<I, E> typeContext, PojoWorkSessionContext sessionContext, PojoIndexingProcessorRootContext processorContext, IndexIndexingPlan indexPlan) {
+        this.typeContext = typeContext;
+        this.sessionContext = sessionContext;
+        this.processorContext = processorContext;
+        this.indexPlan = indexPlan;
+    }
 
-	@Override
-	public void delete(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier) {
-		String documentIdentifier = typeContext.toDocumentIdentifier( sessionContext, identifier );
-		delegateDeletePrevious( identifier, documentIdentifier, routes.previousRoutes() );
-		if ( routes.currentRoute() == null ) {
-			// The routing bridge decided the entity should not be indexed.
-			// We should have deleted it using the "previous routes" (if it was actually indexed previously),
-			// and we don't have anything else to do.
-			return;
-		}
-		DocumentReferenceProvider referenceProvider = new PojoDocumentReferenceProvider( documentIdentifier,
-				routes.currentRoute().routingKey(), identifier );
-		indexPlan.delete( referenceProvider );
-	}
+    @Override
+    public boolean isDirtyForAddOrUpdate(boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPathsOrNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void discard() {
-		indexPlan.discard();
-	}
+    @Override
+    public void add(I identifier, DocumentRouteDescriptor route, Supplier<E> entitySupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
-		return indexPlan.executeAndReport( operationSubmitter );
-	}
+    @Override
+    public void addOrUpdate(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier, boolean forceSelfDirty, boolean forceContainingDirty, BitSet dirtyPaths, boolean updatedBecauseOfContained, boolean updateBecauseOfDirty) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void delegateDeletePrevious(I identifier, String documentIdentifier,
-			Collection<DocumentRouteDescriptor> previousRoutes) {
-		for ( DocumentRouteDescriptor route : previousRoutes ) {
-			DocumentReferenceProvider referenceProvider = new PojoDocumentReferenceProvider( documentIdentifier,
-					route.routingKey(), identifier );
-			indexPlan.delete( referenceProvider );
-		}
-	}
+    @Override
+    public void delete(I identifier, DocumentRoutesDescriptor routes, Supplier<E> entitySupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public void discard() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CompletableFuture<MultiEntityOperationExecutionReport> executeAndReport(OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private void delegateDeletePrevious(I identifier, String documentIdentifier, Collection<DocumentRouteDescriptor> previousRoutes) {
+        for (DocumentRouteDescriptor route : previousRoutes) {
+            DocumentReferenceProvider referenceProvider = new PojoDocumentReferenceProvider(documentIdentifier, route.routingKey(), identifier);
+            indexPlan.delete(referenceProvider);
+        }
+    }
 }

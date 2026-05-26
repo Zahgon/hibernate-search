@@ -8,21 +8,20 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 class ExactRawTypeMatcher implements TypePatternMatcher {
-	private final PojoRawTypeModel<?> exactTypeToMatch;
 
-	ExactRawTypeMatcher(PojoRawTypeModel<?> exactTypeToMatch) {
-		this.exactTypeToMatch = exactTypeToMatch;
-	}
+    private final PojoRawTypeModel<?> exactTypeToMatch;
 
-	@Override
-	public String toString() {
-		return "hasExactRawType(" + exactTypeToMatch.name() + ")";
-	}
+    ExactRawTypeMatcher(PojoRawTypeModel<?> exactTypeToMatch) {
+        this.exactTypeToMatch = exactTypeToMatch;
+    }
 
-	@Override
-	public boolean matches(PojoTypeModel<?> typeToInspect) {
-		PojoRawTypeModel<?> typeToMatchRawType = typeToInspect.rawType();
-		return typeToInspect.rawType().isSubTypeOf( exactTypeToMatch )
-				&& exactTypeToMatch.isSubTypeOf( typeToMatchRawType );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean matches(PojoTypeModel<?> typeToInspect) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

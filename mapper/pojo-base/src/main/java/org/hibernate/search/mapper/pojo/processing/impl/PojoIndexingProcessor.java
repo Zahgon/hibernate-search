@@ -15,19 +15,19 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppendable;
  */
 public abstract class PojoIndexingProcessor<T> implements AutoCloseable, ToStringTreeAppendable {
 
-	@Override
-	public String toString() {
-		return toStringTree();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context);
+    public abstract void process(DocumentElement target, T source, PojoIndexingProcessorRootContext context);
 
-	public static <T> PojoIndexingProcessor<T> noOp() {
-		return NoOpPojoIndexingProcessor.get();
-	}
-
+    public static <T> PojoIndexingProcessor<T> noOp() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

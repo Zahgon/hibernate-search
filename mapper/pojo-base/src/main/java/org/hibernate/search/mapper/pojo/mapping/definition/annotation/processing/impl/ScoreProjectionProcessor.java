@@ -10,13 +10,10 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep;
 import org.hibernate.search.mapper.pojo.search.definition.binding.builtin.ScoreProjectionBinder;
 
-public final class ScoreProjectionProcessor
-		implements MethodParameterMappingAnnotationProcessor<ScoreProjection> {
+public final class ScoreProjectionProcessor implements MethodParameterMappingAnnotationProcessor<ScoreProjection> {
 
-	@Override
-	public void process(MethodParameterMappingStep mapping, ScoreProjection annotation,
-			MethodParameterMappingAnnotationProcessorContext context) {
-		mapping.projection( ScoreProjectionBinder.create() );
-	}
-
+    @Override
+    public void process(MethodParameterMappingStep mapping, ScoreProjection annotation, MethodParameterMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

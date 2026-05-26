@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.aggregation.dsl;
 
 import java.util.Collection;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.util.common.data.Range;
 
@@ -19,43 +18,37 @@ import org.hibernate.search.util.common.data.Range;
  * @param <F> The type of the targeted field.
  * @param <A> The type of the aggregated value.
  */
-public interface RangeAggregationRangeStep<
-		SR,
-		N extends RangeAggregationRangeMoreStep<SR, ?, ?, PDF, F, A>,
-		PDF extends TypedSearchPredicateFactory<SR>,
-		F,
-		A> {
+public interface RangeAggregationRangeStep<SR, N extends RangeAggregationRangeMoreStep<SR, ?, ?, PDF, F, A>, PDF extends TypedSearchPredicateFactory<SR>, F, A> {
 
-	/**
-	 * Add a bucket for the range {@code [lowerBound, upperBound)} (lower bound included, upper bound excluded),
-	 * or {@code (lowerBound, upperBound)} (both bounds excluded) if the lower bound is {@code -Infinity}.
-	 *
-	 * @param lowerBound The lower bound of the range.
-	 * @param upperBound The upper bound of the range.
-	 * @return The next step.
-	 */
-	default N range(F lowerBound, F upperBound) {
-		return range( Range.canonical( lowerBound, upperBound ) );
-	}
+    /**
+     * Add a bucket for the range {@code [lowerBound, upperBound)} (lower bound included, upper bound excluded),
+     * or {@code (lowerBound, upperBound)} (both bounds excluded) if the lower bound is {@code -Infinity}.
+     *
+     * @param lowerBound The lower bound of the range.
+     * @param upperBound The upper bound of the range.
+     * @return The next step.
+     */
+    default N range(F lowerBound, F upperBound) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Add a bucket for given range.
-	 *
-	 * @param range The range to add.
-	 * @return The next step.
-	 *
-	 * @see Range
-	 */
-	N range(Range<? extends F> range);
+    /**
+     * Add a bucket for given range.
+     *
+     * @param range The range to add.
+     * @return The next step.
+     *
+     * @see Range
+     */
+    N range(Range<? extends F> range);
 
-	/**
-	 * Add one bucket for each of the given ranges.
-	 *
-	 * @param ranges The ranges to add.
-	 * @return The next step.
-	 *
-	 * @see Range
-	 */
-	N ranges(Collection<? extends Range<? extends F>> ranges);
-
+    /**
+     * Add one bucket for each of the given ranges.
+     *
+     * @param ranges The ranges to add.
+     * @return The next step.
+     *
+     * @see Range
+     */
+    N ranges(Collection<? extends Range<? extends F>> ranges);
 }

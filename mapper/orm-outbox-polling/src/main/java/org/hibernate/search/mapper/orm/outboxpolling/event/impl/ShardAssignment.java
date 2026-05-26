@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.outboxpolling.event.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.mapper.orm.outboxpolling.cluster.impl.ShardAssignmentDescriptor;
 import org.hibernate.search.util.common.data.Range;
 import org.hibernate.search.util.common.data.impl.Murmur3HashFunction;
@@ -15,54 +14,46 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppendable;
 import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
 final class ShardAssignment {
-	// Note the hash function / table implementations MUST NOT CHANGE,
-	// otherwise existing indexes will no longer work correctly.
-	public static final RangeCompatibleHashFunction HASH_FUNCTION = Murmur3HashFunction.INSTANCE;
 
-	public static class Provider implements ToStringTreeAppendable {
-		private final OutboxEventFinderProvider finderProvider;
+    // Note the hash function / table implementations MUST NOT CHANGE,
+    // otherwise existing indexes will no longer work correctly.
+    public static final RangeCompatibleHashFunction HASH_FUNCTION = Murmur3HashFunction.INSTANCE;
 
-		public Provider(OutboxEventFinderProvider finderProvider) {
-			this.finderProvider = finderProvider;
-		}
+    public static class Provider implements ToStringTreeAppendable {
 
-		@Override
-		public String toString() {
-			return toStringTree();
-		}
+        private final OutboxEventFinderProvider finderProvider;
 
-		@Override
-		public void appendTo(ToStringTreeAppender appender) {
-			appender.attribute( "finderProvider", finderProvider );
-		}
+        public Provider(OutboxEventFinderProvider finderProvider) {
+            this.finderProvider = finderProvider;
+        }
 
-		ShardAssignment create(ShardAssignmentDescriptor descriptor) {
-			Optional<OutboxEventPredicate> predicate;
-			if ( descriptor.totalShardCount == 1 ) {
-				predicate = Optional.empty();
-			}
-			else {
-				RangeHashTable<Void> hashTable = new RangeHashTable<>( HASH_FUNCTION, descriptor.totalShardCount );
-				Range<Integer> entityIdHashRange = hashTable.rangeForBucket( descriptor.assignedShardIndex );
-				predicate = Optional.of( new EntityIdHashRangeOutboxEventPredicate( entityIdHashRange ) );
-			}
-			return new ShardAssignment( descriptor, finderProvider.create( predicate ) );
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	}
+        @Override
+        public void appendTo(ToStringTreeAppender appender) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	final ShardAssignmentDescriptor descriptor;
-	final OutboxEventFinder eventFinder;
+        ShardAssignment create(ShardAssignmentDescriptor descriptor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	// Exposed for testing purposes only
-	ShardAssignment(ShardAssignmentDescriptor descriptor, OutboxEventFinder eventFinder) {
-		this.descriptor = descriptor;
-		this.eventFinder = eventFinder;
-	}
+    final ShardAssignmentDescriptor descriptor;
 
-	@Override
-	public String toString() {
-		return descriptor.toString();
-	}
+    final OutboxEventFinder eventFinder;
 
+    // Exposed for testing purposes only
+    ShardAssignment(ShardAssignmentDescriptor descriptor, OutboxEventFinder eventFinder) {
+        this.descriptor = descriptor;
+        this.eventFinder = eventFinder;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

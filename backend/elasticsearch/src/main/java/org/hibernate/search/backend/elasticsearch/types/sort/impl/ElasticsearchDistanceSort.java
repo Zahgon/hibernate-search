@@ -17,112 +17,85 @@ import org.hibernate.search.engine.search.sort.SearchSort;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.hibernate.search.engine.search.sort.spi.DistanceSortBuilder;
 import org.hibernate.search.engine.spatial.GeoPoint;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchDistanceSort extends AbstractElasticsearchDocumentValueSort {
 
-	private static final JsonObjectAccessor GEO_DISTANCE_ACCESSOR = JsonAccessor.root().property( "_geo_distance" ).asObject();
+    private static final JsonObjectAccessor GEO_DISTANCE_ACCESSOR = JsonAccessor.root().property("_geo_distance").asObject();
 
-	private final GeoPoint center;
-	private final ElasticsearchFieldCodec<GeoPoint> codec;
+    private final GeoPoint center;
 
-	private ElasticsearchDistanceSort(Builder builder) {
-		super( builder );
-		center = builder.center;
-		codec = builder.field.type().codec();
-	}
+    private final ElasticsearchFieldCodec<GeoPoint> codec;
 
-	@Override
-	protected void doToJsonSorts(ElasticsearchSearchSortCollector collector, JsonObject innerObject) {
-		innerObject.add( absoluteFieldPath, codec.encode( center ) );
-		// If there are multiple target indexes, or if the field is dynamic,
-		// some target indexes may not have this field in their mapping (yet),
-		// and in that case Elasticsearch would raise an exception.
-		// Instruct ES to behave as if the field had no value in that case.
-		searchSyntax.requestGeoDistanceSortIgnoreUnmapped( innerObject );
+    private ElasticsearchDistanceSort(Builder builder) {
+        super(builder);
+        center = builder.center;
+        codec = builder.field.type().codec();
+    }
 
-		JsonObject outerObject = new JsonObject();
-		GEO_DISTANCE_ACCESSOR.set( outerObject, innerObject );
-		collector.collectDistanceSort( outerObject, absoluteFieldPath, center );
-	}
+    @Override
+    protected void doToJsonSorts(ElasticsearchSearchSortCollector collector, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Factory
-			extends AbstractElasticsearchValueFieldSearchQueryElementFactory<DistanceSortBuilder, GeoPoint> {
-		@Override
-		public DistanceSortBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<GeoPoint> field) {
-			return new Builder( scope, field );
-		}
-	}
+    public static class Factory extends AbstractElasticsearchValueFieldSearchQueryElementFactory<DistanceSortBuilder, GeoPoint> {
 
-	private static class Builder extends AbstractBuilder<GeoPoint> implements DistanceSortBuilder {
-		private GeoPoint center;
+        @Override
+        public DistanceSortBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<GeoPoint> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private boolean missingFirst = false;
-		private boolean missingLast = false;
+    private static class Builder extends AbstractBuilder<GeoPoint> implements DistanceSortBuilder {
 
-		private Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<GeoPoint> field) {
-			super( scope, field );
-		}
+        private GeoPoint center;
 
-		@Override
-		public void center(GeoPoint center) {
-			this.center = center;
-		}
+        private boolean missingFirst = false;
 
-		@Override
-		public void missingFirst() {
-			this.missingFirst = true;
-		}
+        private boolean missingLast = false;
 
-		@Override
-		public void missingLast() {
-			this.missingLast = true;
-		}
+        private Builder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<GeoPoint> field) {
+            super(scope, field);
+        }
 
-		@Override
-		public void missingHighest() {
-			// we don't need to do anything: this is the default and only possible behavior with Elasticsearch.
-		}
+        @Override
+        public void center(GeoPoint center) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void missingLowest() {
-			throw SortOrder.DESC.equals( order )
-					? QueryLog.INSTANCE.missingLowestOnDescSortNotSupported( field.eventContext() )
-					: QueryLog.INSTANCE.missingLowestOnAscSortNotSupported( field.eventContext() );
-		}
+        @Override
+        public void missingFirst() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void missingAs(GeoPoint value) {
-			throw QueryLog.INSTANCE.missingAsOnSortNotSupported( field.eventContext() );
-		}
+        @Override
+        public void missingLast() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void mode(SortMode mode) {
-			switch ( mode ) {
-				case MIN:
-				case MAX:
-				case AVG:
-				case MEDIAN:
-					super.mode( mode );
-					break;
-				case SUM:
-				default:
-					throw QueryLog.INSTANCE.invalidSortModeForDistanceSort( mode, field.eventContext() );
-			}
-		}
+        @Override
+        public void missingHighest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public SearchSort build() {
-			if ( missingFirst && ( order == null || SortOrder.ASC.equals( order ) ) ) {
-				throw QueryLog.INSTANCE.missingFirstOnAscSortNotSupported( field.eventContext() );
-			}
-			if ( missingLast && SortOrder.DESC.equals( order ) ) {
-				throw QueryLog.INSTANCE.missingLastOnDescSortNotSupported( field.eventContext() );
-			}
+        @Override
+        public void missingLowest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return new ElasticsearchDistanceSort( this );
-		}
-	}
+        @Override
+        public void missingAs(GeoPoint value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void mode(SortMode mode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchSort build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

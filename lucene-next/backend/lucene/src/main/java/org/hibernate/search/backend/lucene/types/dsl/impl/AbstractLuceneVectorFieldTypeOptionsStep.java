@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.dsl.impl;
 
 import static org.hibernate.search.backend.lucene.lowlevel.codec.impl.HibernateSearchKnnVectorsFormat.DEFAULT_MAX_DIMENSIONS;
-
 import org.hibernate.search.backend.lucene.logging.impl.MappingLog;
 import org.hibernate.search.backend.lucene.lowlevel.codec.impl.HibernateSearchKnnVectorsFormat;
 import org.hibernate.search.backend.lucene.search.common.impl.AbstractLuceneValueFieldSearchQueryElementFactory;
@@ -23,160 +22,101 @@ import org.hibernate.search.engine.search.predicate.spi.KnnPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.util.common.AssertionFailure;
-
 import org.apache.lucene.index.VectorSimilarityFunction;
 
 /**
  * @param <S> The "self" type (the actual exposed type of this step).
  * @param <F> The type of field values.
  */
-abstract class AbstractLuceneVectorFieldTypeOptionsStep<S extends AbstractLuceneVectorFieldTypeOptionsStep<?, F>, F>
-		extends AbstractLuceneIndexFieldTypeOptionsStep<S, F>
-		implements LuceneVectorFieldTypeOptionsStep<S, F> {
+abstract class AbstractLuceneVectorFieldTypeOptionsStep<S extends AbstractLuceneVectorFieldTypeOptionsStep<?, F>, F> extends AbstractLuceneIndexFieldTypeOptionsStep<S, F> implements LuceneVectorFieldTypeOptionsStep<S, F> {
 
-	private static final int MAX_EF_CONSTRUCTION = 3200;
-	private static final int MAX_M = 512;
+    private static final int MAX_EF_CONSTRUCTION = 3200;
 
-	protected VectorSimilarity vectorSimilarity = VectorSimilarity.DEFAULT;
-	protected Integer dimension;
-	protected int efConstruction = 512;
-	protected int m = 16;
-	private Projectable projectable = Projectable.DEFAULT;
-	private Searchable searchable = Searchable.DEFAULT;
-	private F indexNullAsValue = null;
+    private static final int MAX_M = 512;
 
-	AbstractLuceneVectorFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> valueType) {
-		super( buildContext, valueType );
-	}
+    protected VectorSimilarity vectorSimilarity = VectorSimilarity.DEFAULT;
 
-	@Override
-	public S projectable(Projectable projectable) {
-		this.projectable = projectable;
-		return thisAsS();
-	}
+    protected Integer dimension;
 
-	@Override
-	public S searchable(Searchable searchable) {
-		this.searchable = searchable;
-		return thisAsS();
-	}
+    protected int efConstruction = 512;
 
-	@Override
-	public S vectorSimilarity(VectorSimilarity vectorSimilarity) {
-		this.vectorSimilarity = vectorSimilarity;
-		return thisAsS();
-	}
+    protected int m = 16;
 
-	@Override
-	public S efConstruction(int efConstruction) {
-		if ( efConstruction < 1 || efConstruction > MAX_EF_CONSTRUCTION ) {
-			throw MappingLog.INSTANCE.vectorPropertyUnsupportedValue( "efConstruction", efConstruction, MAX_EF_CONSTRUCTION );
-		}
-		this.efConstruction = efConstruction;
-		return thisAsS();
-	}
+    private Projectable projectable = Projectable.DEFAULT;
 
-	@Override
-	public S m(int m) {
-		if ( m < 1 || m > MAX_M ) {
-			throw MappingLog.INSTANCE.vectorPropertyUnsupportedValue( "m", m, MAX_M );
-		}
-		this.m = m;
-		return thisAsS();
-	}
+    private Searchable searchable = Searchable.DEFAULT;
 
-	@Override
-	public S dimension(int dimension) {
-		if ( dimension < 1 || dimension > DEFAULT_MAX_DIMENSIONS ) {
-			throw MappingLog.INSTANCE.vectorPropertyUnsupportedValue( "dimension", dimension, DEFAULT_MAX_DIMENSIONS );
-		}
-		this.dimension = dimension;
-		return thisAsS();
-	}
+    private F indexNullAsValue = null;
 
-	@Override
-	public S indexNullAs(F indexNullAsValue) {
-		this.indexNullAsValue = indexNullAsValue;
-		return thisAsS();
-	}
+    AbstractLuceneVectorFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> valueType) {
+        super(buildContext, valueType);
+    }
 
-	@Override
-	public LuceneIndexValueFieldType<F> toIndexFieldType() {
-		if ( dimension == null ) {
-			throw MappingLog.INSTANCE.nullVectorDimension( buildContext.hints().missingVectorDimension(),
-					buildContext.getEventContext() );
-		}
-		VectorSimilarityFunction resolvedVectorSimilarity = resolveDefault( vectorSimilarity );
-		boolean resolvedProjectable = resolveDefault( projectable );
-		boolean resolvedSearchable = resolveDefault( searchable );
+    @Override
+    public S projectable(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Indexing indexing = resolvedSearchable ? Indexing.ENABLED : Indexing.DISABLED;
-		Storage storage = resolvedProjectable ? Storage.ENABLED : Storage.DISABLED;
+    @Override
+    public S searchable(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		AbstractLuceneVectorFieldCodec<F> codec = createCodec( resolvedVectorSimilarity, dimension, storage, indexing,
-				indexNullAsValue, new HibernateSearchKnnVectorsFormat( m, efConstruction )
-		);
-		builder.codec( codec );
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS, new LuceneExistsPredicate.DocValuesOrNormsBasedFactory<>() );
-			builder.queryElementFactory( PredicateTypeKeys.KNN, knnPredicateFactory() );
-		}
+    @Override
+    public S vectorSimilarity(VectorSimilarity vectorSimilarity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new LuceneFieldProjection.Factory<>( codec ) );
-		}
+    @Override
+    public S efConstruction(int efConstruction) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		builder.multivaluable( false );
+    @Override
+    public S m(int m) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return builder.build();
-	}
+    @Override
+    public S dimension(int dimension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract AbstractLuceneValueFieldSearchQueryElementFactory<KnnPredicateBuilder, F> knnPredicateFactory();
+    @Override
+    public S indexNullAs(F indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract AbstractLuceneVectorFieldCodec<F> createCodec(VectorSimilarityFunction vectorSimilarity, int dimension,
-			Storage storage, Indexing indexing, F indexNullAsValue, HibernateSearchKnnVectorsFormat knnVectorsFormat);
+    @Override
+    public LuceneIndexValueFieldType<F> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    protected abstract AbstractLuceneValueFieldSearchQueryElementFactory<KnnPredicateBuilder, F> knnPredicateFactory();
 
-	private static VectorSimilarityFunction resolveDefault(VectorSimilarity vectorSimilarity) {
-		switch ( vectorSimilarity ) {
-			case DEFAULT:
-			case L2:
-				return VectorSimilarityFunction.EUCLIDEAN;
-			case DOT_PRODUCT:
-				return VectorSimilarityFunction.DOT_PRODUCT;
-			case COSINE:
-				return VectorSimilarityFunction.COSINE;
-			case MAX_INNER_PRODUCT:
-				return VectorSimilarityFunction.MAXIMUM_INNER_PRODUCT;
-			default:
-				throw new AssertionFailure( "Unexpected value for Similarity: " + vectorSimilarity );
-		}
-	}
+    protected abstract AbstractLuceneVectorFieldCodec<F> createCodec(VectorSimilarityFunction vectorSimilarity, int dimension, Storage storage, Indexing indexing, F indexNullAsValue, HibernateSearchKnnVectorsFormat knnVectorsFormat);
 
-	protected static boolean resolveDefault(Projectable projectable) {
-		switch ( projectable ) {
-			case DEFAULT:
-			case NO:
-				return false;
-			case YES:
-				return true;
-			default:
-				throw new AssertionFailure( "Unexpected value for Projectable: " + projectable );
-		}
-	}
+    private static VectorSimilarityFunction resolveDefault(VectorSimilarity vectorSimilarity) {
+        switch(vectorSimilarity) {
+            case DEFAULT:
+            case L2:
+                return VectorSimilarityFunction.EUCLIDEAN;
+            case DOT_PRODUCT:
+                return VectorSimilarityFunction.DOT_PRODUCT;
+            case COSINE:
+                return VectorSimilarityFunction.COSINE;
+            case MAX_INNER_PRODUCT:
+                return VectorSimilarityFunction.MAXIMUM_INNER_PRODUCT;
+            default:
+                throw new AssertionFailure("Unexpected value for Similarity: " + vectorSimilarity);
+        }
+    }
 
-	protected static boolean resolveDefault(Searchable searchable) {
-		switch ( searchable ) {
-			case DEFAULT:
-			case YES:
-				return true;
-			case NO:
-				return false;
-			default:
-				throw new AssertionFailure( "Unexpected value for Searchable: " + searchable );
-		}
-	}
+    protected static boolean resolveDefault(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    protected static boolean resolveDefault(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

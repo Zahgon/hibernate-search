@@ -15,11 +15,8 @@ import org.hibernate.service.spi.ServiceContributor;
  */
 public final class HibernateSearchContextProviderServiceContributor implements ServiceContributor {
 
-	@Override
-	public void contribute(StandardServiceRegistryBuilder serviceRegistryBuilder) {
-		HibernateSearchContextProviderService service = new HibernateSearchContextProviderService();
-		// For initialization
-		serviceRegistryBuilder.addService( HibernateSearchContextProviderService.class, service );
-	}
-
+    @Override
+    public void contribute(StandardServiceRegistryBuilder serviceRegistryBuilder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

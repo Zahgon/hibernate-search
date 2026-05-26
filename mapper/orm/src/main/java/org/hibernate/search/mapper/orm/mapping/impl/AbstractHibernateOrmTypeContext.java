@@ -22,132 +22,130 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeIdentifier;
 import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeContext;
 
-abstract class AbstractHibernateOrmTypeContext<E>
-		implements PojoTypeContext<E>, HibernateOrmListenerTypeContext, HibernateOrmSessionTypeContext<E>,
-		HibernateOrmLoadingTypeContext<E> {
+abstract class AbstractHibernateOrmTypeContext<E> implements PojoTypeContext<E>, HibernateOrmListenerTypeContext, HibernateOrmSessionTypeContext<E>, HibernateOrmLoadingTypeContext<E> {
 
-	private final PojoRawTypeIdentifier<E> typeIdentifier;
-	private final PojoLoadingTypeContext<E> delegate;
-	private final String jpaEntityName;
-	private final EntityMappingType entityMappingType;
-	private final boolean documentIdIsEntityId;
-	private final HibernateOrmEntityLoadingStrategy<? super E, ?> loadingStrategy;
-	private final PojoPathFilter dirtyFilter;
-	private final PojoPathFilter dirtyContainingAssociationFilter;
+    private final PojoRawTypeIdentifier<E> typeIdentifier;
 
-	AbstractHibernateOrmTypeContext(Builder<E> builder, PojoLoadingTypeContext<E> delegate,
-			SessionFactoryImplementor sessionFactory) {
-		this.typeIdentifier = builder.typeIdentifier;
-		this.delegate = delegate;
-		this.jpaEntityName = builder.jpaEntityName;
-		MappingMetamodel metamodel = sessionFactory.getMappingMetamodel();
-		this.entityMappingType = metamodel.getEntityDescriptor( builder.hibernateOrmEntityName );
-		this.documentIdIsEntityId = builder.documentIdSourceProperty != null
-				&& builder.documentIdSourceProperty.name.equals( entityMappingType.getIdentifierMapping().getAttributeName() );
-		this.loadingStrategy = builder.loadingStrategy;
-		this.dirtyFilter = builder.dirtyFilter;
-		this.dirtyContainingAssociationFilter = builder.dirtyContainingAssociationFilter;
-	}
+    private final PojoLoadingTypeContext<E> delegate;
 
-	@Override
-	public String toString() {
-		return typeIdentifier().toString();
-	}
+    private final String jpaEntityName;
 
-	@Override
-	public PojoRawTypeIdentifier<E> typeIdentifier() {
-		return typeIdentifier;
-	}
+    private final EntityMappingType entityMappingType;
 
-	@Override
-	public PojoLoadingTypeContext<E> delegate() {
-		return delegate;
-	}
+    private final boolean documentIdIsEntityId;
 
-	@Override
-	public String jpaEntityName() {
-		return jpaEntityName;
-	}
+    private final HibernateOrmEntityLoadingStrategy<? super E, ?> loadingStrategy;
 
-	public String hibernateOrmEntityName() {
-		return entityMappingType.getEntityName();
-	}
+    private final PojoPathFilter dirtyFilter;
 
-	@Override
-	public EntityMappingType entityMappingType() {
-		return entityMappingType;
-	}
+    private final PojoPathFilter dirtyContainingAssociationFilter;
 
-	@Override
-	public HibernateOrmEntityLoadingStrategy<? super E, ?> loadingStrategy() {
-		return loadingStrategy;
-	}
+    AbstractHibernateOrmTypeContext(Builder<E> builder, PojoLoadingTypeContext<E> delegate, SessionFactoryImplementor sessionFactory) {
+        this.typeIdentifier = builder.typeIdentifier;
+        this.delegate = delegate;
+        this.jpaEntityName = builder.jpaEntityName;
+        MappingMetamodel metamodel = sessionFactory.getMappingMetamodel();
+        this.entityMappingType = metamodel.getEntityDescriptor(builder.hibernateOrmEntityName);
+        this.documentIdIsEntityId = builder.documentIdSourceProperty != null && builder.documentIdSourceProperty.name.equals(entityMappingType.getIdentifierMapping().getAttributeName());
+        this.loadingStrategy = builder.loadingStrategy;
+        this.dirtyFilter = builder.dirtyFilter;
+        this.dirtyContainingAssociationFilter = builder.dirtyContainingAssociationFilter;
+    }
 
-	@Override
-	public Object toIndexingPlanProvidedId(Object entityId) {
-		if ( documentIdIsEntityId ) {
-			return entityId;
-		}
-		else {
-			// The entity ID is not the property used to generate the document ID
-			// Return null, meaning the document ID has to be extracted from the entity
-			return null;
-		}
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathFilter dirtyFilter() {
-		return dirtyFilter;
-	}
+    @Override
+    public PojoRawTypeIdentifier<E> typeIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathFilter dirtyContainingAssociationFilter() {
-		return dirtyContainingAssociationFilter;
-	}
+    @Override
+    public PojoLoadingTypeContext<E> delegate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class Builder<E> implements PojoTypeExtendedMappingCollector {
-		public final PojoRawTypeIdentifier<E> typeIdentifier;
-		private final PersistentClass persistentClass;
-		private final String jpaEntityName;
-		private final String hibernateOrmEntityName;
-		private DocumentIdSourceProperty<?> documentIdSourceProperty;
-		private PojoPathFilter dirtyFilter;
-		private PojoPathFilter dirtyContainingAssociationFilter;
-		private HibernateOrmEntityLoadingStrategy<? super E, ?> loadingStrategy;
+    @Override
+    public String jpaEntityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Builder(PojoRawTypeModel<E> typeModel, PersistentClass persistentClass) {
-			this.typeIdentifier = typeModel.typeIdentifier();
-			this.persistentClass = persistentClass;
-			this.jpaEntityName = persistentClass.getJpaEntityName();
-			this.hibernateOrmEntityName = persistentClass.getEntityName();
-		}
+    public String hibernateOrmEntityName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public void documentIdSourceProperty(PojoPropertyModel<?> documentIdSourceProperty) {
-			this.documentIdSourceProperty = new DocumentIdSourceProperty<>( documentIdSourceProperty );
-		}
+    @Override
+    public EntityMappingType entityMappingType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public void dirtyFilter(PojoPathFilter dirtyFilter) {
-			this.dirtyFilter = dirtyFilter;
-		}
+    @Override
+    public HibernateOrmEntityLoadingStrategy<? super E, ?> loadingStrategy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public void dirtyContainingAssociationFilter(PojoPathFilter filter) {
-			this.dirtyContainingAssociationFilter = filter;
-		}
+    @Override
+    public Object toIndexingPlanProvidedId(Object entityId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		@SuppressWarnings("unchecked") // The binder uses reflection to create a strategy of the appropriate type
-		public void applyLoadingBinder(Object binder, PojoEntityLoadingBindingContext context) {
-			var castBinder = (HibernateOrmEntityLoadingBinder) binder;
-			this.loadingStrategy = (HibernateOrmEntityLoadingStrategy<? super E, ?>) castBinder
-					.createLoadingStrategy( persistentClass, documentIdSourceProperty );
-			if ( this.loadingStrategy != null ) {
-				context.selectionLoadingStrategy( typeIdentifier.javaClass(), this.loadingStrategy );
-				context.massLoadingStrategy( typeIdentifier.javaClass(), this.loadingStrategy );
-			}
-		}
-	}
+    @Override
+    public PojoPathFilter dirtyFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public PojoPathFilter dirtyContainingAssociationFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public abstract static class Builder<E> implements PojoTypeExtendedMappingCollector {
+
+        public final PojoRawTypeIdentifier<E> typeIdentifier;
+
+        private final PersistentClass persistentClass;
+
+        private final String jpaEntityName;
+
+        private final String hibernateOrmEntityName;
+
+        private DocumentIdSourceProperty<?> documentIdSourceProperty;
+
+        private PojoPathFilter dirtyFilter;
+
+        private PojoPathFilter dirtyContainingAssociationFilter;
+
+        private HibernateOrmEntityLoadingStrategy<? super E, ?> loadingStrategy;
+
+        Builder(PojoRawTypeModel<E> typeModel, PersistentClass persistentClass) {
+            this.typeIdentifier = typeModel.typeIdentifier();
+            this.persistentClass = persistentClass;
+            this.jpaEntityName = persistentClass.getJpaEntityName();
+            this.hibernateOrmEntityName = persistentClass.getEntityName();
+        }
+
+        @Override
+        public void documentIdSourceProperty(PojoPropertyModel<?> documentIdSourceProperty) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void dirtyFilter(PojoPathFilter dirtyFilter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void dirtyContainingAssociationFilter(PojoPathFilter filter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        // The binder uses reflection to create a strategy of the appropriate type
+        @SuppressWarnings("unchecked")
+        public void applyLoadingBinder(Object binder, PojoEntityLoadingBindingContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

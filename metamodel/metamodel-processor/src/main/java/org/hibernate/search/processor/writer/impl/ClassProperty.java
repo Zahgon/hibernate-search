@@ -8,20 +8,20 @@ import java.util.Locale;
 
 record ClassProperty(String type, String name) implements Comparable<ClassProperty> {
 
-	public String asParameter() {
-		return type + " " + name;
-	}
+    public String asParameter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String asSetInConstructor() {
-		return "this." + name + " = " + name;
-	}
+    public String asSetInConstructor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String asGetter() {
-		return String.format( Locale.ROOT, "public %s %s() { return this.%s; }", type, name, name );
-	}
+    public String asGetter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int compareTo(ClassProperty o) {
-		return name.compareTo( o.name );
-	}
+    @Override
+    public int compareTo(ClassProperty o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

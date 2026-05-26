@@ -10,25 +10,25 @@ import org.hibernate.search.engine.search.projection.dsl.CompositeProjectionOpti
 import org.hibernate.search.engine.search.projection.spi.CompositeProjectionBuilder;
 import org.hibernate.search.engine.search.spi.ResultsCompositor;
 
-public class CompositeProjectionOptionsStepImpl<T, P>
-		implements CompositeProjectionOptionsStep<CompositeProjectionOptionsStepImpl<T, P>, P> {
+public class CompositeProjectionOptionsStepImpl<T, P> implements CompositeProjectionOptionsStep<CompositeProjectionOptionsStepImpl<T, P>, P> {
 
-	final CompositeProjectionBuilder builder;
-	final SearchProjection<?>[] inners;
-	final ResultsCompositor<?, T> compositor;
-	private final ProjectionCollector.Provider<T, P> collectorProvider;
+    final CompositeProjectionBuilder builder;
 
-	public CompositeProjectionOptionsStepImpl(CompositeProjectionBuilder builder,
-			SearchProjection<?>[] inners, ResultsCompositor<?, T> compositor,
-			ProjectionCollector.Provider<T, P> collectorProvider) {
-		this.builder = builder;
-		this.inners = inners;
-		this.compositor = compositor;
-		this.collectorProvider = collectorProvider;
-	}
+    final SearchProjection<?>[] inners;
 
-	@Override
-	public SearchProjection<P> toProjection() {
-		return builder.build( inners, compositor, collectorProvider );
-	}
+    final ResultsCompositor<?, T> compositor;
+
+    private final ProjectionCollector.Provider<T, P> collectorProvider;
+
+    public CompositeProjectionOptionsStepImpl(CompositeProjectionBuilder builder, SearchProjection<?>[] inners, ResultsCompositor<?, T> compositor, ProjectionCollector.Provider<T, P> collectorProvider) {
+        this.builder = builder;
+        this.inners = inners;
+        this.compositor = compositor;
+        this.collectorProvider = collectorProvider;
+    }
+
+    @Override
+    public SearchProjection<P> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -14,36 +14,28 @@ import org.hibernate.search.engine.search.highlighter.dsl.impl.HighlighterPlainO
 import org.hibernate.search.engine.search.highlighter.dsl.impl.HighlighterUnifiedOptionsStepImpl;
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterBuilder;
 
-public abstract class AbstractSearchHighlighterFactory<SC extends SearchIndexScope<?>>
-		implements SearchHighlighterFactory {
+public abstract class AbstractSearchHighlighterFactory<SC extends SearchIndexScope<?>> implements SearchHighlighterFactory {
 
-	private final SC scope;
+    private final SC scope;
 
-	protected AbstractSearchHighlighterFactory(SC scope) {
-		this.scope = scope;
-	}
+    protected AbstractSearchHighlighterFactory(SC scope) {
+        this.scope = scope;
+    }
 
-	@Override
-	public HighlighterUnifiedOptionsStep unified() {
-		return new HighlighterUnifiedOptionsStepImpl(
-				highlighterBuilder( scope )
-		);
-	}
+    @Override
+    public HighlighterUnifiedOptionsStep unified() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public HighlighterPlainOptionsStep plain() {
-		return new HighlighterPlainOptionsStepImpl(
-				highlighterBuilder( scope )
-		);
-	}
+    @Override
+    public HighlighterPlainOptionsStep plain() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public HighlighterFastVectorHighlighterOptionsStep fastVector() {
-		return new HighlighterFastVectorHighlighterOptionsStepImpl(
-				highlighterBuilder( scope )
-		);
-	}
+    @Override
+    public HighlighterFastVectorHighlighterOptionsStep fastVector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract SearchHighlighterBuilder highlighterBuilder(SC scope);
-
+    protected abstract SearchHighlighterBuilder highlighterBuilder(SC scope);
 }

@@ -13,9 +13,9 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface StandalonePojoRootReferenceScope<SR, T> extends RootReferenceScope<SR, T> {
 
-	TypedSearchScope<SR, T> scope(SearchScopeProvider scopeProvider);
+    TypedSearchScope<SR, T> scope(SearchScopeProvider scopeProvider);
 
-	default SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(SearchSession session) {
-		return session.search( scope( session ) );
-	}
+    default SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(SearchSession session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,9 +6,7 @@ package org.hibernate.search.backend.lucene.types.codec.impl;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-
 import org.hibernate.search.backend.lucene.lowlevel.codec.impl.HibernateSearchKnnVectorsFormat;
-
 import org.apache.lucene.codecs.KnnVectorsFormat;
 import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.StoredField;
@@ -19,111 +17,82 @@ import org.apache.lucene.util.BytesRef;
 
 public abstract class AbstractLuceneVectorFieldCodec<F> implements LuceneVectorFieldCodec<F> {
 
-	protected final FieldType fieldType;
-	protected final VectorSimilarityFunction vectorSimilarity;
-	private final int dimension;
-	private final Storage storage;
-	private final Indexing indexing;
-	private final F indexNullAsValue;
-	private final HibernateSearchKnnVectorsFormat knnVectorsFormat;
-	private final Consumer<F> checkVectorConsumer;
+    protected final FieldType fieldType;
 
-	protected AbstractLuceneVectorFieldCodec(VectorSimilarityFunction vectorSimilarity, int dimension,
-			Storage storage, Indexing indexing, F indexNullAsValue, HibernateSearchKnnVectorsFormat knnVectorsFormat,
-			Consumer<F> checkVectorConsumer) {
-		this.vectorSimilarity = vectorSimilarity;
-		this.dimension = dimension;
-		this.storage = storage;
-		this.indexing = indexing;
-		this.indexNullAsValue = indexNullAsValue;
-		this.knnVectorsFormat = knnVectorsFormat;
-		this.checkVectorConsumer = checkVectorConsumer;
+    protected final VectorSimilarityFunction vectorSimilarity;
 
-		this.fieldType = new FieldType();
-		this.fieldType.setVectorAttributes( dimension, vectorEncoding(), vectorSimilarity );
-		this.fieldType.freeze();
-	}
+    private final int dimension;
 
-	@Override
-	public final void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value) {
-		if ( value == null && indexNullAsValue != null ) {
-			value = indexNullAsValue;
-		}
+    private final Storage storage;
 
-		if ( value == null ) {
-			return;
-		}
+    private final Indexing indexing;
 
-		F encodedValue = encode( value );
+    private final F indexNullAsValue;
 
-		if ( Indexing.ENABLED == indexing ) {
-			documentBuilder.addField( createIndexField( absoluteFieldPath, encodedValue ) );
-		}
-		if ( Storage.ENABLED == storage ) {
-			documentBuilder.addField( toStoredField( absoluteFieldPath, toByteArray( encodedValue ) ) );
-		}
-	}
+    private final HibernateSearchKnnVectorsFormat knnVectorsFormat;
 
-	private IndexableField toStoredField(String absoluteFieldPath, byte[] encodedValue) {
-		return new StoredField( absoluteFieldPath, new BytesRef( encodedValue ) );
-	}
+    private final Consumer<F> checkVectorConsumer;
 
-	@Override
-	public final F encode(F value) {
-		checkVectorConsumer.accept( value );
+    protected AbstractLuceneVectorFieldCodec(VectorSimilarityFunction vectorSimilarity, int dimension, Storage storage, Indexing indexing, F indexNullAsValue, HibernateSearchKnnVectorsFormat knnVectorsFormat, Consumer<F> checkVectorConsumer) {
+        this.vectorSimilarity = vectorSimilarity;
+        this.dimension = dimension;
+        this.storage = storage;
+        this.indexing = indexing;
+        this.indexNullAsValue = indexNullAsValue;
+        this.knnVectorsFormat = knnVectorsFormat;
+        this.checkVectorConsumer = checkVectorConsumer;
+        this.fieldType = new FieldType();
+        this.fieldType.setVectorAttributes(dimension, vectorEncoding(), vectorSimilarity);
+        this.fieldType.freeze();
+    }
 
-		return value;
-	}
+    @Override
+    public final void addToDocument(LuceneDocumentContent documentBuilder, String absoluteFieldPath, F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public F decode(F field) {
-		return field;
-	}
+    private IndexableField toStoredField(String absoluteFieldPath, byte[] encodedValue) {
+        return new StoredField(absoluteFieldPath, new BytesRef(encodedValue));
+    }
 
-	protected abstract byte[] toByteArray(F value);
+    @Override
+    public final F encode(F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		if ( getClass() != obj.getClass() ) {
-			return false;
-		}
+    @Override
+    public F decode(F field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		AbstractLuceneVectorFieldCodec<?> other = (AbstractLuceneVectorFieldCodec<?>) obj;
+    protected abstract byte[] toByteArray(F value);
 
-		return dimension == other.dimension
-				&& vectorSimilarity == other.vectorSimilarity
-				// to check ef construction and m
-				&& Objects.equals( knnVectorsFormat, other.knnVectorsFormat );
-	}
+    @Override
+    public boolean isCompatibleWith(LuceneFieldCodec<?, ?> obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract IndexableField createIndexField(String absoluteFieldPath, F value);
+    protected abstract IndexableField createIndexField(String absoluteFieldPath, F value);
 
-	protected abstract VectorEncoding vectorEncoding();
+    protected abstract VectorEncoding vectorEncoding();
 
-	@Override
-	public KnnVectorsFormat knnVectorFormat() {
-		return knnVectorsFormat;
-	}
+    @Override
+    public KnnVectorsFormat knnVectorFormat() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int getConfiguredDimensions() {
-		return dimension;
-	}
+    @Override
+    public int getConfiguredDimensions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public VectorSimilarityFunction getVectorSimilarity() {
-		return vectorSimilarity;
-	}
+    @Override
+    public VectorSimilarityFunction getVectorSimilarity() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "{" +
-				"vectorSimilarity=" + vectorSimilarity +
-				", dimension=" + dimension +
-				", knnVectorsFormat=" + knnVectorsFormat +
-				'}';
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

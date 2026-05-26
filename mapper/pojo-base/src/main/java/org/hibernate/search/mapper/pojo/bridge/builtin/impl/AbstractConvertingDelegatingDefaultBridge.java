@@ -22,39 +22,38 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValue
  */
 abstract class AbstractConvertingDelegatingDefaultBridge<V, F> extends AbstractSimpleDefaultBridge<V, F> {
 
-	private final AbstractPassThroughDefaultBridge<F> delegate;
+    private final AbstractPassThroughDefaultBridge<F> delegate;
 
-	protected AbstractConvertingDelegatingDefaultBridge(AbstractPassThroughDefaultBridge<F> delegate) {
-		this.delegate = delegate;
-	}
+    protected AbstractConvertingDelegatingDefaultBridge(AbstractPassThroughDefaultBridge<F> delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public final F toIndexedValue(V value, ValueBridgeToIndexedValueContext context) {
-		return value == null ? null : toConvertedValue( value );
-	}
+    @Override
+    public final F toIndexedValue(V value, ValueBridgeToIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final V fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
-		return value == null ? null : fromConvertedValue( value );
-	}
+    @Override
+    public final V fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final F parse(String value) {
-		return delegate.parse( value );
-	}
+    @Override
+    public final F parse(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected final String toString(V value) {
-		return delegate.toString( toConvertedValue( value ) );
-	}
+    @Override
+    protected final String toString(V value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected final V fromString(String value) {
-		return fromConvertedValue( delegate.fromString( value ) );
-	}
+    @Override
+    protected final V fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract F toConvertedValue(V value);
+    protected abstract F toConvertedValue(V value);
 
-	protected abstract V fromConvertedValue(F value);
-
+    protected abstract V fromConvertedValue(F value);
 }

@@ -10,15 +10,15 @@ import org.hibernate.search.engine.search.projection.SearchProjection;
 
 public interface FieldProjectionBuilder<T> extends SearchProjectionBuilder<T> {
 
-	interface TypeSelector {
-		<T> FieldProjectionBuilder<T> type(Class<T> expectedType, ValueModel valueModel);
-	}
+    interface TypeSelector {
 
-	@Override
-	default SearchProjection<T> build() {
-		return build( ProjectionCollector.nullable() );
-	}
+        <T> FieldProjectionBuilder<T> type(Class<T> expectedType, ValueModel valueModel);
+    }
 
-	<P> SearchProjection<P> build(ProjectionCollector.Provider<T, P> collectorProvider);
+    @Override
+    default SearchProjection<T> build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    <P> SearchProjection<P> build(ProjectionCollector.Provider<T, P> collectorProvider);
 }

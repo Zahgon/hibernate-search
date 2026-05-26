@@ -8,14 +8,14 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 public final class PojoTypeModelFormatter {
 
-	private final PojoTypeModel<?> typeModel;
+    private final PojoTypeModel<?> typeModel;
 
-	public PojoTypeModelFormatter(PojoTypeModel<?> typeModel) {
-		this.typeModel = typeModel;
-	}
+    public PojoTypeModelFormatter(PojoTypeModel<?> typeModel) {
+        this.typeModel = typeModel;
+    }
 
-	@Override
-	public String toString() {
-		return typeModel.name();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

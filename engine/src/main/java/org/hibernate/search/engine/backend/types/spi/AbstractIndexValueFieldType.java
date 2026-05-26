@@ -7,7 +7,6 @@ package org.hibernate.search.engine.backend.types.spi;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.engine.backend.metamodel.IndexValueFieldTypeDescriptor;
 import org.hibernate.search.engine.backend.types.IndexFieldType;
 import org.hibernate.search.engine.backend.types.converter.FromDocumentValueConverter;
@@ -19,242 +18,251 @@ import org.hibernate.search.engine.search.common.spi.SearchIndexValueFieldContex
 import org.hibernate.search.engine.search.common.spi.SearchIndexValueFieldTypeContext;
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterType;
 
-public abstract class AbstractIndexValueFieldType<
-		SC extends SearchIndexScope<?>,
-		N extends SearchIndexValueFieldContext<SC>,
-		F>
-		extends AbstractIndexNodeType<SC, N>
-		implements IndexValueFieldTypeDescriptor, IndexFieldType<F>, SearchIndexValueFieldTypeContext<SC, N, F> {
-	private final Class<F> valueClass;
-	private final DslConverter<F, F> indexDslConverter;
-	private final ProjectionConverter<F, F> indexProjectionConverter;
-	private final DslConverter<?, F> mappingDslConverter;
-	private final ProjectionConverter<F, ?> mappingProjectionConverter;
-	private final DslConverter<?, F> parseConverter;
-	private final ProjectionConverter<F, ?> formatConverter;
+public abstract class AbstractIndexValueFieldType<SC extends SearchIndexScope<?>, N extends SearchIndexValueFieldContext<SC>, F> extends AbstractIndexNodeType<SC, N> implements IndexValueFieldTypeDescriptor, IndexFieldType<F>, SearchIndexValueFieldTypeContext<SC, N, F> {
 
-	private final boolean searchable;
-	private final boolean sortable;
-	private final boolean projectable;
-	private final boolean aggregable;
-	private final boolean multivaluable;
-	private final Set<SearchHighlighterType> allowedHighlighterTypes;
+    private final Class<F> valueClass;
 
-	private final String analyzerName;
-	private final String searchAnalyzerName;
-	private final String normalizerName;
+    private final DslConverter<F, F> indexDslConverter;
 
-	protected AbstractIndexValueFieldType(Builder<SC, N, F> builder) {
-		super( builder );
-		this.valueClass = builder.valueClass;
-		this.indexDslConverter = builder.indexDslConverter;
-		this.indexProjectionConverter = builder.indexProjectionConverter;
-		this.mappingDslConverter = builder.mappingDslConverter != null ? builder.mappingDslConverter : indexDslConverter;
-		this.mappingProjectionConverter =
-				builder.mappingProjectionConverter != null ? builder.mappingProjectionConverter : indexProjectionConverter;
-		this.parseConverter = builder.parser != null ? builder.parser : indexDslConverter;
-		this.formatConverter = builder.formatter != null ? builder.formatter : indexProjectionConverter;
-		this.searchable = builder.searchable;
-		this.sortable = builder.sortable;
-		this.projectable = builder.projectable;
-		this.aggregable = builder.aggregable;
-		this.multivaluable = builder.multivaluable;
-		this.allowedHighlighterTypes = Collections.unmodifiableSet( builder.allowedHighlighterTypes );
-		this.analyzerName = builder.analyzerName;
-		this.searchAnalyzerName = builder.searchAnalyzerName != null ? builder.searchAnalyzerName : builder.analyzerName;
-		this.normalizerName = builder.normalizerName;
-	}
+    private final ProjectionConverter<F, F> indexProjectionConverter;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "valueClass=" + valueClass.getName()
-				+ ", analyzerName=" + analyzerName
-				+ ", searchAnalyzerName=" + searchAnalyzerName
-				+ ", normalizerName=" + normalizerName
-				+ ", traits=" + traits()
-				+ "]";
-	}
+    private final DslConverter<?, F> mappingDslConverter;
 
-	@Override
-	public final Class<F> valueClass() {
-		return valueClass;
-	}
+    private final ProjectionConverter<F, ?> mappingProjectionConverter;
 
-	@Override
-	public final boolean searchable() {
-		return searchable;
-	}
+    private final DslConverter<?, F> parseConverter;
 
-	@Override
-	public final boolean sortable() {
-		return sortable;
-	}
+    private final ProjectionConverter<F, ?> formatConverter;
 
-	@Override
-	public final boolean projectable() {
-		return projectable;
-	}
+    private final boolean searchable;
 
-	@Override
-	public final boolean aggregable() {
-		return aggregable;
-	}
+    private final boolean sortable;
 
-	@Override
-	public boolean multivaluable() {
-		return multivaluable;
-	}
+    private final boolean projectable;
 
-	@Override
-	public final Class<?> dslArgumentClass() {
-		return mappingDslConverter.valueType();
-	}
+    private final boolean aggregable;
 
-	@Override
-	public final DslConverter<?, F> mappingDslConverter() {
-		return mappingDslConverter;
-	}
+    private final boolean multivaluable;
 
-	@Override
-	public DslConverter<?, F> parserDslConverter() {
-		return parseConverter;
-	}
+    private final Set<SearchHighlighterType> allowedHighlighterTypes;
 
-	@Override
-	public ProjectionConverter<F, ?> formatterProjectionConverter() {
-		return formatConverter;
-	}
+    private final String analyzerName;
 
-	@Override
-	public final DslConverter<F, F> indexDslConverter() {
-		return indexDslConverter;
-	}
+    private final String searchAnalyzerName;
 
-	@Override
-	public final Class<?> projectedValueClass() {
-		return mappingProjectionConverter.valueType();
-	}
+    private final String normalizerName;
 
-	@Override
-	public final ProjectionConverter<F, ?> mappingProjectionConverter() {
-		return mappingProjectionConverter;
-	}
+    protected AbstractIndexValueFieldType(Builder<SC, N, F> builder) {
+        super(builder);
+        this.valueClass = builder.valueClass;
+        this.indexDslConverter = builder.indexDslConverter;
+        this.indexProjectionConverter = builder.indexProjectionConverter;
+        this.mappingDslConverter = builder.mappingDslConverter != null ? builder.mappingDslConverter : indexDslConverter;
+        this.mappingProjectionConverter = builder.mappingProjectionConverter != null ? builder.mappingProjectionConverter : indexProjectionConverter;
+        this.parseConverter = builder.parser != null ? builder.parser : indexDslConverter;
+        this.formatConverter = builder.formatter != null ? builder.formatter : indexProjectionConverter;
+        this.searchable = builder.searchable;
+        this.sortable = builder.sortable;
+        this.projectable = builder.projectable;
+        this.aggregable = builder.aggregable;
+        this.multivaluable = builder.multivaluable;
+        this.allowedHighlighterTypes = Collections.unmodifiableSet(builder.allowedHighlighterTypes);
+        this.analyzerName = builder.analyzerName;
+        this.searchAnalyzerName = builder.searchAnalyzerName != null ? builder.searchAnalyzerName : builder.analyzerName;
+        this.normalizerName = builder.normalizerName;
+    }
 
-	@Override
-	public final ProjectionConverter<F, F> indexProjectionConverter() {
-		return indexProjectionConverter;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Optional<String> analyzerName() {
-		return Optional.ofNullable( analyzerName );
-	}
+    @Override
+    public final Class<F> valueClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Optional<String> normalizerName() {
-		return Optional.ofNullable( normalizerName );
-	}
+    @Override
+    public final boolean searchable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Optional<String> searchAnalyzerName() {
-		return Optional.ofNullable( searchAnalyzerName );
-	}
+    @Override
+    public final boolean sortable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean highlighterTypeSupported(SearchHighlighterType type) {
-		return allowedHighlighterTypes.contains( type );
-	}
+    @Override
+    public final boolean projectable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class Builder<
-			SC extends SearchIndexScope<?>,
-			N extends SearchIndexValueFieldContext<SC>,
-			F>
-			extends AbstractIndexNodeType.Builder<SC, N> {
+    @Override
+    public final boolean aggregable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final Class<F> valueClass;
-		private final DslConverter<F, F> indexDslConverter;
-		private final ProjectionConverter<F, F> indexProjectionConverter;
+    @Override
+    public boolean multivaluable() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private DslConverter<?, F> mappingDslConverter;
-		private ProjectionConverter<F, ?> mappingProjectionConverter;
-		private DslConverter<?, F> parser;
-		private ProjectionConverter<F, ?> formatter;
+    @Override
+    public final Class<?> dslArgumentClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private boolean searchable;
-		private boolean sortable;
-		private boolean projectable;
-		private boolean aggregable;
-		private boolean multivaluable = true;
-		private Set<SearchHighlighterType> allowedHighlighterTypes = Collections.emptySet();
+    @Override
+    public final DslConverter<?, F> mappingDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private String analyzerName;
-		private String searchAnalyzerName;
-		private String normalizerName;
+    @Override
+    public DslConverter<?, F> parserDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(Class<F> valueClass) {
-			this.valueClass = valueClass;
-			this.indexDslConverter = DslConverter.passThrough( valueClass );
-			this.indexProjectionConverter = ProjectionConverter.passThrough( valueClass );
-		}
+    @Override
+    public ProjectionConverter<F, ?> formatterProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final Class<F> valueClass() {
-			return valueClass;
-		}
+    @Override
+    public final DslConverter<F, F> indexDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final <V> void dslConverter(Class<V> valueType, ToDocumentValueConverter<V, ? extends F> toIndexConverter) {
-			this.mappingDslConverter = new DslConverter<>( valueType, toIndexConverter );
-		}
+    @Override
+    public final Class<?> projectedValueClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final <V> void projectionConverter(Class<V> valueType,
-				FromDocumentValueConverter<? super F, V> fromIndexConverter) {
-			this.mappingProjectionConverter = new ProjectionConverter<>( valueType, fromIndexConverter );
-		}
+    @Override
+    public final ProjectionConverter<F, ?> mappingProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void parser(ToDocumentValueConverter<String, ? extends F> parser) {
-			this.parser = new DslConverter<>( String.class, parser );
-		}
+    @Override
+    public final ProjectionConverter<F, F> indexProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void formatter(FromDocumentValueConverter<? super F, String> formatter) {
-			this.formatter = new ProjectionConverter<>( String.class, formatter );
-		}
+    @Override
+    public final Optional<String> analyzerName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void searchable(boolean searchable) {
-			this.searchable = searchable;
-		}
+    @Override
+    public final Optional<String> normalizerName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void sortable(boolean sortable) {
-			this.sortable = sortable;
-		}
+    @Override
+    public final Optional<String> searchAnalyzerName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void projectable(boolean projectable) {
-			this.projectable = projectable;
-		}
+    @Override
+    public boolean highlighterTypeSupported(SearchHighlighterType type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final void aggregable(boolean aggregable) {
-			this.aggregable = aggregable;
-		}
+    public abstract static class Builder<SC extends SearchIndexScope<?>, N extends SearchIndexValueFieldContext<SC>, F> extends AbstractIndexNodeType.Builder<SC, N> {
 
-		public final void multivaluable(boolean multivaluable) {
-			this.multivaluable = multivaluable;
-		}
+        private final Class<F> valueClass;
 
-		public final void allowedHighlighterTypes(Set<SearchHighlighterType> allowedHighlighterTypes) {
-			this.allowedHighlighterTypes = allowedHighlighterTypes;
-		}
+        private final DslConverter<F, F> indexDslConverter;
 
-		public final void analyzerName(String analyzerName) {
-			this.analyzerName = analyzerName;
-		}
+        private final ProjectionConverter<F, F> indexProjectionConverter;
 
-		public final void searchAnalyzerName(String searchAnalyzerName) {
-			this.searchAnalyzerName = searchAnalyzerName;
-		}
+        private DslConverter<?, F> mappingDslConverter;
 
-		public final void normalizerName(String normalizerName) {
-			this.normalizerName = normalizerName;
-		}
+        private ProjectionConverter<F, ?> mappingProjectionConverter;
 
-		public abstract AbstractIndexValueFieldType<SC, N, F> build();
-	}
+        private DslConverter<?, F> parser;
+
+        private ProjectionConverter<F, ?> formatter;
+
+        private boolean searchable;
+
+        private boolean sortable;
+
+        private boolean projectable;
+
+        private boolean aggregable;
+
+        private boolean multivaluable = true;
+
+        private Set<SearchHighlighterType> allowedHighlighterTypes = Collections.emptySet();
+
+        private String analyzerName;
+
+        private String searchAnalyzerName;
+
+        private String normalizerName;
+
+        public Builder(Class<F> valueClass) {
+            this.valueClass = valueClass;
+            this.indexDslConverter = DslConverter.passThrough(valueClass);
+            this.indexProjectionConverter = ProjectionConverter.passThrough(valueClass);
+        }
+
+        public final Class<F> valueClass() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final <V> void dslConverter(Class<V> valueType, ToDocumentValueConverter<V, ? extends F> toIndexConverter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final <V> void projectionConverter(Class<V> valueType, FromDocumentValueConverter<? super F, V> fromIndexConverter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void parser(ToDocumentValueConverter<String, ? extends F> parser) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void formatter(FromDocumentValueConverter<? super F, String> formatter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void searchable(boolean searchable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void sortable(boolean sortable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void projectable(boolean projectable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void aggregable(boolean aggregable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void multivaluable(boolean multivaluable) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void allowedHighlighterTypes(Set<SearchHighlighterType> allowedHighlighterTypes) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void analyzerName(String analyzerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void searchAnalyzerName(String searchAnalyzerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public final void normalizerName(String normalizerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public abstract AbstractIndexValueFieldType<SC, N, F> build();
+    }
 }

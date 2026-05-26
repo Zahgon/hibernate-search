@@ -7,91 +7,75 @@ package org.hibernate.search.backend.lucene.types.aggregation.impl;
 import java.util.Comparator;
 
 public enum BucketOrder {
-	COUNT_ASC {
-		@Override
-		<F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
-			return (left, right) -> {
-				int order = Long.compare( left.count(), right.count() );
-				if ( order != 0 ) {
-					return order;
-				}
-				order = termComparator.compare( left.term(), right.term() );
-				return order;
-			};
-		}
 
-		@Override
-		Comparator<LongBucket> toLongBucketComparatorInternal() {
-			return Comparator.comparingLong( LongBucket::count ).thenComparingLong( LongBucket::termOrd );
-		}
-	},
-	COUNT_DESC {
-		@Override
-		<F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
-			return (left, right) -> {
-				int order = Long.compare( right.count(), left.count() ); // reversed, because desc
-				if ( order != 0 ) {
-					return order;
-				}
-				order = termComparator.compare( left.term(), right.term() );
-				return order;
-			};
-		}
+    COUNT_ASC {
 
-		@Override
-		Comparator<LongBucket> toLongBucketComparatorInternal() {
-			return (left, right) -> {
-				int order = Long.compare( right.count(), left.count() ); // reversed, because desc
-				if ( order != 0 ) {
-					return order;
-				}
-				order = Long.compare( left.termOrd(), right.termOrd() );
-				return order;
-			};
-		}
-	},
-	TERM_ASC {
-		@Override
-		<F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
-			return (left, right) -> termComparator.compare( left.term(), right.term() );
-		}
+        @Override
+        <F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		Comparator<LongBucket> toLongBucketComparatorInternal() {
-			return Comparator.comparingLong( LongBucket::termOrd );
-		}
-	},
-	TERM_DESC {
-		@Override
-		boolean isTermOrderDescending() {
-			return true;
-		}
+        @Override
+        Comparator<LongBucket> toLongBucketComparatorInternal() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    , COUNT_DESC {
 
-		@Override
-		<F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
-			return (left, right) -> termComparator.compare( left.term(), right.term() );
-		}
+        @Override
+        <F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		Comparator<LongBucket> toLongBucketComparatorInternal() {
-			return Comparator.comparingLong( LongBucket::termOrd ).reversed();
-		}
-	};
+        @Override
+        Comparator<LongBucket> toLongBucketComparatorInternal() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    , TERM_ASC {
 
-	public <F, R> Comparator<Bucket<F, R>> toBucketComparator(Comparator<F> termAscendingComparator) {
-		return toBucketComparatorInternal(
-				isTermOrderDescending() ? termAscendingComparator.reversed() : termAscendingComparator );
-	}
+        @Override
+        <F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public Comparator<LongBucket> toLongBucketComparator() {
-		return toLongBucketComparatorInternal();
-	}
+        @Override
+        Comparator<LongBucket> toLongBucketComparatorInternal() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    , TERM_DESC {
 
-	abstract <F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator);
+        @Override
+        boolean isTermOrderDescending() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	abstract Comparator<LongBucket> toLongBucketComparatorInternal();
+        @Override
+        <F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	boolean isTermOrderDescending() {
-		return false;
-	}
+        @Override
+        Comparator<LongBucket> toLongBucketComparatorInternal() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+    ;
+
+    public <F, R> Comparator<Bucket<F, R>> toBucketComparator(Comparator<F> termAscendingComparator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Comparator<LongBucket> toLongBucketComparator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    abstract <F, R> Comparator<Bucket<F, R>> toBucketComparatorInternal(Comparator<F> termComparator);
+
+    abstract Comparator<LongBucket> toLongBucketComparatorInternal();
+
+    boolean isTermOrderDescending() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

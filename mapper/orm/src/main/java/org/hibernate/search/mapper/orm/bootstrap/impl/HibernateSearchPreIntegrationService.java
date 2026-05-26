@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.orm.bootstrap.impl;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.registry.StandardServiceInitiator;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -52,270 +51,149 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
  */
 public abstract class HibernateSearchPreIntegrationService implements Service, AutoCloseable {
 
-	private static final ConfigurationProperty<Boolean> ENABLED =
-			ConfigurationProperty.forKey( HibernateOrmMapperSettings.ENABLED )
-					.asBoolean()
-					.withDefault( HibernateOrmMapperSettings.Defaults.ENABLED )
-					.build();
+    private static final ConfigurationProperty<Boolean> ENABLED = ConfigurationProperty.forKey(HibernateOrmMapperSettings.ENABLED).asBoolean().withDefault(HibernateOrmMapperSettings.Defaults.ENABLED).build();
 
-	private static final ConfigurationProperty<Boolean> LOG_VERSION =
-			ConfigurationProperty.forKey( HibernateOrmMapperSpiSettings.JBOSS_LOG_VERSION )
-					.asBoolean()
-					.withDefault( HibernateOrmMapperSpiSettings.Defaults.JBOSS_LOG_VERSIONS )
-					.build();
+    private static final ConfigurationProperty<Boolean> LOG_VERSION = ConfigurationProperty.forKey(HibernateOrmMapperSpiSettings.JBOSS_LOG_VERSION).asBoolean().withDefault(HibernateOrmMapperSpiSettings.Defaults.JBOSS_LOG_VERSIONS).build();
 
-	public static class Contributor implements ServiceContributor {
-		@Override
-		public void contribute(StandardServiceRegistryBuilder serviceRegistryBuilder) {
-			serviceRegistryBuilder.addInitiator( new Initiator() );
-		}
-	}
+    public static class Contributor implements ServiceContributor {
 
-	public static class Initiator implements StandardServiceInitiator<HibernateSearchPreIntegrationService> {
-		private boolean initiated = false;
+        @Override
+        public void contribute(StandardServiceRegistryBuilder serviceRegistryBuilder) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public Class<HibernateSearchPreIntegrationService> getServiceInitiated() {
-			return HibernateSearchPreIntegrationService.class;
-		}
+    public static class Initiator implements StandardServiceInitiator<HibernateSearchPreIntegrationService> {
 
-		@Override
-		public HibernateSearchPreIntegrationService initiateService(Map<String, Object> configurationValues,
-				ServiceRegistryImplementor registry) {
-			// Hibernate ORM may call this method twice if we return a null service.
-			// Make sure we won't log statements multiple times.
-			if ( initiated ) {
-				return null;
-			}
-			initiated = true;
+        private boolean initiated = false;
 
-			if ( LOG_VERSION.get( AllAwareConfigurationPropertySource.system() ) ) {
-				VersionLog.INSTANCE.version( Version.versionString() );
-			}
+        @Override
+        public Class<HibernateSearchPreIntegrationService> getServiceInitiated() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			ConfigurationPropertyChecker propertyChecker = ConfigurationPropertyChecker.create();
-			ConfigurationPropertySource propertySource = propertyChecker.wrap(
-					AllAwareConfigurationPropertySource.fromMap(
-							HibernateOrmUtils.getServiceOrFail( registry, ConfigurationService.class ).getSettings()
-					)
-			);
+        @Override
+        public HibernateSearchPreIntegrationService initiateService(Map<String, Object> configurationValues, ServiceRegistryImplementor registry) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			boolean enabled = ENABLED.get( propertySource );
-			Optional<HibernateOrmIntegrationPartialBuildState> partialBuildState =
-					HibernateOrmIntegrationPartialBuildState.get( propertySource );
-			if ( !enabled ) {
-				ConfigurationLog.INSTANCE.hibernateSearchDisabled();
-				// The partial build state won't get used.
-				partialBuildState.ifPresent( HibernateOrmIntegrationPartialBuildState::closeOnFailure );
-				// Hibernate Search will not boot.
-				return null;
-			}
+        public static SearchIntegrationEnvironment createEnvironment(ConfigurationPropertyChecker propertyChecker, ConfigurationPropertySource propertySource, ServiceRegistryImplementor registry) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-			if ( partialBuildState.isPresent() ) {
-				return new PreBooted( propertyChecker, propertySource, partialBuildState.get() );
-			}
-			else {
-				// Most common path (except for Quarkus): Hibernate Search wasn't pre-booted ahead of time,
-				// so we will need to perform the first phase of boot now.
-				//
-				// Do not remove the use of HibernateOrmIntegrationBooterBehavior as an intermediary:
-				// its implementation is overridden by Quarkus to make it clear to SubstrateVM
-				// that the first phase of boot is never executed in the native binary.
-				return HibernateOrmIntegrationBooterBehavior.bootFirstPhase( () -> {
-					SearchIntegrationEnvironment environment =
-							createEnvironment( propertyChecker, propertySource, registry );
-					return new NotBooted( propertyChecker, propertySource, environment, registry );
-				} );
-			}
-		}
+    private final ConfigurationPropertyChecker propertyChecker;
 
-		public static SearchIntegrationEnvironment createEnvironment(ConfigurationPropertyChecker propertyChecker,
-				ConfigurationPropertySource propertySource, ServiceRegistryImplementor registry) {
-			BeanProvider beanProvider = null;
-			SearchIntegrationEnvironment.Builder environmentBuilder =
-					SearchIntegrationEnvironment.builder( propertySource, propertyChecker );
-			try {
-				ClassLoaderService hibernateOrmClassLoaderService =
-						HibernateOrmUtils.getServiceOrFail( registry, ClassLoaderService.class );
-				Optional<ManagedBeanRegistry> managedBeanRegistryService =
-						HibernateOrmUtils.getServiceOrEmpty( registry, ManagedBeanRegistry.class );
-				HibernateOrmClassLoaderServiceClassAndResourceAndServiceResolver classAndResourceAndServiceResolver =
-						new HibernateOrmClassLoaderServiceClassAndResourceAndServiceResolver( hibernateOrmClassLoaderService );
+    private final ConfigurationPropertySource rawPropertySource;
 
-				environmentBuilder.classResolver( classAndResourceAndServiceResolver )
-						.resourceResolver( classAndResourceAndServiceResolver )
-						.serviceResolver( classAndResourceAndServiceResolver );
+    private CoordinationConfigurationContextImpl coordinationStrategyConfiguration;
 
-				if ( managedBeanRegistryService.isPresent() ) {
-					BeanContainer beanContainer = managedBeanRegistryService.get().getBeanContainer();
-					if ( beanContainer != null ) {
-						// Only use the primary registry, so that we can implement our own fallback when beans are not found
-						beanProvider = new HibernateOrmBeanContainerBeanProvider( beanContainer );
-						environmentBuilder.beanProvider( beanProvider );
-					}
-					// else: The given ManagedBeanRegistry only implements fallback: let's ignore it
-				}
-				return environmentBuilder.build();
-			}
-			catch (RuntimeException e) {
-				new SuppressingCloser( e )
-						.push( BeanProvider::close, beanProvider );
-				throw e;
-			}
-		}
-	}
+    protected HibernateSearchPreIntegrationService(ConfigurationPropertyChecker propertyChecker, ConfigurationPropertySource rawPropertySource) {
+        this.propertyChecker = propertyChecker;
+        this.rawPropertySource = rawPropertySource;
+    }
 
-	private final ConfigurationPropertyChecker propertyChecker;
-	private final ConfigurationPropertySource rawPropertySource;
+    @Override
+    public final void close() throws Exception {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private CoordinationConfigurationContextImpl coordinationStrategyConfiguration;
+    protected void doClose(Closer<RuntimeException> closer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected HibernateSearchPreIntegrationService(ConfigurationPropertyChecker propertyChecker,
-			ConfigurationPropertySource rawPropertySource) {
-		this.propertyChecker = propertyChecker;
-		this.rawPropertySource = rawPropertySource;
-	}
+    /**
+     * @return The raw property source, without a mask or defaults from {@link ConfigurationProvider} applied.
+     * Raw property sources are expected as input to engine SPIs such as
+     * {@link SearchIntegrationEnvironment#builder(ConfigurationPropertySource, ConfigurationPropertyChecker)}
+     * or {@link SearchIntegrationPartialBuildState#finalizer(ConfigurationPropertySource, ConfigurationPropertyChecker)}.
+     * @see SearchIntegrationEnvironment#rootPropertySource(ConfigurationPropertySource, BeanResolver)
+     */
+    ConfigurationPropertySource rawPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final void close() throws Exception {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			doClose( closer );
-		}
-	}
+    /**
+     * @return A property source with the proper mask and defaults from {@link ConfigurationProvider} applied.
+     * @see SearchIntegrationEnvironment#rootPropertySource(ConfigurationPropertySource, BeanResolver)
+     */
+    abstract ConfigurationPropertySource propertySource();
 
-	protected void doClose(Closer<RuntimeException> closer) {
-		closer.push( CoordinationConfigurationContextImpl::close, coordinationStrategyConfiguration );
-	}
+    public CoordinationConfigurationContextImpl coordinationStrategyConfiguration() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The raw property source, without a mask or defaults from {@link ConfigurationProvider} applied.
-	 * Raw property sources are expected as input to engine SPIs such as
-	 * {@link SearchIntegrationEnvironment#builder(ConfigurationPropertySource, ConfigurationPropertyChecker)}
-	 * or {@link SearchIntegrationPartialBuildState#finalizer(ConfigurationPropertySource, ConfigurationPropertyChecker)}.
-	 * @see SearchIntegrationEnvironment#rootPropertySource(ConfigurationPropertySource, BeanResolver)
-	 */
-	ConfigurationPropertySource rawPropertySource() {
-		return rawPropertySource;
-	}
+    ConfigurationPropertyChecker propertyChecker() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A property source with the proper mask and defaults from {@link ConfigurationProvider} applied.
-	 * @see SearchIntegrationEnvironment#rootPropertySource(ConfigurationPropertySource, BeanResolver)
-	 */
-	abstract ConfigurationPropertySource propertySource();
+    abstract BeanResolver beanResolver();
 
-	public CoordinationConfigurationContextImpl coordinationStrategyConfiguration() {
-		if ( coordinationStrategyConfiguration == null ) {
-			coordinationStrategyConfiguration =
-					CoordinationConfigurationContextImpl.configure( propertySource(), beanResolver() );
-		}
-		return coordinationStrategyConfiguration;
-	}
+    abstract HibernateOrmIntegrationPartialBuildState doBootFirstPhase(Metadata metadata, ClassDetailsRegistry classDetailsRegistry, ValueHandleFactory valueHandleFactory);
 
-	ConfigurationPropertyChecker propertyChecker() {
-		return propertyChecker;
-	}
+    static class NotBooted extends HibernateSearchPreIntegrationService {
 
-	abstract BeanResolver beanResolver();
+        private final SearchIntegrationEnvironment environment;
 
-	abstract HibernateOrmIntegrationPartialBuildState doBootFirstPhase(Metadata metadata,
-			ClassDetailsRegistry classDetailsRegistry,
-			ValueHandleFactory valueHandleFactory);
+        private final ServiceRegistry serviceRegistry;
 
-	static class NotBooted extends HibernateSearchPreIntegrationService {
+        NotBooted(ConfigurationPropertyChecker propertyChecker, ConfigurationPropertySource rawPropertySource, SearchIntegrationEnvironment environment, ServiceRegistry serviceRegistry) {
+            super(propertyChecker, rawPropertySource);
+            this.environment = environment;
+            this.serviceRegistry = serviceRegistry;
+        }
 
-		private final SearchIntegrationEnvironment environment;
-		private final ServiceRegistry serviceRegistry;
+        @Override
+        protected void doClose(Closer<RuntimeException> closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		NotBooted(ConfigurationPropertyChecker propertyChecker,
-				ConfigurationPropertySource rawPropertySource,
-				SearchIntegrationEnvironment environment,
-				ServiceRegistry serviceRegistry) {
-			super( propertyChecker, rawPropertySource );
-			this.environment = environment;
-			this.serviceRegistry = serviceRegistry;
-		}
+        @Override
+        ConfigurationPropertySource propertySource() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected void doClose(Closer<RuntimeException> closer) {
-			super.doClose( closer );
-			closer.push( SearchIntegrationEnvironment::close, environment );
-		}
+        @Override
+        BeanResolver beanResolver() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		ConfigurationPropertySource propertySource() {
-			return environment.propertySource();
-		}
+        @Override
+        HibernateOrmIntegrationPartialBuildState doBootFirstPhase(Metadata metadata, ClassDetailsRegistry classDetailsRegistry, ValueHandleFactory valueHandleFactory) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		BeanResolver beanResolver() {
-			return environment.beanResolver();
-		}
+    static class PreBooted extends HibernateSearchPreIntegrationService {
 
-		@Override
-		HibernateOrmIntegrationPartialBuildState doBootFirstPhase(Metadata metadata,
-				ClassDetailsRegistry classDetailsRegistry,
-				ValueHandleFactory valueHandleFactory) {
-			HibernateOrmMappingInitiator mappingInitiator = null;
-			SearchIntegrationPartialBuildState searchIntegrationPartialBuildState = null;
-			try {
-				SearchIntegration.Builder builder = SearchIntegration.builder( environment );
+        private final ConfigurationPropertySource propertySource;
 
-				HibernateOrmMappingKey mappingKey = new HibernateOrmMappingKey();
-				mappingInitiator = HibernateOrmMappingInitiator.create( metadata, classDetailsRegistry,
-						valueHandleFactory, serviceRegistry );
-				builder.addMappingInitiator( mappingKey, mappingInitiator );
+        private final HibernateOrmIntegrationPartialBuildState partialBuildState;
 
-				searchIntegrationPartialBuildState = builder.prepareBuild();
+        PreBooted(ConfigurationPropertyChecker propertyChecker, ConfigurationPropertySource rawPropertySource, HibernateOrmIntegrationPartialBuildState partialBuildState) {
+            super(propertyChecker, rawPropertySource);
+            this.propertySource = SearchIntegrationEnvironment.rootPropertySource(rawPropertySource, partialBuildState.beanResolver());
+            this.partialBuildState = partialBuildState;
+        }
 
-				return new HibernateOrmIntegrationPartialBuildState(
-						searchIntegrationPartialBuildState,
-						mappingKey
-				);
-			}
-			catch (RuntimeException e) {
-				new SuppressingCloser( e )
-						.push( HibernateOrmMappingInitiator::closeOnFailure, mappingInitiator )
-						.push( SearchIntegrationPartialBuildState::closeOnFailure, searchIntegrationPartialBuildState );
-				throw e;
-			}
-		}
-	}
+        @Override
+        protected void doClose(Closer<RuntimeException> closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	static class PreBooted extends HibernateSearchPreIntegrationService {
+        @Override
+        ConfigurationPropertySource propertySource() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final ConfigurationPropertySource propertySource;
-		private final HibernateOrmIntegrationPartialBuildState partialBuildState;
+        @Override
+        BeanResolver beanResolver() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		PreBooted(ConfigurationPropertyChecker propertyChecker,
-				ConfigurationPropertySource rawPropertySource,
-				HibernateOrmIntegrationPartialBuildState partialBuildState) {
-			super( propertyChecker, rawPropertySource );
-			this.propertySource = SearchIntegrationEnvironment.rootPropertySource(
-					rawPropertySource, partialBuildState.beanResolver() );
-			this.partialBuildState = partialBuildState;
-		}
-
-		@Override
-		protected void doClose(Closer<RuntimeException> closer) {
-			super.doClose( closer );
-			closer.push( HibernateOrmIntegrationPartialBuildState::closeOnFailure, partialBuildState );
-		}
-
-		@Override
-		ConfigurationPropertySource propertySource() {
-			return propertySource;
-		}
-
-		@Override
-		BeanResolver beanResolver() {
-			return partialBuildState.beanResolver();
-		}
-
-		@Override
-		HibernateOrmIntegrationPartialBuildState doBootFirstPhase(Metadata metadata,
-				ClassDetailsRegistry classDetailsRegistry, ValueHandleFactory valueHandleFactory) {
-			return partialBuildState;
-		}
-	}
+        @Override
+        HibernateOrmIntegrationPartialBuildState doBootFirstPhase(Metadata metadata, ClassDetailsRegistry classDetailsRegistry, ValueHandleFactory valueHandleFactory) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

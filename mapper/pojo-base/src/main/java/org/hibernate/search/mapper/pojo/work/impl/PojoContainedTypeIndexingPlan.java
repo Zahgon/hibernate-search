@@ -13,59 +13,49 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
  * @param <I> The identifier type for the contained entity type.
  * @param <E> The contained entity type.
  */
-public class PojoContainedTypeIndexingPlan<I, E>
-		extends AbstractPojoTypeIndexingPlan<I, E, PojoContainedTypeIndexingPlan<I, E>.ContainedEntityState> {
+public class PojoContainedTypeIndexingPlan<I, E> extends AbstractPojoTypeIndexingPlan<I, E, PojoContainedTypeIndexingPlan<I, E>.ContainedEntityState> {
 
-	private final PojoWorkContainedTypeContext<I, E> typeContext;
+    private final PojoWorkContainedTypeContext<I, E> typeContext;
 
-	public PojoContainedTypeIndexingPlan(PojoWorkContainedTypeContext<I, E> typeContext,
-			PojoWorkSessionContext sessionContext, PojoIndexingPlanImpl root,
-			PojoTypeIndexingPlanDelegate<I, E> delegate) {
-		super( sessionContext, root, delegate );
-		this.typeContext = typeContext;
-	}
+    public PojoContainedTypeIndexingPlan(PojoWorkContainedTypeContext<I, E> typeContext, PojoWorkSessionContext sessionContext, PojoIndexingPlanImpl root, PojoTypeIndexingPlanDelegate<I, E> delegate) {
+        super(sessionContext, root, delegate);
+        this.typeContext = typeContext;
+    }
 
-	@Override
-	PojoWorkContainedTypeContext<I, E> typeContext() {
-		return typeContext;
-	}
+    @Override
+    PojoWorkContainedTypeContext<I, E> typeContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	DocumentRouter<? super E> router() {
-		// The routes don't make sense for contained types, because they aren't indexed.
-		return NoOpDocumentRouter.INSTANCE;
-	}
+    @Override
+    DocumentRouter<? super E> router() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ContainedEntityState createState(I identifier) {
-		return new ContainedEntityState( identifier );
-	}
+    @Override
+    protected ContainedEntityState createState(I identifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	class ContainedEntityState
-			extends AbstractPojoTypeIndexingPlan<I, E, ContainedEntityState>.AbstractEntityState {
-		private ContainedEntityState(I identifier) {
-			super( identifier );
-		}
+    class ContainedEntityState extends AbstractPojoTypeIndexingPlan<I, E, ContainedEntityState>.AbstractEntityState {
 
-		@Override
-		void providedRoutes(DocumentRoutesDescriptor routes) {
-			// The routes don't make sense for contained types, because they aren't indexed.
-			// Ignore non-null values, for backwards compatibility.
-		}
+        private ContainedEntityState(I identifier) {
+            super(identifier);
+        }
 
-		@Override
-		DocumentRoutesDescriptor providedRoutes() {
-			// The routes don't make sense for contained types, because they aren't indexed.
-			return null;
-		}
+        @Override
+        void providedRoutes(DocumentRoutesDescriptor routes) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		void delegateDelete() {
-			// No event when a contained entity is deleted:
-			// if other entities used to refer to that contained entity,
-			// they should be updated to not refer to it anymore,
-			// in which case they get an event of their own.
-		}
-	}
+        @Override
+        DocumentRoutesDescriptor providedRoutes() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        void delegateDelete() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

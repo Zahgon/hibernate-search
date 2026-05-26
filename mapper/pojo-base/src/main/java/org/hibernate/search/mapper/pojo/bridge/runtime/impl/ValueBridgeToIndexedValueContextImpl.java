@@ -11,17 +11,14 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeMappingContext;
 
 public class ValueBridgeToIndexedValueContextImpl implements ValueBridgeToIndexedValueContext {
 
-	private final BridgeMappingContext mappingContext;
+    private final BridgeMappingContext mappingContext;
 
-	public ValueBridgeToIndexedValueContextImpl(BridgeMappingContext mappingContext) {
-		this.mappingContext = mappingContext;
-	}
+    public ValueBridgeToIndexedValueContextImpl(BridgeMappingContext mappingContext) {
+        this.mappingContext = mappingContext;
+    }
 
-	@Override
-	public <T> T extension(ValueBridgeToIndexedValueContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported(
-				extension,
-				extension.extendOptional( this, mappingContext )
-		);
-	}
+    @Override
+    public <T> T extension(ValueBridgeToIndexedValueContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

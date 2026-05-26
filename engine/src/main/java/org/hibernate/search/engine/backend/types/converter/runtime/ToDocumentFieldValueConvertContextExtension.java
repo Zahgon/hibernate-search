@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.backend.types.converter.runtime;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
 
 /**
@@ -26,21 +25,20 @@ import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
 @Deprecated(since = "6.1")
 public interface ToDocumentFieldValueConvertContextExtension<T> extends ToDocumentValueConvertContextExtension<T> {
 
-	@Override
-	default Optional<T> extendOptional(ToDocumentValueConvertContext original, BackendMappingContext mappingContext) {
-		return extendOptional( (ToDocumentFieldValueConvertContext) original, mappingContext );
-	}
+    @Override
+    default Optional<T> extendOptional(ToDocumentValueConvertContext original, BackendMappingContext mappingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Attempt to extend a given context, returning an empty {@link Optional} in case of failure.
-	 * <p>
-	 * <strong>WARNING:</strong> this method is not API, see comments at the type level.
-	 *
-	 * @param original The original, non-extended {@link ToDocumentFieldValueConvertContext}.
-	 * @param mappingContext A {@link BackendMappingContext}.
-	 * @return An optional containing the extended context ({@link T}) in case
-	 * of success, or an empty optional otherwise.
-	 */
-	Optional<T> extendOptional(ToDocumentFieldValueConvertContext original, BackendMappingContext mappingContext);
-
+    /**
+     * Attempt to extend a given context, returning an empty {@link Optional} in case of failure.
+     * <p>
+     * <strong>WARNING:</strong> this method is not API, see comments at the type level.
+     *
+     * @param original The original, non-extended {@link ToDocumentFieldValueConvertContext}.
+     * @param mappingContext A {@link BackendMappingContext}.
+     * @return An optional containing the extended context ({@link T}) in case
+     * of success, or an empty optional otherwise.
+     */
+    Optional<T> extendOptional(ToDocumentFieldValueConvertContext original, BackendMappingContext mappingContext);
 }

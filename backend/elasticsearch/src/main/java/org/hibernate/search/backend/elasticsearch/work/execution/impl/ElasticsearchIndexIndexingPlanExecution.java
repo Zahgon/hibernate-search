@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.work.execution.impl;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.orchestration.impl.ElasticsearchSerialWorkOrchestrator;
 import org.hibernate.search.backend.elasticsearch.work.impl.SingleDocumentIndexingWork;
 import org.hibernate.search.engine.backend.common.spi.EntityReferenceFactory;
@@ -19,68 +18,52 @@ import org.hibernate.search.util.common.impl.Futures;
  */
 class ElasticsearchIndexIndexingPlanExecution {
 
-	private final ElasticsearchSerialWorkOrchestrator orchestrator;
-	private final EntityReferenceFactory entityReferenceFactory;
+    private final ElasticsearchSerialWorkOrchestrator orchestrator;
 
-	private final List<SingleDocumentIndexingWork> works;
-	private final CompletableFuture<Void>[] futures;
+    private final EntityReferenceFactory entityReferenceFactory;
 
-	@SuppressWarnings("unchecked")
-	ElasticsearchIndexIndexingPlanExecution(ElasticsearchSerialWorkOrchestrator orchestrator,
-			EntityReferenceFactory entityReferenceFactory,
-			List<SingleDocumentIndexingWork> works) {
-		this.orchestrator = orchestrator;
-		this.entityReferenceFactory = entityReferenceFactory;
-		this.works = works;
-		this.futures = new CompletableFuture[works.size()];
-		for ( int i = 0; i < futures.length; i++ ) {
-			futures[i] = new CompletableFuture<>();
-		}
-	}
+    private final List<SingleDocumentIndexingWork> works;
 
-	/**
-	 * Submits the works to the orchestrators for execution,
-	 * planning all necessary post-execution operations (commit, refresh) as appropriate.
-	 * <p>
-	 * Must only be called once.
-	 *
-	 * @return A future that completes when all works and optionally commit/refresh have completed,
-	 * holding an execution report.
-	 */
-	CompletableFuture<MultiEntityOperationExecutionReport> execute(OperationSubmitter operationSubmitter) {
-		// Add the handler to the future *before* submitting the works,
-		// so as to be sure that onAllWorksFinished is executed in the background,
-		// not in the current thread.
-		CompletableFuture<MultiEntityOperationExecutionReport> reportFuture = CompletableFuture.allOf( futures )
-				// We don't care about the throwable, as it comes from a work and
-				// work failures are handled in onAllWorksFinished
-				.handle( (result, throwable) -> onAllWorksFinished() );
+    private final CompletableFuture<Void>[] futures;
 
-		for ( int i = 0; i < works.size(); i++ ) {
-			CompletableFuture<Void> future = futures[i];
-			SingleDocumentIndexingWork work = works.get( i );
-			orchestrator.submit( future, work, operationSubmitter );
-		}
+    @SuppressWarnings("unchecked")
+    ElasticsearchIndexIndexingPlanExecution(ElasticsearchSerialWorkOrchestrator orchestrator, EntityReferenceFactory entityReferenceFactory, List<SingleDocumentIndexingWork> works) {
+        this.orchestrator = orchestrator;
+        this.entityReferenceFactory = entityReferenceFactory;
+        this.works = works;
+        this.futures = new CompletableFuture[works.size()];
+        for (int i = 0; i < futures.length; i++) {
+            futures[i] = new CompletableFuture<>();
+        }
+    }
 
-		return reportFuture;
-	}
+    /**
+     * Submits the works to the orchestrators for execution,
+     * planning all necessary post-execution operations (commit, refresh) as appropriate.
+     * <p>
+     * Must only be called once.
+     *
+     * @return A future that completes when all works and optionally commit/refresh have completed,
+     * holding an execution report.
+     */
+    CompletableFuture<MultiEntityOperationExecutionReport> execute(OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private MultiEntityOperationExecutionReport onAllWorksFinished() {
-		return buildReport();
-	}
+    private MultiEntityOperationExecutionReport onAllWorksFinished() {
+        return buildReport();
+    }
 
-	private MultiEntityOperationExecutionReport buildReport() {
-		MultiEntityOperationExecutionReport.Builder reportBuilder = MultiEntityOperationExecutionReport.builder();
-		for ( int i = 0; i < futures.length; i++ ) {
-			CompletableFuture<?> future = futures[i];
-			if ( future.isCompletedExceptionally() ) {
-				reportBuilder.throwable( Futures.getThrowableNow( future ) );
-				SingleDocumentIndexingWork work = works.get( i );
-				reportBuilder.failingEntityReference( entityReferenceFactory, work.getEntityTypeName(),
-						work.getEntityIdentifier() );
-			}
-		}
-		return reportBuilder.build();
-	}
-
+    private MultiEntityOperationExecutionReport buildReport() {
+        MultiEntityOperationExecutionReport.Builder reportBuilder = MultiEntityOperationExecutionReport.builder();
+        for (int i = 0; i < futures.length; i++) {
+            CompletableFuture<?> future = futures[i];
+            if (future.isCompletedExceptionally()) {
+                reportBuilder.throwable(Futures.getThrowableNow(future));
+                SingleDocumentIndexingWork work = works.get(i);
+                reportBuilder.failingEntityReference(entityReferenceFactory, work.getEntityTypeName(), work.getEntityIdentifier());
+            }
+        }
+        return reportBuilder.build();
+    }
 }

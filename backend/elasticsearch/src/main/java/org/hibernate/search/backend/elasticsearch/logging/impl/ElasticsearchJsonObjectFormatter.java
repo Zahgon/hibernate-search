@@ -5,24 +5,22 @@
 package org.hibernate.search.backend.elasticsearch.logging.impl;
 
 import org.hibernate.search.backend.elasticsearch.client.common.gson.spi.JsonLogHelper;
-
 import com.google.gson.JsonObject;
 
 /**
  * Used with JBoss Logging's {@link org.jboss.logging.annotations.FormatWith}
  * to display {@link JsonObject}s in log messages.
- *
  */
 public final class ElasticsearchJsonObjectFormatter {
 
-	private final JsonObject object;
+    private final JsonObject object;
 
-	public ElasticsearchJsonObjectFormatter(JsonObject object) {
-		this.object = object;
-	}
+    public ElasticsearchJsonObjectFormatter(JsonObject object) {
+        this.object = object;
+    }
 
-	@Override
-	public String toString() {
-		return JsonLogHelper.get().toString( object );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

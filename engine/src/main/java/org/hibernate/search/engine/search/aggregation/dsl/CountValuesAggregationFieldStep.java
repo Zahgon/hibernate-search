@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.aggregation.dsl;
 
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.engine.search.reference.aggregation.CountAggregationFieldReference;
 import org.hibernate.search.util.common.annotation.Incubating;
@@ -19,22 +18,22 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface CountValuesAggregationFieldStep<SR, PDF extends TypedSearchPredicateFactory<SR>> {
 
-	/**
-	 * Target the given field in the count values aggregation.
-	 *
-	 * @param fieldPath The <a href="SearchAggregationFactory.html#field-paths">path</a> to the index field to aggregate.
-	 * @return The next step.
-	 */
-	CountValuesAggregationOptionsStep<SR, ?, PDF> field(String fieldPath);
+    /**
+     * Target the given field in the count values aggregation.
+     *
+     * @param fieldPath The <a href="SearchAggregationFactory.html#field-paths">path</a> to the index field to aggregate.
+     * @return The next step.
+     */
+    CountValuesAggregationOptionsStep<SR, ?, PDF> field(String fieldPath);
 
-	/**
-	 * Target the given field in the count values aggregation.
-	 *
-	 * @param fieldReference The field reference representing a <a href="SearchAggregationFactory.html#field-references">definition</a> of the index field to aggregate.
-	 * @return The next step.
-	 */
-	@Incubating
-	default CountValuesAggregationOptionsStep<SR, ?, PDF> field(CountAggregationFieldReference<SR> fieldReference) {
-		return field( fieldReference.absolutePath() );
-	}
+    /**
+     * Target the given field in the count values aggregation.
+     *
+     * @param fieldReference The field reference representing a <a href="SearchAggregationFactory.html#field-references">definition</a> of the index field to aggregate.
+     * @return The next step.
+     */
+    @Incubating
+    default CountValuesAggregationOptionsStep<SR, ?, PDF> field(CountAggregationFieldReference<SR> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

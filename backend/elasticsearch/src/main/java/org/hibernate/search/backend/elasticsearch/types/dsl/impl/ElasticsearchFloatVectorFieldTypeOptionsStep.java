@@ -9,30 +9,24 @@ import org.hibernate.search.backend.elasticsearch.types.codec.impl.Elasticsearch
 import org.hibernate.search.backend.elasticsearch.types.mapping.impl.ElasticsearchVectorFieldTypeMappingContributor;
 import org.hibernate.search.engine.backend.types.VectorSimilarity;
 
-class ElasticsearchFloatVectorFieldTypeOptionsStep
-		extends
-		AbstractElasticsearchVectorFieldTypeOptionsStep<ElasticsearchFloatVectorFieldTypeOptionsStep, float[]> {
+class ElasticsearchFloatVectorFieldTypeOptionsStep extends AbstractElasticsearchVectorFieldTypeOptionsStep<ElasticsearchFloatVectorFieldTypeOptionsStep, float[]> {
 
-	ElasticsearchFloatVectorFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext,
-			ElasticsearchVectorFieldTypeMappingContributor mappingContributor) {
-		super( buildContext, float[].class, mappingContributor );
-	}
+    ElasticsearchFloatVectorFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext, ElasticsearchVectorFieldTypeMappingContributor mappingContributor) {
+        super(buildContext, float[].class, mappingContributor);
+    }
 
+    @Override
+    public String type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String type() {
-		return "float";
-	}
+    @Override
+    protected AbstractElasticsearchVectorFieldCodec<float[]> createCodec(VectorSimilarity similarity, int dimension, Integer m, Integer efConstruction, float[] indexNullAs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractElasticsearchVectorFieldCodec<float[]> createCodec(VectorSimilarity similarity, int dimension,
-			Integer m, Integer efConstruction, float[] indexNullAs) {
-		return new ElasticsearchFloatVectorFieldCodec( buildContext.getUserFacingGson(), similarity, dimension, m,
-				efConstruction, indexNullAs );
-	}
-
-	@Override
-	protected ElasticsearchFloatVectorFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchFloatVectorFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

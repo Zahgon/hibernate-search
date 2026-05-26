@@ -11,26 +11,23 @@ import org.hibernate.search.engine.mapper.mapping.impl.MappedIndexManagerImpl;
 import org.hibernate.search.engine.mapper.mapping.spi.MappedIndexManager;
 
 public class MappedIndexManagerBuilderImpl implements MappedIndexManagerBuilder {
-	private final IndexedEntityBindingContextImpl bindingContext;
-	private final IndexManagerBuildingState indexManagerBuildingState;
 
-	public MappedIndexManagerBuilderImpl(IndexedEntityBindingMapperContext mapperContext,
-			IndexManagerBuildingState indexManagerBuildingState) {
-		this.bindingContext = new IndexedEntityBindingContextImpl(
-				mapperContext, indexManagerBuildingState.getSchemaRootNodeBuilder()
-		);
-		this.indexManagerBuildingState = indexManagerBuildingState;
-	}
+    private final IndexedEntityBindingContextImpl bindingContext;
 
-	@Override
-	public IndexedEntityBindingContext rootBindingContext() {
-		return bindingContext;
-	}
+    private final IndexManagerBuildingState indexManagerBuildingState;
 
-	@Override
-	public MappedIndexManager build() {
-		return new MappedIndexManagerImpl(
-				indexManagerBuildingState.build()
-		);
-	}
+    public MappedIndexManagerBuilderImpl(IndexedEntityBindingMapperContext mapperContext, IndexManagerBuildingState indexManagerBuildingState) {
+        this.bindingContext = new IndexedEntityBindingContextImpl(mapperContext, indexManagerBuildingState.getSchemaRootNodeBuilder());
+        this.indexManagerBuildingState = indexManagerBuildingState;
+    }
+
+    @Override
+    public IndexedEntityBindingContext rootBindingContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public MappedIndexManager build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

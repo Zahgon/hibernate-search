@@ -5,43 +5,34 @@
 package org.hibernate.search.mapper.pojo.massindexing.impl;
 
 import java.util.concurrent.ScheduledExecutorService;
-
 import org.hibernate.search.engine.environment.thread.spi.ThreadPoolProvider;
 import org.hibernate.search.engine.reporting.FailureHandler;
 import org.hibernate.search.mapper.pojo.massindexing.spi.PojoMassIndexerAgentStartContext;
 
 class PojoMassIndexerAgentStartContextImpl implements PojoMassIndexerAgentStartContext {
 
-	private final ThreadPoolProvider threadPoolProvider;
-	private final FailureHandler failureHandler;
+    private final ThreadPoolProvider threadPoolProvider;
 
-	private ScheduledExecutorService scheduledExecutorService;
+    private final FailureHandler failureHandler;
 
-	PojoMassIndexerAgentStartContextImpl(ThreadPoolProvider threadPoolProvider,
-			FailureHandler failureHandler) {
-		this.threadPoolProvider = threadPoolProvider;
-		this.failureHandler = failureHandler;
-	}
+    private ScheduledExecutorService scheduledExecutorService;
 
-	@Override
-	public ScheduledExecutorService scheduledExecutor() {
-		if ( this.scheduledExecutorService == null ) {
-			this.scheduledExecutorService = threadPoolProvider.newScheduledExecutor(
-					1,
-					PojoMassIndexingBatchIndexingWorkspace.THREAD_NAME_PREFIX + "Mass indexer agent"
-			);
-		}
-		return scheduledExecutorService;
-	}
+    PojoMassIndexerAgentStartContextImpl(ThreadPoolProvider threadPoolProvider, FailureHandler failureHandler) {
+        this.threadPoolProvider = threadPoolProvider;
+        this.failureHandler = failureHandler;
+    }
 
-	@Override
-	public FailureHandler failureHandler() {
-		return failureHandler;
-	}
+    @Override
+    public ScheduledExecutorService scheduledExecutor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void clear() {
-		if ( scheduledExecutorService != null ) {
-			scheduledExecutorService.shutdownNow();
-		}
-	}
+    @Override
+    public FailureHandler failureHandler() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void clear() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -7,20 +7,17 @@ package org.hibernate.search.mapper.orm.massindexing.impl;
 import org.hibernate.search.mapper.orm.loading.spi.ConditionalExpression;
 import org.hibernate.search.mapper.orm.massindexing.MassIndexerReindexParameterStep;
 
-public class HibernateOrmMassIndexerReindexParameterStep extends HibernateOrmMassIndexerFilteringTypeStep
-		implements MassIndexerReindexParameterStep {
+public class HibernateOrmMassIndexerReindexParameterStep extends HibernateOrmMassIndexerFilteringTypeStep implements MassIndexerReindexParameterStep {
 
-	private final ConditionalExpression expression;
+    private final ConditionalExpression expression;
 
-	public HibernateOrmMassIndexerReindexParameterStep(HibernateOrmMassIndexer massIndexer, Class<?> type,
-			ConditionalExpression expression) {
-		super( massIndexer, type );
-		this.expression = expression;
-	}
+    public HibernateOrmMassIndexerReindexParameterStep(HibernateOrmMassIndexer massIndexer, Class<?> type, ConditionalExpression expression) {
+        super(massIndexer, type);
+        this.expression = expression;
+    }
 
-	@Override
-	public MassIndexerReindexParameterStep param(String name, Object value) {
-		expression.param( name, value );
-		return this;
-	}
+    @Override
+    public MassIndexerReindexParameterStep param(String name, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

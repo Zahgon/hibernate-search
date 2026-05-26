@@ -8,7 +8,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.mapping.Component;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
@@ -32,83 +31,38 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
  * but is not limited to that (there's some metadata about BigDecimal scale, for example).
  */
 public final class HibernateOrmMappingConfigurationContributor implements PojoMappingConfigurationContributor {
-	private final HibernateOrmBasicTypeMetadataProvider basicTypeMetadataProvider;
-	private final HibernateOrmBootstrapIntrospector introspector;
 
-	HibernateOrmMappingConfigurationContributor(HibernateOrmBasicTypeMetadataProvider basicTypeMetadataProvider,
-			HibernateOrmBootstrapIntrospector introspector) {
-		this.basicTypeMetadataProvider = basicTypeMetadataProvider;
-		this.introspector = introspector;
-	}
+    private final HibernateOrmBasicTypeMetadataProvider basicTypeMetadataProvider;
 
-	@Override
-	public void configure(MappingBuildContext buildContext, PojoMappingConfigurationContext configurationContext,
-			MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector) {
-		Set<PojoRawTypeModel<?>> processedEmbeddableTypes = new LinkedHashSet<>();
+    private final HibernateOrmBootstrapIntrospector introspector;
 
-		for ( PersistentClass persistentClass : basicTypeMetadataProvider.getPersistentClasses() ) {
-			Class<?> clazz = persistentClass.getMappedClass();
-			PojoRawTypeModel<?> typeModel;
-			if ( persistentClass.hasPojoRepresentation() ) {
-				typeModel = introspector.typeModel( clazz );
-			}
-			else {
-				typeModel = introspector.typeModel( persistentClass.getEntityName() );
-			}
+    HibernateOrmMappingConfigurationContributor(HibernateOrmBasicTypeMetadataProvider basicTypeMetadataProvider, HibernateOrmBootstrapIntrospector introspector) {
+        this.basicTypeMetadataProvider = basicTypeMetadataProvider;
+        this.introspector = introspector;
+    }
 
-			// Sort the properties before processing for deterministic iteration
-			List<Property> properties =
-					HibernateOrmUtils.sortedNonSyntheticProperties( persistentClass.getProperties().iterator() );
+    @Override
+    public void configure(MappingBuildContext buildContext, PojoMappingConfigurationContext configurationContext, MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			Property identifierProperty = persistentClass.getIdentifierProperty();
-			Optional<Property> identifierPropertyOptional = Optional.ofNullable( identifierProperty );
+    private void contributeEmbeddableTypeMetadata(MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector, Set<PojoRawTypeModel<?>> processedEmbeddableTypes, List<Property> properties) {
+        for (Property property : properties) {
+            contributeEmbeddableTypeMetadata(configurationCollector, processedEmbeddableTypes, property);
+        }
+    }
 
-			// include ID in the properties list for additional metadata contribution.
-			// as the list of properties is supposed to be sorted, we put id as the first element.
-			identifierPropertyOptional.ifPresent( identifier -> properties.add( 0, identifier ) );
-
-			configurationCollector.collectContributor(
-					typeModel,
-					new ErrorCollectingPojoTypeMetadataContributor()
-							// Ensure entities are declared as such
-							.add( new HibernateOrmEntityTypeMetadataContributor(
-									typeModel, persistentClass, identifierPropertyOptional.map( Property::getName )
-							) )
-							// Ensure Hibernate ORM metadata about properties is translated into Hibernate Search metadata
-							.add( new HibernateOrmMappingPropertiesMetadataContributor(
-									basicTypeMetadataProvider, properties
-							) )
-			);
-
-			// Also collect metadata about all embeddable types referenced from this entity type.
-			contributeEmbeddableTypeMetadata( configurationCollector, processedEmbeddableTypes, properties );
-		}
-	}
-
-	private void contributeEmbeddableTypeMetadata(
-			MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector,
-			Set<PojoRawTypeModel<?>> processedEmbeddableTypes,
-			List<Property> properties) {
-		for ( Property property : properties ) {
-			contributeEmbeddableTypeMetadata( configurationCollector, processedEmbeddableTypes, property );
-		}
-	}
-
-	private void contributeEmbeddableTypeMetadata(
-			MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector,
-			Set<PojoRawTypeModel<?>> processedEmbeddableTypes,
-			Property property) {
-		Value value = property.getValue();
-		if ( value instanceof Component ) {
-			Component componentValue = (Component) value;
-			PojoRawTypeModel<?> componentTypeModel;
-			if ( componentValue.isDynamic() ) {
-				componentTypeModel = introspector.typeModel( componentValue.getRoleName() );
-			}
-			else {
-				componentTypeModel = introspector.typeModel( (Class<?>) componentValue.getComponentClass() );
-			}
-			/*
+    private void contributeEmbeddableTypeMetadata(MappingConfigurationCollector<PojoTypeMetadataContributor> configurationCollector, Set<PojoRawTypeModel<?>> processedEmbeddableTypes, Property property) {
+        Value value = property.getValue();
+        if (value instanceof Component) {
+            Component componentValue = (Component) value;
+            PojoRawTypeModel<?> componentTypeModel;
+            if (componentValue.isDynamic()) {
+                componentTypeModel = introspector.typeModel(componentValue.getRoleName());
+            } else {
+                componentTypeModel = introspector.typeModel((Class<?>) componentValue.getComponentClass());
+            }
+            /*
 			 * Different Component instances for the same component class may carry different metadata
 			 * depending on where they appear,
 			 * because Hibernate ORM allows overriding using @AssociationOverride/@AttributeOverride
@@ -119,20 +73,14 @@ public final class HibernateOrmMappingConfigurationContributor implements PojoMa
 			 * "entity-level" metadata.
 			 * Thus we only use the first Component instance we find, and ignore the others.
 			 */
-			if ( processedEmbeddableTypes.add( componentTypeModel ) ) {
-				// Sort the properties before processing for deterministic iteration
-				List<Property> properties =
-						HibernateOrmUtils.sortedNonSyntheticProperties( componentValue.getProperties().iterator() );
-				configurationCollector.collectContributor( componentTypeModel,
-						new ErrorCollectingPojoTypeMetadataContributor()
-								// Ensure Hibernate ORM metadata about properties is translated into Hibernate Search metadata
-								.add( new HibernateOrmMappingPropertiesMetadataContributor(
-										basicTypeMetadataProvider, properties
-								) ) );
-				// Recurse in order to find embeddeds within embeddeds
-				contributeEmbeddableTypeMetadata( configurationCollector, processedEmbeddableTypes, properties );
-			}
-		}
-	}
-
+            if (processedEmbeddableTypes.add(componentTypeModel)) {
+                // Sort the properties before processing for deterministic iteration
+                List<Property> properties = HibernateOrmUtils.sortedNonSyntheticProperties(componentValue.getProperties().iterator());
+                configurationCollector.collectContributor(componentTypeModel, new ErrorCollectingPojoTypeMetadataContributor().// Ensure Hibernate ORM metadata about properties is translated into Hibernate Search metadata
+                add(new HibernateOrmMappingPropertiesMetadataContributor(basicTypeMetadataProvider, properties)));
+                // Recurse in order to find embeddeds within embeddeds
+                contributeEmbeddableTypeMetadata(configurationCollector, processedEmbeddableTypes, properties);
+            }
+        }
+    }
 }

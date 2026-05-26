@@ -13,43 +13,30 @@ import org.hibernate.search.util.common.impl.SuppressingCloser;
 
 public class LuceneIndexManagerBuilder implements IndexManagerBuilder {
 
-	private final IndexManagerBackendContext backendContext;
+    private final IndexManagerBackendContext backendContext;
 
-	private final String indexName;
-	private final LuceneIndexRootBuilder schemaRootNodeBuilder;
+    private final String indexName;
 
-	public LuceneIndexManagerBuilder(IndexManagerBackendContext backendContext,
-			String indexName,
-			LuceneIndexRootBuilder schemaRootNodeBuilder) {
-		this.backendContext = backendContext;
-		this.indexName = indexName;
-		this.schemaRootNodeBuilder = schemaRootNodeBuilder;
-	}
+    private final LuceneIndexRootBuilder schemaRootNodeBuilder;
 
-	@Override
-	public void closeOnFailure() {
-		// Nothing to do
-	}
+    public LuceneIndexManagerBuilder(IndexManagerBackendContext backendContext, String indexName, LuceneIndexRootBuilder schemaRootNodeBuilder) {
+        this.backendContext = backendContext;
+        this.indexName = indexName;
+        this.schemaRootNodeBuilder = schemaRootNodeBuilder;
+    }
 
-	@Override
-	public IndexRootBuilder schemaRootNodeBuilder() {
-		return schemaRootNodeBuilder;
-	}
+    @Override
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexManagerImpl build() {
-		LuceneIndexModel model = null;
-		try {
-			model = schemaRootNodeBuilder.build( indexName );
-			LuceneIndexEntryFactory indexEntryFactory = backendContext.createLuceneIndexEntryFactory( model );
-			return new LuceneIndexManagerImpl(
-					backendContext, indexName, model, indexEntryFactory
-			);
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e )
-					.push( model );
-			throw e;
-		}
-	}
+    @Override
+    public IndexRootBuilder schemaRootNodeBuilder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public LuceneIndexManagerImpl build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

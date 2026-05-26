@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.FlushMode;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -37,233 +36,113 @@ import org.hibernate.search.mapper.pojo.loading.spi.PojoSelectionLoadingContext;
 import org.hibernate.search.util.common.AssertionFailure;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
 
-public abstract class AbstractHibernateOrmLoadingStrategy<E, I>
-		implements HibernateOrmEntityLoadingStrategy<E, I> {
+public abstract class AbstractHibernateOrmLoadingStrategy<E, I> implements HibernateOrmEntityLoadingStrategy<E, I> {
 
-	enum GroupingAllowed {
-		NEVER {
-			@Override
-			public boolean allowed(boolean hasNonIndexedConcreteSubtypes) {
-				return false;
-			}
-		},
-		ALWAYS {
-			@Override
-			public boolean allowed(boolean hasNonIndexedConcreteSubtypes) {
-				return true;
-			}
-		},
-		ONLY_FOR_NO_NON_INDEXED_CONCRETE_SUBTYPES {
-			@Override
-			public boolean allowed(boolean hasNonIndexedConcreteSubtypes) {
-				return !hasNonIndexedConcreteSubtypes;
-			}
-		};
+    enum GroupingAllowed {
 
-		public static GroupingAllowed determine(PersistentClass persistentClass) {
-			if ( isFromInheritanceType( persistentClass, JoinedSubclass.class ) ) {
-				return ONLY_FOR_NO_NON_INDEXED_CONCRETE_SUBTYPES;
-			}
-			if ( isFromInheritanceType( persistentClass, SingleTableSubclass.class ) ) {
-				return ALWAYS;
-			}
-			return NEVER;
+        NEVER {
 
-		}
+            @Override
+            public boolean allowed(boolean hasNonIndexedConcreteSubtypes) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+        , ALWAYS {
 
-		private static boolean isFromInheritanceType(PersistentClass persistentClass, Class<? extends PersistentClass> kind) {
-			return kind.isAssignableFrom( persistentClass.getClass() )
-					|| persistentClass instanceof RootClass
-							&& persistentClass.getSubclasses().stream()
-									.anyMatch( c -> kind.isAssignableFrom( c.getClass() ) );
-		}
+            @Override
+            public boolean allowed(boolean hasNonIndexedConcreteSubtypes) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+        , ONLY_FOR_NO_NON_INDEXED_CONCRETE_SUBTYPES {
 
-		public abstract boolean allowed(boolean hasNonIndexedConcreteSubtypes);
-	}
+            @Override
+            public boolean allowed(boolean hasNonIndexedConcreteSubtypes) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+        ;
 
-	protected final String rootEntityName;
-	protected final Class<I> uniquePropertyType;
-	protected final String uniquePropertyName;
-	private final GroupingAllowed groupingAllowed;
+        public static GroupingAllowed determine(PersistentClass persistentClass) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	AbstractHibernateOrmLoadingStrategy(String rootEntityName, Class<I> uniquePropertyType, String uniquePropertyName,
-			GroupingAllowed groupingAllowed) {
-		this.rootEntityName = rootEntityName;
-		this.uniquePropertyType = uniquePropertyType;
-		this.uniquePropertyName = uniquePropertyName;
-		this.groupingAllowed = groupingAllowed;
-	}
+        private static boolean isFromInheritanceType(PersistentClass persistentClass, Class<? extends PersistentClass> kind) {
+            return kind.isAssignableFrom(persistentClass.getClass()) || persistentClass instanceof RootClass && persistentClass.getSubclasses().stream().anyMatch(c -> kind.isAssignableFrom(c.getClass()));
+        }
 
-	@Override
-	public final PojoSelectionEntityLoader<E> createEntityLoader(
-			Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes,
-			PojoSelectionLoadingContext context) {
-		var ormContext = (HibernateOrmSelectionLoadingContext) context;
-		return createEntityLoader( expectedTypes, ormContext );
-	}
+        public abstract boolean allowed(boolean hasNonIndexedConcreteSubtypes);
+    }
 
-	public abstract PojoSelectionEntityLoader<E> createEntityLoader(
-			Set<? extends PojoLoadingTypeContext<? extends E>> targetEntityTypeContexts,
-			HibernateOrmSelectionLoadingContext loadingContext);
+    protected final String rootEntityName;
 
-	@Override
-	public final boolean groupingAllowed(PojoLoadingTypeContext<? extends E> type, PojoMassLoadingContext context) {
-		// Only allow grouping for types that don't have a conditional expression:
-		// it's too complicated to apply a condition to multiple types in the same query.
-		// TODO HSEARCH-4252 Apply a condition to multiple types in the same query
+    protected final Class<I> uniquePropertyType;
 
-		// Also if we are looking at the InheritanceType.JOINED hierarchy and we are not targeting all subtypes
-		// i.e. there's an @Indexed(enabled=false) on some subtype -- we don't want to join, as we'd be
-		// creating queries with lots of joins and where clause containing `type in (???)`.
-		// and in this case targeting a more specific type leads to generating a bit less joins
-		return groupingAllowed.allowed( type.hasNonIndexedConcreteSubtypes() )
-				&& ( (HibernateOrmMassLoadingContext) context ).conditionalExpression( type ).isEmpty();
-	}
+    protected final String uniquePropertyName;
 
-	@Override
-	public final PojoMassIdentifierLoader createIdentifierLoader(
-			Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes,
-			PojoMassIdentifierLoadingContext<I> context) {
-		var ormContext = (HibernateOrmMassLoadingContext) context.parent();
-		SessionFactoryImplementor sessionFactory = ormContext.mapping().sessionFactory();
+    private final GroupingAllowed groupingAllowed;
 
-		HibernateOrmQueryLoader<E, I> queryLoader = createQueryLoader( sessionFactory, expectedTypes,
-				conditionalExpressions( expectedTypes, ormContext ) );
-		SharedSessionContractImplementor session = (SharedSessionContractImplementor) sessionFactory
-				.withStatelessOptions()
-				.tenantIdentifier( ormContext.tenancyConfiguration().convert( context.tenantIdentifier() ) )
-				.openStatelessSession();
-		try {
-			PojoMassIdentifierSink<I> sink = context.createSink();
-			return new HibernateOrmMassIdentifierLoader<>( queryLoader, ormContext, sink, session );
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e ).push( SharedSessionContractImplementor::close, session );
-			throw e;
-		}
-	}
+    AbstractHibernateOrmLoadingStrategy(String rootEntityName, Class<I> uniquePropertyType, String uniquePropertyName, GroupingAllowed groupingAllowed) {
+        this.rootEntityName = rootEntityName;
+        this.uniquePropertyType = uniquePropertyType;
+        this.uniquePropertyName = uniquePropertyName;
+        this.groupingAllowed = groupingAllowed;
+    }
 
-	@Override
-	public final PojoMassEntityLoader<I> createEntityLoader(Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes,
-			PojoMassEntityLoadingContext<E> context) {
-		var ormContext = (HibernateOrmMassLoadingContext) context.parent();
-		SessionFactoryImplementor sessionFactory = ormContext.mapping().sessionFactory();
+    @Override
+    public final PojoSelectionEntityLoader<E> createEntityLoader(Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes, PojoSelectionLoadingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		HibernateOrmQueryLoader<E, ?> queryLoader = createQueryLoader( sessionFactory, expectedTypes,
-				conditionalExpressions( expectedTypes, ormContext ) );
-		SessionImplementor session = (SessionImplementor) sessionFactory
-				.withOptions()
-				.tenantIdentifier( ormContext.tenancyConfiguration().convert( context.tenantIdentifier() ) )
-				.openSession();
-		try {
-			session.setHibernateFlushMode( FlushMode.MANUAL );
-			session.setCacheMode( ormContext.cacheMode() );
-			session.setDefaultReadOnly( true );
+    public abstract PojoSelectionEntityLoader<E> createEntityLoader(Set<? extends PojoLoadingTypeContext<? extends E>> targetEntityTypeContexts, HibernateOrmSelectionLoadingContext loadingContext);
 
-			PojoMassEntitySink<E> sink = context.createSink( ormContext.mapping().sessionContext( session ) );
-			return new HibernateOrmMassEntityLoader<>( queryLoader, ormContext, sink, session );
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e ).push( SessionImplementor::close, session );
-			throw e;
-		}
-	}
+    @Override
+    public final boolean groupingAllowed(PojoLoadingTypeContext<? extends E> type, PojoMassLoadingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private List<ConditionalExpression> conditionalExpressions(Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes,
-			HibernateOrmMassLoadingContext context) {
-		if ( expectedTypes.size() != 1 ) {
-			// We know there's no condition, see groupingAllowed()
-			// TODO HSEARCH-4252 Apply a condition to multiple types in the same query
-			return List.of();
-		}
-		var condition = context.conditionalExpression( expectedTypes.iterator().next() );
-		return condition.isPresent() ? List.of( condition.get() ) : List.of();
-	}
+    @Override
+    public final PojoMassIdentifierLoader createIdentifierLoader(Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes, PojoMassIdentifierLoadingContext<I> context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public HibernateOrmQueryLoader<E, I> createQueryLoader(SessionFactoryImplementor sessionFactory,
-			Set<? extends PojoLoadingTypeContext<? extends E>> typeContexts,
-			List<ConditionalExpression> conditionalExpressions) {
-		return createQueryLoader( sessionFactory, typeContexts, conditionalExpressions, null );
-	}
+    @Override
+    public final PojoMassEntityLoader<I> createEntityLoader(Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes, PojoMassEntityLoadingContext<E> context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public HibernateOrmQueryLoader<E, I> createQueryLoader(SessionFactoryImplementor sessionFactory,
-			Set<? extends PojoLoadingTypeContext<? extends E>> typeContexts,
-			List<ConditionalExpression> conditionalExpressions, String order) {
+    private List<ConditionalExpression> conditionalExpressions(Set<? extends PojoLoadingTypeContext<? extends E>> expectedTypes, HibernateOrmMassLoadingContext context) {
+        if (expectedTypes.size() != 1) {
+            // We know there's no condition, see groupingAllowed()
+            // TODO HSEARCH-4252 Apply a condition to multiple types in the same query
+            return List.of();
+        }
+        var condition = context.conditionalExpression(expectedTypes.iterator().next());
+        return condition.isPresent() ? List.of(condition.get()) : List.of();
+    }
 
-		EntityMappingType commonSuperType = toMostSpecificCommonEntitySuperType( sessionFactory, typeContexts );
-		if ( commonSuperType == null ) {
-			throw invalidTypesException( typeContexts );
-		}
+    @Override
+    public HibernateOrmQueryLoader<E, I> createQueryLoader(SessionFactoryImplementor sessionFactory, Set<? extends PojoLoadingTypeContext<? extends E>> typeContexts, List<ConditionalExpression> conditionalExpressions) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Set<Class<? extends E>> includedTypesFilter;
-		if ( HibernateOrmUtils.targetsAllConcreteSubTypes( sessionFactory, commonSuperType, typeContexts ) ) {
-			// All concrete types are included, no need to filter by type.
-			includedTypesFilter = Collections.emptySet();
-		}
-		else {
-			includedTypesFilter = new HashSet<>( typeContexts.size() );
-			for ( PojoLoadingTypeContext<? extends E> typeContext : typeContexts ) {
-				includedTypesFilter.add( typeContext.typeIdentifier().javaClass() );
-			}
-		}
+    @Override
+    public HibernateOrmQueryLoader<E, I> createQueryLoader(SessionFactoryImplementor sessionFactory, Set<? extends PojoLoadingTypeContext<? extends E>> typeContexts, List<ConditionalExpression> conditionalExpressions, String order) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		TypeQueryFactory<E, I> actualQueryFactory = createFactory( sessionFactory, commonSuperType );
+    protected abstract TypeQueryFactory<E, I> createFactory(SessionFactoryImplementor sessionFactoryImplementor, Class<E> entityClass, String ormEntityName, Class<I> uniquePropertyType, String uniquePropertyName);
 
-		if ( !conditionalExpressions.isEmpty() || order != null ) {
-			if ( typeContexts.size() != 1 ) {
-				// TODO HSEARCH-4252 Apply a condition to multiple types in the same query
-				throw new AssertionFailure( "conditional/order expression is always defined on a single type" );
-			}
+    @SuppressWarnings("unchecked")
+    protected TypeQueryFactory<E, I> createFactory(SessionFactoryImplementor sessionFactoryImplementor, EntityMappingType entityMappingType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			EntityDomainType<?> entityDomainType = HibernateOrmUtils.entityDomainType( sessionFactory,
-					typeContexts.iterator().next().secondaryEntityName() );
-			return new HibernateOrmQueryLoaderImpl<>( actualQueryFactory, entityDomainType,
-					includedTypesFilter, conditionalExpressions, order );
-		}
-		return new HibernateOrmQueryLoaderImpl<>( actualQueryFactory, includedTypesFilter );
-	}
+    protected static EntityMappingType toMostSpecificCommonEntitySuperType(SessionFactoryImplementor sessionFactory, Iterable<? extends PojoLoadingTypeContext<?>> targetEntityTypeContexts) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract TypeQueryFactory<E, I> createFactory(
-			SessionFactoryImplementor sessionFactoryImplementor, Class<E> entityClass, String ormEntityName,
-			Class<I> uniquePropertyType, String uniquePropertyName);
-
-	@SuppressWarnings("unchecked")
-	protected TypeQueryFactory<E, I> createFactory(SessionFactoryImplementor sessionFactoryImplementor,
-			EntityMappingType entityMappingType) {
-		return createFactory( sessionFactoryImplementor, (Class<E>) entityMappingType.getJavaType().getJavaTypeClass(),
-				entityMappingType.getEntityName(), uniquePropertyType, uniquePropertyName
-		);
-	}
-
-	protected static EntityMappingType toMostSpecificCommonEntitySuperType(
-			SessionFactoryImplementor sessionFactory,
-			Iterable<? extends PojoLoadingTypeContext<?>> targetEntityTypeContexts) {
-		EntityMappingType result = null;
-		for ( PojoLoadingTypeContext<?> targetTypeContext : targetEntityTypeContexts ) {
-			EntityMappingType type = HibernateOrmUtils.entityMappingType( sessionFactory,
-					targetTypeContext.secondaryEntityName() );
-			if ( result == null ) {
-				result = type;
-			}
-			else {
-				result = HibernateOrmUtils.toMostSpecificCommonEntitySuperType( result, type );
-			}
-		}
-		return result;
-	}
-
-	protected org.hibernate.AssertionFailure invalidTypesException(
-			Set<? extends PojoLoadingTypeContext<?>> targetEntityTypeContexts) {
-		return new org.hibernate.AssertionFailure(
-				"Some types among the targeted entity types are not subclasses of the expected root entity type."
-						+ " Expected entity name: " + rootEntityName
-						+ " Targeted entity names: "
-						+ targetEntityTypeContexts.stream()
-								.map( PojoLoadingTypeContext::secondaryEntityName )
-								.collect( Collectors.toUnmodifiableList() )
-		);
-	}
-
+    protected org.hibernate.AssertionFailure invalidTypesException(Set<? extends PojoLoadingTypeContext<?>> targetEntityTypeContexts) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

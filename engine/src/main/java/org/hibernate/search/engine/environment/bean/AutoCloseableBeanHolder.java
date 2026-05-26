@@ -13,38 +13,24 @@ import java.io.UncheckedIOException;
  */
 final class AutoCloseableBeanHolder<T extends AutoCloseable> implements BeanHolder<T> {
 
-	private final T instance;
+    private final T instance;
 
-	AutoCloseableBeanHolder(T instance) {
-		this.instance = instance;
-	}
+    AutoCloseableBeanHolder(T instance) {
+        this.instance = instance;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "instance=" + instance
-				+ "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T get() {
-		return instance;
-	}
+    @Override
+    public T get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		try {
-			instance.close();
-		}
-		catch (IOException e) {
-			throw new UncheckedIOException( e.getMessage(), e );
-		}
-		catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			throw new RuntimeException( e );
-		}
-		catch (Exception e) {
-			throw new RuntimeException( e );
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

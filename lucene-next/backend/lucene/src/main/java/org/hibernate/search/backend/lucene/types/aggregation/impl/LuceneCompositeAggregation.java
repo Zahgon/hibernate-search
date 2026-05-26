@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.types.aggregation.impl;
 
 import java.io.IOException;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.search.aggregation.impl.AggregationExtractContext;
 import org.hibernate.search.backend.lucene.search.aggregation.impl.AggregationRequestContext;
 import org.hibernate.search.backend.lucene.search.aggregation.impl.LuceneSearchAggregation;
@@ -16,79 +15,68 @@ import org.hibernate.search.engine.search.aggregation.spi.CompositeAggregationBu
 import org.hibernate.search.engine.search.spi.ResultsCompositor;
 
 public class LuceneCompositeAggregation<A> implements LuceneSearchAggregation<A> {
-	private final LuceneSearchIndexScope<?> scope;
-	private final LuceneSearchAggregation<?>[] aggregations;
-	private final ResultsCompositor<?, A> compositor;
 
-	private LuceneCompositeAggregation(Builder<A> builder) {
-		this.scope = builder.scope;
-		this.aggregations = builder.inners;
-		this.compositor = builder.compositor;
-	}
+    private final LuceneSearchIndexScope<?> scope;
 
-	@Override
-	public Extractor<A> request(AggregationRequestContext context) {
-		Extractor<?>[] extractors = new Extractor[aggregations.length];
-		for ( int i = 0; i < aggregations.length; i++ ) {
-			extractors[i] = aggregations[i].request( context );
-		}
-		return new CompositeExtractor<>( compositor, extractors );
-	}
+    private final LuceneSearchAggregation<?>[] aggregations;
 
-	@Override
-	public Set<String> indexNames() {
-		return scope.hibernateSearchIndexNames();
-	}
+    private final ResultsCompositor<?, A> compositor;
 
-	public static class Builder<A> implements CompositeAggregationBuilder<A> {
+    private LuceneCompositeAggregation(Builder<A> builder) {
+        this.scope = builder.scope;
+        this.aggregations = builder.inners;
+        this.compositor = builder.compositor;
+    }
 
-		private final LuceneSearchIndexScope<?> scope;
-		private LuceneSearchAggregation<?>[] inners;
-		private ResultsCompositor<?, A> compositor;
+    @Override
+    public Extractor<A> request(AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(LuceneSearchIndexScope<?> scope) {
-			this.scope = scope;
-		}
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchAggregation<?>[] inners,
-				ResultsCompositor<?, A> compositor) {
-			this.scope = scope;
-			this.inners = inners;
-			this.compositor = compositor;
-		}
+    public static class Builder<A> implements CompositeAggregationBuilder<A> {
 
-		@Override
-		public SearchAggregation<A> build() {
-			return new LuceneCompositeAggregation<>( this );
-		}
+        private final LuceneSearchIndexScope<?> scope;
 
-		@Override
-		public CompositeAggregationBuilder<A> innerAggregations(SearchAggregation<?>[] inners) {
-			this.inners = new LuceneSearchAggregation[inners.length];
-			for ( int i = 0; i < inners.length; i++ ) {
-				this.inners[i] = LuceneSearchAggregation.from( scope, inners[i] );
-			}
-			return this;
-		}
+        private LuceneSearchAggregation<?>[] inners;
 
-		@Override
-		public <V> CompositeAggregationBuilder<V> compositor(ResultsCompositor<?, V> compositor) {
-			return new Builder<>( scope, inners, compositor );
-		}
-	}
+        private ResultsCompositor<?, A> compositor;
 
-	private record CompositeExtractor<E, A>(ResultsCompositor<E, A> compositor, Extractor<?>[] extractors)
-			implements Extractor<A> {
+        public Builder(LuceneSearchIndexScope<?> scope) {
+            this.scope = scope;
+        }
 
-		@Override
-		public A extract(AggregationExtractContext context) throws IOException {
-			E initial = compositor.createInitial();
+        private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchAggregation<?>[] inners, ResultsCompositor<?, A> compositor) {
+            this.scope = scope;
+            this.inners = inners;
+            this.compositor = compositor;
+        }
 
-			for ( int i = 0; i < extractors.length; i++ ) {
-				initial = compositor.set( initial, i, extractors[i].extract( context ) );
-			}
+        @Override
+        public SearchAggregation<A> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return compositor.finish( initial );
-		}
-	}
+        @Override
+        public CompositeAggregationBuilder<A> innerAggregations(SearchAggregation<?>[] inners) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public <V> CompositeAggregationBuilder<V> compositor(ResultsCompositor<?, V> compositor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private record CompositeExtractor<E, A>(ResultsCompositor<E, A> compositor, Extractor<?>[] extractors) implements Extractor<A> {
+
+        @Override
+        public A extract(AggregationExtractContext context) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

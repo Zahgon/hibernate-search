@@ -16,36 +16,33 @@ import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentV
 @Deprecated(since = "6.1")
 public interface FromDocumentFieldValueConverter<F, V> extends FromDocumentValueConverter<F, V> {
 
-	@Override
-	default V fromDocumentValue(F value, FromDocumentValueConvertContext context) {
-		return convert( value, context );
-	}
+    @Override
+    default V fromDocumentValue(F value, FromDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	default boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
-		return other instanceof FromDocumentFieldValueConverter
-				&& isCompatibleWith( (FromDocumentFieldValueConverter<?, ?>) other );
-	}
+    @Override
+    default boolean isCompatibleWith(FromDocumentValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param value The index field value to convert.
-	 * @param context A context that can be
-	 * {@link org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext#extension(org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContextExtension) extended}
-	 * to a more useful type, giving access to such things as a Hibernate ORM Session (if using the Hibernate ORM mapper).
-	 * @return The converted value.
-	 */
-	V convert(F value,
-			org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext context);
+    /**
+     * @param value The index field value to convert.
+     * @param context A context that can be
+     * {@link org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext#extension(org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContextExtension) extended}
+     * to a more useful type, giving access to such things as a Hibernate ORM Session (if using the Hibernate ORM mapper).
+     * @return The converted value.
+     */
+    V convert(F value, org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext context);
 
-	/**
-	 * @param other Another {@link ToDocumentFieldValueConverter}, never {@code null}.
-	 * @return {@code true} if the given object behaves exactly the same as this object,
-	 * i.e. its {@link #convert(Object, org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext)}
-	 * method is guaranteed to always return the same value as this object's
-	 * when given the same input. {@code false} otherwise, or when in doubt.
-	 */
-	default boolean isCompatibleWith(FromDocumentFieldValueConverter<?, ?> other) {
-		return equals( other );
-	}
-
+    /**
+     * @param other Another {@link ToDocumentFieldValueConverter}, never {@code null}.
+     * @return {@code true} if the given object behaves exactly the same as this object,
+     * i.e. its {@link #convert(Object, org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentFieldValueConvertContext)}
+     * method is guaranteed to always return the same value as this object's
+     * when given the same input. {@code false} otherwise, or when in doubt.
+     */
+    default boolean isCompatibleWith(FromDocumentFieldValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

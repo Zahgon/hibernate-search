@@ -10,18 +10,18 @@ import java.util.function.Supplier;
 
 final class DefaultedConfigurationProperty<T> extends AbstractConfigurationProperty<T> {
 
-	private final Function<Object, T> converter;
-	private final Supplier<T> defaultValueSupplier;
+    private final Function<Object, T> converter;
 
-	DefaultedConfigurationProperty(String key, Function<Object, T> converter, Supplier<T> defaultValueSupplier) {
-		super( key );
-		this.converter = converter;
-		this.defaultValueSupplier = defaultValueSupplier;
-	}
+    private final Supplier<T> defaultValueSupplier;
 
-	@Override
-	<R> R convert(Optional<?> rawValue, Function<T, R> transform) {
-		T defaultedValue = rawValue.map( converter ).orElseGet( defaultValueSupplier );
-		return transform.apply( defaultedValue );
-	}
+    DefaultedConfigurationProperty(String key, Function<Object, T> converter, Supplier<T> defaultValueSupplier) {
+        super(key);
+        this.converter = converter;
+        this.defaultValueSupplier = defaultValueSupplier;
+    }
+
+    @Override
+    <R> R convert(Optional<?> rawValue, Function<T, R> transform) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

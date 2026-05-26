@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.aggregation.dsl;
 
 import java.util.List;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.common.NamedValues;
 import org.hibernate.search.util.common.SearchException;
@@ -42,174 +41,168 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 public interface SearchAggregationFactory {
 
-	/**
-	 * Perform aggregation in range buckets.
-	 * <p>
-	 * Given a field and one or more ranges of values,
-	 * this aggregation creates one bucket per range,
-	 * and puts in each bucket every document for which
-	 * the given field has a value that falls into the corresponding range.
-	 * <p>
-	 * For each bucket, the document count is computed,
-	 * or more complex metrics or sub-aggregations for backends that support it.
-	 *
-	 * @return The next step.
-	 */
-	RangeAggregationFieldStep<?, ?> range();
+    /**
+     * Perform aggregation in range buckets.
+     * <p>
+     * Given a field and one or more ranges of values,
+     * this aggregation creates one bucket per range,
+     * and puts in each bucket every document for which
+     * the given field has a value that falls into the corresponding range.
+     * <p>
+     * For each bucket, the document count is computed,
+     * or more complex metrics or sub-aggregations for backends that support it.
+     *
+     * @return The next step.
+     */
+    RangeAggregationFieldStep<?, ?> range();
 
-	/**
-	 * Perform aggregation in term buckets.
-	 * <p>
-	 * Given a field,
-	 * this aggregation creates one bucket per term of that field in the index,
-	 * and puts in each bucket every document for which
-	 * the given field matches the corresponding term.
-	 * <p>
-	 * For each bucket, the document count is computed,
-	 * or more complex metrics or sub-aggregations for backends that support it.
-	 *
-	 * @return The next step.
-	 */
-	TermsAggregationFieldStep<?, ?> terms();
+    /**
+     * Perform aggregation in term buckets.
+     * <p>
+     * Given a field,
+     * this aggregation creates one bucket per term of that field in the index,
+     * and puts in each bucket every document for which
+     * the given field matches the corresponding term.
+     * <p>
+     * For each bucket, the document count is computed,
+     * or more complex metrics or sub-aggregations for backends that support it.
+     *
+     * @return The next step.
+     */
+    TermsAggregationFieldStep<?, ?> terms();
 
-	/**
-	 * Perform the sum metric aggregation.
-	 * <p>
-	 * Sums up the field values.
-	 *
-	 * @return The next step.
-	 */
-	@Incubating
-	SumAggregationFieldStep<?, ?> sum();
+    /**
+     * Perform the sum metric aggregation.
+     * <p>
+     * Sums up the field values.
+     *
+     * @return The next step.
+     */
+    @Incubating
+    SumAggregationFieldStep<?, ?> sum();
 
-	/**
-	 * Perform the min metric aggregation.
-	 * <p>
-	 * Provides the minimum value among the field values.
-	 *
-	 * @return The next step.
-	 */
-	@Incubating
-	MinAggregationFieldStep<?, ?> min();
+    /**
+     * Perform the min metric aggregation.
+     * <p>
+     * Provides the minimum value among the field values.
+     *
+     * @return The next step.
+     */
+    @Incubating
+    MinAggregationFieldStep<?, ?> min();
 
-	/**
-	 * Perform the max metric aggregation.
-	 * <p>
-	 * Provides the maximum value among the field values.
-	 *
-	 * @return The next step.
-	 */
-	@Incubating
-	MaxAggregationFieldStep<?, ?> max();
+    /**
+     * Perform the max metric aggregation.
+     * <p>
+     * Provides the maximum value among the field values.
+     *
+     * @return The next step.
+     */
+    @Incubating
+    MaxAggregationFieldStep<?, ?> max();
 
-	/**
-	 * Perform the count metric aggregation.
-	 * <p>
-	 * The following steps allow defining the kind of the count aggregation:
-	 * {@link CountAggregationKindStep#documents() count documents}
-	 * or {@link CountAggregationKindStep#field(String) count values}.
-	 *
-	 * @return The next step.
-	 */
-	@Incubating
-	CountAggregationKindStep<?, ?> count();
+    /**
+     * Perform the count metric aggregation.
+     * <p>
+     * The following steps allow defining the kind of the count aggregation:
+     * {@link CountAggregationKindStep#documents() count documents}
+     * or {@link CountAggregationKindStep#field(String) count values}.
+     *
+     * @return The next step.
+     */
+    @Incubating
+    CountAggregationKindStep<?, ?> count();
 
-	/**
-	 * Perform the count distinct values metric aggregation.
-	 * <p>
-	 * Counts the number of unique field values.
-	 *
-	 * @return The next step.
-	 * @deprecated Use {@link #count()} with {@link CountValuesAggregationOptionsStep#distinct()} instead.
-	 */
-	@Deprecated(since = "8.1", forRemoval = true)
-	@Incubating
-	CountDistinctValuesAggregationFieldStep<?, ?> countDistinct();
+    /**
+     * Perform the count distinct values metric aggregation.
+     * <p>
+     * Counts the number of unique field values.
+     *
+     * @return The next step.
+     * @deprecated Use {@link #count()} with {@link CountValuesAggregationOptionsStep#distinct()} instead.
+     */
+    @Deprecated(since = "8.1", forRemoval = true)
+    @Incubating
+    CountDistinctValuesAggregationFieldStep<?, ?> countDistinct();
 
-	/**
-	 * Perform the count distinct values metric aggregation.
-	 * <p>
-	 * Counts the number of unique field values.
-	 *
-	 * @return the next step.
-	 */
-	@Incubating
-	AvgAggregationFieldStep<?, ?> avg();
+    /**
+     * Perform the count distinct values metric aggregation.
+     * <p>
+     * Counts the number of unique field values.
+     *
+     * @return the next step.
+     */
+    @Incubating
+    AvgAggregationFieldStep<?, ?> avg();
 
-	/**
-	 * Starts the definition of a composite aggregation,
-	 * which will combine multiple given aggregations.
-	 *
-	 * @return A DSL step where the "composite" aggregation can be defined in more details.
-	 */
-	@Incubating
-	CompositeAggregationInnerStep composite();
+    /**
+     * Starts the definition of a composite aggregation,
+     * which will combine multiple given aggregations.
+     *
+     * @return A DSL step where the "composite" aggregation can be defined in more details.
+     */
+    @Incubating
+    CompositeAggregationInnerStep composite();
 
-	/**
-	 * Create an aggregation that will compose a {@link List} based on the given aggregations.
-	 *
-	 * @param aggregations The aggregations used to populate the list, in order.
-	 * @return The "composite" aggregation.
-	 */
-	@Incubating
-	AggregationFinalStep<List<?>> composite(SearchAggregation<?>... aggregations);
+    /**
+     * Create an aggregation that will compose a {@link List} based on the given aggregations.
+     *
+     * @param aggregations The aggregations used to populate the list, in order.
+     * @return The "composite" aggregation.
+     */
+    @Incubating
+    AggregationFinalStep<List<?>> composite(SearchAggregation<?>... aggregations);
 
-	/**
-	 * Create an aggregation that will compose a {@link List} based on the given almost-built aggregations.
-	 *
-	 * @param dslFinalSteps The final steps in the aggregation DSL allowing the retrieval of {@link SearchAggregation}s.
-	 * @return The "composite" aggregation.
-	 */
-	@Incubating
-	default AggregationFinalStep<List<?>> composite(AggregationFinalStep<?>... dslFinalSteps) {
-		SearchAggregation<?>[] aggregations = new SearchAggregation<?>[dslFinalSteps.length];
-		for ( int i = 0; i < dslFinalSteps.length; i++ ) {
-			aggregations[i] = dslFinalSteps[i].toAggregation();
-		}
-		return composite( aggregations );
-	}
+    /**
+     * Create an aggregation that will compose a {@link List} based on the given almost-built aggregations.
+     *
+     * @param dslFinalSteps The final steps in the aggregation DSL allowing the retrieval of {@link SearchAggregation}s.
+     * @return The "composite" aggregation.
+     */
+    @Incubating
+    default AggregationFinalStep<List<?>> composite(AggregationFinalStep<?>... dslFinalSteps) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Delegating aggregation that creates the actual aggregation at query create time and provides access to query parameters.
-	 * <p>
-	 * Which aggregation exactly to create is defined by a function passed to the arguments of this aggregation.
-	 *
-	 * @param aggregationCreator The function creating an actual aggregation.
-	 * @return A final DSL step in a parameterized aggregation definition.
-	 */
-	@Incubating
-	<T> AggregationFinalStep<T> withParameters(
-			Function<? super NamedValues, ? extends AggregationFinalStep<T>> aggregationCreator);
+    /**
+     * Delegating aggregation that creates the actual aggregation at query create time and provides access to query parameters.
+     * <p>
+     * Which aggregation exactly to create is defined by a function passed to the arguments of this aggregation.
+     *
+     * @param aggregationCreator The function creating an actual aggregation.
+     * @return A final DSL step in a parameterized aggregation definition.
+     */
+    @Incubating
+    <T> AggregationFinalStep<T> withParameters(Function<? super NamedValues, ? extends AggregationFinalStep<T>> aggregationCreator);
 
-	/**
-	 * Extend the current factory with the given extension,
-	 * resulting in an extended factory offering different types of aggregations.
-	 *
-	 * @param extension The extension to the aggregation DSL.
-	 * @param <T> The type of factory provided by the extension.
-	 * @return The extended factory.
-	 * @throws SearchException If the extension cannot be applied (wrong underlying backend, ...).
-	 */
-	<T> T extension(SearchAggregationFactoryExtension<T> extension);
+    /**
+     * Extend the current factory with the given extension,
+     * resulting in an extended factory offering different types of aggregations.
+     *
+     * @param extension The extension to the aggregation DSL.
+     * @param <T> The type of factory provided by the extension.
+     * @return The extended factory.
+     * @throws SearchException If the extension cannot be applied (wrong underlying backend, ...).
+     */
+    <T> T extension(SearchAggregationFactoryExtension<T> extension);
 
-	/**
-	 * Create a new aggregation factory whose root for all paths passed to the DSL
-	 * will be the given object field.
-	 * <p>
-	 * See <a href="#field-paths">here</a> for more information.
-	 *
-	 * @param objectFieldPath The path from the current root to an object field that will become the new root.
-	 * @return A new aggregation factory using the given object field as root.
-	 */
-	@Incubating
-	SearchAggregationFactory withRoot(String objectFieldPath);
+    /**
+     * Create a new aggregation factory whose root for all paths passed to the DSL
+     * will be the given object field.
+     * <p>
+     * See <a href="#field-paths">here</a> for more information.
+     *
+     * @param objectFieldPath The path from the current root to an object field that will become the new root.
+     * @return A new aggregation factory using the given object field as root.
+     */
+    @Incubating
+    SearchAggregationFactory withRoot(String objectFieldPath);
 
-	/**
-	 * @param relativeFieldPath The path to a field, relative to the {@link #withRoot(String) root} of this factory.
-	 * @return The absolute path of the field, for use in native aggregations for example.
-	 * Note the path is returned even if the field doesn't exist.
-	 */
-	@Incubating
-	String toAbsolutePath(String relativeFieldPath);
-
+    /**
+     * @param relativeFieldPath The path to a field, relative to the {@link #withRoot(String) root} of this factory.
+     * @return The absolute path of the field, for use in native aggregations for example.
+     * Note the path is returned even if the field doesn't exist.
+     */
+    @Incubating
+    String toAbsolutePath(String relativeFieldPath);
 }

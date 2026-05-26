@@ -19,72 +19,37 @@ import org.hibernate.search.util.common.impl.Closer;
 
 public class BackendThreads {
 
-	private static final ConfigurationProperty<
-			BeanReference<? extends LuceneWorkExecutorProvider>> BACKEND_WORK_EXECUTOR_PROVIDER =
-					ConfigurationProperty.forKey( LuceneBackendSpiSettings.Radicals.BACKEND_WORK_EXECUTOR_PROVIDER )
-							.asBeanReference( LuceneWorkExecutorProvider.class )
-							.withDefault( LuceneBackendSpiSettings.Defaults.BACKEND_WORK_EXECUTOR_PROVIDER )
-							.build();
-	private final String prefix;
+    private static final ConfigurationProperty<BeanReference<? extends LuceneWorkExecutorProvider>> BACKEND_WORK_EXECUTOR_PROVIDER = ConfigurationProperty.forKey(LuceneBackendSpiSettings.Radicals.BACKEND_WORK_EXECUTOR_PROVIDER).asBeanReference(LuceneWorkExecutorProvider.class).withDefault(LuceneBackendSpiSettings.Defaults.BACKEND_WORK_EXECUTOR_PROVIDER).build();
 
-	private ThreadPoolProvider threadPoolProvider;
-	private SimpleScheduledExecutor writeExecutor;
+    private final String prefix;
 
-	public BackendThreads(String prefix) {
-		this.prefix = prefix;
-	}
+    private ThreadPoolProvider threadPoolProvider;
 
-	public void onStart(ConfigurationPropertySource propertySource, BeanResolver beanResolver,
-			ThreadPoolProvider threadPoolProvider) {
-		if ( this.writeExecutor != null ) {
-			// Already started
-			return;
-		}
-		this.threadPoolProvider = threadPoolProvider;
+    private SimpleScheduledExecutor writeExecutor;
 
+    public BackendThreads(String prefix) {
+        this.prefix = prefix;
+    }
 
-		try ( BeanHolder<? extends LuceneWorkExecutorProvider> provider = BACKEND_WORK_EXECUTOR_PROVIDER.getAndTransform(
-				propertySource, beanResolver::resolve ) ) {
-			this.writeExecutor = provider.get().writeExecutor( new LuceneWorkExecutorProvider.Context() {
-				@Override
-				public ThreadPoolProvider threadPoolProvider() {
-					return threadPoolProvider;
-				}
+    public void onStart(ConfigurationPropertySource propertySource, BeanResolver beanResolver, ThreadPoolProvider threadPoolProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				@Override
-				public ConfigurationPropertySource propertySource() {
-					return propertySource;
-				}
+    public void onStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				@Override
-				public String recommendedThreadNamePrefix() {
-					return prefix + " - Worker thread";
-				}
-			} );
-		}
-	}
+    public ThreadProvider getThreadProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void onStop() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( SimpleScheduledExecutor::shutdownNow, writeExecutor );
-		}
-	}
+    public SimpleScheduledExecutor getWriteExecutor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ThreadProvider getThreadProvider() {
-		checkStarted();
-		return threadPoolProvider.threadProvider();
-	}
-
-	public SimpleScheduledExecutor getWriteExecutor() {
-		checkStarted();
-		return writeExecutor;
-	}
-
-	private void checkStarted() {
-		if ( writeExecutor == null ) {
-			throw new AssertionFailure(
-					"Attempt to retrieve the executor or related information before the backend was started."
-			);
-		}
-	}
+    private void checkStarted() {
+        if (writeExecutor == null) {
+            throw new AssertionFailure("Attempt to retrieve the executor or related information before the backend was started.");
+        }
+    }
 }

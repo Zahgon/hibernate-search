@@ -9,20 +9,20 @@ import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 
 public class ProjectionExtractContext {
 
-	private final TopDocsDataCollectorExecutionContext collectorExecutionContext;
-	private final ProjectionHitMapper<?> projectionHitMapper;
+    private final TopDocsDataCollectorExecutionContext collectorExecutionContext;
 
-	public ProjectionExtractContext(TopDocsDataCollectorExecutionContext collectorExecutionContext,
-			ProjectionHitMapper<?> projectionHitMapper) {
-		this.collectorExecutionContext = collectorExecutionContext;
-		this.projectionHitMapper = projectionHitMapper;
-	}
+    private final ProjectionHitMapper<?> projectionHitMapper;
 
-	public TopDocsDataCollectorExecutionContext collectorExecutionContext() {
-		return collectorExecutionContext;
-	}
+    public ProjectionExtractContext(TopDocsDataCollectorExecutionContext collectorExecutionContext, ProjectionHitMapper<?> projectionHitMapper) {
+        this.collectorExecutionContext = collectorExecutionContext;
+        this.projectionHitMapper = projectionHitMapper;
+    }
 
-	public ProjectionHitMapper<?> projectionHitMapper() {
-		return projectionHitMapper;
-	}
+    public TopDocsDataCollectorExecutionContext collectorExecutionContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public ProjectionHitMapper<?> projectionHitMapper() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

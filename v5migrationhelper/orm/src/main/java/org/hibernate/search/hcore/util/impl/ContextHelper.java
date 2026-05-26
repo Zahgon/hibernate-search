@@ -24,23 +24,22 @@ import org.hibernate.search.mapper.orm.Search;
  */
 public class ContextHelper {
 
-	private ContextHelper() {
-	}
+    private ContextHelper() {
+    }
 
-	public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegrator(Session session) {
-		return getSearchIntegratorBySessionImplementor( (SessionImplementor) session );
-	}
+    public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegrator(Session session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegratorBySessionImplementor(SessionImplementor session) {
-		return getSearchIntegratorBySFI( session.getFactory() );
-	}
+    public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegratorBySessionImplementor(SessionImplementor session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegratorBySF(SessionFactory factory) {
-		return getSearchIntegratorBySFI( (SessionFactoryImplementor) factory );
-	}
+    public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegratorBySF(SessionFactory factory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegratorBySFI(SessionFactoryImplementor sfi) {
-		return new V5MigrationOrmSearchIntegratorAdapter( Search.mapping( sfi ) );
-	}
-
+    public static V5MigrationOrmSearchIntegratorAdapter getSearchIntegratorBySFI(SessionFactoryImplementor sfi) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

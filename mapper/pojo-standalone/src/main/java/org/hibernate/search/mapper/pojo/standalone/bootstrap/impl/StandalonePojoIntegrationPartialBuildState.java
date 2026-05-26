@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.standalone.bootstrap.impl;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.spi.ConfigurationProperty;
 import org.hibernate.search.engine.cfg.spi.ConfigurationPropertyChecker;
@@ -21,56 +20,38 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 final class StandalonePojoIntegrationPartialBuildState {
 
-	private static final OptionalConfigurationProperty<
-			StandalonePojoIntegrationPartialBuildState> INTEGRATION_PARTIAL_BUILD_STATE =
-					ConfigurationProperty.forKey( StandalonePojoMapperSpiSettings.INTEGRATION_PARTIAL_BUILD_STATE )
-							.as( StandalonePojoIntegrationPartialBuildState.class,
-									StandalonePojoIntegrationPartialBuildState::parse )
-							.build();
+    private static final OptionalConfigurationProperty<StandalonePojoIntegrationPartialBuildState> INTEGRATION_PARTIAL_BUILD_STATE = ConfigurationProperty.forKey(StandalonePojoMapperSpiSettings.INTEGRATION_PARTIAL_BUILD_STATE).as(StandalonePojoIntegrationPartialBuildState.class, StandalonePojoIntegrationPartialBuildState::parse).build();
 
-	public static Optional<StandalonePojoIntegrationPartialBuildState> get(ConfigurationPropertySource propertySource) {
-		return INTEGRATION_PARTIAL_BUILD_STATE.get( propertySource );
-	}
+    public static Optional<StandalonePojoIntegrationPartialBuildState> get(ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static StandalonePojoIntegrationPartialBuildState parse(String stringToParse) {
-		throw new AssertionFailure(
-				"The partial build state cannot be parsed from a String;"
-						+ " it must be null or an instance of " + StandalonePojoIntegrationPartialBuildState.class
-		);
-	}
+    private static StandalonePojoIntegrationPartialBuildState parse(String stringToParse) {
+        throw new AssertionFailure("The partial build state cannot be parsed from a String;" + " it must be null or an instance of " + StandalonePojoIntegrationPartialBuildState.class);
+    }
 
-	private final SearchIntegrationPartialBuildState integrationBuildState;
-	private final StandalonePojoMappingKey mappingKey;
+    private final SearchIntegrationPartialBuildState integrationBuildState;
 
-	StandalonePojoIntegrationPartialBuildState(SearchIntegrationPartialBuildState integrationBuildState,
-			StandalonePojoMappingKey mappingKey) {
-		this.integrationBuildState = integrationBuildState;
-		this.mappingKey = mappingKey;
-	}
+    private final StandalonePojoMappingKey mappingKey;
 
-	public void closeOnFailure() {
-		this.integrationBuildState.closeOnFailure();
-	}
+    StandalonePojoIntegrationPartialBuildState(SearchIntegrationPartialBuildState integrationBuildState, StandalonePojoMappingKey mappingKey) {
+        this.integrationBuildState = integrationBuildState;
+        this.mappingKey = mappingKey;
+    }
 
-	void set(BiConsumer<String, Object> propertyCollector) {
-		propertyCollector.accept( StandalonePojoMapperSpiSettings.INTEGRATION_PARTIAL_BUILD_STATE, this );
-	}
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	BeanResolver beanResolver() {
-		return integrationBuildState.beanResolver();
-	}
+    void set(BiConsumer<String, Object> propertyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	StandalonePojoMapping doBootSecondPhase(ConfigurationPropertySource propertySource,
-			ConfigurationPropertyChecker propertyChecker) {
-		SearchIntegrationFinalizer finalizer = integrationBuildState.finalizer( propertySource, propertyChecker );
+    BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@SuppressWarnings("resource") // For the eclipse-compiler: complains on mapping not bing closed
-		StandalonePojoMapping mapping = finalizer.finalizeMapping(
-				mappingKey,
-				(context, partialMapping) -> partialMapping.finalizeMapping( context )
-		);
-		finalizer.finalizeIntegration();
-
-		return mapping;
-	}
+    StandalonePojoMapping doBootSecondPhase(ConfigurationPropertySource propertySource, ConfigurationPropertyChecker propertyChecker) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

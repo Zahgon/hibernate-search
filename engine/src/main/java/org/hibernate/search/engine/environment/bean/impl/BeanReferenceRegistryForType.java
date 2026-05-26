@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.engine.logging.impl.EngineMiscLog;
 import org.hibernate.search.util.common.AssertionFailure;
@@ -23,51 +22,41 @@ import org.hibernate.search.util.common.AssertionFailure;
  */
 public class BeanReferenceRegistryForType<T> {
 
-	private final Class<T> exposedType;
-	private final List<BeanReference<T>> all = new ArrayList<>();
-	private final Map<String, BeanReference<T>> named = new TreeMap<>();
+    private final Class<T> exposedType;
 
-	public BeanReferenceRegistryForType(Class<T> exposedType) {
-		this.exposedType = exposedType;
-	}
+    private final List<BeanReference<T>> all = new ArrayList<>();
 
-	public final List<BeanReference<T>> all() {
-		return Collections.unmodifiableList( all );
-	}
+    private final Map<String, BeanReference<T>> named = new TreeMap<>();
 
-	public Map<String, BeanReference<T>> named() {
-		return Collections.unmodifiableMap( named );
-	}
+    public BeanReferenceRegistryForType(Class<T> exposedType) {
+        this.exposedType = exposedType;
+    }
 
-	public BeanReference<T> single() {
-		if ( all.size() == 1 ) {
-			return all.get( 0 );
-		}
-		else if ( all.size() > 1 ) {
-			throw EngineMiscLog.INSTANCE.multipleConfiguredBeanReferencesForType( exposedType, all );
-		}
-		else {
-			return null;
-		}
-	}
+    public final List<BeanReference<T>> all() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BeanReference<T> named(String name) {
-		return named.get( name );
-	}
+    public Map<String, BeanReference<T>> named() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // Safe cast from BeanReference<? extends T> to BeanReference<T> as BeanReference is covariant in T
-	void add(BeanReference<? extends T> reference) {
-		all.add( (BeanReference<T>) reference );
-	}
+    public BeanReference<T> single() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked") // Safe cast from BeanReference<? extends T> to BeanReference<T> as BeanReference is covariant in T
-	void add(String name, BeanReference<? extends T> reference) {
-		Object previous = named.putIfAbsent( name, (BeanReference<T>) reference );
-		if ( previous != null ) {
-			throw new AssertionFailure( String.format( Locale.ROOT,
-					"Duplicate bean references for name '%1$s': %2$s, %3$s",
-					name, previous, reference ) );
-		}
-		all.add( (BeanReference<T>) reference );
-	}
+    public BeanReference<T> named(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    // Safe cast from BeanReference<? extends T> to BeanReference<T> as BeanReference is covariant in T
+    @SuppressWarnings("unchecked")
+    void add(BeanReference<? extends T> reference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    // Safe cast from BeanReference<? extends T> to BeanReference<T> as BeanReference is covariant in T
+    @SuppressWarnings("unchecked")
+    void add(String name, BeanReference<? extends T> reference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

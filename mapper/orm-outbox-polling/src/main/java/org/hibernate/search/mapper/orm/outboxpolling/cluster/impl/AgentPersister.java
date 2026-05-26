@@ -6,101 +6,66 @@ package org.hibernate.search.mapper.orm.outboxpolling.cluster.impl;
 
 import java.time.Instant;
 import java.util.Collections;
-
 import org.hibernate.search.mapper.orm.outboxpolling.logging.impl.OutboxPollingEventsLog;
 import org.hibernate.search.util.common.spi.ToStringTreeAppendable;
 import org.hibernate.search.util.common.spi.ToStringTreeAppender;
 
 public final class AgentPersister implements ToStringTreeAppendable {
 
-	private final AgentType type;
-	private final String name;
-	private final ShardAssignmentDescriptor staticShardAssignment;
+    private final AgentType type;
 
-	private AgentReference selfReference;
+    private final String name;
 
-	public AgentPersister(AgentType type, String name,
-			ShardAssignmentDescriptor staticShardAssignment) {
-		this.type = type;
-		this.name = name;
-		this.staticShardAssignment = staticShardAssignment;
-	}
+    private final ShardAssignmentDescriptor staticShardAssignment;
 
-	@Override
-	public String toString() {
-		return toStringTree();
-	}
+    private AgentReference selfReference;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "type", type )
-				.attribute( "name", name )
-				.attribute( "staticShardAssignment", staticShardAssignment );
-	}
+    public AgentPersister(AgentType type, String name, ShardAssignmentDescriptor staticShardAssignment) {
+        this.type = type;
+        this.name = name;
+        this.staticShardAssignment = staticShardAssignment;
+    }
 
-	public AgentReference selfReference() {
-		return selfReference;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// Accessible for test purposes only
-	public void setSelfReferenceForTests(AgentReference selfReference) {
-		this.selfReference = selfReference;
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Agent findSelf(AgentRepository agentRepository) {
-		if ( selfReference != null ) {
-			return agentRepository.find( selfReference.id );
-		}
-		return null;
-	}
+    public AgentReference selfReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void createSelf(AgentRepository agentRepository, Instant expiration) {
-		Agent self = new Agent( type, name, expiration, AgentState.SUSPENDED, staticShardAssignment );
-		agentRepository.create( self );
-		selfReference = self.getReference();
-		OutboxPollingEventsLog.INSTANCE.agentRegistering( selfReference );
-	}
+    // Accessible for test purposes only
+    public void setSelfReferenceForTests(AgentReference selfReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void leaveCluster(AgentRepository store) {
-		if ( selfReference == null ) {
-			// We never even joined the cluster
-			return;
-		}
-		OutboxPollingEventsLog.INSTANCE.agentLeaving( selfReference );
-		Agent agent = store.find( selfReference.id );
-		if ( agent != null ) {
-			store.delete( Collections.singletonList( agent ) );
-		}
-	}
+    public Agent findSelf(AgentRepository agentRepository) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setSuspended(Agent self) {
-		if ( self.getState() != AgentState.SUSPENDED ) {
-			OutboxPollingEventsLog.INSTANCE.agentSuspending( selfReference );
-			self.setState( AgentState.SUSPENDED );
-		}
-		if ( staticShardAssignment == null ) {
-			self.setTotalShardCount( null );
-			self.setAssignedShardIndex( null );
-		}
-	}
+    public void createSelf(AgentRepository agentRepository, Instant expiration) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setWaiting(Agent self, ClusterDescriptor clusterDescriptor,
-			ShardAssignmentDescriptor shardAssignment) {
-		if ( self.getState() != AgentState.WAITING ) {
-			OutboxPollingEventsLog.INSTANCE.agentWaiting( selfReference, shardAssignment, clusterDescriptor );
-			self.setState( AgentState.WAITING );
-		}
-		if ( staticShardAssignment == null && shardAssignment != null ) {
-			self.setTotalShardCount( shardAssignment.totalShardCount );
-			self.setAssignedShardIndex( shardAssignment.assignedShardIndex );
-		}
-	}
+    public void leaveCluster(AgentRepository store) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setRunning(Agent self, ClusterDescriptor clusterDescriptor) {
-		if ( self.getState() != AgentState.RUNNING ) {
-			OutboxPollingEventsLog.INSTANCE.agentRunning( selfReference, self.getShardAssignment(), clusterDescriptor );
-			self.setState( AgentState.RUNNING );
-		}
-	}
+    public void setSuspended(Agent self) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public void setWaiting(Agent self, ClusterDescriptor clusterDescriptor, ShardAssignmentDescriptor shardAssignment) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setRunning(Agent self, ClusterDescriptor clusterDescriptor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

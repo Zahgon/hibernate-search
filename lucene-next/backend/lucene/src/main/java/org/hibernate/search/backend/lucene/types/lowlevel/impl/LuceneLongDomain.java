@@ -6,14 +6,12 @@ package org.hibernate.search.backend.lucene.types.lowlevel.impl;
 
 import java.util.Collection;
 import java.util.Comparator;
-
 import org.hibernate.search.backend.lucene.lowlevel.comparator.impl.LongValuesSourceComparator;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.LongMultiValuesToSingleValuesSource;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.MultiValueMode;
 import org.hibernate.search.backend.lucene.lowlevel.join.impl.NestedDocsProvider;
 import org.hibernate.search.engine.cfg.spi.NumberUtils;
 import org.hibernate.search.util.common.data.Range;
-
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.SortedNumericDocValuesField;
 import org.apache.lucene.index.IndexableField;
@@ -22,90 +20,85 @@ import org.apache.lucene.search.Pruning;
 import org.apache.lucene.search.Query;
 
 public class LuceneLongDomain implements LuceneNumericDomain<Long> {
-	private static final LuceneNumericDomain<Long> INSTANCE = new LuceneLongDomain();
 
-	public static LuceneNumericDomain<Long> get() {
-		return INSTANCE;
-	}
+    private static final LuceneNumericDomain<Long> INSTANCE = new LuceneLongDomain();
 
-	@Override
-	public Long getMinValue() {
-		return Long.MIN_VALUE;
-	}
+    public static LuceneNumericDomain<Long> get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long getMaxValue() {
-		return Long.MAX_VALUE;
-	}
+    @Override
+    public Long getMinValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long getPreviousValue(Long value) {
-		return Math.addExact( value, -1L );
-	}
+    @Override
+    public Long getMaxValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long getNextValue(Long value) {
-		return Math.addExact( value, 1L );
-	}
+    @Override
+    public Long getPreviousValue(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Comparator<Long> createComparator() {
-		return Comparator.naturalOrder();
-	}
+    @Override
+    public Long getNextValue(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Query createExactQuery(String absoluteFieldPath, Long value) {
-		return LongPoint.newExactQuery( absoluteFieldPath, value );
-	}
+    @Override
+    public Comparator<Long> createComparator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Query createRangeQuery(String absoluteFieldPath, Long lowerLimit, Long upperLimit) {
-		return LongPoint.newRangeQuery(
-				absoluteFieldPath, lowerLimit, upperLimit
-		);
-	}
+    @Override
+    public Query createExactQuery(String absoluteFieldPath, Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Query createSetQuery(String absoluteFieldPath, Collection<Long> values) {
-		return LongPoint.newSetQuery( absoluteFieldPath, values );
-	}
+    @Override
+    public Query createRangeQuery(String absoluteFieldPath, Long lowerLimit, Long upperLimit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long sortedDocValueToTerm(long longValue) {
-		return longValue;
-	}
+    @Override
+    public Query createSetQuery(String absoluteFieldPath, Collection<Long> values) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public double sortedDocValueToDouble(long longValue) {
-		return sortedDocValueToTerm( longValue ).doubleValue();
-	}
+    @Override
+    public Long sortedDocValueToTerm(long longValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long doubleToTerm(double doubleValue) {
-		return NumberUtils.toLong( doubleValue );
-	}
+    @Override
+    public double sortedDocValueToDouble(long longValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EffectiveRange[] createEffectiveRanges(Collection<? extends Range<? extends Long>> ranges) {
-		return EffectiveRange.createEffectiveRangesForIntegralValues( ranges );
-	}
+    @Override
+    public Long doubleToTerm(double doubleValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexableField createIndexField(String absoluteFieldPath, Long numericValue) {
-		return new LongPoint( absoluteFieldPath, numericValue );
-	}
+    @Override
+    public EffectiveRange[] createEffectiveRanges(Collection<? extends Range<? extends Long>> ranges) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexableField createSortedDocValuesField(String absoluteFieldPath, Long numericValue) {
-		return new SortedNumericDocValuesField( absoluteFieldPath, numericValue );
-	}
+    @Override
+    public IndexableField createIndexField(String absoluteFieldPath, Long numericValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FieldComparator<Long> createFieldComparator(String fieldName, int numHits,
-			Long missingValue, boolean reversed, Pruning pruning, MultiValueMode multiValueMode,
-			NestedDocsProvider nestedDocsProvider) {
-		LongMultiValuesToSingleValuesSource source =
-				LongMultiValuesToSingleValuesSource.fromLongField( fieldName, multiValueMode, nestedDocsProvider );
-		return new LongValuesSourceComparator( numHits, fieldName, missingValue, reversed, pruning, source );
-	}
+    @Override
+    public IndexableField createSortedDocValuesField(String absoluteFieldPath, Long numericValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public FieldComparator<Long> createFieldComparator(String fieldName, int numHits, Long missingValue, boolean reversed, Pruning pruning, MultiValueMode multiValueMode, NestedDocsProvider nestedDocsProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

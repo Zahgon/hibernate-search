@@ -12,26 +12,24 @@ import org.hibernate.search.util.common.annotation.Search5DeprecatedAPI;
  */
 public final class Version {
 
-	private Version() {
-		//not allowed
-	}
+    private Version() {
+        //not allowed
+    }
 
-	/**
-	 * @return A string representation of the version of Hibernate Search.
-	 */
-	public static String versionString() {
-		// This implementation is replaced during the build with another one that returns the correct value.
-		return "UNKNOWN";
-	}
+    /**
+     * @return A string representation of the version of Hibernate Search.
+     */
+    public static String versionString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A string representation of the version of Hibernate Search.
-	 * @deprecated Use {@link #versionString()} instead.
-	 */
-	@Deprecated(since = "6.0")
-	@Search5DeprecatedAPI
-	public static String getVersionString() {
-		return versionString();
-	}
-
+    /**
+     * @return A string representation of the version of Hibernate Search.
+     * @deprecated Use {@link #versionString()} instead.
+     */
+    @Deprecated(since = "6.0")
+    @Search5DeprecatedAPI
+    public static String getVersionString() {
+        return versionString();
+    }
 }

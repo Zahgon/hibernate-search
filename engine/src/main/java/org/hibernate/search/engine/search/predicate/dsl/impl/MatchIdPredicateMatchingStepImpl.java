@@ -13,38 +13,32 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.AbstractPredicateFin
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 import org.hibernate.search.engine.search.predicate.spi.MatchIdPredicateBuilder;
 
-public final class MatchIdPredicateMatchingStepImpl
-		extends AbstractPredicateFinalStep
-		implements MatchIdPredicateMatchingStep<MatchIdPredicateMatchingStepImpl>,
-		MatchIdPredicateMatchingMoreStep<MatchIdPredicateMatchingStepImpl, MatchIdPredicateOptionsStep<?>> {
+public final class MatchIdPredicateMatchingStepImpl extends AbstractPredicateFinalStep implements MatchIdPredicateMatchingStep<MatchIdPredicateMatchingStepImpl>, MatchIdPredicateMatchingMoreStep<MatchIdPredicateMatchingStepImpl, MatchIdPredicateOptionsStep<?>> {
 
-	private final MatchIdPredicateBuilder matchIdBuilder;
+    private final MatchIdPredicateBuilder matchIdBuilder;
 
-	public MatchIdPredicateMatchingStepImpl(SearchPredicateDslContext<?> dslContext) {
-		super( dslContext );
-		this.matchIdBuilder = dslContext.scope().predicateBuilders().id();
-	}
+    public MatchIdPredicateMatchingStepImpl(SearchPredicateDslContext<?> dslContext) {
+        super(dslContext);
+        this.matchIdBuilder = dslContext.scope().predicateBuilders().id();
+    }
 
-	@Override
-	public MatchIdPredicateMatchingStepImpl matching(Object value, ValueModel valueModel) {
-		matchIdBuilder.value( value, valueModel );
-		return this;
-	}
+    @Override
+    public MatchIdPredicateMatchingStepImpl matching(Object value, ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MatchIdPredicateMatchingStepImpl boost(float boost) {
-		matchIdBuilder.boost( boost );
-		return this;
-	}
+    @Override
+    public MatchIdPredicateMatchingStepImpl boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MatchIdPredicateMatchingStepImpl constantScore() {
-		matchIdBuilder.constantScore();
-		return this;
-	}
+    @Override
+    public MatchIdPredicateMatchingStepImpl constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchPredicate build() {
-		return matchIdBuilder.build();
-	}
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

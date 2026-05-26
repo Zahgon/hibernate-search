@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.search.definition.impl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.projection.definition.spi.CompositeProjectionDefinition;
 import org.hibernate.search.mapper.pojo.logging.impl.ProjectionLog;
@@ -21,67 +20,45 @@ import org.hibernate.search.util.common.impl.Closer;
 
 public final class PojoSearchQueryElementRegistryBuilder {
 
-	private final PojoMappingHelper mappingHelper;
-	private final Map<Class<?>, CompositeProjectionDefinition<?>> projectionDefinitions =
-			new LinkedHashMap<>();
+    private final PojoMappingHelper mappingHelper;
 
-	public PojoSearchQueryElementRegistryBuilder(PojoMappingHelper mappingHelper) {
-		this.mappingHelper = mappingHelper;
-	}
+    private final Map<Class<?>, CompositeProjectionDefinition<?>> projectionDefinitions = new LinkedHashMap<>();
 
-	public void closeOnFailure() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.pushAll( CompositeProjectionDefinition::close, projectionDefinitions.values() );
-		}
-	}
+    public PojoSearchQueryElementRegistryBuilder(PojoMappingHelper mappingHelper) {
+        this.mappingHelper = mappingHelper;
+    }
 
-	public void process(PojoRawTypeModel<?> type) {
-		try {
-			for ( PojoTypeMetadataContributor contributor : mappingHelper.contributorProvider()
-					// Constructor mapping is not inherited
-					.getIgnoringInheritance( type ) ) {
-				for ( PojoSearchMappingConstructorNode constructorMapping : contributor.constructors().values() ) {
-					processProjectionConstructors( type, constructorMapping );
-				}
-			}
-		}
-		catch (RuntimeException e) {
-			mappingHelper.failureCollector()
-					.withContext( EventContexts.fromType( type ) )
-					.add( e );
-		}
-	}
+    public void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <T> void processProjectionConstructors(PojoRawTypeModel<T> type,
-			PojoSearchMappingConstructorNode constructorMapping) {
-		PojoConstructorModel<T> constructor = type.constructor( constructorMapping.parametersJavaTypes() );
-		try {
-			processProjectionConstructors( type, constructor, constructorMapping );
-		}
-		catch (RuntimeException e) {
-			mappingHelper.failureCollector()
-					.withContext( PojoEventContexts.fromType( type ) )
-					.withContext( PojoEventContexts.fromConstructor( constructor ) )
-					.add( e );
-		}
-	}
+    public void process(PojoRawTypeModel<?> type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <T> void processProjectionConstructors(PojoRawTypeModel<T> type, PojoConstructorModel<T> constructor,
-			PojoSearchMappingConstructorNode constructorMapping) {
-		if ( constructorMapping.isProjectionConstructor() ) {
-			Class<T> instantiatedJavaClass = type.typeIdentifier().javaClass();
-			ProjectionConstructorBinder<T> binder = new ProjectionConstructorBinder<>( mappingHelper, constructor );
-			PojoConstructorProjectionDefinition<T> definition = binder.bind();
-			CompositeProjectionDefinition<?> existing =
-					projectionDefinitions.putIfAbsent( instantiatedJavaClass, definition );
-			ProjectionLog.INSTANCE.constructorProjection( type, definition );
-			if ( existing != null ) {
-				throw ProjectionLog.INSTANCE.multipleProjectionConstructorsForType( instantiatedJavaClass );
-			}
-		}
-	}
+    private <T> void processProjectionConstructors(PojoRawTypeModel<T> type, PojoSearchMappingConstructorNode constructorMapping) {
+        PojoConstructorModel<T> constructor = type.constructor(constructorMapping.parametersJavaTypes());
+        try {
+            processProjectionConstructors(type, constructor, constructorMapping);
+        } catch (RuntimeException e) {
+            mappingHelper.failureCollector().withContext(PojoEventContexts.fromType(type)).withContext(PojoEventContexts.fromConstructor(constructor)).add(e);
+        }
+    }
 
-	public PojoSearchQueryElementRegistry build() {
-		return new PojoSearchQueryElementRegistry( projectionDefinitions );
-	}
+    private <T> void processProjectionConstructors(PojoRawTypeModel<T> type, PojoConstructorModel<T> constructor, PojoSearchMappingConstructorNode constructorMapping) {
+        if (constructorMapping.isProjectionConstructor()) {
+            Class<T> instantiatedJavaClass = type.typeIdentifier().javaClass();
+            ProjectionConstructorBinder<T> binder = new ProjectionConstructorBinder<>(mappingHelper, constructor);
+            PojoConstructorProjectionDefinition<T> definition = binder.bind();
+            CompositeProjectionDefinition<?> existing = projectionDefinitions.putIfAbsent(instantiatedJavaClass, definition);
+            ProjectionLog.INSTANCE.constructorProjection(type, definition);
+            if (existing != null) {
+                throw ProjectionLog.INSTANCE.multipleProjectionConstructorsForType(instantiatedJavaClass);
+            }
+        }
+    }
+
+    public PojoSearchQueryElementRegistry build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

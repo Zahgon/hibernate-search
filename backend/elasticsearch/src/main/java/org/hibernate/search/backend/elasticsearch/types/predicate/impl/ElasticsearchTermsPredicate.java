@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.types.predicate.impl;
 
 import java.util.Collection;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonArrayAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonObjectAccessor;
@@ -18,148 +17,109 @@ import org.hibernate.search.backend.elasticsearch.types.codec.impl.Elasticsearch
 import org.hibernate.search.engine.search.common.ValueModel;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.TermsPredicateBuilder;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class ElasticsearchTermsPredicate extends AbstractElasticsearchSingleFieldPredicate {
 
-	private static final JsonObjectAccessor TERMS_ACCESSOR = JsonAccessor.root().property( "terms" ).asObject();
-	private static final JsonObjectAccessor TERM_ACCESSOR = JsonAccessor.root().property( "term" ).asObject();
+    private static final JsonObjectAccessor TERMS_ACCESSOR = JsonAccessor.root().property("terms").asObject();
 
-	// for boolean query:
-	private static final JsonObjectAccessor BOOL_ACCESSOR = JsonAccessor.root().property( "bool" ).asObject();
-	private static final JsonArrayAccessor MUST_ACCESSOR = JsonAccessor.root().property( "must" ).asArray();
+    private static final JsonObjectAccessor TERM_ACCESSOR = JsonAccessor.root().property("term").asObject();
 
-	private static final JsonAccessor<JsonElement> VALUE_ACCESSOR = JsonAccessor.root().property( "value" );
+    // for boolean query:
+    private static final JsonObjectAccessor BOOL_ACCESSOR = JsonAccessor.root().property("bool").asObject();
 
-	private final JsonElement term;
-	private final JsonElement[] terms;
-	private boolean allMatch;
+    private static final JsonArrayAccessor MUST_ACCESSOR = JsonAccessor.root().property("must").asArray();
 
-	public ElasticsearchTermsPredicate(Builder<?> builder) {
-		super( builder );
-		this.term = builder.term;
-		this.terms = builder.terms;
-		this.allMatch = builder.allMatch;
-	}
+    private static final JsonAccessor<JsonElement> VALUE_ACCESSOR = JsonAccessor.root().property("value");
 
-	@Override
-	protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject,
-			JsonObject innerObject) {
+    private final JsonElement term;
 
-		// single term
-		if ( term != null ) {
-			VALUE_ACCESSOR.set( innerObject, term );
-			JsonObject middleObject = new JsonObject();
-			middleObject.add( absoluteFieldPath, innerObject );
-			TERM_ACCESSOR.set( outerObject, middleObject );
-			return outerObject;
-		}
+    private final JsonElement[] terms;
 
-		// multiple terms in OR
-		if ( !allMatch ) {
-			JsonArray jsonArray = new JsonArray( terms.length );
-			for ( JsonElement element : terms ) {
-				jsonArray.add( element );
-			}
+    private boolean allMatch;
 
-			innerObject.add( absoluteFieldPath, jsonArray );
-			TERMS_ACCESSOR.set( outerObject, innerObject );
-			return outerObject;
-		}
+    public ElasticsearchTermsPredicate(Builder<?> builder) {
+        super(builder);
+        this.term = builder.term;
+        this.terms = builder.terms;
+        this.allMatch = builder.allMatch;
+    }
 
-		// multiple terms in AND
-		// using a boolean query here:
-		JsonArray termsArray = new JsonArray();
-		for ( JsonElement element : terms ) {
-			JsonObject innerTermObject = new JsonObject();
-			innerTermObject.add( absoluteFieldPath, element );
-			JsonObject termObject = new JsonObject();
-			TERM_ACCESSOR.set( termObject, innerTermObject );
-			termsArray.add( termObject );
-		}
+    @Override
+    protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		MUST_ACCESSOR.set( innerObject, termsArray );
-		BOOL_ACCESSOR.set( outerObject, innerObject );
-		return outerObject;
-	}
+    public static class Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<TermsPredicateBuilder, F> {
 
-	public static class Factory<F>
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<TermsPredicateBuilder, F> {
+        public Factory(ElasticsearchFieldCodec<F> codec) {
+            super(codec);
+        }
 
-		public Factory(ElasticsearchFieldCodec<F> codec) {
-			super( codec );
-		}
+        @Override
+        public TermsPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public TermsPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( codec, scope, field );
-		}
-	}
+    private static class Builder<F> extends AbstractBuilder implements TermsPredicateBuilder {
 
-	private static class Builder<F> extends AbstractBuilder implements TermsPredicateBuilder {
+        private final ElasticsearchSearchIndexValueFieldContext<F> field;
 
-		private final ElasticsearchSearchIndexValueFieldContext<F> field;
-		private final ElasticsearchFieldCodec<F> codec;
+        private final ElasticsearchFieldCodec<F> codec;
 
-		private JsonElement term;
-		private JsonElement[] terms;
-		private boolean allMatch;
+        private JsonElement term;
 
-		private Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			// Score is always constant for this query
-			constantScore();
+        private JsonElement[] terms;
 
-			this.field = field;
-			this.codec = codec;
-		}
+        private boolean allMatch;
 
-		@Override
-		public void matchingAny(Collection<?> terms, ValueModel valueModel) {
-			allMatch = false;
-			fillTerms( terms, valueModel );
-		}
+        private Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            // Score is always constant for this query
+            constantScore();
+            this.field = field;
+            this.codec = codec;
+        }
 
-		@Override
-		public void matchingAll(Collection<?> terms, ValueModel valueModel) {
-			allMatch = true;
-			fillTerms( terms, valueModel );
-		}
+        @Override
+        public void matchingAny(Collection<?> terms, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public SearchPredicate build() {
-			return new ElasticsearchTermsPredicate( this );
-		}
+        @Override
+        public void matchingAll(Collection<?> terms, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private void fillTerms(Collection<?> terms, ValueModel valueModel) {
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( terms.size() == 1 ) {
-				this.term = encode( terms.iterator().next(), valueModel );
-				this.terms = null;
-				return;
-			}
+        private void fillTerms(Collection<?> terms, ValueModel valueModel) {
+            if (terms.size() == 1) {
+                this.term = encode(terms.iterator().next(), valueModel);
+                this.terms = null;
+                return;
+            }
+            this.term = null;
+            this.terms = encode(terms, valueModel);
+        }
 
-			this.term = null;
-			this.terms = encode( terms, valueModel );
-		}
+        private JsonElement[] encode(Collection<?> terms, ValueModel valueModel) {
+            JsonElement[] result = new JsonElement[terms.size()];
+            int i = 0;
+            for (Object term : terms) {
+                result[i++] = encode(term, valueModel);
+            }
+            return result;
+        }
 
-		private JsonElement[] encode(Collection<?> terms, ValueModel valueModel) {
-			JsonElement[] result = new JsonElement[terms.size()];
-			int i = 0;
-			for ( Object term : terms ) {
-				result[i++] = encode( term, valueModel );
-			}
-
-			return result;
-		}
-
-		private JsonElement encode(Object term, ValueModel valueModel) {
-			return field.encodingContext().convertAndEncode( scope, field, term, valueModel, ElasticsearchFieldCodec::encode );
-		}
-	}
+        private JsonElement encode(Object term, ValueModel valueModel) {
+            return field.encodingContext().convertAndEncode(scope, field, term, valueModel, ElasticsearchFieldCodec::encode);
+        }
+    }
 }

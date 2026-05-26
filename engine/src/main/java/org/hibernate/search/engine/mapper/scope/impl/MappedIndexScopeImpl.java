@@ -19,51 +19,49 @@ import org.hibernate.search.engine.search.sort.dsl.TypedSearchSortFactory;
 
 class MappedIndexScopeImpl<SR, R, E> implements MappedIndexScope<SR, R, E> {
 
-	private final IndexScope<SR> delegate;
+    private final IndexScope<SR> delegate;
 
-	MappedIndexScopeImpl(IndexScope<SR> delegate) {
-		this.delegate = delegate;
-	}
+    MappedIndexScopeImpl(IndexScope<SR> delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[delegate=" + delegate + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <LOS> SearchQuerySelectStep<SR, ?, R, E, LOS, TypedSearchProjectionFactory<SR, R, E>, ?> search(
-			BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<E, LOS> loadingContextBuilder) {
-		return new DefaultSearchQuerySelectStep<>( delegate.searchScope(), sessionContext, loadingContextBuilder );
-	}
+    @Override
+    public <LOS> SearchQuerySelectStep<SR, ?, R, E, LOS, TypedSearchProjectionFactory<SR, R, E>, ?> search(BackendSessionContext sessionContext, SearchLoadingContextBuilder<E, LOS> loadingContextBuilder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchPredicateFactory<SR> predicate() {
-		return delegate.searchScope().predicateFactory();
-	}
+    @Override
+    public TypedSearchPredicateFactory<SR> predicate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchSortFactory<SR> sort() {
-		return delegate.searchScope().sortFactory();
-	}
+    @Override
+    public TypedSearchSortFactory<SR> sort() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchProjectionFactory<SR, R, E> projection() {
-		return delegate.searchScope().projectionFactory();
-	}
+    @Override
+    public TypedSearchProjectionFactory<SR, R, E> projection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TypedSearchAggregationFactory<SR> aggregation() {
-		return delegate.searchScope().aggregationFactory();
-	}
+    @Override
+    public TypedSearchAggregationFactory<SR> aggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchHighlighterFactory highlighter() {
-		return delegate.searchScope().highlighterFactory();
-	}
+    @Override
+    public SearchHighlighterFactory highlighter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(IndexScopeExtension<T> extension) {
-		return delegate.extension( extension );
-	}
+    @Override
+    public <T> T extension(IndexScopeExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

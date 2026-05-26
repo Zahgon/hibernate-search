@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.projection.spi;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -17,27 +16,28 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  */
 final class OptionalProjectionCollector<E, V> extends BaseSingleValuedProjectionCollector<E, V, Optional<V>> {
 
-	@SuppressWarnings("rawtypes")
-	static final Provider PROVIDER = new Provider() {
-		private final OptionalProjectionCollector instance = new OptionalProjectionCollector();
+    @SuppressWarnings("rawtypes")
+    static final Provider PROVIDER = new Provider() {
 
-		@Override
-		public ProjectionCollector get() {
-			return instance;
-		}
+        private final OptionalProjectionCollector instance = new OptionalProjectionCollector();
 
-		@Override
-		public boolean isSingleValued() {
-			return true;
-		}
-	};
+        @Override
+        public ProjectionCollector get() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private OptionalProjectionCollector() {
-	}
+        @Override
+        public boolean isSingleValued() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    };
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Optional<V> finish(Object accumulated) {
-		return Optional.ofNullable( (V) accumulated );
-	}
+    private OptionalProjectionCollector() {
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<V> finish(Object accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -15,39 +15,23 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 class BackendNonStartedState {
 
-	private final EventContext eventContext;
-	private final ConfigurationPropertySourceExtractor propertySourceExtractor;
-	private final BackendImplementor backend;
+    private final EventContext eventContext;
 
-	BackendNonStartedState(EventContext eventContext, ConfigurationPropertySourceExtractor propertySourceExtractor,
-			BackendImplementor backend) {
-		this.eventContext = eventContext;
-		this.propertySourceExtractor = propertySourceExtractor;
-		this.backend = backend;
-	}
+    private final ConfigurationPropertySourceExtractor propertySourceExtractor;
 
-	void closeOnFailure() {
-		backend.stop();
-	}
+    private final BackendImplementor backend;
 
-	BackendImplementor start(RootFailureCollector rootFailureCollector,
-			BeanResolver beanResolver,
-			ConfigurationPropertySource rootPropertySource,
-			ThreadPoolProvider threadPoolProvider) {
-		ContextualFailureCollector backendFailureCollector = rootFailureCollector.withContext( eventContext );
-		ConfigurationPropertySource backendPropertySource = propertySourceExtractor.extract( beanResolver, rootPropertySource );
-		BackendStartContextImpl startContext = new BackendStartContextImpl(
-				backendFailureCollector,
-				beanResolver,
-				backendPropertySource,
-				threadPoolProvider
-		);
-		try {
-			backend.start( startContext );
-		}
-		catch (RuntimeException e) {
-			backendFailureCollector.add( e );
-		}
-		return backend; // The backend is now started
-	}
+    BackendNonStartedState(EventContext eventContext, ConfigurationPropertySourceExtractor propertySourceExtractor, BackendImplementor backend) {
+        this.eventContext = eventContext;
+        this.propertySourceExtractor = propertySourceExtractor;
+        this.backend = backend;
+    }
+
+    void closeOnFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    BackendImplementor start(RootFailureCollector rootFailureCollector, BeanResolver beanResolver, ConfigurationPropertySource rootPropertySource, ThreadPoolProvider threadPoolProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,22 +8,16 @@ import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.types.codec.impl.LuceneFieldCodec;
 import org.hibernate.search.engine.search.common.spi.SearchQueryElementFactory;
 
-public abstract class AbstractLuceneCodecAwareSearchQueryElementFactory<T, F, C extends LuceneFieldCodec<F, ?>>
-		extends AbstractLuceneValueFieldSearchQueryElementFactory<T, F> {
+public abstract class AbstractLuceneCodecAwareSearchQueryElementFactory<T, F, C extends LuceneFieldCodec<F, ?>> extends AbstractLuceneValueFieldSearchQueryElementFactory<T, F> {
 
-	protected final C codec;
+    protected final C codec;
 
-	protected AbstractLuceneCodecAwareSearchQueryElementFactory(C codec) {
-		this.codec = codec;
-	}
+    protected AbstractLuceneCodecAwareSearchQueryElementFactory(C codec) {
+        this.codec = codec;
+    }
 
-	@Override
-	public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
-		super.checkCompatibleWith( other );
-		AbstractLuceneCodecAwareSearchQueryElementFactory<?, ?, ?> castedOther =
-				(AbstractLuceneCodecAwareSearchQueryElementFactory<?, ?, ?>) other;
-		if ( !codec.isCompatibleWith( castedOther.codec ) ) {
-			throw QueryLog.INSTANCE.differentFieldCodecForQueryElement( codec, castedOther.codec );
-		}
-	}
+    @Override
+    public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -30,68 +30,53 @@ package org.hibernate.search.util.common.data.impl;
  * @author Kurt Alfred Kluever
  */
 public final class Murmur3HashFunction implements RangeCompatibleHashFunction {
-	public static final Murmur3HashFunction INSTANCE = new Murmur3HashFunction( 0 );
 
-	private static final int BYTES_PER_CHAR = Character.SIZE / Byte.SIZE;
+    public static final Murmur3HashFunction INSTANCE = new Murmur3HashFunction(0);
 
-	private static final int C1 = 0xcc9e2d51;
-	private static final int C2 = 0x1b873593;
+    private static final int BYTES_PER_CHAR = Character.SIZE / Byte.SIZE;
 
-	private final int seed;
+    private static final int C1 = 0xcc9e2d51;
 
-	private Murmur3HashFunction(int seed) {
-		this.seed = seed;
-	}
+    private static final int C2 = 0x1b873593;
 
-	@Override
-	public String toString() {
-		return "Murmur3HashFunction(" + seed + ")";
-	}
+    private final int seed;
 
-	@Override
-	public int hash(CharSequence input) {
-		int h1 = seed;
+    private Murmur3HashFunction(int seed) {
+        this.seed = seed;
+    }
 
-		// step through the CharSequence 2 chars at a time
-		for ( int i = 1; i < input.length(); i += 2 ) {
-			int k1 = input.charAt( i - 1 ) | ( input.charAt( i ) << 16 );
-			k1 = mixK1( k1 );
-			h1 = mixH1( h1, k1 );
-		}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// deal with any remaining characters
-		if ( ( input.length() & 1 ) == 1 ) {
-			int k1 = input.charAt( input.length() - 1 );
-			k1 = mixK1( k1 );
-			h1 ^= k1;
-		}
+    @Override
+    public int hash(CharSequence input) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return fmix( h1, BYTES_PER_CHAR * input.length() );
-	}
+    private static int mixK1(int k1) {
+        k1 *= C1;
+        k1 = Integer.rotateLeft(k1, 15);
+        k1 *= C2;
+        return k1;
+    }
 
-	private static int mixK1(int k1) {
-		k1 *= C1;
-		k1 = Integer.rotateLeft( k1, 15 );
-		k1 *= C2;
-		return k1;
-	}
+    private static int mixH1(int h1, int k1) {
+        h1 ^= k1;
+        h1 = Integer.rotateLeft(h1, 13);
+        h1 = h1 * 5 + 0xe6546b64;
+        return h1;
+    }
 
-	private static int mixH1(int h1, int k1) {
-		h1 ^= k1;
-		h1 = Integer.rotateLeft( h1, 13 );
-		h1 = h1 * 5 + 0xe6546b64;
-		return h1;
-	}
-
-	// Finalization mix - force all bits of a hash block to avalanche
-	private static int fmix(int h1, int length) {
-		h1 ^= length;
-		h1 ^= h1 >>> 16;
-		h1 *= 0x85ebca6b;
-		h1 ^= h1 >>> 13;
-		h1 *= 0xc2b2ae35;
-		h1 ^= h1 >>> 16;
-		return h1;
-	}
-
+    // Finalization mix - force all bits of a hash block to avalanche
+    private static int fmix(int h1, int length) {
+        h1 ^= length;
+        h1 ^= h1 >>> 16;
+        h1 *= 0x85ebca6b;
+        h1 ^= h1 >>> 13;
+        h1 *= 0xc2b2ae35;
+        h1 ^= h1 >>> 16;
+        return h1;
+    }
 }

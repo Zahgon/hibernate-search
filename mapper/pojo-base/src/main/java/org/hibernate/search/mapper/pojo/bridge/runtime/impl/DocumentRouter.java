@@ -5,23 +5,18 @@
 package org.hibernate.search.mapper.pojo.bridge.runtime.impl;
 
 import java.util.function.Supplier;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
 import org.hibernate.search.mapper.pojo.route.DocumentRouteDescriptor;
 import org.hibernate.search.mapper.pojo.route.DocumentRoutesDescriptor;
 
 public interface DocumentRouter<E> extends AutoCloseable {
 
-	@Override
-	default void close() {
-	}
+    @Override
+    default void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	DocumentRouteDescriptor currentRoute(Object entityIdentifier, Supplier<? extends E> entitySupplier,
-			DocumentRoutesDescriptor providedRoutes,
-			BridgeSessionContext context);
+    DocumentRouteDescriptor currentRoute(Object entityIdentifier, Supplier<? extends E> entitySupplier, DocumentRoutesDescriptor providedRoutes, BridgeSessionContext context);
 
-	DocumentRoutesDescriptor routes(Object entityIdentifier, Supplier<? extends E> entitySupplier,
-			DocumentRoutesDescriptor providedRoutes,
-			BridgeSessionContext context);
-
+    DocumentRoutesDescriptor routes(Object entityIdentifier, Supplier<? extends E> entitySupplier, DocumentRoutesDescriptor providedRoutes, BridgeSessionContext context);
 }

@@ -10,22 +10,23 @@ import org.hibernate.search.engine.mapper.mapping.spi.MappingStartContext;
 import org.hibernate.search.mapper.orm.automaticindexing.impl.AutomaticIndexingStrategyStartContext;
 
 public class AutomaticIndexingStrategyStartContextImpl implements AutomaticIndexingStrategyStartContext {
-	private final MappingStartContext delegate;
-	private final ConfigurationPropertySource configurationPropertySource;
 
-	public AutomaticIndexingStrategyStartContextImpl(MappingStartContext delegate) {
-		this.delegate = delegate;
-		this.configurationPropertySource = delegate.configurationPropertySource();
-	}
+    private final MappingStartContext delegate;
 
-	@Override
-	public BeanResolver beanResolver() {
-		return delegate.beanResolver();
-	}
+    private final ConfigurationPropertySource configurationPropertySource;
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return configurationPropertySource;
-	}
+    public AutomaticIndexingStrategyStartContextImpl(MappingStartContext delegate) {
+        this.delegate = delegate;
+        this.configurationPropertySource = delegate.configurationPropertySource();
+    }
 
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

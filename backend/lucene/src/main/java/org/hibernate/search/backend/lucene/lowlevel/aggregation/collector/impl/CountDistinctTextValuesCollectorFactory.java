@@ -9,26 +9,26 @@ import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorFact
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningTextMultiValuesSource;
 
-public class CountDistinctTextValuesCollectorFactory
-		implements
-		CollectorFactory<CountDistinctTextValuesCollector, Long, CountDistinctTextValuesCollectorManager> {
+public class CountDistinctTextValuesCollectorFactory implements CollectorFactory<CountDistinctTextValuesCollector, Long, CountDistinctTextValuesCollectorManager> {
 
-	private final JoiningTextMultiValuesSource source;
-	private final String field;
-	private final CollectorKey<CountDistinctTextValuesCollector, Long> key = CollectorKey.create();
+    private final JoiningTextMultiValuesSource source;
 
-	public CountDistinctTextValuesCollectorFactory(JoiningTextMultiValuesSource source, String field) {
-		this.source = source;
-		this.field = field;
-	}
+    private final String field;
 
-	@Override
-	public CountDistinctTextValuesCollectorManager createCollectorManager(CollectorExecutionContext context) {
-		return new CountDistinctTextValuesCollectorManager( source, field );
-	}
+    private final CollectorKey<CountDistinctTextValuesCollector, Long> key = CollectorKey.create();
 
-	@Override
-	public CollectorKey<CountDistinctTextValuesCollector, Long> getCollectorKey() {
-		return key;
-	}
+    public CountDistinctTextValuesCollectorFactory(JoiningTextMultiValuesSource source, String field) {
+        this.source = source;
+        this.field = field;
+    }
+
+    @Override
+    public CountDistinctTextValuesCollectorManager createCollectorManager(CollectorExecutionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CollectorKey<CountDistinctTextValuesCollector, Long> getCollectorKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -10,7 +10,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.logging.impl.AnalysisLog;
 import org.hibernate.search.backend.elasticsearch.logging.impl.MappingLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.mapping.impl.DataTypes;
@@ -47,278 +46,168 @@ import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 import org.hibernate.search.util.common.AssertionFailure;
 import org.hibernate.search.util.common.impl.Contracts;
-
 import com.google.gson.JsonPrimitive;
 
-class ElasticsearchStringIndexFieldTypeOptionsStep
-		extends AbstractElasticsearchStandardIndexFieldTypeOptionsStep<ElasticsearchStringIndexFieldTypeOptionsStep, String>
-		implements StringIndexFieldTypeOptionsStep<ElasticsearchStringIndexFieldTypeOptionsStep> {
+class ElasticsearchStringIndexFieldTypeOptionsStep extends AbstractElasticsearchStandardIndexFieldTypeOptionsStep<ElasticsearchStringIndexFieldTypeOptionsStep, String> implements StringIndexFieldTypeOptionsStep<ElasticsearchStringIndexFieldTypeOptionsStep> {
 
-	private String analyzerName;
-	private String searchAnalyzerName;
-	private String normalizerName;
-	private Projectable projectable = Projectable.DEFAULT;
-	private Searchable searchable = Searchable.DEFAULT;
-	private Norms norms = Norms.DEFAULT;
-	private Sortable sortable = Sortable.DEFAULT;
-	private Aggregable aggregable = Aggregable.DEFAULT;
-	private String indexNullAs;
-	private TermVector termVector = TermVector.DEFAULT;
-	private Set<Highlightable> highlightable;
+    private String analyzerName;
 
-	ElasticsearchStringIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, String.class );
-	}
+    private String searchAnalyzerName;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep analyzer(String analyzerName) {
-		this.analyzerName = analyzerName;
-		return this;
-	}
+    private String normalizerName;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep searchAnalyzer(String searchAnalyzerName) {
-		this.searchAnalyzerName = searchAnalyzerName;
-		return this;
-	}
+    private Projectable projectable = Projectable.DEFAULT;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep normalizer(String normalizerName) {
-		this.normalizerName = normalizerName;
-		return this;
-	}
+    private Searchable searchable = Searchable.DEFAULT;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep projectable(Projectable projectable) {
-		this.projectable = projectable;
-		return this;
-	}
+    private Norms norms = Norms.DEFAULT;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep norms(Norms norms) {
-		this.norms = norms;
-		return this;
-	}
+    private Sortable sortable = Sortable.DEFAULT;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep termVector(TermVector termVector) {
-		this.termVector = termVector;
-		return this;
-	}
+    private Aggregable aggregable = Aggregable.DEFAULT;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep highlightable(Collection<Highlightable> highlightable) {
-		Contracts.assertNotNull( highlightable, "highlightable" );
-		this.highlightable = highlightable.isEmpty() ? Collections.emptySet() : EnumSet.copyOf( highlightable );
-		return this;
-	}
+    private String indexNullAs;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep sortable(Sortable sortable) {
-		this.sortable = sortable;
-		return this;
-	}
+    private TermVector termVector = TermVector.DEFAULT;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep indexNullAs(String indexNullAs) {
-		this.indexNullAs = indexNullAs;
-		return this;
-	}
+    private Set<Highlightable> highlightable;
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep searchable(Searchable searchable) {
-		this.searchable = searchable;
-		return this;
-	}
+    ElasticsearchStringIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, String.class);
+    }
 
-	@Override
-	public ElasticsearchStringIndexFieldTypeOptionsStep aggregable(Aggregable aggregable) {
-		this.aggregable = aggregable;
-		return this;
-	}
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep analyzer(String analyzerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexFieldType<String> toIndexFieldType() {
-		PropertyMapping mapping = builder.mapping();
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep searchAnalyzer(String searchAnalyzerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		boolean resolvedSortable = resolveDefault( sortable );
-		boolean resolvedProjectable = resolveDefault( projectable );
-		boolean resolvedSearchable = resolveDefault( searchable );
-		boolean resolvedAggregable = resolveDefault( aggregable );
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep normalizer(String normalizerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		mapping.setIndex( resolvedSearchable );
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep projectable(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( analyzerName != null ) {
-			mapping.setType( DataTypes.TEXT );
-			mapping.setAnalyzer( analyzerName );
-			mapping.setSearchAnalyzer( searchAnalyzerName );
-			mapping.setTermVector( resolveTermVector() );
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep norms(Norms norms) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			builder.analyzerName( analyzerName );
-			builder.searchAnalyzerName( searchAnalyzerName );
-			Set<SearchHighlighterType> allowedHighlighterTypes = resolveAllowedHighlighterTypes();
-			builder.allowedHighlighterTypes( allowedHighlighterTypes );
-			if ( !allowedHighlighterTypes.isEmpty() ) {
-				builder.queryElementFactory(
-						ProjectionTypeKeys.HIGHLIGHT, new ElasticsearchFieldHighlightProjection.Factory<>() );
-			}
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep termVector(TermVector termVector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( normalizerName != null ) {
-				throw AnalysisLog.INSTANCE.cannotApplyAnalyzerAndNormalizer( analyzerName, normalizerName,
-						buildContext.getEventContext() );
-			}
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep highlightable(Collection<Highlightable> highlightable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( resolvedSortable ) {
-				throw AnalysisLog.INSTANCE.cannotUseAnalyzerOnSortableField( analyzerName, buildContext.getEventContext() );
-			}
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep sortable(Sortable sortable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( indexNullAs != null ) {
-				throw AnalysisLog.INSTANCE.cannotUseIndexNullAsAndAnalyzer( analyzerName, indexNullAs,
-						buildContext.getEventContext() );
-			}
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep indexNullAs(String indexNullAs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( resolvedAggregable ) {
-				throw AnalysisLog.INSTANCE.cannotUseAnalyzerOnAggregableField( analyzerName, buildContext.getEventContext() );
-			}
-		}
-		else {
-			mapping.setType( DataTypes.KEYWORD );
-			mapping.setNormalizer( normalizerName );
-			mapping.setDocValues( resolvedSortable || resolvedAggregable );
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep searchable(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			builder.normalizerName( normalizerName );
+    @Override
+    public ElasticsearchStringIndexFieldTypeOptionsStep aggregable(Aggregable aggregable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			if ( searchAnalyzerName != null ) {
-				throw AnalysisLog.INSTANCE.searchAnalyzerWithoutAnalyzer( searchAnalyzerName, buildContext.getEventContext() );
-			}
-		}
+    @Override
+    public IndexFieldType<String> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		mapping.setNorms( resolveNorms() );
+    @Override
+    protected ElasticsearchStringIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( indexNullAs != null ) {
-			mapping.setNullValue( new JsonPrimitive( indexNullAs ) );
-		}
+    private boolean resolveNorms() {
+        switch(norms) {
+            case YES:
+                return true;
+            case NO:
+                return false;
+            case DEFAULT:
+                return (analyzerName != null);
+            default:
+                throw new AssertionFailure("Unexpected value for Norms: " + norms);
+        }
+    }
 
-		ElasticsearchStringFieldCodec codec = new ElasticsearchStringFieldCodec( buildContext.getUserFacingGson() );
-		builder.codec( codec );
+    private String resolveTermVector() {
+        if (highlightable != null && (highlightable.contains(Highlightable.FAST_VECTOR) || highlightable.contains(Highlightable.ANY))) {
+            if (TermVector.DEFAULT.equals(termVector)) {
+                return TermVector.WITH_POSITIONS_OFFSETS.name().toLowerCase(Locale.ROOT);
+            } else if (TermVector.WITH_POSITIONS_OFFSETS.equals(termVector) || TermVector.WITH_POSITIONS_OFFSETS_PAYLOADS.equals(termVector)) {
+                return termVector.name().toLowerCase(Locale.ROOT);
+            } else {
+                throw MappingLog.INSTANCE.termVectorDontAllowFastVectorHighlighter(termVector);
+            }
+        } else {
+            switch(termVector) {
+                case NO:
+                case DEFAULT:
+                    return "no";
+                default:
+                    return termVector.name().toLowerCase(Locale.ROOT);
+            }
+        }
+    }
 
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.MATCH, new ElasticsearchTextMatchPredicate.Factory( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.RANGE, new ElasticsearchRangePredicate.Factory<>( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.Factory<>() );
-			builder.queryElementFactory( PredicateTypeKeys.PHRASE, new ElasticsearchTextPhrasePredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.PREFIX, new ElasticsearchTextPrefixPredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.WILDCARD, new ElasticsearchTextWildcardPredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.REGEXP, new ElasticsearchTextRegexpPredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.TERMS, new ElasticsearchTermsPredicate.Factory<>( codec ) );
-			builder.queryElementFactory( ElasticsearchPredicateTypeKeys.SIMPLE_QUERY_STRING,
-					new ElasticsearchCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-			builder.queryElementFactory( ElasticsearchPredicateTypeKeys.QUERY_STRING,
-					new ElasticsearchCommonQueryStringPredicateBuilderFieldState.Factory<>( codec ) );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.FIELD, new ElasticsearchStandardFieldSort.TextFieldFactory( codec ) );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new ElasticsearchFieldProjection.Factory<>( codec ) );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			builder.queryElementFactory( AggregationTypeKeys.TERMS, new ElasticsearchTermsAggregation.Factory<>( codec ) );
-			builder.queryElementFactory( AggregationTypeKeys.COUNT, ElasticsearchCountValuesAggregation.factory() );
-		}
-
-		return builder.build();
-	}
-
-	@Override
-	protected ElasticsearchStringIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
-
-	private boolean resolveNorms() {
-		switch ( norms ) {
-			case YES:
-				return true;
-			case NO:
-				return false;
-			case DEFAULT:
-				return ( analyzerName != null );
-			default:
-				throw new AssertionFailure( "Unexpected value for Norms: " + norms );
-		}
-	}
-
-	private String resolveTermVector() {
-		if ( highlightable != null
-				&& ( highlightable.contains( Highlightable.FAST_VECTOR )
-						|| highlightable.contains( Highlightable.ANY ) ) ) {
-			if ( TermVector.DEFAULT.equals( termVector ) ) {
-				return TermVector.WITH_POSITIONS_OFFSETS.name().toLowerCase( Locale.ROOT );
-			}
-			else if ( TermVector.WITH_POSITIONS_OFFSETS.equals( termVector )
-					|| TermVector.WITH_POSITIONS_OFFSETS_PAYLOADS.equals( termVector ) ) {
-				return termVector.name().toLowerCase( Locale.ROOT );
-			}
-			else {
-				throw MappingLog.INSTANCE.termVectorDontAllowFastVectorHighlighter( termVector );
-			}
-		}
-		else {
-			switch ( termVector ) {
-				case NO:
-				case DEFAULT:
-					return "no";
-				default:
-					return termVector.name().toLowerCase( Locale.ROOT );
-			}
-		}
-	}
-
-	private Set<SearchHighlighterType> resolveAllowedHighlighterTypes() {
-		if ( highlightable == null ) {
-			highlightable = EnumSet.of( Highlightable.DEFAULT );
-		}
-		if ( highlightable.isEmpty() ) {
-			throw MappingLog.INSTANCE.noHighlightableProvided();
-		}
-		if ( highlightable.contains( Highlightable.DEFAULT ) ) {
-			if ( TermVector.WITH_POSITIONS_OFFSETS.equals( termVector )
-					|| TermVector.WITH_POSITIONS_OFFSETS_PAYLOADS.equals( termVector ) ) {
-				highlightable = EnumSet.of( Highlightable.ANY );
-			}
-			else {
-				highlightable = EnumSet.of( Highlightable.UNIFIED, Highlightable.PLAIN );
-			}
-		}
-		if ( highlightable.contains( Highlightable.NO ) ) {
-			if ( highlightable.size() == 1 ) {
-				return Collections.emptySet();
-			}
-			else {
-				throw MappingLog.INSTANCE.unsupportedMixOfHighlightableValues( highlightable );
-			}
-		}
-		if ( highlightable.contains( Highlightable.ANY ) ) {
-			return EnumSet.of( SearchHighlighterType.PLAIN, SearchHighlighterType.UNIFIED, SearchHighlighterType.FAST_VECTOR );
-		}
-		Set<SearchHighlighterType> highlighters = new HashSet<>();
-		if ( highlightable.contains( Highlightable.PLAIN ) ) {
-			highlighters.add( SearchHighlighterType.PLAIN );
-		}
-		if ( highlightable.contains( Highlightable.UNIFIED ) ) {
-			highlighters.add( SearchHighlighterType.UNIFIED );
-		}
-		if ( highlightable.contains( Highlightable.FAST_VECTOR ) ) {
-			highlighters.add( SearchHighlighterType.FAST_VECTOR );
-		}
-
-		return EnumSet.copyOf( highlighters );
-	}
+    private Set<SearchHighlighterType> resolveAllowedHighlighterTypes() {
+        if (highlightable == null) {
+            highlightable = EnumSet.of(Highlightable.DEFAULT);
+        }
+        if (highlightable.isEmpty()) {
+            throw MappingLog.INSTANCE.noHighlightableProvided();
+        }
+        if (highlightable.contains(Highlightable.DEFAULT)) {
+            if (TermVector.WITH_POSITIONS_OFFSETS.equals(termVector) || TermVector.WITH_POSITIONS_OFFSETS_PAYLOADS.equals(termVector)) {
+                highlightable = EnumSet.of(Highlightable.ANY);
+            } else {
+                highlightable = EnumSet.of(Highlightable.UNIFIED, Highlightable.PLAIN);
+            }
+        }
+        if (highlightable.contains(Highlightable.NO)) {
+            if (highlightable.size() == 1) {
+                return Collections.emptySet();
+            } else {
+                throw MappingLog.INSTANCE.unsupportedMixOfHighlightableValues(highlightable);
+            }
+        }
+        if (highlightable.contains(Highlightable.ANY)) {
+            return EnumSet.of(SearchHighlighterType.PLAIN, SearchHighlighterType.UNIFIED, SearchHighlighterType.FAST_VECTOR);
+        }
+        Set<SearchHighlighterType> highlighters = new HashSet<>();
+        if (highlightable.contains(Highlightable.PLAIN)) {
+            highlighters.add(SearchHighlighterType.PLAIN);
+        }
+        if (highlightable.contains(Highlightable.UNIFIED)) {
+            highlighters.add(SearchHighlighterType.UNIFIED);
+        }
+        if (highlightable.contains(Highlightable.FAST_VECTOR)) {
+            highlighters.add(SearchHighlighterType.FAST_VECTOR);
+        }
+        return EnumSet.copyOf(highlighters);
+    }
 }

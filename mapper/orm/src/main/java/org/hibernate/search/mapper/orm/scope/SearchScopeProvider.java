@@ -6,9 +6,7 @@ package org.hibernate.search.mapper.orm.scope;
 
 import java.util.Collection;
 import java.util.Collections;
-
 import jakarta.persistence.Entity;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 
 /**
@@ -20,85 +18,85 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @SuppressWarnings("deprecation")
 public interface SearchScopeProvider {
 
-	/**
-	 * Creates a {@link SearchScope} limited to
-	 * indexed entity types among the given class and its subtypes.
-	 *
-	 * @param clazz A class that must be an indexed entity type or a supertype of such type.
-	 * @param <T> A supertype of all indexed entity types to include in the scope.
-	 * @return The created scope.
-	 * @see TypedSearchScope
-	 */
-	default <T> SearchScope<T> scope(Class<T> clazz) {
-		return scope( Collections.singleton( clazz ) );
-	}
+    /**
+     * Creates a {@link SearchScope} limited to
+     * indexed entity types among the given class and its subtypes.
+     *
+     * @param clazz A class that must be an indexed entity type or a supertype of such type.
+     * @param <T> A supertype of all indexed entity types to include in the scope.
+     * @return The created scope.
+     * @see TypedSearchScope
+     */
+    default <T> SearchScope<T> scope(Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates a {@link SearchScope} limited to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes A collection of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @param <T> A supertype of all indexed entity types to include in the scope.
-	 * @return The created scope.
-	 * @see SearchScope
-	 */
-	<T> SearchScope<T> scope(Collection<? extends Class<? extends T>> classes);
+    /**
+     * Creates a {@link SearchScope} limited to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes A collection of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @param <T> A supertype of all indexed entity types to include in the scope.
+     * @return The created scope.
+     * @see SearchScope
+     */
+    <T> SearchScope<T> scope(Collection<? extends Class<? extends T>> classes);
 
-	/**
-	 * Creates a {@link SearchScope} limited to
-	 * indexed entity types among the entity with the given name and its subtypes.
-	 *
-	 * @param expectedSuperType A supertype of all entity types to include in the scope.
-	 * @param entityName An entity name. See {@link Entity#name()}.
-	 * The referenced entity type must be an indexed entity type or a supertype of such type.
-	 * @param <T> A supertype of all indexed entity types to include in the scope.
-	 * @return The created scope.
-	 * @see SearchScope
-	 */
-	default <T> SearchScope<T> scope(Class<T> expectedSuperType, String entityName) {
-		return scope( expectedSuperType, Collections.singleton( entityName ) );
-	}
+    /**
+     * Creates a {@link SearchScope} limited to
+     * indexed entity types among the entity with the given name and its subtypes.
+     *
+     * @param expectedSuperType A supertype of all entity types to include in the scope.
+     * @param entityName An entity name. See {@link Entity#name()}.
+     * The referenced entity type must be an indexed entity type or a supertype of such type.
+     * @param <T> A supertype of all indexed entity types to include in the scope.
+     * @return The created scope.
+     * @see SearchScope
+     */
+    default <T> SearchScope<T> scope(Class<T> expectedSuperType, String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates a {@link SearchScope} limited to
-	 * indexed entity types among the entities with the given names and their subtypes.
-	 *
-	 * @param expectedSuperType A supertype of all indexed entity types to include in the scope.
-	 * @param entityNames A collection of entity names. See {@link Entity#name()}.
-	 * Each entity type referenced in the collection must be an indexed entity type or a supertype of such type.
-	 * @param <T> A supertype of all indexed entity types to include in the scope.
-	 * @return The created scope.
-	 * @see SearchScope
-	 */
-	<T> SearchScope<T> scope(Class<T> expectedSuperType, Collection<String> entityNames);
+    /**
+     * Creates a {@link SearchScope} limited to
+     * indexed entity types among the entities with the given names and their subtypes.
+     *
+     * @param expectedSuperType A supertype of all indexed entity types to include in the scope.
+     * @param entityNames A collection of entity names. See {@link Entity#name()}.
+     * Each entity type referenced in the collection must be an indexed entity type or a supertype of such type.
+     * @param <T> A supertype of all indexed entity types to include in the scope.
+     * @return The created scope.
+     * @see SearchScope
+     */
+    <T> SearchScope<T> scope(Class<T> expectedSuperType, Collection<String> entityNames);
 
-	/**
-	 * Creates a {@link SearchScope} limited to
-	 * indexed entity types among the given class and its subtypes.
-	 *
-	 * @param clazz A class that must be an indexed entity type or a supertype of such type.
-	 * @param <SR> Scope root type.
-	 * @param <T> A supertype of all indexed entity types to include in the scope.
-	 * @return The created scope.
-	 * @see TypedSearchScope
-	 */
-	@Incubating
-	default <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Class<T> clazz) {
-		return typedScope( rootScope, Collections.singleton( clazz ) );
-	}
+    /**
+     * Creates a {@link SearchScope} limited to
+     * indexed entity types among the given class and its subtypes.
+     *
+     * @param clazz A class that must be an indexed entity type or a supertype of such type.
+     * @param <SR> Scope root type.
+     * @param <T> A supertype of all indexed entity types to include in the scope.
+     * @return The created scope.
+     * @see TypedSearchScope
+     */
+    @Incubating
+    default <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates a {@link TypedSearchScope} limited to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes A collection of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @param <SR> Scope root type.
-	 * @param <T> A supertype of all indexed entity types to include in the scope.
-	 * @return The created scope.
-	 * @see TypedSearchScope
-	 */
-	@Incubating
-	<SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes);
+    /**
+     * Creates a {@link TypedSearchScope} limited to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes A collection of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @param <SR> Scope root type.
+     * @param <T> A supertype of all indexed entity types to include in the scope.
+     * @return The created scope.
+     * @see TypedSearchScope
+     */
+    @Incubating
+    <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes);
 }

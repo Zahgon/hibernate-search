@@ -14,29 +14,28 @@ import org.hibernate.search.engine.search.predicate.spi.SearchPredicateIndexScop
  */
 public final class SearchPredicateDslContext<SC extends SearchPredicateIndexScope<?>> {
 
-	public static <SC extends SearchPredicateIndexScope<?>> SearchPredicateDslContext<SC> root(SC scope) {
-		return new SearchPredicateDslContext<>( scope );
-	}
+    public static <SC extends SearchPredicateIndexScope<?>> SearchPredicateDslContext<SC> root(SC scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final SC scope;
+    private final SC scope;
 
-	private SearchPredicateDslContext(SC scope) {
-		this.scope = scope;
-	}
+    private SearchPredicateDslContext(SC scope) {
+        this.scope = scope;
+    }
 
-	/**
-	 * @return The search scope.
-	 */
-	public SC scope() {
-		return scope;
-	}
+    /**
+     * @return The search scope.
+     */
+    public SC scope() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param newScope The new scope for the new DSL context.
-	 * @return A copy of this DSL context with its scope and predicate factory replaced with the given ones.
-	 */
-	public SearchPredicateDslContext<SC> rescope(SC newScope) {
-		return new SearchPredicateDslContext<>( newScope );
-	}
-
+    /**
+     * @param newScope The new scope for the new DSL context.
+     * @return A copy of this DSL context with its scope and predicate factory replaced with the given ones.
+     */
+    public SearchPredicateDslContext<SC> rescope(SC newScope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

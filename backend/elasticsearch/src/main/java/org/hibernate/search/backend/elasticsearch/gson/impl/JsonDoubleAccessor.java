@@ -8,13 +8,12 @@ import com.google.gson.JsonElement;
 
 public class JsonDoubleAccessor extends AbstractTypingJsonAccessor<Double> {
 
-	public JsonDoubleAccessor(JsonAccessor<JsonElement> parentAccessor) {
-		super( parentAccessor );
-	}
+    public JsonDoubleAccessor(JsonAccessor<JsonElement> parentAccessor) {
+        super(parentAccessor);
+    }
 
-	@Override
-	protected JsonElementType<Double> getExpectedElementType() {
-		return JsonElementTypes.DOUBLE;
-	}
-
+    @Override
+    protected JsonElementType<Double> getExpectedElementType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

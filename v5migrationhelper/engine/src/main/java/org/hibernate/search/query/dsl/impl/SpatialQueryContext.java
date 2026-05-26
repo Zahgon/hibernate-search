@@ -12,37 +12,40 @@ import org.hibernate.search.spatial.Coordinates;
  * @author Emmanuel Bernard
  */
 public class SpatialQueryContext {
-	private String coordinatesField;
-	private double radiusDistance;
-	private Unit distanceUnit;
-	private Coordinates coordinates;
 
-	public String getCoordinatesField() {
-		return coordinatesField != null ? coordinatesField : Spatial.COORDINATES_DEFAULT_FIELD;
-	}
+    private String coordinatesField;
 
-	public void setCoordinatesField(String coordinatesField) {
-		this.coordinatesField = coordinatesField;
-	}
+    private double radiusDistance;
 
-	public double getRadiusDistance() {
-		return radiusDistance;
-	}
+    private Unit distanceUnit;
 
-	public Unit getDistanceUnit() {
-		return distanceUnit;
-	}
+    private Coordinates coordinates;
 
-	public Coordinates getCoordinates() {
-		return coordinates;
-	}
+    public String getCoordinatesField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setCoordinates(Coordinates coordinates) {
-		this.coordinates = coordinates;
-	}
+    public void setCoordinatesField(String coordinatesField) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setRadius(double distance, Unit unit) {
-		this.radiusDistance = distance;
-		this.distanceUnit = unit;
-	}
+    public double getRadiusDistance() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Unit getDistanceUnit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Coordinates getCoordinates() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void setRadius(double distance, Unit unit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

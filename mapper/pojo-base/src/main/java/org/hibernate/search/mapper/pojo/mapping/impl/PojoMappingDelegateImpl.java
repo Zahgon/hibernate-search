@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.mapping.impl;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.engine.backend.common.spi.EntityReferenceFactory;
 import org.hibernate.search.engine.backend.work.execution.DocumentCommitStrategy;
 import org.hibernate.search.engine.backend.work.execution.DocumentRefreshStrategy;
@@ -46,181 +45,117 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
 
 public class PojoMappingDelegateImpl implements PojoMappingDelegate {
 
-	private final ThreadPoolProvider threadPoolProvider;
-	private final FailureHandler failureHandler;
-	private final TenancyMode tenancyMode;
-	private final PojoTypeManagerContainer typeManagers;
-	private final PojoSearchQueryElementRegistry searchQueryElementRegistry;
+    private final ThreadPoolProvider threadPoolProvider;
 
-	public PojoMappingDelegateImpl(ThreadPoolProvider threadPoolProvider,
-			FailureHandler failureHandler,
-			TenancyMode tenancyMode,
-			PojoTypeManagerContainer typeManagers,
-			PojoSearchQueryElementRegistry searchQueryElementRegistry) {
-		this.threadPoolProvider = threadPoolProvider;
-		this.failureHandler = failureHandler;
-		this.tenancyMode = tenancyMode;
-		this.typeManagers = typeManagers;
-		this.searchQueryElementRegistry = searchQueryElementRegistry;
-	}
+    private final FailureHandler failureHandler;
 
-	@Override
-	public void close() {
-		typeManagers.close();
-	}
+    private final TenancyMode tenancyMode;
 
-	@Override
-	public ThreadPoolProvider threadPoolProvider() {
-		return threadPoolProvider;
-	}
+    private final PojoTypeManagerContainer typeManagers;
 
-	@Override
-	public FailureHandler failureHandler() {
-		return failureHandler;
-	}
+    private final PojoSearchQueryElementRegistry searchQueryElementRegistry;
 
-	@Override
-	public PojoRawTypeIdentifierResolver typeIdentifierResolver() {
-		return typeManagers;
-	}
+    public PojoMappingDelegateImpl(ThreadPoolProvider threadPoolProvider, FailureHandler failureHandler, TenancyMode tenancyMode, PojoTypeManagerContainer typeManagers, PojoSearchQueryElementRegistry searchQueryElementRegistry) {
+        this.threadPoolProvider = threadPoolProvider;
+        this.failureHandler = failureHandler;
+        this.tenancyMode = tenancyMode;
+        this.typeManagers = typeManagers;
+        this.searchQueryElementRegistry = searchQueryElementRegistry;
+    }
 
-	@Override
-	public PojoLoadingTypeContextProvider typeContextProvider() {
-		return typeManagers;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TenancyMode tenancyMode() {
-		return tenancyMode;
-	}
+    @Override
+    public ThreadPoolProvider threadPoolProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionRegistry projectionRegistry() {
-		return searchQueryElementRegistry;
-	}
+    @Override
+    public FailureHandler failureHandler() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionMappedTypeContext mappedTypeContext(String name) {
-		return typeManagers.indexedByEntityName().getOrFail( name );
-	}
+    @Override
+    public PojoRawTypeIdentifierResolver typeIdentifierResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EntityReferenceFactory createEntityReferenceFactory(PojoEntityReferenceFactoryDelegate delegate) {
-		return new PojoEntityReferenceFactory( delegate, typeManagers );
-	}
+    @Override
+    public PojoLoadingTypeContextProvider typeContextProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, R extends EntityReference, E, C> PojoScopeDelegate<SR, R, E, C> createPojoScopeForClasses(
-			PojoScopeMappingContext mappingContext,
-			Class<SR> rootScope, Collection<? extends Class<? extends E>> classes,
-			PojoScopeTypeExtendedContextProvider<E, C> indexedTypeExtendedContextProvider) {
-		if ( classes.isEmpty() ) {
-			throw MappingLog.INSTANCE.invalidEmptyTargetForScope();
-		}
-		return PojoScopeDelegateImpl.create(
-				mappingContext,
-				rootScope,
-				typeManagers,
-				(Set<? extends PojoScopeIndexedTypeContext<?, ? extends E>>) typeManagers.indexedForSuperTypeClasses( classes ),
-				indexedTypeExtendedContextProvider
-		);
-	}
+    @Override
+    public TenancyMode tenancyMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // The cast is checked through reflection
-	public <SR, R extends EntityReference, E, C> PojoScopeDelegate<SR, R, E, C> createPojoScopeForEntityNames(
-			PojoScopeMappingContext mappingContext, Class<SR> rootScope, Class<E> expectedSuperType,
-			Collection<String> entityNames,
-			PojoScopeTypeExtendedContextProvider<E, C> indexedTypeExtendedContextProvider) {
-		if ( entityNames.isEmpty() ) {
-			throw MappingLog.INSTANCE.invalidEmptyTargetForScope();
-		}
-		Set<? extends PojoIndexedTypeManager<?, ?>> typeContexts = typeManagers.indexedForSuperTypeEntityNames( entityNames );
-		for ( PojoIndexedTypeManager<?, ?> typeContext : typeContexts ) {
-			Class<?> actualJavaType = typeContext.typeIdentifier().javaClass();
-			if ( !expectedSuperType.isAssignableFrom( actualJavaType ) ) {
-				throw MappingLog.INSTANCE.invalidEntitySuperType( typeContext.name(), expectedSuperType, actualJavaType );
-			}
-		}
-		return PojoScopeDelegateImpl.create(
-				mappingContext,
-				rootScope,
-				typeManagers,
-				(Set<? extends PojoIndexedTypeManager<?, ? extends E>>) typeContexts,
-				indexedTypeExtendedContextProvider
-		);
-	}
+    @Override
+    public ProjectionRegistry projectionRegistry() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@Deprecated(since = "7.1")
-	public <SR, R extends EntityReference, E, C> PojoScopeDelegate<SR, R, E, C> createPojoScope(
-			PojoScopeMappingContext mappingContext,
-			Class<SR> rootScope,
-			Collection<? extends PojoRawTypeIdentifier<? extends E>> targetedTypes,
-			PojoScopeTypeExtendedContextProvider<E, C> indexedTypeExtendedContextProvider) {
-		if ( targetedTypes.isEmpty() ) {
-			throw MappingLog.INSTANCE.invalidEmptyTargetForScope();
-		}
-		return PojoScopeDelegateImpl.create(
-				mappingContext,
-				rootScope,
-				typeManagers,
-				(Set<? extends PojoScopeIndexedTypeContext<?, ? extends E>>) typeManagers.indexedForSuperTypes( targetedTypes ),
-				indexedTypeExtendedContextProvider
-		);
-	}
+    @Override
+    public ProjectionMappedTypeContext mappedTypeContext(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, R extends EntityReference, C> Optional<PojoScopeDelegate<SR, R, Object, C>> createPojoAllScope(
-			PojoScopeMappingContext mappingContext, Class<SR> rootScope,
-			PojoScopeTypeExtendedContextProvider<Object, C> indexedTypeExtendedContextProvider) {
-		if ( typeManagers.allIndexed().isEmpty() ) {
-			return Optional.empty();
-		}
-		return Optional.of( PojoScopeDelegateImpl.create(
-				mappingContext,
-				rootScope,
-				typeManagers,
-				typeManagers.allIndexed(),
-				indexedTypeExtendedContextProvider
-		) );
-	}
+    @Override
+    public EntityReferenceFactory createEntityReferenceFactory(PojoEntityReferenceFactoryDelegate delegate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoIndexingPlan createIndexingPlan(PojoWorkSessionContext context,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
-		return new PojoIndexingPlanImpl( typeManagers, context,
-				new PojoIndexingPlanLocalStrategy( commitStrategy, refreshStrategy ) );
-	}
+    @Override
+    public <SR, R extends EntityReference, E, C> PojoScopeDelegate<SR, R, E, C> createPojoScopeForClasses(PojoScopeMappingContext mappingContext, Class<SR> rootScope, Collection<? extends Class<? extends E>> classes, PojoScopeTypeExtendedContextProvider<E, C> indexedTypeExtendedContextProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoIndexingPlan createIndexingPlan(PojoWorkSessionContext context, PojoIndexingQueueEventSendingPlan sendingPlan) {
-		return new PojoIndexingPlanImpl( typeManagers, context,
-				new PojoIndexingPlanEventSendingStrategy( sendingPlan ) );
-	}
+    @Override
+    // The cast is checked through reflection
+    @SuppressWarnings("unchecked")
+    public <SR, R extends EntityReference, E, C> PojoScopeDelegate<SR, R, E, C> createPojoScopeForEntityNames(PojoScopeMappingContext mappingContext, Class<SR> rootScope, Class<E> expectedSuperType, Collection<String> entityNames, PojoScopeTypeExtendedContextProvider<E, C> indexedTypeExtendedContextProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoIndexingQueueEventProcessingPlan createEventProcessingPlan(PojoWorkSessionContext context,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			PojoIndexingQueueEventSendingPlan sendingPlan) {
-		return new PojoIndexingQueueEventProcessingPlanImpl( typeManagers, context,
-				new PojoIndexingPlanImpl( typeManagers, context,
-						new PojoIndexingPlanEventProcessingStrategy( commitStrategy, refreshStrategy, sendingPlan ) ) );
-	}
+    @Override
+    @Deprecated(since = "7.1")
+    public <SR, R extends EntityReference, E, C> PojoScopeDelegate<SR, R, E, C> createPojoScope(PojoScopeMappingContext mappingContext, Class<SR> rootScope, Collection<? extends PojoRawTypeIdentifier<? extends E>> targetedTypes, PojoScopeTypeExtendedContextProvider<E, C> indexedTypeExtendedContextProvider) {
+        if (targetedTypes.isEmpty()) {
+            throw MappingLog.INSTANCE.invalidEmptyTargetForScope();
+        }
+        return PojoScopeDelegateImpl.create(mappingContext, rootScope, typeManagers, (Set<? extends PojoScopeIndexedTypeContext<?, ? extends E>>) typeManagers.indexedForSuperTypes(targetedTypes), indexedTypeExtendedContextProvider);
+    }
 
-	@Override
-	public PojoIndexer createIndexer(PojoWorkSessionContext context) {
-		return new PojoIndexerImpl(
-				typeManagers,
-				context
-		);
-	}
+    @Override
+    public <SR, R extends EntityReference, C> Optional<PojoScopeDelegate<SR, R, Object, C>> createPojoAllScope(PojoScopeMappingContext mappingContext, Class<SR> rootScope, PojoScopeTypeExtendedContextProvider<Object, C> indexedTypeExtendedContextProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConfiguredSearchIndexingPlanFilter configuredSearchIndexingPlanFilter(SearchIndexingPlanFilter filter,
-			ConfiguredSearchIndexingPlanFilter fallback) {
-		SearchIndexingPlanFilterContextImpl context = new SearchIndexingPlanFilterContextImpl( typeManagers );
-		filter.apply( context );
-		return context.createFilter( fallback );
-	}
+    @Override
+    public PojoIndexingPlan createIndexingPlan(PojoWorkSessionContext context, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoIndexingPlan createIndexingPlan(PojoWorkSessionContext context, PojoIndexingQueueEventSendingPlan sendingPlan) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoIndexingQueueEventProcessingPlan createEventProcessingPlan(PojoWorkSessionContext context, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, PojoIndexingQueueEventSendingPlan sendingPlan) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PojoIndexer createIndexer(PojoWorkSessionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfiguredSearchIndexingPlanFilter configuredSearchIndexingPlanFilter(SearchIndexingPlanFilter filter, ConfiguredSearchIndexingPlanFilter fallback) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

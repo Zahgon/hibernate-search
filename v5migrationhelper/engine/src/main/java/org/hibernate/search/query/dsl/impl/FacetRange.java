@@ -11,79 +11,78 @@ import org.hibernate.search.util.common.data.RangeBoundInclusion;
  * @author Hardy Ferentschik
  */
 public class FacetRange<T> {
-	private static final String MIN_INCLUDED = "[";
-	private static final String MIN_EXCLUDED = "(";
-	private static final String MAX_INCLUDED = "]";
-	private static final String MAX_EXCLUDED = ")";
 
-	private final Range<T> range;
-	private final String rangeString;
-	private final String fieldName;
-	private final Class<?> rangeType;
+    private static final String MIN_INCLUDED = "[";
 
-	public FacetRange(Class<?> rangeType, Range<T> range, String fieldName) {
-		this.range = range;
-		this.fieldName = fieldName;
-		this.rangeString = buildRangeString();
-		this.rangeType = rangeType;
-	}
+    private static final String MIN_EXCLUDED = "(";
 
-	public Range<T> range() {
-		return range;
-	}
+    private static final String MAX_INCLUDED = "]";
 
-	public T getMin() {
-		return range.lowerBoundValue().orElse( null );
-	}
+    private static final String MAX_EXCLUDED = ")";
 
-	public T getMax() {
-		return range.upperBoundValue().orElse( null );
-	}
+    private final Range<T> range;
 
-	public boolean isMinIncluded() {
-		return RangeBoundInclusion.INCLUDED.equals( range.lowerBoundInclusion() );
-	}
+    private final String rangeString;
 
-	public boolean isMaxIncluded() {
-		return RangeBoundInclusion.INCLUDED.equals( range.upperBoundInclusion() );
-	}
+    private final String fieldName;
 
-	public String getRangeString() {
-		return rangeString;
-	}
+    private final Class<?> rangeType;
 
-	private String buildRangeString() {
-		StringBuilder builder = new StringBuilder();
-		if ( isMinIncluded() ) {
-			builder.append( MIN_INCLUDED );
-		}
-		else {
-			builder.append( MIN_EXCLUDED );
-		}
-		if ( getMin() != null ) {
-			builder.append( getMin() );
-		}
-		builder.append( ", " );
-		if ( getMax() != null ) {
-			builder.append( getMax() );
-		}
-		if ( isMaxIncluded() ) {
-			builder.append( MAX_INCLUDED );
-		}
-		else {
-			builder.append( MAX_EXCLUDED );
-		}
-		return builder.toString();
-	}
+    public FacetRange(Class<?> rangeType, Range<T> range, String fieldName) {
+        this.range = range;
+        this.fieldName = fieldName;
+        this.rangeString = buildRangeString();
+        this.rangeType = rangeType;
+    }
 
-	@Override
-	public String toString() {
-		return "FacetRange"
-				+ "{min=" + getMin()
-				+ ", max=" + getMax()
-				+ ", includeMin=" + isMinIncluded()
-				+ ", includeMax=" + isMaxIncluded()
-				+ ", fieldName='" + fieldName + '\''
-				+ ", rangeType=" + rangeType + '}';
-	}
+    public Range<T> range() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public T getMin() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public T getMax() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public boolean isMinIncluded() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public boolean isMaxIncluded() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public String getRangeString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private String buildRangeString() {
+        StringBuilder builder = new StringBuilder();
+        if (isMinIncluded()) {
+            builder.append(MIN_INCLUDED);
+        } else {
+            builder.append(MIN_EXCLUDED);
+        }
+        if (getMin() != null) {
+            builder.append(getMin());
+        }
+        builder.append(", ");
+        if (getMax() != null) {
+            builder.append(getMax());
+        }
+        if (isMaxIncluded()) {
+            builder.append(MAX_INCLUDED);
+        } else {
+            builder.append(MAX_EXCLUDED);
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

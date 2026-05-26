@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-
 import org.hibernate.search.engine.mapper.model.spi.MappableTypeModel;
 import org.hibernate.search.engine.reporting.impl.EngineEventContextMessages;
 import org.hibernate.search.util.common.impl.CollectionHelper;
@@ -18,201 +17,100 @@ import org.hibernate.search.util.common.reporting.impl.AbstractSimpleEventContex
 
 public class EventContexts {
 
-	private static final EngineEventContextMessages MESSAGES = EngineEventContextMessages.INSTANCE;
+    private static final EngineEventContextMessages MESSAGES = EngineEventContextMessages.INSTANCE;
 
-	private static final EventContext DEFAULT = singleton( MESSAGES::defaultOnMissingContextElement );
+    private static final EventContext DEFAULT = singleton(MESSAGES::defaultOnMissingContextElement);
 
-	private static final EventContext DEFAULT_BACKEND = singleton( MESSAGES::defaultBackend );
+    private static final EventContext DEFAULT_BACKEND = singleton(MESSAGES::defaultBackend);
 
-	private static final EventContext INDEX_SCHEMA_ROOT = singleton( MESSAGES::indexSchemaRoot );
+    private static final EventContext INDEX_SCHEMA_ROOT = singleton(MESSAGES::indexSchemaRoot);
 
-	private static final EventContext INDEX_SCHEMA_IDENTIFIER = singleton( MESSAGES::indexSchemaIdentifier );
+    private static final EventContext INDEX_SCHEMA_IDENTIFIER = singleton(MESSAGES::indexSchemaIdentifier);
 
-	private EventContexts() {
-	}
+    private EventContexts() {
+    }
 
-	public static EventContext singleton(Supplier<String> render) {
-		return EventContext.create( new EventContextElement() {
-			@Override
-			public String toString() {
-				return "EventContextElement[" + render() + "]";
-			}
+    public static EventContext singleton(Supplier<String> render) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public String render() {
-				return render.get();
-			}
-		} );
-	}
+    public static EventContext defaultContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext defaultContext() {
-		return DEFAULT;
-	}
+    public static EventContext indexSchemaRoot() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext indexSchemaRoot() {
-		return INDEX_SCHEMA_ROOT;
-	}
+    public static EventContext fromType(MappableTypeModel typeModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromType(MappableTypeModel typeModel) {
-		return EventContext.create( new AbstractSimpleEventContextElement<MappableTypeModel>( typeModel ) {
-			@Override
-			public String render(MappableTypeModel param) {
-				String typeName = param.name();
-				return MESSAGES.type( typeName );
-			}
-		} );
-	}
+    public static EventContext fromType(Object typeIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromType(Object typeIdentifier) {
-		return EventContext.create( new AbstractSimpleEventContextElement<Object>( typeIdentifier ) {
-			@Override
-			public String render(Object param) {
-				String typeName = param.toString();
-				return MESSAGES.type( typeName );
-			}
-		} );
-	}
+    public static EventContext defaultBackend() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext defaultBackend() {
-		return DEFAULT_BACKEND;
-	}
+    public static EventContext fromBackendName(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromBackendName(String name) {
-		if ( name == null ) {
-			return DEFAULT_BACKEND;
-		}
-		else {
-			return EventContext.create( new AbstractSimpleEventContextElement<String>( name ) {
-				@Override
-				public String render(String param) {
-					return MESSAGES.backend( param );
-				}
-			} );
-		}
-	}
+    public static EventContext fromIndexName(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromIndexName(String name) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( name ) {
-			@Override
-			public String render(String param) {
-				return MESSAGES.index( param );
-			}
-		} );
-	}
+    public static EventContext fromIndexNames(String... indexNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromIndexNames(String... indexNames) {
-		return fromIndexNames( CollectionHelper.asTreeSet( indexNames ) );
-	}
+    public static EventContext fromIndexNames(Set<String> indexNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromIndexNames(Set<String> indexNames) {
-		return EventContext.create( new AbstractSimpleEventContextElement<Set<String>>( indexNames ) {
-			@Override
-			public String render(Set<String> indexNames) {
-				return MESSAGES.indexes( indexNames );
-			}
-		} );
-	}
+    public static EventContext fromIndexNameAndShardId(String name, Optional<String> shardId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromIndexNameAndShardId(String name, Optional<String> shardId) {
-		EventContext result = EventContext.create( new AbstractSimpleEventContextElement<String>( name ) {
-			@Override
-			public String render(String param) {
-				return MESSAGES.index( param );
-			}
-		} );
-		if ( shardId.isPresent() ) {
-			result = result.append( fromShardId( shardId.get() ) );
-		}
-		return result;
-	}
+    public static EventContext fromShardId(String shardId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromShardId(String shardId) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( shardId ) {
-			@Override
-			public String render(String param) {
-				return MESSAGES.shard( param );
-			}
-		} );
-	}
+    public static EventContext fromIndexFieldAbsolutePath(String absolutePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromIndexFieldAbsolutePath(String absolutePath) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( absolutePath ) {
-			@Override
-			public String render(String param) {
-				return MESSAGES.indexFieldAbsolutePath( param );
-			}
-		} );
-	}
+    public static EventContext indexSchemaIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext indexSchemaIdentifier() {
-		return INDEX_SCHEMA_IDENTIFIER;
-	}
+    public static EventContext fromIndexFieldAbsolutePaths(List<String> absolutePaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromIndexFieldAbsolutePaths(List<String> absolutePaths) {
-		return EventContext.create( new AbstractSimpleEventContextElement<List<String>>( absolutePaths ) {
-			@Override
-			public String render(List<String> param) {
-				return MESSAGES.indexFieldAbsolutePaths( param );
-			}
-		} );
-	}
+    public static EventContext fromFieldTemplateAbsolutePath(String templateAbsolutePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromFieldTemplateAbsolutePath(String templateAbsolutePath) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( templateAbsolutePath ) {
-			@Override
-			public String render(String param) {
-				return MESSAGES.fieldTemplate( param );
-			}
-		} );
-	}
+    public static EventContext fromAnalyzer(String analyzerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromAnalyzer(String analyzerName) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( analyzerName ) {
-			@Override
-			public String render(String param) {
-				String analyzerName = param == null ? "" : param;
-				return MESSAGES.analyzer( analyzerName );
-			}
-		} );
-	}
+    public static EventContext fromNormalizer(String normalizerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromNormalizer(String normalizerName) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( normalizerName ) {
-			@Override
-			public String render(String param) {
-				String normalizerName = param == null ? "" : param;
-				return MESSAGES.normalizer( normalizerName );
-			}
-		} );
-	}
+    public static EventContext fromCharFilter(String charFilterName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromCharFilter(String charFilterName) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( charFilterName ) {
-			@Override
-			public String render(String param) {
-				String charFilterName = param == null ? "" : param;
-				return MESSAGES.charFilter( charFilterName );
-			}
-		} );
-	}
+    public static EventContext fromTokenizer(String tokenizerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static EventContext fromTokenizer(String tokenizerName) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( tokenizerName ) {
-			@Override
-			public String render(String param) {
-				String tokenizerName = param == null ? "" : param;
-				return MESSAGES.tokenizer( tokenizerName );
-			}
-		} );
-	}
-
-	public static EventContext fromTokenFilter(String tokenFilterName) {
-		return EventContext.create( new AbstractSimpleEventContextElement<String>( tokenFilterName ) {
-			@Override
-			public String render(String param) {
-				String tokenFilterName = param == null ? "" : param;
-				return MESSAGES.tokenFilter( tokenFilterName );
-			}
-		} );
-	}
+    public static EventContext fromTokenFilter(String tokenFilterName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

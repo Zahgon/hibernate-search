@@ -7,12 +7,10 @@ package org.hibernate.search.backend.lucene.search.highlighter.impl;
 import static org.hibernate.search.util.common.impl.CollectionHelper.asImmutableList;
 import static org.hibernate.search.util.common.impl.CollectionHelper.isSubset;
 import static org.hibernate.search.util.common.impl.CollectionHelper.notInTheOtherSet;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.Values;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
@@ -27,7 +25,6 @@ import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterBuild
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterType;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.util.common.impl.Contracts;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.highlight.DefaultEncoder;
 import org.apache.lucene.search.highlight.Encoder;
@@ -36,201 +33,122 @@ import org.apache.lucene.search.vectorhighlight.SimpleBoundaryScanner;
 
 public abstract class LuceneAbstractSearchHighlighter implements SearchHighlighter {
 
-	private static final Encoder DEFAULT_ENCODER = new DefaultEncoder();
-	private static final Encoder HTML_ENCODER = new SimpleHTMLEncoder();
+    private static final Encoder DEFAULT_ENCODER = new DefaultEncoder();
 
-	private static final List<String> DEFAULT_PRE_TAGS = Collections.singletonList( "<em>" );
-	private static final List<String> DEFAULT_POST_TAGS = Collections.singletonList( "</em>" );
-	private static final List<String> STYLED_SCHEMA_PRE_TAG = asImmutableList(
-			"<em class=\"hlt1\">",
-			"<em class=\"hlt2\">",
-			"<em class=\"hlt3\">",
-			"<em class=\"hlt4\">",
-			"<em class=\"hlt5\">",
-			"<em class=\"hlt6\">",
-			"<em class=\"hlt7\">",
-			"<em class=\"hlt8\">",
-			"<em class=\"hlt9\">",
-			"<em class=\"hlt10\">"
-	);
-	private static final List<String> STYLED_SCHEMA_POST_TAGS = DEFAULT_POST_TAGS;
-	private static final char[] DEFAULT_BOUNDARY_CHARS = { '.', ',', '!', '?', ' ', '\t', '\n' };
-	private static final int DEFAULT_MAX_SCAN = SimpleBoundaryScanner.DEFAULT_MAX_SCAN;
+    private static final Encoder HTML_ENCODER = new SimpleHTMLEncoder();
 
-	protected final Set<String> indexNames;
-	protected final char[] boundaryChars;
-	protected final Integer boundaryMaxScan;
-	protected final Integer fragmentSize;
-	protected final Integer noMatchSize;
-	protected final Integer numberOfFragments;
-	protected final Boolean orderByScore;
-	protected final List<String> preTags;
-	protected final List<String> postTags;
-	protected final BoundaryScannerType boundaryScannerType;
-	protected final Locale boundaryScannerLocale;
-	protected final HighlighterFragmenter fragmenterType;
-	protected final Integer phraseLimit;
-	protected final Encoder encoder;
+    private static final List<String> DEFAULT_PRE_TAGS = Collections.singletonList("<em>");
 
-	protected LuceneAbstractSearchHighlighter(Builder builder) {
-		this( builder.scope.hibernateSearchIndexNames(),
-				builder.boundaryChars(), builder.boundaryMaxScan(),
-				builder.fragmentSize(), builder.noMatchSize(), builder.numberOfFragments(), builder.orderByScore(),
-				HighlighterTagSchema.STYLED.equals( builder.tagSchema() ) ? STYLED_SCHEMA_PRE_TAG : builder.preTags(),
-				HighlighterTagSchema.STYLED.equals( builder.tagSchema() ) ? STYLED_SCHEMA_POST_TAGS : builder.postTags(),
-				BoundaryScannerType.DEFAULT.equals( builder.boundaryScannerType() ) ? null : builder.boundaryScannerType(),
-				builder.boundaryScannerLocale(), builder.fragmenterType(),
-				builder.phraseLimit(),
-				builder.encoder() != null
-						? ( HighlighterEncoder.HTML.equals( builder.encoder() ) ? HTML_ENCODER : DEFAULT_ENCODER )
-						: null
-		);
-	}
+    private static final List<String> DEFAULT_POST_TAGS = Collections.singletonList("</em>");
 
-	protected LuceneAbstractSearchHighlighter(BoundaryScannerType scannerType) {
-		this(
-				Collections.emptySet(),
-				DEFAULT_BOUNDARY_CHARS,
-				DEFAULT_MAX_SCAN,
-				100,
-				0,
-				5,
-				false,
-				DEFAULT_PRE_TAGS,
-				DEFAULT_POST_TAGS,
-				scannerType,
-				Locale.ROOT,
-				HighlighterFragmenter.SPAN,
-				256,
-				DEFAULT_ENCODER
-		);
-	}
+    private static final List<String> STYLED_SCHEMA_PRE_TAG = asImmutableList("<em class=\"hlt1\">", "<em class=\"hlt2\">", "<em class=\"hlt3\">", "<em class=\"hlt4\">", "<em class=\"hlt5\">", "<em class=\"hlt6\">", "<em class=\"hlt7\">", "<em class=\"hlt8\">", "<em class=\"hlt9\">", "<em class=\"hlt10\">");
 
-	protected LuceneAbstractSearchHighlighter(Set<String> indexNames,
-			char[] boundaryChars,
-			Integer boundaryMaxScan,
-			Integer fragmentSize, Integer noMatchSize, Integer numberOfFragments, Boolean orderByScore,
-			List<String> preTags, List<String> postTags, BoundaryScannerType boundaryScannerType,
-			Locale boundaryScannerLocale, HighlighterFragmenter fragmenterType,
-			Integer phraseLimit,
-			Encoder encoder
-	) {
-		this.indexNames = indexNames;
-		this.boundaryChars = boundaryChars;
-		this.boundaryMaxScan = boundaryMaxScan;
-		this.fragmentSize = fragmentSize;
-		this.noMatchSize = noMatchSize;
-		this.numberOfFragments = numberOfFragments;
-		this.orderByScore = orderByScore;
-		this.preTags = preTags;
-		this.postTags = postTags;
-		this.boundaryScannerType = boundaryScannerType;
-		this.boundaryScannerLocale = boundaryScannerLocale;
-		this.fragmenterType = fragmenterType;
-		this.phraseLimit = phraseLimit;
-		this.encoder = encoder;
-	}
+    private static final List<String> STYLED_SCHEMA_POST_TAGS = DEFAULT_POST_TAGS;
 
-	public static LuceneAbstractSearchHighlighter from(LuceneSearchIndexScope<?> scope, SearchHighlighter highlighter) {
-		if ( !( highlighter instanceof LuceneAbstractSearchHighlighter ) ) {
-			throw QueryLog.INSTANCE.cannotMixLuceneSearchQueryWithOtherQueryHighlighters( highlighter );
-		}
-		LuceneAbstractSearchHighlighter casted = (LuceneAbstractSearchHighlighter) highlighter;
-		if ( !isSubset( scope.hibernateSearchIndexNames(), casted.indexNames() ) ) {
-			throw QueryLog.INSTANCE.queryHighlighterDefinedOnDifferentIndexes( highlighter, casted.indexNames(),
-					scope.hibernateSearchIndexNames(),
-					notInTheOtherSet( scope.hibernateSearchIndexNames(), casted.indexNames() ) );
-		}
-		return casted;
-	}
+    private static final char[] DEFAULT_BOUNDARY_CHARS = { '.', ',', '!', '?', ' ', '\t', '\n' };
 
-	public static LuceneAbstractSearchHighlighter defaultHighlighter() {
-		return LuceneUnifiedSearchHighlighter.DEFAULTS;
-	}
+    private static final int DEFAULT_MAX_SCAN = SimpleBoundaryScanner.DEFAULT_MAX_SCAN;
 
-	public LuceneAbstractSearchHighlighter withFallback(LuceneAbstractSearchHighlighter fallback) {
-		Contracts.assertNotNull( fallback, "fallback highlighter" );
+    protected final Set<String> indexNames;
 
-		if ( !this.type().equals( fallback.type() ) ) {
-			throw QueryLog.INSTANCE.cannotMixDifferentHighlighterTypesAtOverrideLevel( this.type(), fallback.type() );
-		}
-		return createHighlighterSameType(
-				indexNames,
-				boundaryChars != null && boundaryChars.length != 0 ? boundaryChars : fallback.boundaryChars,
-				boundaryMaxScan != null ? boundaryMaxScan : fallback.boundaryMaxScan,
-				fragmentSize != null ? fragmentSize : fallback.fragmentSize,
-				noMatchSize != null ? noMatchSize : fallback.noMatchSize,
-				numberOfFragments != null ? numberOfFragments : fallback.numberOfFragments,
-				orderByScore != null ? orderByScore : fallback.orderByScore,
-				preTags != null && !preTags.isEmpty() ? preTags : fallback.preTags,
-				postTags != null && !postTags.isEmpty() ? postTags : fallback.postTags,
-				boundaryScannerType != null ? boundaryScannerType : fallback.boundaryScannerType,
-				boundaryScannerLocale != null ? boundaryScannerLocale : fallback.boundaryScannerLocale,
-				fragmenterType != null ? fragmenterType : fallback.fragmenterType,
-				phraseLimit != null ? phraseLimit : fallback.phraseLimit,
-				encoder != null ? encoder : fallback.encoder
-		);
-	}
+    protected final char[] boundaryChars;
 
-	protected abstract LuceneAbstractSearchHighlighter createHighlighterSameType(Set<String> indexNames,
-			char[] boundaryChars,
-			Integer boundaryMaxScan,
-			Integer fragmentSize, Integer noMatchSize, Integer numberOfFragments, Boolean orderByScore,
-			List<String> preTags, List<String> postTags, BoundaryScannerType boundaryScannerType,
-			Locale boundaryScannerLocale, HighlighterFragmenter fragmenterType,
-			Integer phraseLimit,
-			Encoder encoder);
+    protected final Integer boundaryMaxScan;
 
+    protected final Integer fragmentSize;
 
-	public abstract LuceneAbstractSearchHighlighter withFallbackDefaults();
+    protected final Integer noMatchSize;
 
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    protected final Integer numberOfFragments;
 
-	public abstract <A, T> Values<A> createValues(String parentDocumentPath, String nestedDocumentPath,
-			String absoluteFieldPath, Analyzer analyzer, ProjectionExtractContext context,
-			ProjectionCollector<String, ?, A, T> collector);
+    protected final Boolean orderByScore;
 
-	public boolean isCompatible(ProjectionCollector.Provider<?, ?> provider) {
-		return !provider.isSingleValued()
-				|| ( provider.isSingleValued() && ( numberOfFragments != null && numberOfFragments.equals( 1 ) ) );
-	}
+    protected final List<String> preTags;
 
-	public abstract SearchHighlighterType type();
+    protected final List<String> postTags;
 
-	public static class Builder extends SearchHighlighterBuilder {
+    protected final BoundaryScannerType boundaryScannerType;
 
-		private final LuceneSearchIndexScope<?> scope;
+    protected final Locale boundaryScannerLocale;
 
-		public Builder(LuceneSearchIndexScope<?> scope) {
-			this.scope = scope;
-		}
+    protected final HighlighterFragmenter fragmenterType;
 
-		@Override
-		public SearchHighlighterBuilder fragmentSize(Integer fragmentSize) {
-			if ( SearchHighlighterType.UNIFIED.equals( type() ) ) {
-				throw QueryLog.INSTANCE.unifiedHighlighterFragmentSizeNotSupported();
-			}
-			return super.fragmentSize( fragmentSize );
-		}
+    protected final Integer phraseLimit;
 
-		public LuceneAbstractSearchHighlighter build() {
-			switch ( this.type ) {
-				case UNIFIED:
-					return new LuceneUnifiedSearchHighlighter( this );
-				case PLAIN:
-					return new LucenePlainSearchHighlighter( this );
-				case FAST_VECTOR:
-					return new LuceneFastVectorSearchHighlighter( this );
-				default:
-					throw new IllegalStateException( "Unknown highlighter type." );
-			}
-		}
-	}
+    protected final Encoder encoder;
 
-	public void request(ProjectionRequestContext context, String absoluteFieldPath) {
-		// do nothing
-	}
+    protected LuceneAbstractSearchHighlighter(Builder builder) {
+        this(builder.scope.hibernateSearchIndexNames(), builder.boundaryChars(), builder.boundaryMaxScan(), builder.fragmentSize(), builder.noMatchSize(), builder.numberOfFragments(), builder.orderByScore(), HighlighterTagSchema.STYLED.equals(builder.tagSchema()) ? STYLED_SCHEMA_PRE_TAG : builder.preTags(), HighlighterTagSchema.STYLED.equals(builder.tagSchema()) ? STYLED_SCHEMA_POST_TAGS : builder.postTags(), BoundaryScannerType.DEFAULT.equals(builder.boundaryScannerType()) ? null : builder.boundaryScannerType(), builder.boundaryScannerLocale(), builder.fragmenterType(), builder.phraseLimit(), builder.encoder() != null ? (HighlighterEncoder.HTML.equals(builder.encoder()) ? HTML_ENCODER : DEFAULT_ENCODER) : null);
+    }
 
+    protected LuceneAbstractSearchHighlighter(BoundaryScannerType scannerType) {
+        this(Collections.emptySet(), DEFAULT_BOUNDARY_CHARS, DEFAULT_MAX_SCAN, 100, 0, 5, false, DEFAULT_PRE_TAGS, DEFAULT_POST_TAGS, scannerType, Locale.ROOT, HighlighterFragmenter.SPAN, 256, DEFAULT_ENCODER);
+    }
+
+    protected LuceneAbstractSearchHighlighter(Set<String> indexNames, char[] boundaryChars, Integer boundaryMaxScan, Integer fragmentSize, Integer noMatchSize, Integer numberOfFragments, Boolean orderByScore, List<String> preTags, List<String> postTags, BoundaryScannerType boundaryScannerType, Locale boundaryScannerLocale, HighlighterFragmenter fragmenterType, Integer phraseLimit, Encoder encoder) {
+        this.indexNames = indexNames;
+        this.boundaryChars = boundaryChars;
+        this.boundaryMaxScan = boundaryMaxScan;
+        this.fragmentSize = fragmentSize;
+        this.noMatchSize = noMatchSize;
+        this.numberOfFragments = numberOfFragments;
+        this.orderByScore = orderByScore;
+        this.preTags = preTags;
+        this.postTags = postTags;
+        this.boundaryScannerType = boundaryScannerType;
+        this.boundaryScannerLocale = boundaryScannerLocale;
+        this.fragmenterType = fragmenterType;
+        this.phraseLimit = phraseLimit;
+        this.encoder = encoder;
+    }
+
+    public static LuceneAbstractSearchHighlighter from(LuceneSearchIndexScope<?> scope, SearchHighlighter highlighter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public static LuceneAbstractSearchHighlighter defaultHighlighter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public LuceneAbstractSearchHighlighter withFallback(LuceneAbstractSearchHighlighter fallback) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected abstract LuceneAbstractSearchHighlighter createHighlighterSameType(Set<String> indexNames, char[] boundaryChars, Integer boundaryMaxScan, Integer fragmentSize, Integer noMatchSize, Integer numberOfFragments, Boolean orderByScore, List<String> preTags, List<String> postTags, BoundaryScannerType boundaryScannerType, Locale boundaryScannerLocale, HighlighterFragmenter fragmenterType, Integer phraseLimit, Encoder encoder);
+
+    public abstract LuceneAbstractSearchHighlighter withFallbackDefaults();
+
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public abstract <A, T> Values<A> createValues(String parentDocumentPath, String nestedDocumentPath, String absoluteFieldPath, Analyzer analyzer, ProjectionExtractContext context, ProjectionCollector<String, ?, A, T> collector);
+
+    public boolean isCompatible(ProjectionCollector.Provider<?, ?> provider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public abstract SearchHighlighterType type();
+
+    public static class Builder extends SearchHighlighterBuilder {
+
+        private final LuceneSearchIndexScope<?> scope;
+
+        public Builder(LuceneSearchIndexScope<?> scope) {
+            this.scope = scope;
+        }
+
+        @Override
+        public SearchHighlighterBuilder fragmentSize(Integer fragmentSize) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public LuceneAbstractSearchHighlighter build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    public void request(ProjectionRequestContext context, String absoluteFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

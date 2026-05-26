@@ -10,7 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.MappingException;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.mapping.Any;
@@ -156,339 +155,158 @@ import org.hibernate.search.util.common.impl.CollectionHelper;
  *     </li>
  * </ul>
  */
-final class HibernateOrmPathInterpreter
-		implements PojoModelPathWalker<HibernateOrmPathInterpreter.Context, Value, Property, Value> {
+final class HibernateOrmPathInterpreter implements PojoModelPathWalker<HibernateOrmPathInterpreter.Context, Value, Property, Value> {
 
-	private static final Set<String> PRIMITIVE_EXTRACTOR_NAMES = CollectionHelper.asImmutableSet(
-			BuiltinContainerExtractors.ARRAY_CHAR,
-			BuiltinContainerExtractors.ARRAY_BOOLEAN,
-			BuiltinContainerExtractors.ARRAY_BYTE,
-			BuiltinContainerExtractors.ARRAY_SHORT,
-			BuiltinContainerExtractors.ARRAY_INT,
-			BuiltinContainerExtractors.ARRAY_LONG,
-			BuiltinContainerExtractors.ARRAY_FLOAT,
-			BuiltinContainerExtractors.ARRAY_DOUBLE
-	);
+    private static final Set<String> PRIMITIVE_EXTRACTOR_NAMES = CollectionHelper.asImmutableSet(BuiltinContainerExtractors.ARRAY_CHAR, BuiltinContainerExtractors.ARRAY_BOOLEAN, BuiltinContainerExtractors.ARRAY_BYTE, BuiltinContainerExtractors.ARRAY_SHORT, BuiltinContainerExtractors.ARRAY_INT, BuiltinContainerExtractors.ARRAY_LONG, BuiltinContainerExtractors.ARRAY_FLOAT, BuiltinContainerExtractors.ARRAY_DOUBLE);
 
-	static final class Context {
-		private final PersistentClass persistentClass;
-		private final PojoTypeModel<?> typeModel;
-		private final List<String> propertyStringRepresentationByOrdinal;
-		private final PojoModelPathValueNode wholePath;
+    static final class Context {
 
-		private boolean root = true;
-		private final Set<String> stringRepresentations = new LinkedHashSet<>();
-		private String rootComponentPropertyName;
-		private PojoPathEntityStateRepresentation entityStateRepresentation = null;
-		private boolean found = false;
+        private final PersistentClass persistentClass;
 
-		private Context(PojoTypeModel<?> typeModel, PersistentClass persistentClass,
-				List<String> propertyStringRepresentationByOrdinal,
-				PojoModelPathValueNode wholePath) {
-			this.typeModel = typeModel;
-			this.persistentClass = persistentClass;
-			this.propertyStringRepresentationByOrdinal = propertyStringRepresentationByOrdinal;
-			this.wholePath = wholePath;
-		}
+        private final PojoTypeModel<?> typeModel;
 
-		public void resolvedStringRepresentation(String... stringRepresentationArray) {
-			found = true;
-			Collections.addAll( stringRepresentations, stringRepresentationArray );
-		}
+        private final List<String> propertyStringRepresentationByOrdinal;
 
-		void pushComponent(String propertyName) {
-			if ( rootComponentPropertyName == null ) {
-				rootComponentPropertyName = propertyName;
-			}
-		}
+        private final PojoModelPathValueNode wholePath;
 
-		public void disableStateRepresentation() {
-			this.entityStateRepresentation = null;
-		}
+        private boolean root = true;
 
-		public void resolvedStateRepresentation(String wholePathStringRepresentation) {
-			try {
-				tryResolveStateRepresentation( wholePathStringRepresentation );
-			}
-			catch (RuntimeException e) {
-				throw MappingLog.INSTANCE.failedToResolveStateRepresentation(
-						wholePathStringRepresentation,
-						EventContexts.fromType( typeModel ).append( PojoEventContexts.fromPath( wholePath ) ),
-						e.getMessage(), e
-				);
-			}
-		}
+        private final Set<String> stringRepresentations = new LinkedHashSet<>();
 
-		public void tryResolveStateRepresentation(String wholePathStringRepresentation) {
-			String propertyStringRepresentationForOrdinal;
-			Optional<BindablePojoModelPath> pathFromStateArrayElement;
-			if ( rootComponentPropertyName == null ) {
-				// When components (@Embedded) are NOT involved,
-				// Hibernate ORM will include the "leaf" value
-				// (whatever the whole path points to) directly in the state array.
-				propertyStringRepresentationForOrdinal = wholePathStringRepresentation;
-				pathFromStateArrayElement = Optional.empty();
-			}
-			else {
-				// When components (@Embedded) are involved,
-				// Hibernate ORM will include the root component in the state array,
-				// not the actual properties individually.
-				// So we need use the root component path to determine the ordinal in the array...
-				propertyStringRepresentationForOrdinal = rootComponentPropertyName;
-				// ... and we need to provide the POJO mapper with a way to extract the "leaf" value
-				// (whatever the whole path points to) from the root component.
-				PojoModelPathValueNode rootComponentPath = PojoModelPath.ofValue(
-						rootComponentPropertyName, ContainerExtractorPath.noExtractors() );
-				Optional<PojoModelPathValueNode> unboundPathFromRootComponent = wholePath.relativize( rootComponentPath );
-				if ( !unboundPathFromRootComponent.isPresent() ) {
-					throw new AssertionFailure( "Cannot relativize '" + rootComponentPath + "' to '" + wholePath + "'." );
-				}
-				pathFromStateArrayElement = Optional.of( new BindablePojoModelPath(
-						typeModel.property( rootComponentPropertyName ).typeModel(),
-						unboundPathFromRootComponent.get()
-				) );
-			}
+        private String rootComponentPropertyName;
 
-			int ordinalInStateArray = propertyStringRepresentationByOrdinal.indexOf( propertyStringRepresentationForOrdinal );
-			if ( ordinalInStateArray < 0 ) {
-				throw new AssertionFailure( "Cannot find ordinal in state array for path '"
-						+ propertyStringRepresentationForOrdinal
-						+ "'. Available paths are: " + propertyStringRepresentationByOrdinal + "." );
-			}
+        private PojoPathEntityStateRepresentation entityStateRepresentation = null;
 
-			this.entityStateRepresentation = new PojoPathEntityStateRepresentation( ordinalInStateArray,
-					pathFromStateArrayElement );
-		}
-	}
+        private boolean found = false;
 
-	public PojoPathDefinition interpretPath(PojoRawTypeModel<?> typeModel, PersistentClass persistentClass,
-			List<String> propertyStringRepresentationByOrdinal, PojoModelPathValueNode path) {
-		Context context = new Context( typeModel, persistentClass, propertyStringRepresentationByOrdinal, path );
-		Value value = PojoModelPathBinder.bind( context, null, path, this );
-		if ( !context.found ) {
-			/*
-			 * We were able to resolve the path, but didn't find any Value that could possibly
-			 * be reported as dirty by Hibernate ORM.
-			 */
-			throw MappingLog.INSTANCE.unreportedPathForDirtyChecking( path, value );
-		}
-		// Else everything is good, the string representation was successfully added to the set.
-		return new PojoPathDefinition( context.stringRepresentations,
-				Optional.ofNullable( context.entityStateRepresentation ) );
-	}
+        private Context(PojoTypeModel<?> typeModel, PersistentClass persistentClass, List<String> propertyStringRepresentationByOrdinal, PojoModelPathValueNode wholePath) {
+            this.typeModel = typeModel;
+            this.persistentClass = persistentClass;
+            this.propertyStringRepresentationByOrdinal = propertyStringRepresentationByOrdinal;
+            this.wholePath = wholePath;
+        }
 
-	@Override
-	public Value type(Context context, Value valueNode) {
-		// No-op
-		return valueNode;
-	}
+        public void resolvedStringRepresentation(String... stringRepresentationArray) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	@Override
-	public Property property(Context context, Value parentValue, PojoModelPathPropertyNode pathNode) {
-		if ( context.found ) {
-			// We stopped interpreting.
-			return null;
-		}
+        void pushComponent(String propertyName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		try {
-			if ( context.root ) {
-				context.root = false;
-				return context.persistentClass.getProperty( pathNode.propertyName() );
-			}
-			else if ( parentValue instanceof Component ) {
-				return ( (Component) parentValue ).getProperty( pathNode.propertyName() );
-			}
-			else {
-				throw MappingLog.INSTANCE.unknownPathForDirtyChecking( pathNode, null );
-			}
-		}
-		catch (MappingException e) {
-			throw MappingLog.INSTANCE.unknownPathForDirtyChecking( pathNode, e );
-		}
-	}
+        public void disableStateRepresentation() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	@Override
-	public Value value(Context context, Property property, PojoModelPathValueNode path) {
-		if ( context.found ) {
-			// We stopped interpreting.
-			return null;
-		}
+        public void resolvedStateRepresentation(String wholePathStringRepresentation) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		boolean isWholePath = context.wholePath.equals( path );
-		Value baseValue = property.getValue();
-		PojoModelPathPropertyNode propertyNode = path.parent();
+        public void tryResolveStateRepresentation(String wholePathStringRepresentation) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		ContainerExtractorPath extractorPath = path.extractorPath();
-		if ( extractorPath.isDefault() ) {
-			throw new AssertionFailure(
-					"Expected a non-default extractor path as per the "
-							+ PojoPathDefinitionProvider.class.getSimpleName() + " contract"
-			);
-		}
+    public PojoPathDefinition interpretPath(PojoRawTypeModel<?> typeModel, PersistentClass persistentClass, List<String> propertyStringRepresentationByOrdinal, PojoModelPathValueNode path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Class<? extends Value> valueClass = baseValue.getClass();
+    @Override
+    public Value type(Context context, Value valueNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( Component.class.isAssignableFrom( valueClass ) ) {
-			if ( !extractorPath.isEmpty() ) {
-				throw MappingLog.INSTANCE.unknownPathForDirtyChecking( path, null );
-			}
-			if ( isWholePath ) {
-				// The path as a whole (and not just a prefix) was resolved to an embedded
-				context.resolvedStringRepresentation( propertyNode.toPropertyString() );
-				// We don't need state extraction in this case
-				context.disableStateRepresentation();
-				// The string representation of the path was added, we can stop here
-				return null;
-			}
-			else {
-				context.pushComponent( propertyNode.propertyName() );
-				return baseValue;
-			}
-		}
-		else if ( BasicValue.class.isAssignableFrom( valueClass ) ) {
-			// The path as a whole (and not just a prefix) was resolved to a non-component, non-association value
-			context.resolvedStringRepresentation( propertyNode.toPropertyString() );
-			// We don't need state extraction in this case
-			context.disableStateRepresentation();
-			// The string representation of the path was added, we can stop here
-			return null;
-		}
-		else if ( SimpleValue.class.isAssignableFrom( valueClass ) ) {
-			if ( isWholePath && isSingleValuedAssociation( valueClass ) ) {
-				// The path as a whole (and not just a prefix) was resolved to an association
-				String stringRepresentationAsProperty = propertyNode.toPropertyString();
-				context.resolvedStringRepresentation( stringRepresentationAsProperty );
-				resolveStateExtractorIfRelevant( context, stringRepresentationAsProperty, baseValue );
-				// The string representation of the path was added, we can stop here
-				return null;
-			}
-			else {
-				return baseValue;
-			}
-		}
-		else if ( org.hibernate.mapping.Collection.class.isAssignableFrom( valueClass ) ) {
-			if ( extractorPath.isEmpty() && !isWholePath ) {
-				/*
-				 * We only allow an empty extractor path for a collection at the very end of the path,
-				 * meaning "reindex whenever that collection changes, we don't really care about the values".
-				 */
-				throw MappingLog.INSTANCE.unknownPathForDirtyChecking( path, null );
-			}
+    @Override
+    public Property property(Context context, Value parentValue, PojoModelPathPropertyNode pathNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			List<String> extractorNames = extractorPath.explicitExtractorNames();
-			Iterator<String> extractorNameIterator = extractorNames.iterator();
+    @Override
+    public Value value(Context context, Property property, PojoModelPathValueNode path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			return resolveExtractorPath(
-					context, path, isWholePath, propertyNode, baseValue, extractorNameIterator
-			);
-		}
-		else {
-			throw MappingLog.INSTANCE.unknownPathForDirtyChecking( path, null );
-		}
-	}
+    private Value resolveExtractorPath(Context context, PojoModelPathValueNode path, boolean isWholePath, PojoModelPathPropertyNode propertyNode, Value baseValue, Iterator<String> extractorNameIterator) {
+        Value containedValue = baseValue;
+        org.hibernate.mapping.Collection collectionValue;
+        do {
+            collectionValue = (org.hibernate.mapping.Collection) containedValue;
+            try {
+                String extractorName = extractorNameIterator.hasNext() ? extractorNameIterator.next() : null;
+                containedValue = resolveExtractor(collectionValue, extractorName);
+            } catch (SearchException e) {
+                throw MappingLog.INSTANCE.unknownPathForDirtyChecking(path, e);
+            }
+        } while (extractorNameIterator.hasNext() && containedValue instanceof org.hibernate.mapping.Collection);
+        if (!extractorNameIterator.hasNext()) {
+            // We managed to resolve the whole container value extractor list
+            Class<? extends Value> containedValueClass = containedValue.getClass();
+            if (BasicValue.class.isAssignableFrom(containedValueClass) || Component.class.isAssignableFrom(containedValueClass) || isWholePath && isAssociation(containedValueClass)) {
+                String stringRepresentationAsProperty = propertyNode.toPropertyString();
+                context.resolvedStringRepresentation(stringRepresentationAsProperty, collectionValue.getRole());
+                resolveStateExtractorIfRelevant(context, stringRepresentationAsProperty, containedValue);
+                // The string representation of the path was added, we can stop here
+                return null;
+            } else {
+                return containedValue;
+            }
+        }
+        throw MappingLog.INSTANCE.unknownPathForDirtyChecking(path, null);
+    }
 
-	private Value resolveExtractorPath(Context context, PojoModelPathValueNode path,
-			boolean isWholePath, PojoModelPathPropertyNode propertyNode,
-			Value baseValue, Iterator<String> extractorNameIterator) {
-		Value containedValue = baseValue;
-		org.hibernate.mapping.Collection collectionValue;
-		do {
-			collectionValue = (org.hibernate.mapping.Collection) containedValue;
-			try {
-				String extractorName = extractorNameIterator.hasNext() ? extractorNameIterator.next() : null;
-				containedValue = resolveExtractor( collectionValue, extractorName );
-			}
-			catch (SearchException e) {
-				throw MappingLog.INSTANCE.unknownPathForDirtyChecking( path, e );
-			}
-		}
-		while ( extractorNameIterator.hasNext() && containedValue instanceof org.hibernate.mapping.Collection );
-
-		if ( !extractorNameIterator.hasNext() ) {
-			// We managed to resolve the whole container value extractor list
-			Class<? extends Value> containedValueClass = containedValue.getClass();
-			if ( BasicValue.class.isAssignableFrom( containedValueClass )
-					|| Component.class.isAssignableFrom( containedValueClass )
-					|| isWholePath && isAssociation( containedValueClass ) ) {
-				String stringRepresentationAsProperty = propertyNode.toPropertyString();
-				context.resolvedStringRepresentation( stringRepresentationAsProperty, collectionValue.getRole() );
-				resolveStateExtractorIfRelevant( context, stringRepresentationAsProperty, containedValue );
-				// The string representation of the path was added, we can stop here
-				return null;
-			}
-			else {
-				return containedValue;
-			}
-		}
-
-		throw MappingLog.INSTANCE.unknownPathForDirtyChecking( path, null );
-	}
-
-	private Value resolveExtractor(org.hibernate.mapping.Collection collectionValue, String extractorName) {
-		if ( collectionValue instanceof org.hibernate.mapping.PrimitiveArray ) {
-			if ( extractorName == null || PRIMITIVE_EXTRACTOR_NAMES.contains( extractorName ) ) {
-				return collectionValue.getElement();
-			}
-		}
-		else if ( collectionValue instanceof org.hibernate.mapping.Array ) {
-			if ( extractorName == null || BuiltinContainerExtractors.ARRAY_OBJECT.equals( extractorName ) ) {
-				return collectionValue.getElement();
-			}
-		}
-		else if ( collectionValue instanceof org.hibernate.mapping.Map ) {
-			if ( BuiltinContainerExtractors.MAP_KEY.equals( extractorName ) ) {
-				/*
+    private Value resolveExtractor(org.hibernate.mapping.Collection collectionValue, String extractorName) {
+        if (collectionValue instanceof org.hibernate.mapping.PrimitiveArray) {
+            if (extractorName == null || PRIMITIVE_EXTRACTOR_NAMES.contains(extractorName)) {
+                return collectionValue.getElement();
+            }
+        } else if (collectionValue instanceof org.hibernate.mapping.Array) {
+            if (extractorName == null || BuiltinContainerExtractors.ARRAY_OBJECT.equals(extractorName)) {
+                return collectionValue.getElement();
+            }
+        } else if (collectionValue instanceof org.hibernate.mapping.Map) {
+            if (BuiltinContainerExtractors.MAP_KEY.equals(extractorName)) {
+                /*
 				 * Do not let ORM confuse you: getKey() doesn't return the value of the map key,
 				 * but the value of the foreign key to the targeted entity...
 				 */
-				return ( (org.hibernate.mapping.Map) collectionValue ).getIndex();
-			}
-			else if ( extractorName == null || BuiltinContainerExtractors.MAP_VALUE.equals( extractorName ) ) {
-				return collectionValue.getElement();
-			}
-		}
-		else if ( extractorName == null || BuiltinContainerExtractors.COLLECTION.equals( extractorName ) ) {
-			return collectionValue.getElement();
-		}
+                return ((org.hibernate.mapping.Map) collectionValue).getIndex();
+            } else if (extractorName == null || BuiltinContainerExtractors.MAP_VALUE.equals(extractorName)) {
+                return collectionValue.getElement();
+            }
+        } else if (extractorName == null || BuiltinContainerExtractors.COLLECTION.equals(extractorName)) {
+            return collectionValue.getElement();
+        }
+        throw MappingLog.INSTANCE.invalidContainerExtractorForDirtyChecking(collectionValue.getClass(), extractorName);
+    }
 
-		throw MappingLog.INSTANCE.invalidContainerExtractorForDirtyChecking( collectionValue.getClass(), extractorName );
-	}
+    private void resolveStateExtractorIfRelevant(Context context, String stringRepresentationAsProperty, Value value) {
+        if (value instanceof OneToOne || value instanceof ManyToOne && ((ManyToOne) value).isLogicalOneToOne()) {
+            String mappedBy = ((ToOne) value).getReferencedPropertyName();
+            if (mappedBy == null || mappedBy.isEmpty()) {
+                // This is the owning side of a OneToOne association.
+                // We DO need to resolve the association from the entity state upon change,
+                // because we may not get any event when to non-owning side changes.
+                // See https://hibernate.atlassian.net/browse/HSEARCH-4708
+                context.resolvedStateRepresentation(stringRepresentationAsProperty);
+            } else {
+                // This is the non-owning side of a OneToOne association.
+                // We do NOT need to resolve the association from the entity state upon change,
+                // because the owning side will always get updated (otherwise the change won't be reflected in DB).
+                context.disableStateRepresentation();
+            }
+        } else {
+            // We do not support resolving this association (ManyToOne, ManyToMany, Any, ...)
+            // from the entity state upon change, at least not at the moment.
+            // See https://hibernate.atlassian.net/browse/HSEARCH-3567
+            context.disableStateRepresentation();
+        }
+    }
 
-	private void resolveStateExtractorIfRelevant(Context context, String stringRepresentationAsProperty, Value value) {
-		if ( value instanceof OneToOne
-				|| value instanceof ManyToOne && ( (ManyToOne) value ).isLogicalOneToOne() ) {
-			String mappedBy = ( (ToOne) value ).getReferencedPropertyName();
-			if ( mappedBy == null || mappedBy.isEmpty() ) {
-				// This is the owning side of a OneToOne association.
-				// We DO need to resolve the association from the entity state upon change,
-				// because we may not get any event when to non-owning side changes.
-				// See https://hibernate.atlassian.net/browse/HSEARCH-4708
+    private static boolean isSingleValuedAssociation(Class<? extends Value> valueClass) {
+        return ToOne.class.isAssignableFrom(valueClass) || Any.class.isAssignableFrom(valueClass);
+    }
 
-				context.resolvedStateRepresentation( stringRepresentationAsProperty );
-			}
-			else {
-				// This is the non-owning side of a OneToOne association.
-				// We do NOT need to resolve the association from the entity state upon change,
-				// because the owning side will always get updated (otherwise the change won't be reflected in DB).
-				context.disableStateRepresentation();
-			}
-		}
-		else {
-			// We do not support resolving this association (ManyToOne, ManyToMany, Any, ...)
-			// from the entity state upon change, at least not at the moment.
-			// See https://hibernate.atlassian.net/browse/HSEARCH-3567
-			context.disableStateRepresentation();
-		}
-	}
-
-	private static boolean isSingleValuedAssociation(Class<? extends Value> valueClass) {
-		return ToOne.class.isAssignableFrom( valueClass )
-				|| Any.class.isAssignableFrom( valueClass );
-	}
-
-	private static boolean isAssociation(Class<? extends Value> valueClass) {
-		return OneToMany.class.isAssignableFrom( valueClass )
-				|| ToOne.class.isAssignableFrom( valueClass )
-				|| Any.class.isAssignableFrom( valueClass );
-	}
+    private static boolean isAssociation(Class<? extends Value> valueClass) {
+        return OneToMany.class.isAssignableFrom(valueClass) || ToOne.class.isAssignableFrom(valueClass) || Any.class.isAssignableFrom(valueClass);
+    }
 }

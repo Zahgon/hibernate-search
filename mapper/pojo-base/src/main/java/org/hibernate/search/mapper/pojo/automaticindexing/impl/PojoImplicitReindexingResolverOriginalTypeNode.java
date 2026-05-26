@@ -18,30 +18,26 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoImplicitReindexingResolverOriginalTypeNode<T> extends PojoImplicitReindexingResolverNode<T> {
 
-	private final PojoImplicitReindexingResolverNode<? super T> nested;
+    private final PojoImplicitReindexingResolverNode<? super T> nested;
 
-	public PojoImplicitReindexingResolverOriginalTypeNode(PojoImplicitReindexingResolverNode<? super T> nested) {
-		this.nested = nested;
-	}
+    public PojoImplicitReindexingResolverOriginalTypeNode(PojoImplicitReindexingResolverNode<? super T> nested) {
+        this.nested = nested;
+    }
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoImplicitReindexingResolverNode::close, nested );
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process type" );
-		appender.attribute( "nested", nested );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // As long as T is not a proxy-specific interface, it will also be implemented by the unproxified object
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			T dirty, PojoImplicitReindexingResolverRootContext context) {
-		dirty = (T) context.sessionContext().runtimeIntrospector().unproxy( dirty );
-		nested.resolveEntitiesToReindex( collector, dirty, context );
-	}
+    @Override
+    // As long as T is not a proxy-specific interface, it will also be implemented by the unproxified object
+    @SuppressWarnings("unchecked")
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, T dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

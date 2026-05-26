@@ -8,19 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultByteBridge extends AbstractPassThroughDefaultBridge<Byte> {
 
-	public static final DefaultByteBridge INSTANCE = new DefaultByteBridge();
+    public static final DefaultByteBridge INSTANCE = new DefaultByteBridge();
 
-	private DefaultByteBridge() {
-	}
+    private DefaultByteBridge() {
+    }
 
-	@Override
-	protected String toString(Byte value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Byte value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Byte fromString(String value) {
-		return ParseUtils.parseByte( value );
-	}
-
+    @Override
+    protected Byte fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

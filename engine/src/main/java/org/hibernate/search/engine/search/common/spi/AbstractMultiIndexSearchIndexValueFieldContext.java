@@ -6,124 +6,103 @@ package org.hibernate.search.engine.search.common.spi;
 
 import java.util.List;
 import java.util.Objects;
-
 import org.hibernate.search.engine.backend.types.converter.spi.DslConverter;
 import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConverter;
 import org.hibernate.search.engine.search.highlighter.spi.SearchHighlighterType;
 
-public abstract class AbstractMultiIndexSearchIndexValueFieldContext<
-		S extends SearchIndexValueFieldContext<SC>,
-		SC extends SearchIndexScope<?>,
-		FT extends SearchIndexValueFieldTypeContext<SC, S, F>,
-		F>
-		extends AbstractMultiIndexSearchIndexNodeContext<S, SC, FT>
-		implements SearchIndexValueFieldContext<SC>, SearchIndexValueFieldTypeContext<SC, S, F> {
-	public AbstractMultiIndexSearchIndexValueFieldContext(SC scope, String absolutePath,
-			List<? extends S> fieldForEachIndex) {
-		super( scope, absolutePath, fieldForEachIndex );
-	}
+public abstract class AbstractMultiIndexSearchIndexValueFieldContext<S extends SearchIndexValueFieldContext<SC>, SC extends SearchIndexScope<?>, FT extends SearchIndexValueFieldTypeContext<SC, S, F>, F> extends AbstractMultiIndexSearchIndexNodeContext<S, SC, FT> implements SearchIndexValueFieldContext<SC>, SearchIndexValueFieldTypeContext<SC, S, F> {
 
-	@Override
-	public final FT type() {
-		return selfAsNodeType();
-	}
+    public AbstractMultiIndexSearchIndexValueFieldContext(SC scope, String absolutePath, List<? extends S> fieldForEachIndex) {
+        super(scope, absolutePath, fieldForEachIndex);
+    }
 
-	@Override
-	public final boolean isComposite() {
-		return false;
-	}
+    @Override
+    public final FT type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isObjectField() {
-		return false;
-	}
+    @Override
+    public final boolean isComposite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final boolean isValueField() {
-		return true;
-	}
+    @Override
+    public boolean isObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexCompositeNodeContext<SC> toComposite() {
-		return SearchIndexSchemaElementContextHelper.throwingToComposite( this );
-	}
+    @Override
+    public final boolean isValueField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexCompositeNodeContext<SC> toObjectField() {
-		return SearchIndexSchemaElementContextHelper.throwingToObjectField( this );
-	}
+    @Override
+    public SearchIndexCompositeNodeContext<SC> toComposite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final S toValueField() {
-		return self();
-	}
+    @Override
+    public SearchIndexCompositeNodeContext<SC> toObjectField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	final SearchIndexSchemaElementContextHelper helper() {
-		return SearchIndexSchemaElementContextHelper.VALUE_FIELD;
-	}
+    @Override
+    public final S toValueField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final Class<F> valueClass() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::valueClass, Objects::equals,
-				"valueClass" );
-	}
+    @Override
+    final SearchIndexSchemaElementContextHelper helper() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final DslConverter<?, F> mappingDslConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::mappingDslConverter, DslConverter::isCompatibleWith,
-				"mappingDslConverter" );
-	}
+    @Override
+    public final Class<F> valueClass() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final DslConverter<F, F> indexDslConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::indexDslConverter, DslConverter::isCompatibleWith,
-				"indexDslConverter" );
-	}
+    @Override
+    public final DslConverter<?, F> mappingDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DslConverter<?, ?> rawDslConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::rawDslConverter, DslConverter::isCompatibleWith,
-				"rawDslConverter" );
-	}
+    @Override
+    public final DslConverter<F, F> indexDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final ProjectionConverter<F, ?> mappingProjectionConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::mappingProjectionConverter,
-				ProjectionConverter::isCompatibleWith, "mappingProjectionConverter" );
-	}
+    @Override
+    public DslConverter<?, ?> rawDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final ProjectionConverter<F, F> indexProjectionConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::indexProjectionConverter,
-				ProjectionConverter::isCompatibleWith, "indexProjectionConverter" );
-	}
+    @Override
+    public final ProjectionConverter<F, ?> mappingProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionConverter<?, ?> rawProjectionConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::rawProjectionConverter,
-				ProjectionConverter::isCompatibleWith, "rawProjectionConverter" );
-	}
+    @Override
+    public final ProjectionConverter<F, F> indexProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DslConverter<?, F> parserDslConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::parserDslConverter, DslConverter::isCompatibleWith,
-				"parserDslConverter" );
-	}
+    @Override
+    public ProjectionConverter<?, ?> rawProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionConverter<F, ?> formatterProjectionConverter() {
-		return fromTypeIfCompatible( SearchIndexValueFieldTypeContext::formatterProjectionConverter,
-				ProjectionConverter::isCompatibleWith,
-				"formatterProjectionConverter" );
-	}
+    @Override
+    public DslConverter<?, F> parserDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean highlighterTypeSupported(SearchHighlighterType type) {
-		return fromTypeIfCompatible(
-				t -> t.highlighterTypeSupported( type ),
-				Object::equals,
-				"highlighterTypeSupported"
-		);
-	}
+    @Override
+    public ProjectionConverter<F, ?> formatterProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean highlighterTypeSupported(SearchHighlighterType type) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

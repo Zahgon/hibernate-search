@@ -24,51 +24,46 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
  * since the only feature provided by each interface is an access to the extension.
  * This might change in the future, though, which is why the interfaces themselves are split.
  */
-public final class SessionBasedBridgeOperationContext
-		implements IdentifierBridgeFromDocumentIdentifierContext,
-		RoutingBridgeRouteContext,
-		TypeBridgeWriteContext,
-		PropertyBridgeWriteContext,
-		ValueBridgeFromIndexedValueContext {
+public final class SessionBasedBridgeOperationContext implements IdentifierBridgeFromDocumentIdentifierContext, RoutingBridgeRouteContext, TypeBridgeWriteContext, PropertyBridgeWriteContext, ValueBridgeFromIndexedValueContext {
 
-	private final BridgeSessionContext sessionContext;
+    private final BridgeSessionContext sessionContext;
 
-	public SessionBasedBridgeOperationContext(BridgeSessionContext sessionContext) {
-		this.sessionContext = sessionContext;
-	}
+    public SessionBasedBridgeOperationContext(BridgeSessionContext sessionContext) {
+        this.sessionContext = sessionContext;
+    }
 
-	@Override
-	public <T> T extension(IdentifierBridgeFromDocumentIdentifierContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, sessionContext ) );
-	}
+    @Override
+    public <T> T extension(IdentifierBridgeFromDocumentIdentifierContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String tenantIdentifier() {
-		return sessionContext.tenantIdentifier();
-	}
+    @Override
+    public String tenantIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object tenantIdentifierValue() {
-		return sessionContext.tenantIdentifierValue();
-	}
+    @Override
+    public Object tenantIdentifierValue() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(RoutingBridgeRouteContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, sessionContext ) );
-	}
+    @Override
+    public <T> T extension(RoutingBridgeRouteContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(TypeBridgeWriteContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, sessionContext ) );
-	}
+    @Override
+    public <T> T extension(TypeBridgeWriteContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(PropertyBridgeWriteContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, sessionContext ) );
-	}
+    @Override
+    public <T> T extension(PropertyBridgeWriteContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T extension(ValueBridgeFromIndexedValueContextExtension<T> extension) {
-		return DslExtensionState.returnIfSupported( extension, extension.extendOptional( this, sessionContext ) );
-	}
+    @Override
+    public <T> T extension(ValueBridgeFromIndexedValueContextExtension<T> extension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

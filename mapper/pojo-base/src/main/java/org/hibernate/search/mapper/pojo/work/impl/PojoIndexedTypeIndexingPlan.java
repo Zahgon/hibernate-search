@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.impl.DocumentRouter;
 import org.hibernate.search.mapper.pojo.route.DocumentRouteDescriptor;
 import org.hibernate.search.mapper.pojo.route.DocumentRoutesDescriptor;
@@ -19,78 +18,56 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
  * @param <I> The identifier type for the mapped entity type.
  * @param <E> The entity type mapped to the index.
  */
-public class PojoIndexedTypeIndexingPlan<I, E>
-		extends AbstractPojoTypeIndexingPlan<I, E, PojoIndexedTypeIndexingPlan<I, E>.IndexedEntityState> {
+public class PojoIndexedTypeIndexingPlan<I, E> extends AbstractPojoTypeIndexingPlan<I, E, PojoIndexedTypeIndexingPlan<I, E>.IndexedEntityState> {
 
-	private final PojoWorkIndexedTypeContext<I, E> typeContext;
+    private final PojoWorkIndexedTypeContext<I, E> typeContext;
 
-	public PojoIndexedTypeIndexingPlan(PojoWorkIndexedTypeContext<I, E> typeContext,
-			PojoWorkSessionContext sessionContext, PojoIndexingPlanImpl root,
-			PojoTypeIndexingPlanDelegate<I, E> delegate) {
-		super( sessionContext, root, delegate );
-		this.typeContext = typeContext;
-	}
+    public PojoIndexedTypeIndexingPlan(PojoWorkIndexedTypeContext<I, E> typeContext, PojoWorkSessionContext sessionContext, PojoIndexingPlanImpl root, PojoTypeIndexingPlanDelegate<I, E> delegate) {
+        super(sessionContext, root, delegate);
+        this.typeContext = typeContext;
+    }
 
-	@Override
-	void updateBecauseOfContained(Object entity) {
-		Supplier<E> entitySupplier = typeContext.toEntitySupplier( sessionContext, entity );
-		I identifier = typeContext.identifierMapping().getIdentifier( null, entitySupplier );
-		getState( identifier ).updateBecauseOfContained( entitySupplier );
-	}
+    @Override
+    void updateBecauseOfContained(Object entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void resolveDirty(boolean deleteOnly) {
-		// We need to iterate on a "frozen snapshot" of the states because of HSEARCH-3857
-		List<IndexedEntityState> frozenIndexingPlansPerId = new ArrayList<>( statesPerId.values() );
-		for ( IndexedEntityState state : frozenIndexingPlansPerId ) {
-			state.resolveDirty( deleteOnly );
-		}
-	}
+    @Override
+    void resolveDirty(boolean deleteOnly) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PojoWorkIndexedTypeContext<I, E> typeContext() {
-		return typeContext;
-	}
+    @Override
+    PojoWorkIndexedTypeContext<I, E> typeContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	DocumentRouter<? super E> router() {
-		return typeContext.router();
-	}
+    @Override
+    DocumentRouter<? super E> router() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected IndexedEntityState createState(I identifier) {
-		return new IndexedEntityState( identifier );
-	}
+    @Override
+    protected IndexedEntityState createState(I identifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	class IndexedEntityState
-			extends AbstractPojoTypeIndexingPlan<I, E, IndexedEntityState>.AbstractEntityState {
+    class IndexedEntityState extends AbstractPojoTypeIndexingPlan<I, E, IndexedEntityState>.AbstractEntityState {
 
-		private DocumentRoutesDescriptor providedRoutes;
+        private DocumentRoutesDescriptor providedRoutes;
 
-		private IndexedEntityState(I identifier) {
-			super( identifier );
-		}
+        private IndexedEntityState(I identifier) {
+            super(identifier);
+        }
 
-		@Override
-		void providedRoutes(DocumentRoutesDescriptor routes) {
-			if ( routes == null ) {
-				return;
-			}
-			if ( this.providedRoutes == null ) {
-				this.providedRoutes = routes;
-			}
-			else {
-				Set<DocumentRouteDescriptor> mergedPrevious = new LinkedHashSet<>(
-						this.providedRoutes.previousRoutes() );
-				mergedPrevious.addAll( routes.previousRoutes() );
-				this.providedRoutes = DocumentRoutesDescriptor.of( routes.currentRoute(), mergedPrevious );
-			}
-		}
+        @Override
+        void providedRoutes(DocumentRoutesDescriptor routes) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		DocumentRoutesDescriptor providedRoutes() {
-			return providedRoutes;
-		}
-	}
-
+        @Override
+        DocumentRoutesDescriptor providedRoutes() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.tenancy;
 
 import java.util.Objects;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 
 /**
@@ -16,20 +15,19 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface TenantIdentifierConverter {
 
-	/**
-	 * Converts an object representation of the tenant identifier to a string representation.
-	 * @param tenantId The tenant identifier to convert to a string. May be {@code null}.
-	 * @return A string representation of the tenant identifier.
-	 */
-	default String toStringValue(Object tenantId) {
-		return Objects.toString( tenantId, null );
-	}
+    /**
+     * Converts an object representation of the tenant identifier to a string representation.
+     * @param tenantId The tenant identifier to convert to a string. May be {@code null}.
+     * @return A string representation of the tenant identifier.
+     */
+    default String toStringValue(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Converts a string representation of the tenant identifier to an object representation.
-	 * @param tenantId The tenant identifier to convert back to an object representation. May be {@code null}.
-	 * @return An Object representation of the tenant identifier.
-	 */
-	Object fromStringValue(String tenantId);
-
+    /**
+     * Converts a string representation of the tenant identifier to an object representation.
+     * @param tenantId The tenant identifier to convert back to an object representation. May be {@code null}.
+     * @return An Object representation of the tenant identifier.
+     */
+    Object fromStringValue(String tenantId);
 }

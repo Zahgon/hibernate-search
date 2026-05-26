@@ -10,41 +10,36 @@ import org.hibernate.search.engine.search.predicate.dsl.MinimumShouldMatchRequir
 import org.hibernate.search.engine.search.predicate.spi.MinimumShouldMatchBuilder;
 import org.hibernate.search.util.common.impl.Contracts;
 
-final class MinimumShouldMatchConditionStepImpl<N>
-		implements MinimumShouldMatchConditionStep<N>,
-		MinimumShouldMatchRequireStep<N>, MinimumShouldMatchMoreStep<N> {
+final class MinimumShouldMatchConditionStepImpl<N> implements MinimumShouldMatchConditionStep<N>, MinimumShouldMatchRequireStep<N>, MinimumShouldMatchMoreStep<N> {
 
-	private final MinimumShouldMatchBuilder builder;
-	private final N nextStep;
-	private int ignoreConstraintCeiling = 0;
+    private final MinimumShouldMatchBuilder builder;
 
-	MinimumShouldMatchConditionStepImpl(MinimumShouldMatchBuilder builder, N nextStep) {
-		this.builder = builder;
-		this.nextStep = nextStep;
-	}
+    private final N nextStep;
 
-	@Override
-	public MinimumShouldMatchRequireStep<N> ifMoreThan(int ignoreConstraintCeiling) {
-		Contracts.assertPositiveOrZero( ignoreConstraintCeiling, "ignoreConstraintCeiling" );
-		this.ignoreConstraintCeiling = ignoreConstraintCeiling;
-		return this;
-	}
+    private int ignoreConstraintCeiling = 0;
 
-	@Override
-	public MinimumShouldMatchMoreStep<N> thenRequireNumber(int matchingClausesNumber) {
-		builder.minimumShouldMatchNumber( ignoreConstraintCeiling, matchingClausesNumber );
-		return this;
-	}
+    MinimumShouldMatchConditionStepImpl(MinimumShouldMatchBuilder builder, N nextStep) {
+        this.builder = builder;
+        this.nextStep = nextStep;
+    }
 
-	@Override
-	public MinimumShouldMatchMoreStep<N> thenRequirePercent(int matchingClausesPercent) {
-		builder.minimumShouldMatchPercent( ignoreConstraintCeiling, matchingClausesPercent );
-		return this;
-	}
+    @Override
+    public MinimumShouldMatchRequireStep<N> ifMoreThan(int ignoreConstraintCeiling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public N end() {
-		return nextStep;
-	}
+    @Override
+    public MinimumShouldMatchMoreStep<N> thenRequireNumber(int matchingClausesNumber) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public MinimumShouldMatchMoreStep<N> thenRequirePercent(int matchingClausesPercent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public N end() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

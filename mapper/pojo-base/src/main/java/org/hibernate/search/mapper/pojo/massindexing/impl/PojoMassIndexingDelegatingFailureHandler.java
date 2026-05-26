@@ -14,33 +14,24 @@ import org.hibernate.search.mapper.pojo.massindexing.MassIndexingFailureHandler;
 
 public class PojoMassIndexingDelegatingFailureHandler implements MassIndexingFailureHandler {
 
-	private final FailureHandler delegate;
+    private final FailureHandler delegate;
 
-	public PojoMassIndexingDelegatingFailureHandler(FailureHandler delegate) {
-		this.delegate = delegate;
-	}
+    public PojoMassIndexingDelegatingFailureHandler(FailureHandler delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void handle(MassIndexingFailureContext context) {
-		FailureContext.Builder builder = FailureContext.builder();
-		builder.throwable( context.throwable() );
-		builder.failingOperation( context.failingOperation() );
-		delegate.handle( builder.build() );
-	}
+    @Override
+    public void handle(MassIndexingFailureContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void handle(MassIndexingEntityFailureContext context) {
-		EntityIndexingFailureContext.Builder builder = EntityIndexingFailureContext.builder();
-		builder.throwable( context.throwable() );
-		builder.failingOperation( context.failingOperation() );
-		for ( EntityReference entityReference : context.failingEntityReferences() ) {
-			builder.failingEntityReference( entityReference );
-		}
-		delegate.handle( builder.build() );
-	}
+    @Override
+    public void handle(MassIndexingEntityFailureContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long failureFloodingThreshold() {
-		return delegate.failureFloodingThreshold();
-	}
+    @Override
+    public long failureFloodingThreshold() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

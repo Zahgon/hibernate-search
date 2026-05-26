@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.mapping.impl;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-
 import org.hibernate.search.engine.backend.mapping.spi.BackendMappingContext;
 import org.hibernate.search.engine.backend.schema.management.spi.IndexSchemaManager;
 import org.hibernate.search.engine.backend.work.execution.DocumentCommitStrategy;
@@ -49,157 +48,124 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  * @param <I> The identifier type for the mapped entity type.
  * @param <E> The entity type mapped to the index.
  */
-public class PojoIndexedTypeManager<I, E> extends AbstractPojoTypeManager<I, E>
-		implements PojoWorkIndexedTypeContext<I, E>, PojoScopeIndexedTypeContext<I, E>,
-		PojoMassIndexingIndexedTypeContext<E>, ProjectionMappedTypeContext {
-	private final DocumentRouter<? super E> documentRouter;
-	private final PojoIndexingProcessor<E> processor;
-	private final MappedIndexManager indexManager;
+public class PojoIndexedTypeManager<I, E> extends AbstractPojoTypeManager<I, E> implements PojoWorkIndexedTypeContext<I, E>, PojoScopeIndexedTypeContext<I, E>, PojoMassIndexingIndexedTypeContext<E>, ProjectionMappedTypeContext {
 
-	public PojoIndexedTypeManager(Builder<E> builder, IdentifierMappingImplementor<I, E> identifierMapping) {
-		super( builder, identifierMapping );
-		this.documentRouter = builder.routingBridge != null
-				? new RoutingBridgeDocumentRouter<>( builder.routingBridge.getBridgeHolder() )
-				: NoOpDocumentRouter.INSTANCE;
-		this.processor = builder.indexingProcessor;
-		this.indexManager = builder.indexManager;
-	}
+    private final DocumentRouter<? super E> documentRouter;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( IdentifierMappingImplementor::close, identifierMapping );
-			closer.push( DocumentRouter::close, documentRouter );
-			closer.push( PojoIndexingProcessor::close, processor );
-			closer.push( PojoImplicitReindexingResolver::close, reindexingResolver );
-		}
-	}
+    private final PojoIndexingProcessor<E> processor;
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		super.appendTo( appender );
-		appender.attribute( "documentRouter", documentRouter )
-				.attribute( "processor", processor )
-				.attribute( "indexManager", indexManager );
-	}
+    private final MappedIndexManager indexManager;
 
-	@Override
-	public Optional<PojoIndexedTypeManager<I, E>> asIndexed() {
-		return Optional.of( this );
-	}
+    public PojoIndexedTypeManager(Builder<E> builder, IdentifierMappingImplementor<I, E> identifierMapping) {
+        super(builder, identifierMapping);
+        this.documentRouter = builder.routingBridge != null ? new RoutingBridgeDocumentRouter<>(builder.routingBridge.getBridgeHolder()) : NoOpDocumentRouter.INSTANCE;
+        this.processor = builder.indexingProcessor;
+        this.indexManager = builder.indexManager;
+    }
 
-	@Override
-	public DocumentRouter<? super E> router() {
-		return documentRouter;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoDocumentContributor<E> toDocumentContributor(PojoWorkSessionContext sessionContext,
-			PojoIndexingProcessorRootContext processorContext,
-			I identifier, Supplier<E> entitySupplier) {
-		return new PojoDocumentContributor<>( typeIdentifier, entityName, processor, sessionContext, processorContext,
-				identifier, entitySupplier );
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathFilter dirtySelfFilter() {
-		return reindexingResolver.dirtySelfFilter();
-	}
+    @Override
+    public Optional<PojoIndexedTypeManager<I, E>> asIndexed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaManager schemaManager() {
-		return indexManager.schemaManager();
-	}
+    @Override
+    public DocumentRouter<? super E> router() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexer createIndexer(PojoWorkSessionContext sessionContext) {
-		return indexManager.createIndexer( sessionContext );
-	}
+    @Override
+    public PojoDocumentContributor<E> toDocumentContributor(PojoWorkSessionContext sessionContext, PojoIndexingProcessorRootContext processorContext, I identifier, Supplier<E> entitySupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
-		return indexManager.createWorkspace( mappingContext, tenantIds );
-	}
+    @Override
+    public PojoPathFilter dirtySelfFilter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexingPlan createIndexingPlan(PojoWorkSessionContext sessionContext,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
-		return indexManager.createIndexingPlan( sessionContext,
-				commitStrategy, refreshStrategy );
-	}
+    @Override
+    public IndexSchemaManager schemaManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, R, E2> MappedIndexScopeBuilder<SR, R, E2> createScopeBuilder(BackendMappingContext mappingContext,
-			Class<SR> rootScope) {
-		return indexManager.createScopeBuilder( mappingContext, rootScope );
-	}
+    @Override
+    public IndexIndexer createIndexer(PojoWorkSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addTo(MappedIndexScopeBuilder<?, ?, ?> builder) {
-		indexManager.addTo( builder );
-	}
+    @Override
+    public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder<E> extends AbstractPojoTypeManager.Builder<E> {
+    @Override
+    public IndexIndexingPlan createIndexingPlan(PojoWorkSessionContext sessionContext, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final PojoIndexedTypeExtendedMappingCollector extendedMappingCollector;
+    @Override
+    public <SR, R, E2> MappedIndexScopeBuilder<SR, R, E2> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public final BoundRoutingBridge<E> routingBridge;
+    @Override
+    public void addTo(MappedIndexScopeBuilder<?, ?, ?> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private PojoIndexingProcessorOriginalTypeNodeBuilder<E> indexingProcessorBuilder;
-		private PojoIndexingProcessor<E> indexingProcessor;
+    public static class Builder<E> extends AbstractPojoTypeManager.Builder<E> {
 
-		private MappedIndexManagerBuilder indexManagerBuilder;
-		private MappedIndexManager indexManager;
+        public final PojoIndexedTypeExtendedMappingCollector extendedMappingCollector;
 
-		Builder(PojoRawTypeModel<E> typeModel, String entityName, String secondaryEntityName,
-				PojoRootIdentityMappingCollector<E> identityMappingCollector,
-				PojoIndexedTypeExtendedMappingCollector extendedMappingCollector,
-				BoundRoutingBridge<E> routingBridge,
-				PojoIndexingProcessorOriginalTypeNodeBuilder<E> indexingProcessorBuilder,
-				MappedIndexManagerBuilder indexManagerBuilder) {
-			super( typeModel, entityName, secondaryEntityName, identityMappingCollector );
-			this.extendedMappingCollector = extendedMappingCollector;
-			this.routingBridge = routingBridge;
-			this.indexManagerBuilder = indexManagerBuilder;
-			this.indexingProcessorBuilder = indexingProcessorBuilder;
-		}
+        public final BoundRoutingBridge<E> routingBridge;
 
-		@Override
-		protected void doCloseOnFailure(Closer<RuntimeException> closer) {
-			super.doCloseOnFailure( closer );
-			closer.push( RoutingBridge::close, routingBridge, BoundRoutingBridge::getBridge );
-			closer.push( BeanHolder::close, routingBridge, BoundRoutingBridge::getBridgeHolder );
-			closer.push( PojoIndexingProcessorOriginalTypeNodeBuilder::closeOnFailure, indexingProcessorBuilder );
-			closer.push( PojoIndexingProcessor::close, indexingProcessor );
-		}
+        private PojoIndexingProcessorOriginalTypeNodeBuilder<E> indexingProcessorBuilder;
 
-		@Override
-		protected PojoTypeExtendedMappingCollector extendedMappingCollector() {
-			return extendedMappingCollector;
-		}
+        private PojoIndexingProcessor<E> indexingProcessor;
 
-		public void preBuildIndexingProcessor(PojoIndexingDependencyCollectorTypeNode<E> dependencyCollector) {
-			if ( indexingProcessor != null ) {
-				throw new AssertionFailure( "Internal error - preBuildIndexingProcessor should be called only once" );
-			}
-			this.indexingProcessor = this.indexingProcessorBuilder.build( dependencyCollector )
-					.orElseGet( PojoIndexingProcessor::noOp );
-			this.indexingProcessorBuilder = null;
-		}
+        private MappedIndexManagerBuilder indexManagerBuilder;
 
-		public void preBuildIndexManager() {
-			if ( this.indexManager != null ) {
-				throw new AssertionFailure( "Internal error - preBuildIndexManager should be called only once" );
-			}
-			this.indexManager = this.indexManagerBuilder.build();
-			this.indexManagerBuilder = null;
-			extendedMappingCollector.indexManager( indexManager );
-		}
+        private MappedIndexManager indexManager;
 
-		@Override
-		public PojoIndexedTypeManager<?, E> build() {
-			closed = true;
-			return new PojoIndexedTypeManager<>( this, identifierMapping.mapping );
-		}
-	}
+        Builder(PojoRawTypeModel<E> typeModel, String entityName, String secondaryEntityName, PojoRootIdentityMappingCollector<E> identityMappingCollector, PojoIndexedTypeExtendedMappingCollector extendedMappingCollector, BoundRoutingBridge<E> routingBridge, PojoIndexingProcessorOriginalTypeNodeBuilder<E> indexingProcessorBuilder, MappedIndexManagerBuilder indexManagerBuilder) {
+            super(typeModel, entityName, secondaryEntityName, identityMappingCollector);
+            this.extendedMappingCollector = extendedMappingCollector;
+            this.routingBridge = routingBridge;
+            this.indexManagerBuilder = indexManagerBuilder;
+            this.indexingProcessorBuilder = indexingProcessorBuilder;
+        }
+
+        @Override
+        protected void doCloseOnFailure(Closer<RuntimeException> closer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected PojoTypeExtendedMappingCollector extendedMappingCollector() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void preBuildIndexingProcessor(PojoIndexingDependencyCollectorTypeNode<E> dependencyCollector) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void preBuildIndexManager() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public PojoIndexedTypeManager<?, E> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

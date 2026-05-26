@@ -8,19 +8,17 @@ import com.google.gson.annotations.JsonAdapter;
 
 /**
  * A definition of an Elasticsearch analyzer, to be included in index settings.
- *
  */
 @JsonAdapter(AnalyzerDefinitionJsonAdapterFactory.class)
 public class AnalyzerDefinition extends AbstractCompositeAnalysisDefinition {
 
-	private String tokenizer;
+    private String tokenizer;
 
-	public String getTokenizer() {
-		return tokenizer;
-	}
+    public String getTokenizer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setTokenizer(String tokenizer) {
-		this.tokenizer = tokenizer;
-	}
-
+    public void setTokenizer(String tokenizer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

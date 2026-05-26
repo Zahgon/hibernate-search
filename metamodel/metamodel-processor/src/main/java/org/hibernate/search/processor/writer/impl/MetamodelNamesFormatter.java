@@ -10,11 +10,12 @@ import java.util.Locale;
  * Defines how a metamodel class name is constructed from the encountered class/property.
  */
 public interface MetamodelNamesFormatter {
-	MetamodelNamesFormatter DEFAULT = v -> String.format( Locale.ROOT, "%s__", v );
 
-	String formatMetamodelClassName(String className);
+    MetamodelNamesFormatter DEFAULT = v -> String.format(Locale.ROOT, "%s__", v);
 
-	default String formatIndexFieldName(String metamodelClassName) {
-		return "INDEX";
-	}
+    String formatMetamodelClassName(String className);
+
+    default String formatIndexFieldName(String metamodelClassName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

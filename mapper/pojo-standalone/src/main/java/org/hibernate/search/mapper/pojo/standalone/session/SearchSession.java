@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.standalone.session;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.hibernate.search.engine.common.EntityReference;
 import org.hibernate.search.engine.search.common.NonStaticMetamodelScope;
 import org.hibernate.search.engine.search.query.dsl.SearchQuerySelectStep;
@@ -32,221 +31,213 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface SearchSession extends SearchScopeProvider, AutoCloseable {
 
-	/**
-	 * Execute any pending work in the {@link #indexingPlan() indexing plan}
-	 * and release any resource held by this session.
-	 */
-	@Override
-	void close();
+    /**
+     * Execute any pending work in the {@link #indexingPlan() indexing plan}
+     * and release any resource held by this session.
+     */
+    @Override
+    void close();
 
-	/**
-	 * Determine whether the search session is open.
-	 * @return true until the search session has been closed
-	 */
-	boolean isOpen();
+    /**
+     * Determine whether the search session is open.
+     * @return true until the search session has been closed
+     */
+    boolean isOpen();
 
-	/**
-	 * Creates a {@link MassIndexer} to rebuild the indexes of all indexed entity types.
-	 * <p>
-	 * {@link MassIndexer} instances cannot be reused.
-	 *
-	 * @return The created mass indexer.
-	 */
-	default MassIndexer massIndexer() {
-		return massIndexer( Object.class );
-	}
+    /**
+     * Creates a {@link MassIndexer} to rebuild the indexes of all indexed entity types.
+     * <p>
+     * {@link MassIndexer} instances cannot be reused.
+     *
+     * @return The created mass indexer.
+     */
+    default MassIndexer massIndexer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates a {@link MassIndexer} to rebuild the indexes of
-	 * indexed entity classes among the given classes and their subtypes.
-	 * <p>
-	 * {@link MassIndexer} instances cannot be reused.
-	 *
-	 * @param classes An array of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @return The created mass indexer.
-	 */
-	default MassIndexer massIndexer(Class<?>... classes) {
-		return massIndexer( Arrays.asList( classes ) );
-	}
+    /**
+     * Creates a {@link MassIndexer} to rebuild the indexes of
+     * indexed entity classes among the given classes and their subtypes.
+     * <p>
+     * {@link MassIndexer} instances cannot be reused.
+     *
+     * @param classes An array of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @return The created mass indexer.
+     */
+    default MassIndexer massIndexer(Class<?>... classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates a {@link MassIndexer} to rebuild the indexes mapped to the given types, or to any of their sub-types.
-	 *
-	 * @param classes A collection of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @return A {@link MassIndexer}.
-	 */
-	MassIndexer massIndexer(Collection<? extends Class<?>> classes);
+    /**
+     * Creates a {@link MassIndexer} to rebuild the indexes mapped to the given types, or to any of their sub-types.
+     *
+     * @param classes A collection of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @return A {@link MassIndexer}.
+     */
+    MassIndexer massIndexer(Collection<? extends Class<?>> classes);
 
-	/**
-	 * Initiate the building of a search query.
-	 * <p>
-	 * The query will target the indexes mapped to
-	 * indexed entity types among the given class and its subtypes.
-	 *
-	 * @param clazz A class that must be an indexed entity type or a supertype of such type.
-	 * @param <T> An indexed type, or a supertype of all indexed types that will be targeted by the search query.
-	 * @return The initial step of a DSL where the search query can be defined.
-	 * @see SearchQuerySelectStep
-	 */
-	default <T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, EntityReference, T, ?, ?, ?> search(Class<T> clazz) {
-		return search( Collections.singleton( clazz ) );
-	}
+    /**
+     * Initiate the building of a search query.
+     * <p>
+     * The query will target the indexes mapped to
+     * indexed entity types among the given class and its subtypes.
+     *
+     * @param clazz A class that must be an indexed entity type or a supertype of such type.
+     * @param <T> An indexed type, or a supertype of all indexed types that will be targeted by the search query.
+     * @return The initial step of a DSL where the search query can be defined.
+     * @see SearchQuerySelectStep
+     */
+    default <T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, EntityReference, T, ?, ?, ?> search(Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Initiate the building of a search query.
-	 * <p>
-	 * The query will target the indexes mapped to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes A collection of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @param <T> A supertype of all indexed types that will be targeted by the search query.
-	 * @return The initial step of a DSL where the search query can be defined.
-	 * @see SearchQuerySelectStep
-	 */
-	<T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, EntityReference, T, ?, ?, ?> search(
-			Collection<? extends Class<? extends T>> classes);
+    /**
+     * Initiate the building of a search query.
+     * <p>
+     * The query will target the indexes mapped to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes A collection of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @param <T> A supertype of all indexed types that will be targeted by the search query.
+     * @return The initial step of a DSL where the search query can be defined.
+     * @see SearchQuerySelectStep
+     */
+    <T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, EntityReference, T, ?, ?, ?> search(Collection<? extends Class<? extends T>> classes);
 
-	/**
-	 * Initiate the building of a search query.
-	 * <p>
-	 * The query will target the indexes in the given scope.
-	 *
-	 * @param scope A scope representing all indexed types that will be targeted by the search query.
-	 * @param <T> A supertype of all types in the given scope.
-	 * @return The initial step of a DSL where the search query can be defined.
-	 * @see SearchQuerySelectStep
-	 */
-	<T> SearchQuerySelectStep<?, ?, EntityReference, T, ?, ?, ?> search(SearchScope<T> scope);
+    /**
+     * Initiate the building of a search query.
+     * <p>
+     * The query will target the indexes in the given scope.
+     *
+     * @param scope A scope representing all indexed types that will be targeted by the search query.
+     * @param <T> A supertype of all types in the given scope.
+     * @return The initial step of a DSL where the search query can be defined.
+     * @see SearchQuerySelectStep
+     */
+    <T> SearchQuerySelectStep<?, ?, EntityReference, T, ?, ?, ?> search(SearchScope<T> scope);
 
-	/**
-	 * Initiate the building of a search query.
-	 * <p>
-	 * The query will target the indexes in the given scope.
-	 *
-	 * @param scope A scope representing all indexed types that will be targeted by the search query.
-	 * @param <SR> Scope root type.
-	 * @param <T> A supertype of all types in the given scope.
-	 * @return The initial step of a DSL where the search query can be defined.
-	 * @see SearchQuerySelectStep
-	 */
-	<SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(TypedSearchScope<SR, T> scope);
+    /**
+     * Initiate the building of a search query.
+     * <p>
+     * The query will target the indexes in the given scope.
+     *
+     * @param scope A scope representing all indexed types that will be targeted by the search query.
+     * @param <SR> Scope root type.
+     * @param <T> A supertype of all types in the given scope.
+     * @return The initial step of a DSL where the search query can be defined.
+     * @see SearchQuerySelectStep
+     */
+    <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(TypedSearchScope<SR, T> scope);
 
-	/**
-	 * Initiate the building of a search query.
-	 * <p>
-	 * The query will target the indexes in the given scope.
-	 *
-	 * @param scope A scope representing all indexed types that will be targeted by the search query.
-	 * @param <SR> Scope root type.
-	 * @param <T> A supertype of all types in the given scope.
-	 * @return The initial step of a DSL where the search query can be defined.
-	 * @see SearchQuerySelectStep
-	 */
-	@Incubating
-	<SR, T> SearchQuerySelectStep<SR,
-			?,
-			EntityReference,
-			T,
-			?,
-			?,
-			?> search(StandalonePojoRootReferenceScope<SR, T> scope);
+    /**
+     * Initiate the building of a search query.
+     * <p>
+     * The query will target the indexes in the given scope.
+     *
+     * @param scope A scope representing all indexed types that will be targeted by the search query.
+     * @param <SR> Scope root type.
+     * @param <T> A supertype of all types in the given scope.
+     * @return The initial step of a DSL where the search query can be defined.
+     * @see SearchQuerySelectStep
+     */
+    @Incubating
+    <SR, T> SearchQuerySelectStep<SR, ?, EntityReference, T, ?, ?, ?> search(StandalonePojoRootReferenceScope<SR, T> scope);
 
-	/**
-	 * Create a {@link SearchSchemaManager} for all indexes.
-	 *
-	 * @return A {@link SearchSchemaManager}.
-	 */
-	default SearchSchemaManager schemaManager() {
-		return schemaManager( Collections.singleton( Object.class ) );
-	}
+    /**
+     * Create a {@link SearchSchemaManager} for all indexes.
+     *
+     * @return A {@link SearchSchemaManager}.
+     */
+    default SearchSchemaManager schemaManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Create a {@link SearchSchemaManager} for the indexes mapped to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes An array of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @return A {@link SearchSchemaManager}.
-	 */
-	default SearchSchemaManager schemaManager(Class<?>... classes) {
-		return schemaManager( Arrays.asList( classes ) );
-	}
+    /**
+     * Create a {@link SearchSchemaManager} for the indexes mapped to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes An array of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @return A {@link SearchSchemaManager}.
+     */
+    default SearchSchemaManager schemaManager(Class<?>... classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Create a {@link SearchSchemaManager} for the indexes mapped to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes A collection of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @return A {@link SearchSchemaManager}.
-	 */
-	SearchSchemaManager schemaManager(Collection<? extends Class<?>> classes);
+    /**
+     * Create a {@link SearchSchemaManager} for the indexes mapped to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes A collection of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @return A {@link SearchSchemaManager}.
+     */
+    SearchSchemaManager schemaManager(Collection<? extends Class<?>> classes);
 
-	/**
-	 * Create a {@link SearchWorkspace} for the indexes mapped to all indexed types.
-	 *
-	 * @return A {@link SearchWorkspace}.
-	 */
-	default SearchWorkspace workspace() {
-		return workspace( Collections.singleton( Object.class ) );
-	}
+    /**
+     * Create a {@link SearchWorkspace} for the indexes mapped to all indexed types.
+     *
+     * @return A {@link SearchWorkspace}.
+     */
+    default SearchWorkspace workspace() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Create a {@link SearchWorkspace} for the indexes mapped to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes An array of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @return A {@link SearchWorkspace}.
-	 */
-	default SearchWorkspace workspace(Class<?>... classes) {
-		return workspace( Arrays.asList( classes ) );
-	}
+    /**
+     * Create a {@link SearchWorkspace} for the indexes mapped to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes An array of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @return A {@link SearchWorkspace}.
+     */
+    default SearchWorkspace workspace(Class<?>... classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Create a {@link SearchWorkspace} for the indexes mapped to
-	 * indexed entity types among the given classes and their subtypes.
-	 *
-	 * @param classes A collection of classes.
-	 * Each must be an indexed entity type or a supertype of such type.
-	 * @return A {@link SearchWorkspace}.
-	 */
-	SearchWorkspace workspace(Collection<? extends Class<?>> classes);
+    /**
+     * Create a {@link SearchWorkspace} for the indexes mapped to
+     * indexed entity types among the given classes and their subtypes.
+     *
+     * @param classes A collection of classes.
+     * Each must be an indexed entity type or a supertype of such type.
+     * @return A {@link SearchWorkspace}.
+     */
+    SearchWorkspace workspace(Collection<? extends Class<?>> classes);
 
-	/**
-	 * @return The indexing plan for this session. It will be executed upon closing this session.
-	 */
-	SearchIndexingPlan indexingPlan();
+    /**
+     * @return The indexing plan for this session. It will be executed upon closing this session.
+     */
+    SearchIndexingPlan indexingPlan();
 
-	/**
-	 * @return The indexer for this session.
-	 */
-	SearchIndexer indexer();
+    /**
+     * @return The indexer for this session.
+     */
+    SearchIndexer indexer();
 
-	/**
-	 * @return The tenant identifier for this session.
-	 * @deprecated Use {@link #tenantIdentifierValue()} instead.
-	 */
-	@Deprecated(since = "7.2", forRemoval = true)
-	String tenantIdentifier();
+    /**
+     * @return The tenant identifier for this session.
+     * @deprecated Use {@link #tenantIdentifierValue()} instead.
+     */
+    @Deprecated(since = "7.2", forRemoval = true)
+    String tenantIdentifier();
 
-	/**
-	 * @return The tenant identifier for this session.
-	 */
-	Object tenantIdentifierValue();
+    /**
+     * @return The tenant identifier for this session.
+     */
+    Object tenantIdentifierValue();
 
-	/**
-	 * Set the {@link IndexingPlanSynchronizationStrategy} to use for this session.
-	 * <p>
-	 * Behavior is undefined if called while entity changes are pending:
-	 * be sure to call this only just after creating a session.
-	 *
-	 * @param synchronizationStrategy The synchronization strategy to use
-	 * @see IndexingPlanSynchronizationStrategy
-	 */
-	void indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy);
-
+    /**
+     * Set the {@link IndexingPlanSynchronizationStrategy} to use for this session.
+     * <p>
+     * Behavior is undefined if called while entity changes are pending:
+     * be sure to call this only just after creating a session.
+     *
+     * @param synchronizationStrategy The synchronization strategy to use
+     * @see IndexingPlanSynchronizationStrategy
+     */
+    void indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy);
 }

@@ -15,47 +15,35 @@ import org.hibernate.search.mapper.pojo.tenancy.TenantIdentifierConverter;
 
 public class TenancyConfiguration implements AutoCloseable {
 
-	private static final ConfigurationProperty<
-			BeanReference<? extends TenantIdentifierConverter>> MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER =
-					ConfigurationProperty
-							.forKey( StandalonePojoMapperSettings.Radicals.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER )
-							.asBeanReference( TenantIdentifierConverter.class )
-							.withDefault( StandalonePojoMapperSettings.Defaults.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER )
-							.build();
+    private static final ConfigurationProperty<BeanReference<? extends TenantIdentifierConverter>> MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER = ConfigurationProperty.forKey(StandalonePojoMapperSettings.Radicals.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER).asBeanReference(TenantIdentifierConverter.class).withDefault(StandalonePojoMapperSettings.Defaults.MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER).build();
 
-	public static TenancyConfiguration create(BeanResolver beanResolver, TenancyMode tenancyMode,
-			ConfigurationPropertySource configurationPropertySource) {
+    public static TenancyConfiguration create(BeanResolver beanResolver, TenancyMode tenancyMode, ConfigurationPropertySource configurationPropertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter =
-				MULTI_TENANCY_TENANT_IDENTIFIER_CONVERTER.getAndTransform( configurationPropertySource, beanResolver::resolve );
-		return new TenancyConfiguration( tenancyMode, tenantIdentifierConverter );
-	}
+    private final TenancyMode tenancyMode;
 
-	private final TenancyMode tenancyMode;
-	private final BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter;
+    private final BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter;
 
-	private TenancyConfiguration(TenancyMode tenancyMode,
-			BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter) {
-		this.tenancyMode = tenancyMode;
-		this.tenantIdentifierConverter = tenantIdentifierConverter;
-	}
+    private TenancyConfiguration(TenancyMode tenancyMode, BeanHolder<? extends TenantIdentifierConverter> tenantIdentifierConverter) {
+        this.tenancyMode = tenancyMode;
+        this.tenantIdentifierConverter = tenantIdentifierConverter;
+    }
 
-	public Object convert(String tenantIdentifier) {
-		return tenantIdentifierConverter.get().fromStringValue( tenantIdentifier );
-	}
+    public Object convert(String tenantIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String convert(Object tenantIdentifier) {
-		return tenantIdentifierConverter.get().toStringValue( tenantIdentifier );
-	}
+    public String convert(Object tenantIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public TenancyMode tenancyMode() {
-		return tenancyMode;
-	}
+    public TenancyMode tenancyMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		if ( tenantIdentifierConverter != null ) {
-			tenantIdentifierConverter.close();
-		}
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

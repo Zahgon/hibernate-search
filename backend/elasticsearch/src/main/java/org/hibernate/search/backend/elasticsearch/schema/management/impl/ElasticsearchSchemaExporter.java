@@ -11,40 +11,27 @@ import org.hibernate.search.backend.elasticsearch.index.layout.impl.IndexNames;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.impl.IndexMetadata;
 import org.hibernate.search.backend.elasticsearch.schema.management.ElasticsearchIndexSchemaExport;
 import org.hibernate.search.backend.elasticsearch.work.factory.impl.ElasticsearchWorkFactory;
-
 import com.google.gson.Gson;
 
 final class ElasticsearchSchemaExporter {
 
-	private final Gson userFacingGson;
-	private final ElasticsearchWorkFactory workFactory;
-	private final IndexLayoutStrategy indexLayoutStrategy;
+    private final Gson userFacingGson;
 
-	public ElasticsearchSchemaExporter(Gson userFacingGson, ElasticsearchWorkFactory workFactory,
-			IndexLayoutStrategy indexLayoutStrategy) {
-		this.userFacingGson = userFacingGson;
-		this.workFactory = workFactory;
-		this.indexLayoutStrategy = indexLayoutStrategy;
-	}
+    private final ElasticsearchWorkFactory workFactory;
 
-	public ElasticsearchIndexSchemaExport export(IndexMetadata indexMetadata, IndexNames indexNames) {
-		URLEncodedString primaryIndexName = createPrimaryIndexName( indexNames );
-		ElasticsearchRequest request = workFactory.createIndex( primaryIndexName )
-				.aliases( indexMetadata.getAliases() )
-				.mapping( indexMetadata.getMapping() )
-				.settings( indexMetadata.getSettings() )
-				.build().request();
+    private final IndexLayoutStrategy indexLayoutStrategy;
 
-		return new ElasticsearchIndexSchemaExportImpl(
-				userFacingGson,
-				indexNames.hibernateSearchIndex(),
-				request
-		);
-	}
+    public ElasticsearchSchemaExporter(Gson userFacingGson, ElasticsearchWorkFactory workFactory, IndexLayoutStrategy indexLayoutStrategy) {
+        this.userFacingGson = userFacingGson;
+        this.workFactory = workFactory;
+        this.indexLayoutStrategy = indexLayoutStrategy;
+    }
 
-	private URLEncodedString createPrimaryIndexName(IndexNames indexNames) {
-		return IndexNames.encodeName(
-				indexLayoutStrategy.createInitialElasticsearchIndexName( indexNames.hibernateSearchIndex() )
-		);
-	}
+    public ElasticsearchIndexSchemaExport export(IndexMetadata indexMetadata, IndexNames indexNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private URLEncodedString createPrimaryIndexName(IndexNames indexNames) {
+        return IndexNames.encodeName(indexLayoutStrategy.createInitialElasticsearchIndexName(indexNames.hibernateSearchIndex()));
+    }
 }

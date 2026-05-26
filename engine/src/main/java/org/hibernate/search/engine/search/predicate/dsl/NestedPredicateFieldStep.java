@@ -17,27 +17,26 @@ import org.hibernate.search.engine.search.reference.predicate.NestedPredicateFie
 @Deprecated(since = "6.2")
 public interface NestedPredicateFieldStep<SR, N extends NestedPredicateNestStep<SR, ?>> {
 
-	/**
-	 * Set the object field to "nest" on.
-	 * <p>
-	 * The selected field must have a {@link ObjectStructure#NESTED nested structure} in the targeted indexes.
-	 *
-	 * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the object field.
-	 * @return The next step.
-	 */
-	N objectField(String fieldPath);
+    /**
+     * Set the object field to "nest" on.
+     * <p>
+     * The selected field must have a {@link ObjectStructure#NESTED nested structure} in the targeted indexes.
+     *
+     * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the object field.
+     * @return The next step.
+     */
+    N objectField(String fieldPath);
 
-	/**
-	 * Set the object field to "nest" on.
-	 * <p>
-	 * The selected field must have a {@link ObjectStructure#NESTED nested structure} in the targeted indexes.
-	 *
-	 * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the object field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 */
-	default N objectField(NestedPredicateFieldReference<? super SR> fieldReference) {
-		return objectField( fieldReference.absolutePath() );
-	}
-
+    /**
+     * Set the object field to "nest" on.
+     * <p>
+     * The selected field must have a {@link ObjectStructure#NESTED nested structure} in the targeted indexes.
+     *
+     * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the object field
+     * to apply the predicate on.
+     * @return The next step.
+     */
+    default N objectField(NestedPredicateFieldReference<? super SR> fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

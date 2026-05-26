@@ -14,30 +14,18 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValue
  */
 abstract class AbstractStringBasedDefaultBridge<V> extends AbstractSimpleDefaultBridge<V, String> {
 
-	@Override
-	public final String toIndexedValue(V value, ValueBridgeToIndexedValueContext context) {
-		if ( value == null ) {
-			return null;
-		}
-		return toString( value );
-	}
+    @Override
+    public final String toIndexedValue(V value, ValueBridgeToIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final V fromIndexedValue(String value, ValueBridgeFromIndexedValueContext context) {
-		if ( value == null ) {
-			return null;
-		}
-		return fromString( value );
-	}
+    @Override
+    public final V fromIndexedValue(String value, ValueBridgeFromIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final String parse(String value) {
-		if ( value == null ) {
-			return null;
-		}
-		// Make sure that the value is correctly formatted,
-		// and normalize it if necessary.
-		return toString( fromString( value ) );
-	}
-
+    @Override
+    public final String parse(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

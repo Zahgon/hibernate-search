@@ -6,13 +6,11 @@ package org.hibernate.search.backend.elasticsearch.search.aggregation.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexScope;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexValueFieldContext;
 import org.hibernate.search.backend.elasticsearch.search.predicate.impl.ElasticsearchSearchPredicate;
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -20,95 +18,52 @@ import com.google.gson.JsonObject;
  * @param <K> The type of keys in the returned map.
  * @param <V> The type of values in the returned map.
  */
-public abstract class AbstractElasticsearchBucketAggregation<K, V>
-		extends AbstractElasticsearchNestableAggregation<Map<K, V>> {
+public abstract class AbstractElasticsearchBucketAggregation<K, V> extends AbstractElasticsearchNestableAggregation<Map<K, V>> {
 
-	protected static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_ACCESSOR =
-			JsonAccessor.root().property( "aggregations" ).asObject();
+    protected static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_ACCESSOR = JsonAccessor.root().property("aggregations").asObject();
 
-	private static final JsonAccessor<JsonObject> REQUEST_REVERSE_NESTED_ACCESSOR =
-			JsonAccessor.root().property( "reverse_nested" ).asObject();
+    private static final JsonAccessor<JsonObject> REQUEST_REVERSE_NESTED_ACCESSOR = JsonAccessor.root().property("reverse_nested").asObject();
 
-	protected static final JsonAccessor<JsonObject> REQUEST_REVERSE_NESTED_WRAPPER_ACCESSOR =
-			JsonAccessor.root().property( "reverse_nested_wrapper" ).asObject();
+    protected static final JsonAccessor<JsonObject> REQUEST_REVERSE_NESTED_WRAPPER_ACCESSOR = JsonAccessor.root().property("reverse_nested_wrapper").asObject();
 
-	private static final String ROOT_DOC_COUNT_NAME = "root_doc_count";
-	private static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_ROOT_DOC_COUNT_ACCESSOR =
-			JsonAccessor.root().property( "aggregations" ).property( ROOT_DOC_COUNT_NAME ).asObject();
+    private static final String ROOT_DOC_COUNT_NAME = "root_doc_count";
 
-	protected static final String INNER_EXTRACTOR = "innerExtractor";
+    private static final JsonAccessor<JsonObject> REQUEST_AGGREGATIONS_ROOT_DOC_COUNT_ACCESSOR = JsonAccessor.root().property("aggregations").property(ROOT_DOC_COUNT_NAME).asObject();
 
-	AbstractElasticsearchBucketAggregation(AbstractBuilder<K, V> builder) {
-		super( builder );
-	}
+    protected static final String INNER_EXTRACTOR = "innerExtractor";
 
-	@Override
-	protected final JsonObject doRequest(AggregationRequestBuildingContextContext context) {
-		JsonObject outerObject = new JsonObject();
-		JsonObject innerObject = new JsonObject();
+    AbstractElasticsearchBucketAggregation(AbstractBuilder<K, V> builder) {
+        super(builder);
+    }
 
-		doRequest( outerObject, innerObject, context );
+    @Override
+    protected final JsonObject doRequest(AggregationRequestBuildingContextContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( isNested() ) {
-			// if we are looking at a nested composite/non-document-count sub-aggregation
-			//  we have to wrap it in a single aggregation with `reverse_nested` in it.
-			if ( !innerObject.isEmpty() ) {
-				JsonObject aggregations = new JsonObject();
-				JsonObject wrapper = new JsonObject();
-				REQUEST_REVERSE_NESTED_WRAPPER_ACCESSOR.set( aggregations, wrapper );
-				REQUEST_REVERSE_NESTED_ACCESSOR.set( wrapper, new JsonObject() );
-				REQUEST_AGGREGATIONS_ACCESSOR.set( wrapper, innerObject );
-				REQUEST_AGGREGATIONS_ACCESSOR.set( outerObject, aggregations );
-			}
-			else {
-				// we are looking at the "default" "just give me the counts" aggregation here:
-				JsonObject rootDocCountSubAggregationOuterObject = new JsonObject();
-				JsonObject rootDocCountSubAggregationInnerObject = new JsonObject();
+    protected abstract void doRequest(JsonObject outerObject, JsonObject innerObject, AggregationRequestBuildingContextContext context);
 
-				REQUEST_REVERSE_NESTED_ACCESSOR.set(
-						rootDocCountSubAggregationOuterObject,
-						rootDocCountSubAggregationInnerObject
-				);
-				REQUEST_AGGREGATIONS_ROOT_DOC_COUNT_ACCESSOR.set( outerObject, rootDocCountSubAggregationOuterObject );
-			}
-		}
-		else if ( !innerObject.isEmpty() ) {
-			// regular bucket/composite aggregation requested:
-			REQUEST_AGGREGATIONS_ACCESSOR.set( outerObject, innerObject );
-		}
+    protected abstract class AbstractBucketExtractor<A, B> extends AbstractExtractor<Map<A, B>> {
 
-		return outerObject;
-	}
+        protected AbstractBucketExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy, ElasticsearchSearchPredicate filter) {
+            super(key, nestedPathHierarchy, filter);
+        }
 
-	protected abstract void doRequest(JsonObject outerObject, JsonObject innerObject,
-			AggregationRequestBuildingContextContext context);
+        @Override
+        protected final Map<A, B> doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	protected abstract class AbstractBucketExtractor<A, B> extends AbstractExtractor<Map<A, B>> {
+        protected abstract Map<A, B> doExtract(AggregationExtractContext context, JsonElement buckets);
+    }
 
-		protected AbstractBucketExtractor(AggregationKey<?> key, List<String> nestedPathHierarchy,
-				ElasticsearchSearchPredicate filter) {
-			super( key, nestedPathHierarchy, filter );
-		}
+    public abstract static class AbstractBuilder<K, V> extends AbstractElasticsearchNestableAggregation.AbstractBuilder<Map<K, V>> {
 
-		@Override
-		protected final Map<A, B> doExtract(JsonObject aggregationResult, AggregationExtractContext context) {
-			JsonElement buckets = aggregationResult.get( "buckets" );
+        public AbstractBuilder(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<?> field) {
+            super(scope, field);
+        }
 
-			return doExtract( context, buckets );
-		}
-
-		protected abstract Map<A, B> doExtract(AggregationExtractContext context, JsonElement buckets);
-	}
-
-	public abstract static class AbstractBuilder<K, V>
-			extends AbstractElasticsearchNestableAggregation.AbstractBuilder<Map<K, V>> {
-
-		public AbstractBuilder(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<?> field) {
-			super( scope, field );
-		}
-
-		@Override
-		public abstract ElasticsearchSearchAggregation<Map<K, V>> build();
-	}
+        @Override
+        public abstract ElasticsearchSearchAggregation<Map<K, V>> build();
+    }
 }

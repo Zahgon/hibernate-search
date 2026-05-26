@@ -12,12 +12,8 @@ import org.hibernate.search.mapper.orm.outboxpolling.cfg.HibernateOrmMapperOutbo
 
 public class OutboxPollingBeanConfigurer implements BeanConfigurer {
 
-	@Override
-	public void configure(BeanConfigurationContext context) {
-		context.define(
-				CoordinationStrategy.class,
-				HibernateOrmMapperOutboxPollingSettings.COORDINATION_STRATEGY_NAME,
-				BeanReference.ofInstance( new OutboxPollingCoordinationStrategy() )
-		);
-	}
+    @Override
+    public void configure(BeanConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

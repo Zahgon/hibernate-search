@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.common.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.mapping.spi.BackendMapperContext;
 import org.hibernate.search.engine.mapper.mapping.building.impl.MappedIndexManagerBuilderImpl;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexedEntityBindingMapperContext;
@@ -13,22 +12,15 @@ import org.hibernate.search.engine.mapper.mapping.building.spi.MappedIndexManage
 import org.hibernate.search.engine.mapper.mapping.building.spi.MappedIndexManagerFactory;
 
 class MappedIndexManagerFactoryImpl implements MappedIndexManagerFactory {
-	private final IndexManagerBuildingStateHolder indexManagerBuildingStateHolder;
 
-	MappedIndexManagerFactoryImpl(IndexManagerBuildingStateHolder indexManagerBuildingStateHolder) {
-		this.indexManagerBuildingStateHolder = indexManagerBuildingStateHolder;
-	}
+    private final IndexManagerBuildingStateHolder indexManagerBuildingStateHolder;
 
-	@Override
-	public MappedIndexManagerBuilder createMappedIndexManager(IndexedEntityBindingMapperContext mapperContext,
-			BackendMapperContext backendMapperContext,
-			Optional<String> backendName, String indexName,
-			String mappedTypeName) {
-		return new MappedIndexManagerBuilderImpl(
-				mapperContext,
-				indexManagerBuildingStateHolder.getIndexManagerBuildingState(
-						backendMapperContext, backendName, indexName, mappedTypeName
-				)
-		);
-	}
+    MappedIndexManagerFactoryImpl(IndexManagerBuildingStateHolder indexManagerBuildingStateHolder) {
+        this.indexManagerBuildingStateHolder = indexManagerBuildingStateHolder;
+    }
+
+    @Override
+    public MappedIndexManagerBuilder createMappedIndexManager(IndexedEntityBindingMapperContext mapperContext, BackendMapperContext backendMapperContext, Optional<String> backendName, String indexName, String mappedTypeName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

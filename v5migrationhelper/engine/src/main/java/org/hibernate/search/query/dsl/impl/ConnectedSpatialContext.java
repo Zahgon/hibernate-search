@@ -8,7 +8,6 @@ import org.hibernate.search.query.dsl.SpatialContext;
 import org.hibernate.search.query.dsl.SpatialMatchingContext;
 import org.hibernate.search.query.dsl.Unit;
 import org.hibernate.search.query.dsl.WithinContext;
-
 import org.apache.lucene.search.Query;
 
 /**
@@ -16,57 +15,54 @@ import org.apache.lucene.search.Query;
  */
 public class ConnectedSpatialContext implements SpatialContext {
 
-	private final QueryBuildingContext queryContext;
-	private final QueryCustomizer queryCustomizer;
-	private final SpatialQueryContext spatialContext;
+    private final QueryBuildingContext queryContext;
 
-	public ConnectedSpatialContext(QueryBuildingContext context) {
-		this.queryContext = context;
-		this.queryCustomizer = new QueryCustomizer();
-		//today we only do constant score for spatial queries
-		queryCustomizer.withConstantScore();
-		spatialContext = new SpatialQueryContext();
-	}
+    private final QueryCustomizer queryCustomizer;
 
-	@Override
-	public SpatialMatchingContext onField(String fieldName) {
-		spatialContext.setCoordinatesField( fieldName );
-		return new ConnectedSpatialMatchingContext( queryContext, queryCustomizer, spatialContext );
-	}
+    private final SpatialQueryContext spatialContext;
 
-	@Override
-	public SpatialContext boostedTo(float boost) {
-		queryCustomizer.boostedTo( boost );
-		return this;
-	}
+    public ConnectedSpatialContext(QueryBuildingContext context) {
+        this.queryContext = context;
+        this.queryCustomizer = new QueryCustomizer();
+        //today we only do constant score for spatial queries
+        queryCustomizer.withConstantScore();
+        spatialContext = new SpatialQueryContext();
+    }
 
-	@Override
-	public SpatialContext withConstantScore() {
-		queryCustomizer.withConstantScore();
-		return this;
-	}
+    @Override
+    public SpatialMatchingContext onField(String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialContext filteredBy(Query filter) {
-		queryCustomizer.filteredBy( filter );
-		return this;
-	}
+    @Override
+    public SpatialContext boostedTo(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WithinContext within(double distance, Unit unit) {
-		spatialContext.setRadius( distance, unit );
-		return new ConnectedWithinContext( this );
-	}
+    @Override
+    public SpatialContext withConstantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	QueryBuildingContext getQueryContext() {
-		return queryContext;
-	}
+    @Override
+    public SpatialContext filteredBy(Query filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	QueryCustomizer getQueryCustomizer() {
-		return queryCustomizer;
-	}
+    @Override
+    public WithinContext within(double distance, Unit unit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	SpatialQueryContext getSpatialContext() {
-		return spatialContext;
-	}
+    QueryBuildingContext getQueryContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    QueryCustomizer getQueryCustomizer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    SpatialQueryContext getSpatialContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,58 +6,36 @@ package org.hibernate.search.util.common.reflect.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.hibernate.search.util.common.impl.Throwables;
 import org.hibernate.search.util.common.logging.impl.CommonMiscLog;
 import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
 
 public final class MethodValueReadHandle<T> implements ValueReadHandle<T> {
 
-	private final Method method;
+    private final Method method;
 
-	public MethodValueReadHandle(Method method) {
-		this.method = method;
-	}
+    public MethodValueReadHandle(Method method) {
+        this.method = method;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + method + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public T get(Object thiz) {
-		try {
-			return (T) method.invoke( thiz );
-		}
-		catch (RuntimeException | IllegalAccessException e) {
-			throw CommonMiscLog.INSTANCE.errorInvokingMember( method, Throwables.safeToString( e, thiz ), e,
-					e.getMessage() );
-		}
-		catch (InvocationTargetException e) {
-			Throwable thrown = e.getCause();
-			if ( thrown instanceof Error ) {
-				throw (Error) thrown;
-			}
-			else {
-				throw CommonMiscLog.INSTANCE.errorInvokingMember( method, Throwables.safeToString( thrown, thiz ), thrown,
-						thrown.getMessage() );
-			}
-		}
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public T get(Object thiz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return method.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( obj == null || !obj.getClass().equals( getClass() ) ) {
-			return false;
-		}
-		MethodValueReadHandle<?> other = (MethodValueReadHandle<?>) obj;
-		return method.equals( other.method );
-	}
-
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

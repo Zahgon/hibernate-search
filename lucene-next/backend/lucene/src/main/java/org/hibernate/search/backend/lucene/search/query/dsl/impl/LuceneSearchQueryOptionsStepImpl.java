@@ -18,57 +18,42 @@ import org.hibernate.search.engine.search.highlighter.dsl.SearchHighlighterFacto
 import org.hibernate.search.engine.search.loading.spi.SearchLoadingContextBuilder;
 import org.hibernate.search.engine.search.query.dsl.spi.AbstractExtendedSearchQueryOptionsStep;
 
-class LuceneSearchQueryOptionsStepImpl<SR, H, LOS>
-		extends AbstractExtendedSearchQueryOptionsStep<
-				SR,
-				LuceneSearchQueryOptionsStep<SR, H, LOS>,
-				H,
-				LuceneSearchResult<H>,
-				LuceneSearchScroll<H>,
-				LOS,
-				LuceneSearchPredicateFactory<SR>,
-				LuceneSearchSortFactory<SR>,
-				LuceneSearchAggregationFactory<SR>,
-				LuceneSearchQueryIndexScope<SR, ?>>
-		implements LuceneSearchQueryWhereStep<SR, H, LOS>, LuceneSearchQueryOptionsStep<SR, H, LOS> {
+class LuceneSearchQueryOptionsStepImpl<SR, H, LOS> extends AbstractExtendedSearchQueryOptionsStep<SR, LuceneSearchQueryOptionsStep<SR, H, LOS>, H, LuceneSearchResult<H>, LuceneSearchScroll<H>, LOS, LuceneSearchPredicateFactory<SR>, LuceneSearchSortFactory<SR>, LuceneSearchAggregationFactory<SR>, LuceneSearchQueryIndexScope<SR, ?>> implements LuceneSearchQueryWhereStep<SR, H, LOS>, LuceneSearchQueryOptionsStep<SR, H, LOS> {
 
-	private final LuceneSearchQueryBuilder<H> searchQueryBuilder;
+    private final LuceneSearchQueryBuilder<H> searchQueryBuilder;
 
-	LuceneSearchQueryOptionsStepImpl(LuceneSearchQueryIndexScope<SR, ?> scope,
-			LuceneSearchQueryBuilder<H> searchQueryBuilder,
-			SearchLoadingContextBuilder<?, LOS> loadingContextBuilder) {
-		super( scope, searchQueryBuilder, loadingContextBuilder );
-		this.searchQueryBuilder = searchQueryBuilder;
-	}
+    LuceneSearchQueryOptionsStepImpl(LuceneSearchQueryIndexScope<SR, ?> scope, LuceneSearchQueryBuilder<H> searchQueryBuilder, SearchLoadingContextBuilder<?, LOS> loadingContextBuilder) {
+        super(scope, searchQueryBuilder, loadingContextBuilder);
+        this.searchQueryBuilder = searchQueryBuilder;
+    }
 
-	@Override
-	public LuceneSearchQuery<H> toQuery() {
-		return searchQueryBuilder.build();
-	}
+    @Override
+    public LuceneSearchQuery<H> toQuery() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LuceneSearchQueryOptionsStepImpl<SR, H, LOS> thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneSearchQueryOptionsStepImpl<SR, H, LOS> thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LuceneSearchPredicateFactory<SR> predicateFactory() {
-		return scope.predicateFactory();
-	}
+    @Override
+    protected LuceneSearchPredicateFactory<SR> predicateFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LuceneSearchSortFactory<SR> sortFactory() {
-		return scope.sortFactory();
-	}
+    @Override
+    protected LuceneSearchSortFactory<SR> sortFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LuceneSearchAggregationFactory<SR> aggregationFactory() {
-		return scope.aggregationFactory();
-	}
+    @Override
+    protected LuceneSearchAggregationFactory<SR> aggregationFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchHighlighterFactory highlighterFactory() {
-		return scope.highlighterFactory();
-	}
-
+    @Override
+    protected SearchHighlighterFactory highlighterFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

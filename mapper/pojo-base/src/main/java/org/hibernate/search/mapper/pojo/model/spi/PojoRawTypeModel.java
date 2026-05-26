@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.model.spi;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.stream.Stream;
-
 import org.hibernate.search.engine.mapper.model.spi.MappableTypeModel;
 
 /**
@@ -25,73 +24,72 @@ import org.hibernate.search.engine.mapper.model.spi.MappableTypeModel;
  */
 public interface PojoRawTypeModel<T> extends PojoTypeModel<T>, MappableTypeModel {
 
-	/**
-	 * @return {@code this}.
-	 */
-	@Override
-	default PojoRawTypeModel<T> rawType() {
-		return this;
-	}
+    /**
+     * @return {@code this}.
+     */
+    @Override
+    default PojoRawTypeModel<T> rawType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return The identifier for this type.
-	 */
-	PojoRawTypeIdentifier<T> typeIdentifier();
+    /**
+     * @return The identifier for this type.
+     */
+    PojoRawTypeIdentifier<T> typeIdentifier();
 
-	/**
-	 * @return The supertypes of the current type, in ascending order.
-	 */
-	@Override
-	Stream<? extends PojoRawTypeModel<? super T>> ascendingSuperTypes();
+    /**
+     * @return The supertypes of the current type, in ascending order.
+     */
+    @Override
+    Stream<? extends PojoRawTypeModel<? super T>> ascendingSuperTypes();
 
-	/**
-	 * @return The supertypes of the current type, in descending order.
-	 */
-	@Override
-	Stream<? extends PojoRawTypeModel<? super T>> descendingSuperTypes();
+    /**
+     * @return The supertypes of the current type, in descending order.
+     */
+    @Override
+    Stream<? extends PojoRawTypeModel<? super T>> descendingSuperTypes();
 
-	/**
-	 * @return All annotations on this specific type (non-inherited annotations from supertype are excluded).
-	 */
-	Stream<? extends Annotation> annotations();
+    /**
+     * @return All annotations on this specific type (non-inherited annotations from supertype are excluded).
+     */
+    Stream<? extends Annotation> annotations();
 
-	/**
-	 * @return The main constructor of this type.
-	 * The main constructor only exists if this type defines a single constructor.
-	 * @throws org.hibernate.search.util.common.SearchException If there is no main constructor for this type.
-	 */
-	PojoConstructorModel<T> mainConstructor();
+    /**
+     * @return The main constructor of this type.
+     * The main constructor only exists if this type defines a single constructor.
+     * @throws org.hibernate.search.util.common.SearchException If there is no main constructor for this type.
+     */
+    PojoConstructorModel<T> mainConstructor();
 
-	/**
-	 * @param parameterTypes The type of parameters to the returned constructor.
-	 * @return The constructor of this type whose parameters have the given {@code parameterTypes}.
-	 * @throws org.hibernate.search.util.common.SearchException If there is no constructor with parameters of the given types.
-	 */
-	PojoConstructorModel<T> constructor(Class<?>... parameterTypes);
+    /**
+     * @param parameterTypes The type of parameters to the returned constructor.
+     * @return The constructor of this type whose parameters have the given {@code parameterTypes}.
+     * @throws org.hibernate.search.util.common.SearchException If there is no constructor with parameters of the given types.
+     */
+    PojoConstructorModel<T> constructor(Class<?>... parameterTypes);
 
-	/**
-	 * @return All accessible constructors of this type.
-	 */
-	Collection<PojoConstructorModel<T>> declaredConstructors();
+    /**
+     * @return All accessible constructors of this type.
+     */
+    Collection<PojoConstructorModel<T>> declaredConstructors();
 
-	/**
-	 * @return All declared properties of this type.
-	 */
-	Collection<PojoPropertyModel<?>> declaredProperties();
+    /**
+     * @return All declared properties of this type.
+     */
+    Collection<PojoPropertyModel<?>> declaredProperties();
 
-	/**
-	 * @param other The type to cast to this type.
-	 * @return A new type model, representing the given type cast to this type.
-	 * If casting is not possible, returns {@code this}.
-	 * If casting is possible, the returned type model
-	 * will retain as much contextual type information as possible (type arguments, ...),
-	 * so casting {@code List<Integer>} to {@code Collection} for example would return {@code Collection<Integer>}.
-	 */
-	PojoTypeModel<? extends T> cast(PojoTypeModel<?> other);
+    /**
+     * @param other The type to cast to this type.
+     * @return A new type model, representing the given type cast to this type.
+     * If casting is not possible, returns {@code this}.
+     * If casting is possible, the returned type model
+     * will retain as much contextual type information as possible (type arguments, ...),
+     * so casting {@code List<Integer>} to {@code Collection} for example would return {@code Collection<Integer>}.
+     */
+    PojoTypeModel<? extends T> cast(PojoTypeModel<?> other);
 
-	/**
-	 * @return A {@link PojoCaster} targeting this type.
-	 */
-	PojoCaster<T> caster();
-
+    /**
+     * @return A {@link PojoCaster} targeting this type.
+     */
+    PojoCaster<T> caster();
 }

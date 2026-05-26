@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.aggregation.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.logging.impl.QueryLog;
 import org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl.CountDocuemntsCollectorFactory;
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
@@ -19,77 +18,65 @@ import org.hibernate.search.engine.search.common.spi.SearchQueryElementFactory;
 
 public class LuceneCountDocumentAggregation implements LuceneSearchAggregation<Long> {
 
-	private final Set<String> indexNames;
+    private final Set<String> indexNames;
 
-	private LuceneCountDocumentAggregation(Builder builder) {
-		this.indexNames = builder.scope.hibernateSearchIndexNames();
-	}
+    private LuceneCountDocumentAggregation(Builder builder) {
+        this.indexNames = builder.scope.hibernateSearchIndexNames();
+    }
 
-	public static Factory factory() {
-		return Factory.INSTANCE;
-	}
+    public static Factory factory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected static class Factory
-			implements
-			SearchQueryElementFactory<CountDocumentAggregationBuilder.TypeSelector,
-					LuceneSearchIndexScope<?>,
-					LuceneSearchIndexNodeContext> {
+    protected static class Factory implements SearchQueryElementFactory<CountDocumentAggregationBuilder.TypeSelector, LuceneSearchIndexScope<?>, LuceneSearchIndexNodeContext> {
 
-		private static final Factory INSTANCE = new Factory();
+        private static final Factory INSTANCE = new Factory();
 
-		private Factory() {
-		}
+        private Factory() {
+        }
 
-		@Override
-		public CountDocumentAggregationBuilder.TypeSelector create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexNodeContext node) {
-			return new TypeSelector( scope, node );
-		}
+        @Override
+        public CountDocumentAggregationBuilder.TypeSelector create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexNodeContext node) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
-			if ( !getClass().equals( other.getClass() ) ) {
-				throw QueryLog.INSTANCE.differentImplementationClassForQueryElement( getClass(), other.getClass() );
-			}
-		}
-	}
+        @Override
+        public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private record TypeSelector(LuceneSearchIndexScope<?> scope, LuceneSearchIndexNodeContext node)
-			implements CountDocumentAggregationBuilder.TypeSelector {
+    private record TypeSelector(LuceneSearchIndexScope<?> scope, LuceneSearchIndexNodeContext node) implements CountDocumentAggregationBuilder.TypeSelector {
 
-		@Override
-		public CountDocumentAggregationBuilder builder() {
-			return new Builder( scope );
-		}
-	}
+        @Override
+        public CountDocumentAggregationBuilder builder() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	@Override
-	public Extractor<Long> request(AggregationRequestContext context) {
-		CountDocuemntsCollectorFactory collectorFactory = CountDocuemntsCollectorFactory.instance();
-		var collectorKey = collectorFactory.getCollectorKey();
+    @Override
+    public Extractor<Long> request(AggregationRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		context.requireCollector( collectorFactory );
-		return new CountDocumentsExtractor( collectorKey );
-	}
+    private record CountDocumentsExtractor(CollectorKey<?, Long> collectorKey) implements Extractor<Long> {
 
-	private record CountDocumentsExtractor(CollectorKey<?, Long> collectorKey) implements Extractor<Long> {
+        @Override
+        public Long extract(AggregationExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public Long extract(AggregationExtractContext context) {
-			return context.getCollectorResults( collectorKey );
-		}
-	}
+    @Override
+    public Set<String> indexNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Set<String> indexNames() {
-		return indexNames;
-	}
+    private record Builder(LuceneSearchIndexScope<?> scope) implements CountDocumentAggregationBuilder {
 
-	private record Builder(LuceneSearchIndexScope<?> scope) implements CountDocumentAggregationBuilder {
-
-		@Override
-		public LuceneCountDocumentAggregation build() {
-			return new LuceneCountDocumentAggregation( this );
-		}
-	}
+        @Override
+        public LuceneCountDocumentAggregation build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

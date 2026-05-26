@@ -9,55 +9,34 @@ import java.math.BigInteger;
 
 public final class NumberUtils {
 
-	private NumberUtils() {
-	}
+    private NumberUtils() {
+    }
 
-	public static BigDecimal toBigDecimal(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return BigDecimal.valueOf( value );
-	}
+    public static BigDecimal toBigDecimal(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static BigInteger toBigInteger(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return BigInteger.valueOf( value.longValue() );
-	}
+    public static BigInteger toBigInteger(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Byte toByte(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return value.byteValue();
-	}
+    public static Byte toByte(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Float toFloat(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return value.floatValue();
-	}
+    public static Float toFloat(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Integer toInteger(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return value.intValue();
-	}
+    public static Integer toInteger(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Long toLong(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return value.longValue();
-	}
+    public static Long toLong(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static Short toShort(Double value) {
-		if ( value == null ) {
-			return null;
-		}
-		return value.shortValue();
-	}
+    public static Short toShort(Double value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

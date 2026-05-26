@@ -13,37 +13,36 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 @Incubating
 public interface MassIndexingEnvironment {
-	/**
-	 * Method is going to be invoked prior to executing the main logic of a {@link Runnable} in the given thread.
-	 */
-	void beforeExecution(Context context);
 
-	/**
-	 * Method is going to be invoked after completion of execution of the main logic of a {@link Runnable} in the given thread.
-	 * Will not be called if {@link #beforeExecution(Context)} results in an exception.
-	 */
-	void afterExecution(Context context);
+    /**
+     * Method is going to be invoked prior to executing the main logic of a {@link Runnable} in the given thread.
+     */
+    void beforeExecution(Context context);
 
-	interface Context {
+    /**
+     * Method is going to be invoked after completion of execution of the main logic of a {@link Runnable} in the given thread.
+     * Will not be called if {@link #beforeExecution(Context)} results in an exception.
+     */
+    void afterExecution(Context context);
 
-		default <T> T unwrap(Class<T> contextClass) {
-			return contextClass.cast( this );
-		}
-	}
+    interface Context {
 
-	/**
-	 * Context provided to {@link MassIndexingEnvironment} when configured hooks are considered for
-	 * execution around the identifier loading work.
-	 */
-	interface EntityIdentifierLoadingContext extends Context {
+        default <T> T unwrap(Class<T> contextClass) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	}
+    /**
+     * Context provided to {@link MassIndexingEnvironment} when configured hooks are considered for
+     * execution around the identifier loading work.
+     */
+    interface EntityIdentifierLoadingContext extends Context {
+    }
 
-	/**
-	 * Context provided to {@link MassIndexingEnvironment} when configured hooks are considered for
-	 * execution around the entity loading work.
-	 */
-	interface EntityLoadingContext extends Context {
-
-	}
+    /**
+     * Context provided to {@link MassIndexingEnvironment} when configured hooks are considered for
+     * execution around the entity loading work.
+     */
+    interface EntityLoadingContext extends Context {
+    }
 }

@@ -8,13 +8,14 @@ import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.mapper.pojo.bridge.IdentifierBridge;
 
 public final class BoundIdentifierBridge<I> {
-	private final BeanHolder<? extends IdentifierBridge<I>> bridgeHolder;
 
-	BoundIdentifierBridge(BeanHolder<? extends IdentifierBridge<I>> bridgeHolder) {
-		this.bridgeHolder = bridgeHolder;
-	}
+    private final BeanHolder<? extends IdentifierBridge<I>> bridgeHolder;
 
-	public BeanHolder<? extends IdentifierBridge<I>> getBridgeHolder() {
-		return bridgeHolder;
-	}
+    BoundIdentifierBridge(BeanHolder<? extends IdentifierBridge<I>> bridgeHolder) {
+        this.bridgeHolder = bridgeHolder;
+    }
+
+    public BeanHolder<? extends IdentifierBridge<I>> getBridgeHolder() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

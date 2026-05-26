@@ -11,29 +11,30 @@ import org.hibernate.search.engine.reporting.spi.ContextualFailureCollector;
 
 class MappingFinalizationContextImpl implements MappingFinalizationContext {
 
-	private final ContextualFailureCollector failureCollector;
-	private final ConfigurationPropertySource propertySource;
-	private final BeanResolver beanResolver;
+    private final ContextualFailureCollector failureCollector;
 
-	MappingFinalizationContextImpl(ContextualFailureCollector failureCollector,
-			ConfigurationPropertySource propertySource, BeanResolver beanResolver) {
-		this.failureCollector = failureCollector;
-		this.propertySource = propertySource;
-		this.beanResolver = beanResolver;
-	}
+    private final ConfigurationPropertySource propertySource;
 
-	@Override
-	public ContextualFailureCollector failureCollector() {
-		return failureCollector;
-	}
+    private final BeanResolver beanResolver;
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return propertySource;
-	}
+    MappingFinalizationContextImpl(ContextualFailureCollector failureCollector, ConfigurationPropertySource propertySource, BeanResolver beanResolver) {
+        this.failureCollector = failureCollector;
+        this.propertySource = propertySource;
+        this.beanResolver = beanResolver;
+    }
 
-	@Override
-	public BeanResolver beanResolver() {
-		return beanResolver;
-	}
+    @Override
+    public ContextualFailureCollector failureCollector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

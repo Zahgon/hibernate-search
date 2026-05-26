@@ -6,17 +6,17 @@ package org.hibernate.search.mapper.pojo.extractor.builtin.impl;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.hibernate.search.mapper.pojo.extractor.builtin.BuiltinContainerExtractors;
 
 public class CollectionElementExtractor<T> extends AbstractIteratorBasedElementExtractor<Collection<T>, T> {
-	@Override
-	public String toString() {
-		return BuiltinContainerExtractors.COLLECTION;
-	}
 
-	@Override
-	protected Iterator<T> iterator(Collection<T> container) {
-		return container.iterator();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected Iterator<T> iterator(Collection<T> container) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

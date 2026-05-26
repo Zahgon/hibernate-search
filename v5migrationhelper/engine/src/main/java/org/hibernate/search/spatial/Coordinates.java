@@ -17,27 +17,20 @@ import org.hibernate.search.engine.spatial.GeoPoint;
  */
 @Deprecated
 public interface Coordinates {
-	/**
-	 * @return the latitude in degrees
-	 */
-	@Latitude
-	Double getLatitude();
 
-	/**
-	 * @return the longitude in degrees
-	 */
-	@Longitude
-	Double getLongitude();
+    /**
+     * @return the latitude in degrees
+     */
+    @Latitude
+    Double getLatitude();
 
-	static GeoPoint toGeoPoint(Coordinates coordinates) {
-		if ( coordinates == null ) {
-			return null;
-		}
-		Double latitude = coordinates.getLatitude();
-		Double longitude = coordinates.getLongitude();
-		if ( latitude == null || longitude == null ) {
-			return null;
-		}
-		return GeoPoint.of( latitude, longitude );
-	}
+    /**
+     * @return the longitude in degrees
+     */
+    @Longitude
+    Double getLongitude();
+
+    static GeoPoint toGeoPoint(Coordinates coordinates) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

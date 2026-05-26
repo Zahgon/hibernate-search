@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.reporting.spi;
 
 import static org.hibernate.search.engine.logging.impl.EngineMiscLog.INSTANCE;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.hibernate.search.engine.reporting.impl.EngineEventContextMessages;
 import org.hibernate.search.util.common.SearchException;
 import org.hibernate.search.util.common.data.impl.InsertionOrder;
@@ -24,215 +22,146 @@ import org.hibernate.search.util.common.reporting.EventContextElement;
 
 public final class RootFailureCollector implements FailureCollector {
 
-	/**
-	 * This prevents Hibernate Search from trying too hard to collect errors,
-	 * which could be a problem when there is something fundamentally wrong
-	 * that will cause almost every operation to fail.
-	 */
-	// Exposed for tests
-	static final int FAILURE_LIMIT = 100;
+    /**
+     * This prevents Hibernate Search from trying too hard to collect errors,
+     * which could be a problem when there is something fundamentally wrong
+     * that will cause almost every operation to fail.
+     */
+    // Exposed for tests
+    static final int FAILURE_LIMIT = 100;
 
-	private final String process;
-	private final NonRootFailureCollector delegate;
-	private final AtomicInteger failureCount = new AtomicInteger();
+    private final String process;
 
-	public RootFailureCollector(String process) {
-		this.process = process;
-		this.delegate = new NonRootFailureCollector( this );
-	}
+    private final NonRootFailureCollector delegate;
 
-	public void checkNoFailure() {
-		if ( failureCount.get() > 0 ) {
-			List<Throwable> failures = new ArrayList<>();
-			ToStringStyle style = ToStringStyle.multilineIndentStructure(
-					EngineEventContextMessages.INSTANCE.failureReportContextFailuresSeparator(),
-					EngineEventContextMessages.INSTANCE.failureReportContextIndent(),
-					EngineEventContextMessages.INSTANCE.failureReportFailuresBulletPoint(),
-					EngineEventContextMessages.INSTANCE.failureReportFailuresNoBulletPoint()
-			);
-			ToStringTreeBuilder builder = new ToStringTreeBuilder( style );
-			builder.startObject();
-			if ( failureCount.get() > FAILURE_LIMIT ) {
-				builder.value(
-						INSTANCE.collectedFailureLimitReached( process, FAILURE_LIMIT, failureCount.get() ) );
-			}
-			if ( delegate != null ) {
-				delegate.appendChildrenFailuresTo( failures, builder );
-			}
-			builder.endObject();
-			throw INSTANCE.collectedFailures( process, builder.toString(), failures );
-		}
-	}
+    private final AtomicInteger failureCount = new AtomicInteger();
 
-	@Override
-	public ContextualFailureCollector withContext(EventContext context) {
-		return delegate.withContext( context );
-	}
+    public RootFailureCollector(String process) {
+        this.process = process;
+        this.delegate = new NonRootFailureCollector(this);
+    }
 
-	@Override
-	public ContextualFailureCollector withContext(EventContextElement contextElement) {
-		return delegate.withContext( contextElement );
-	}
+    public void checkNoFailure() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean shouldAddFailure() {
-		return failureCount.incrementAndGet() <= FAILURE_LIMIT;
-	}
+    @Override
+    public ContextualFailureCollector withContext(EventContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class NonRootFailureCollector implements FailureCollector {
-		protected final RootFailureCollector root;
-		private final InsertionOrder<EventContextElement> childrenInsertionOrder = new InsertionOrder<>();
-		// Avoiding blocking implementations because we access this from reactive event loops
-		private final Map<InsertionOrder.Key<EventContextElement>, ContextualFailureCollectorImpl> children =
-				new ConcurrentSkipListMap<>();
+    @Override
+    public ContextualFailureCollector withContext(EventContextElement contextElement) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private NonRootFailureCollector(RootFailureCollector root) {
-			this.root = root;
-		}
+    private boolean shouldAddFailure() {
+        return failureCount.incrementAndGet() <= FAILURE_LIMIT;
+    }
 
-		protected NonRootFailureCollector(NonRootFailureCollector parent) {
-			this.root = parent.root;
-		}
+    private static class NonRootFailureCollector implements FailureCollector {
 
-		@Override
-		public ContextualFailureCollectorImpl withContext(EventContext context) {
-			if ( context == null ) {
-				return withDefaultContext();
-			}
-			List<EventContextElement> elements = context.elements();
-			try {
-				NonRootFailureCollector failureCollector = this;
-				for ( EventContextElement contextElement : elements ) {
-					failureCollector = failureCollector.withContext( contextElement );
-				}
-				return (ContextualFailureCollectorImpl) failureCollector;
-			}
-			// This should not happen, but we want to be extra-cautious to avoid failures while handling failures
-			catch (RuntimeException e) {
-				// Just log the problem and degrade gracefully.
-				INSTANCE.exceptionWhileCollectingFailure( e.getMessage(), e );
-				return withDefaultContext();
-			}
-		}
+        protected final RootFailureCollector root;
 
-		@Override
-		public ContextualFailureCollectorImpl withContext(EventContextElement contextElement) {
-			if ( contextElement == null ) {
-				return withDefaultContext();
-			}
-			return children.computeIfAbsent(
-					childrenInsertionOrder.wrapKey( contextElement ),
-					key -> new ContextualFailureCollectorImpl( this, key.get() )
-			);
-		}
+        private final InsertionOrder<EventContextElement> childrenInsertionOrder = new InsertionOrder<>();
 
-		ContextualFailureCollectorImpl withDefaultContext() {
-			return withContext( EventContexts.defaultContext() );
-		}
+        // Avoiding blocking implementations because we access this from reactive event loops
+        private final Map<InsertionOrder.Key<EventContextElement>, ContextualFailureCollectorImpl> children = new ConcurrentSkipListMap<>();
 
-		EventContext createEventContext(EventContextElement contextElement) {
-			return EventContext.create( contextElement );
-		}
+        private NonRootFailureCollector(RootFailureCollector root) {
+            this.root = root;
+        }
 
-		final void appendChildrenFailuresTo(List<Throwable> failures, ToStringTreeBuilder builder) {
-			for ( ContextualFailureCollectorImpl child : children.values() ) {
-				// Some contexts may have been mentioned without any failure being ever reported.
-				// Only display contexts that had at least one failure reported.
-				if ( child.hasFailure() ) {
-					child.appendFailuresTo( failures, builder );
-				}
-			}
-		}
+        protected NonRootFailureCollector(NonRootFailureCollector parent) {
+            this.root = parent.root;
+        }
 
-		final Collection<ContextualFailureCollectorImpl> children() {
-			return children.values();
-		}
+        @Override
+        public ContextualFailureCollectorImpl withContext(EventContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	}
+        @Override
+        public ContextualFailureCollectorImpl withContext(EventContextElement contextElement) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static class ContextualFailureCollectorImpl extends NonRootFailureCollector implements ContextualFailureCollector {
-		private final NonRootFailureCollector parent;
-		private final EventContextElement contextElement;
+        ContextualFailureCollectorImpl withDefaultContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		// Avoiding blocking implementations because we access this from reactive event loops
-		private final Collection<Throwable> failures = new ConcurrentLinkedDeque<>();
-		private final Collection<String> failureMessages = new ConcurrentLinkedDeque<>();
+        EventContext createEventContext(EventContextElement contextElement) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private ContextualFailureCollectorImpl(NonRootFailureCollector parent, EventContextElement contextElement) {
-			super( parent );
-			this.parent = parent;
-			this.contextElement = contextElement;
-		}
+        final void appendChildrenFailuresTo(List<Throwable> failures, ToStringTreeBuilder builder) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean hasFailure() {
-			if ( !failureMessages.isEmpty() ) {
-				return true;
-			}
-			for ( ContextualFailureCollectorImpl child : children() ) {
-				if ( child.hasFailure() ) {
-					return true;
-				}
-			}
-			return false;
-		}
+        final Collection<ContextualFailureCollectorImpl> children() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void add(Throwable t) {
-			if ( t instanceof SearchException ) {
-				SearchException e = (SearchException) t;
-				ContextualFailureCollectorImpl failureCollector = this;
-				EventContext eventContext = e.context();
-				if ( eventContext != null ) {
-					failureCollector = failureCollector.withContext( e.context() );
-				}
-				// Do not include the context in the failure message, since we will render it as part of the failure report
-				failureCollector.doAdd( e, e.messageWithoutContext() );
-			}
-			else {
-				doAdd( t, t.getMessage() );
-			}
-		}
+    private static class ContextualFailureCollectorImpl extends NonRootFailureCollector implements ContextualFailureCollector {
 
-		@Override
-		public void add(String failureMessage) {
-			doAdd( null, failureMessage );
-		}
+        private final NonRootFailureCollector parent;
 
-		@Override
-		ContextualFailureCollectorImpl withDefaultContext() {
-			return this;
-		}
+        private final EventContextElement contextElement;
 
-		@Override
-		public EventContext eventContext() {
-			return parent.createEventContext( contextElement );
-		}
+        // Avoiding blocking implementations because we access this from reactive event loops
+        private final Collection<Throwable> failures = new ConcurrentLinkedDeque<>();
 
-		@Override
-		EventContext createEventContext(EventContextElement contextElement) {
-			return eventContext().append( contextElement );
-		}
+        private final Collection<String> failureMessages = new ConcurrentLinkedDeque<>();
 
-		void appendFailuresTo(List<Throwable> failures, ToStringTreeBuilder builder) {
-			builder.startObject( contextElement.render() );
-			failures.addAll( this.failures );
-			if ( !failureMessages.isEmpty() ) {
-				builder.attribute( EngineEventContextMessages.INSTANCE.failureReportFailures(), failureMessages );
-			}
-			appendChildrenFailuresTo( failures, builder );
-			builder.endObject();
-		}
+        private ContextualFailureCollectorImpl(NonRootFailureCollector parent, EventContextElement contextElement) {
+            super(parent);
+            this.parent = parent;
+            this.contextElement = contextElement;
+        }
 
-		private void doAdd(Throwable failure, String failureMessage) {
-			INSTANCE.newCollectedFailure( root.process, this, failure );
+        @Override
+        public boolean hasFailure() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( root.shouldAddFailure() ) {
-				failureMessages.add( failureMessage );
-				if ( failure != null ) {
-					failures.add( failure );
-				}
-			}
-		}
-	}
+        @Override
+        public void add(Throwable t) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public void add(String failureMessage) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        ContextualFailureCollectorImpl withDefaultContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public EventContext eventContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        EventContext createEventContext(EventContextElement contextElement) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        void appendFailuresTo(List<Throwable> failures, ToStringTreeBuilder builder) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private void doAdd(Throwable failure, String failureMessage) {
+            INSTANCE.newCollectedFailure(root.process, this, failure);
+            if (root.shouldAddFailure()) {
+                failureMessages.add(failureMessage);
+                if (failure != null) {
+                    failures.add(failure);
+                }
+            }
+        }
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.orm.bootstrap.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.SessionFactoryObserver;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -20,33 +19,25 @@ import org.hibernate.search.util.common.impl.Futures;
  */
 class HibernateSearchSessionFactoryObserver implements SessionFactoryObserver {
 
-	private final CompletableFuture<?> contextFuture;
-	private final CompletableFuture<SessionFactoryImplementor> sessionFactoryCreatedFuture;
-	private final CompletableFuture<?> sessionFactoryClosingFuture;
+    private final CompletableFuture<?> contextFuture;
 
-	HibernateSearchSessionFactoryObserver(
-			CompletableFuture<?> contextFuture,
-			CompletableFuture<SessionFactoryImplementor> sessionFactoryCreatedFuture,
-			CompletableFuture<?> sessionFactoryClosingFuture) {
-		this.contextFuture = contextFuture;
-		this.sessionFactoryCreatedFuture = sessionFactoryCreatedFuture;
-		this.sessionFactoryClosingFuture = sessionFactoryClosingFuture;
-	}
+    private final CompletableFuture<SessionFactoryImplementor> sessionFactoryCreatedFuture;
 
-	@Override
-	public synchronized void sessionFactoryCreated(SessionFactory factory) {
-		SessionFactoryImplementor sessionFactoryImplementor = (SessionFactoryImplementor) factory;
-		sessionFactoryCreatedFuture.complete( sessionFactoryImplementor );
-		// If the above triggered bootstrap and it failed, propagate the exception
-		if ( contextFuture.isCompletedExceptionally() ) {
-			Futures.unwrappedExceptionJoin( contextFuture );
-		}
-	}
+    private final CompletableFuture<?> sessionFactoryClosingFuture;
 
-	@Override
-	public synchronized void sessionFactoryClosing(SessionFactory factory) {
-		sessionFactoryClosingFuture.complete( null );
-		// If the above triggered shutdown and it failed, the exception will be logged.
-	}
+    HibernateSearchSessionFactoryObserver(CompletableFuture<?> contextFuture, CompletableFuture<SessionFactoryImplementor> sessionFactoryCreatedFuture, CompletableFuture<?> sessionFactoryClosingFuture) {
+        this.contextFuture = contextFuture;
+        this.sessionFactoryCreatedFuture = sessionFactoryCreatedFuture;
+        this.sessionFactoryClosingFuture = sessionFactoryClosingFuture;
+    }
 
+    @Override
+    public synchronized void sessionFactoryCreated(SessionFactory factory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public synchronized void sessionFactoryClosing(SessionFactory factory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

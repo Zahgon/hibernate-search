@@ -6,27 +6,25 @@ package org.hibernate.search.mapper.pojo.bridge.builtin.impl;
 
 import java.time.MonthDay;
 import java.time.format.DateTimeFormatter;
-
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultMonthDayBridge extends AbstractPassThroughDefaultBridge<MonthDay> {
 
-	public static final DefaultMonthDayBridge INSTANCE = new DefaultMonthDayBridge();
+    public static final DefaultMonthDayBridge INSTANCE = new DefaultMonthDayBridge();
 
-	// The DateTimeFormatter class does not expose a public constant for the ISO format, so we need to do it ourselves.
-	private static final DateTimeFormatter FORMATTER = ParseUtils.ISO_MONTH_DAY;
+    // The DateTimeFormatter class does not expose a public constant for the ISO format, so we need to do it ourselves.
+    private static final DateTimeFormatter FORMATTER = ParseUtils.ISO_MONTH_DAY;
 
-	private DefaultMonthDayBridge() {
-	}
+    private DefaultMonthDayBridge() {
+    }
 
-	@Override
-	protected String toString(MonthDay value) {
-		return FORMATTER.format( value );
-	}
+    @Override
+    protected String toString(MonthDay value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected MonthDay fromString(String value) {
-		return ParseUtils.parseMonthDay( value );
-	}
-
+    @Override
+    protected MonthDay fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

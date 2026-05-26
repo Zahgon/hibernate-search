@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
 import org.hibernate.search.backend.lucene.scope.model.impl.LuceneSearchIndexScopeImpl;
 import org.hibernate.search.backend.lucene.search.projection.dsl.DocumentTree;
 import org.hibernate.search.engine.backend.common.DocumentReference;
@@ -20,91 +19,82 @@ import org.hibernate.search.engine.search.projection.dsl.ProjectionFinalStep;
 import org.hibernate.search.engine.search.projection.spi.CompositeProjectionBuilder;
 import org.hibernate.search.engine.search.projection.spi.SearchProjectionBuilderFactory;
 import org.hibernate.search.util.common.SearchException;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Explanation;
 
 public class LuceneSearchProjectionBuilderFactory implements SearchProjectionBuilderFactory {
 
-	private final LuceneSearchIndexScopeImpl<?> scope;
+    private final LuceneSearchIndexScopeImpl<?> scope;
 
-	public LuceneSearchProjectionBuilderFactory(LuceneSearchIndexScopeImpl<?> scope) {
-		this.scope = scope;
-	}
+    public LuceneSearchProjectionBuilderFactory(LuceneSearchIndexScopeImpl<?> scope) {
+        this.scope = scope;
+    }
 
-	@Override
-	public SearchProjection<DocumentReference> documentReference() {
-		return new LuceneDocumentReferenceProjection( scope );
-	}
+    @Override
+    public SearchProjection<DocumentReference> documentReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <E> SearchProjection<E> entityLoading() {
-		return new LuceneEntityLoadingProjection<>( scope );
-	}
+    @Override
+    public <E> SearchProjection<E> entityLoading() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <R> SearchProjection<R> entityReference() {
-		return new LuceneEntityReferenceProjection<>( scope );
-	}
+    @Override
+    public <R> SearchProjection<R> entityReference() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <I> SearchProjection<I> id(Class<I> requestedIdentifierType) {
-		SearchIndexIdentifierContext identifier = scope.identifier();
-		return new LuceneIdProjection<>( scope,
-				(ProjectionConverter<String, I>) identifier.mappingProjectionConverter()
-						.withConvertedType( requestedIdentifierType, identifier ) );
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I> SearchProjection<I> id(Class<I> requestedIdentifierType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjection<Float> score() {
-		return new LuceneScoreProjection( scope );
-	}
+    @Override
+    public SearchProjection<Float> score() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompositeProjectionBuilder composite() {
-		return new LuceneCompositeProjection.Builder( scope );
-	}
+    @Override
+    public CompositeProjectionBuilder composite() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchProjection<T> constant(T value) {
-		return new LuceneConstantProjection<>( scope, value );
-	}
+    @Override
+    public <T> SearchProjection<T> constant(T value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchProjection<T> entityComposite(SearchProjection<T> delegate) {
-		return new LuceneEntityCompositeProjection<>( scope, LuceneSearchProjection.from( scope, delegate ) );
-	}
+    @Override
+    public <T> SearchProjection<T> entityComposite(SearchProjection<T> delegate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchProjection<T> throwing(Supplier<SearchException> exceptionSupplier) {
-		return new LuceneThrowingProjection<>( scope, exceptionSupplier );
-	}
+    @Override
+    public <T> SearchProjection<T> throwing(Supplier<SearchException> exceptionSupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchProjection<T> byTypeName(Map<String, ? extends SearchProjection<? extends T>> inners) {
-		Map<String, LuceneSearchProjection<? extends T>> luceneInners = new HashMap<>();
-		for ( Map.Entry<String, ? extends SearchProjection<? extends T>> entry : inners.entrySet() ) {
-			luceneInners.put( entry.getKey(), LuceneSearchProjection.from( scope, entry.getValue() ) );
-		}
-		return new LuceneByMappedTypeProjection<>( scope, luceneInners );
-	}
+    @Override
+    public <T> SearchProjection<T> byTypeName(Map<String, ? extends SearchProjection<? extends T>> inners) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchProjection<T> withParameters(
-			Function<? super NamedValues, ? extends ProjectionFinalStep<T>> projectionCreator) {
-		return new LuceneWithParametersProjection<>( scope, projectionCreator );
-	}
+    @Override
+    public <T> SearchProjection<T> withParameters(Function<? super NamedValues, ? extends ProjectionFinalStep<T>> projectionCreator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SearchProjection<Document> document() {
-		return new LuceneDocumentProjection( scope );
-	}
+    public SearchProjection<Document> document() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SearchProjection<Explanation> explanation() {
-		return new LuceneExplanationProjection( scope );
-	}
+    public SearchProjection<Explanation> explanation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SearchProjection<DocumentTree> documentTree() {
-		return new LuceneDocumentTreeProjection( scope );
-	}
+    public SearchProjection<DocumentTree> documentTree() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -11,37 +11,32 @@ import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
 
 public class OpenIndexWork extends AbstractNonBulkableWork<Void> {
 
-	protected OpenIndexWork(Builder builder) {
-		super( builder );
-	}
+    protected OpenIndexWork(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		return null;
-	}
+    @Override
+    protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder
-			extends AbstractBuilder<Builder> {
-		private final URLEncodedString indexName;
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		public Builder(URLEncodedString indexName) {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-			this.indexName = indexName;
-		}
+        private final URLEncodedString indexName;
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.post()
-							.pathComponent( indexName )
-							.pathComponent( Paths._OPEN );
+        public Builder(URLEncodedString indexName) {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+            this.indexName = indexName;
+        }
 
-			return builder.build();
-		}
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public OpenIndexWork build() {
-			return new OpenIndexWork( this );
-		}
-	}
+        @Override
+        public OpenIndexWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

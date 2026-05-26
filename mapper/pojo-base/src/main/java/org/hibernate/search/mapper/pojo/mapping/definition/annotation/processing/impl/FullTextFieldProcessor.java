@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processin
 
 import java.util.Arrays;
 import java.util.Collections;
-
 import org.hibernate.search.engine.backend.types.Highlightable;
 import org.hibernate.search.engine.backend.types.Norms;
 import org.hibernate.search.engine.backend.types.Projectable;
@@ -22,66 +21,42 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public class FullTextFieldProcessor extends AbstractStandardFieldAnnotationProcessor<FullTextField> {
 
-	@Override
-	PropertyMappingStandardFieldOptionsStep<?> initStandardFieldMappingContext(PropertyMappingStep mappingContext,
-			FullTextField annotation, String fieldName) {
-		PropertyMappingFullTextFieldOptionsStep fieldContext = mappingContext.fullTextField( fieldName )
-				.analyzer( annotation.analyzer() );
+    @Override
+    PropertyMappingStandardFieldOptionsStep<?> initStandardFieldMappingContext(PropertyMappingStep mappingContext, FullTextField annotation, String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( !annotation.searchAnalyzer().isEmpty() ) {
-			fieldContext.searchAnalyzer( annotation.searchAnalyzer() );
-		}
+    @Override
+    String getName(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Norms norms = annotation.norms();
-		if ( !Norms.DEFAULT.equals( norms ) ) {
-			fieldContext.norms( norms );
-		}
+    @Override
+    Projectable getProjectable(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		TermVector termVector = annotation.termVector();
-		if ( !TermVector.DEFAULT.equals( termVector ) ) {
-			fieldContext.termVector( termVector );
-		}
-		Highlightable[] highlightable = getHighlightable( annotation );
-		if ( !( highlightable.length == 1 && Highlightable.DEFAULT.equals( highlightable[0] ) ) ) {
-			fieldContext.highlightable(
-					highlightable.length == 0 ? Collections.emptyList() : Arrays.asList( highlightable )
-			);
-		}
+    @Override
+    Searchable getSearchable(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return fieldContext;
-	}
+    Highlightable[] getHighlightable(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	String getName(FullTextField annotation) {
-		return annotation.name();
-	}
+    @Override
+    ValueBridgeRef getValueBridge(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Projectable getProjectable(FullTextField annotation) {
-		return annotation.projectable();
-	}
+    @Override
+    ValueBinderRef getValueBinder(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	Searchable getSearchable(FullTextField annotation) {
-		return annotation.searchable();
-	}
-
-	Highlightable[] getHighlightable(FullTextField annotation) {
-		return annotation.highlightable();
-	}
-
-	@Override
-	ValueBridgeRef getValueBridge(FullTextField annotation) {
-		return annotation.valueBridge();
-	}
-
-	@Override
-	ValueBinderRef getValueBinder(FullTextField annotation) {
-		return annotation.valueBinder();
-	}
-
-	@Override
-	ContainerExtraction getExtraction(FullTextField annotation) {
-		return annotation.extraction();
-	}
+    @Override
+    ContainerExtraction getExtraction(FullTextField annotation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

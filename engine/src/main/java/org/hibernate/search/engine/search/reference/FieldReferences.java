@@ -22,23 +22,19 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public interface FieldReferences {
 
-	static <SR, T> AnySortReference<SR, T> anySortReference(String absolutePath, Class<SR> scopeRootType, ValueModel valueModel,
-			Class<T> sortType) {
-		return new AnySortReference<>( absolutePath, scopeRootType, valueModel, sortType );
-	}
+    static <SR, T> AnySortReference<SR, T> anySortReference(String absolutePath, Class<SR> scopeRootType, ValueModel valueModel, Class<T> sortType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <SR, T> AnyProjectionReference<SR, T> anyProjectionReference(String absolutePath, Class<SR> scopeRootType,
-			ValueModel valueModel, Class<T> projectionType) {
-		return new AnyProjectionReference<>( absolutePath, scopeRootType, valueModel, projectionType );
-	}
+    static <SR, T> AnyProjectionReference<SR, T> anyProjectionReference(String absolutePath, Class<SR> scopeRootType, ValueModel valueModel, Class<T> projectionType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <SR, T> AnyPredicateReference<SR, T> anyPredicateReference(String absolutePath, Class<SR> scopeRootType,
-			ValueModel valueModel, Class<T> predicateType) {
-		return new AnyPredicateReference<>( absolutePath, scopeRootType, valueModel, predicateType );
-	}
+    static <SR, T> AnyPredicateReference<SR, T> anyPredicateReference(String absolutePath, Class<SR> scopeRootType, ValueModel valueModel, Class<T> predicateType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static <SR, T> AnyAggregationReference<SR, T> anyAggregationReference(String absolutePath, Class<SR> scopeRootType,
-			ValueModel valueModel, Class<T> aggregationType) {
-		return new AnyAggregationReference<>( absolutePath, scopeRootType, valueModel, aggregationType );
-	}
+    static <SR, T> AnyAggregationReference<SR, T> anyAggregationReference(String absolutePath, Class<SR> scopeRootType, ValueModel valueModel, Class<T> aggregationType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -15,41 +15,41 @@ import org.hibernate.search.engine.reporting.FailureHandler;
 
 class DelegatingBuildContext {
 
-	private final RootBuildContext delegate;
+    private final RootBuildContext delegate;
 
-	DelegatingBuildContext(RootBuildContext delegate) {
-		this.delegate = delegate;
-	}
+    DelegatingBuildContext(RootBuildContext delegate) {
+        this.delegate = delegate;
+    }
 
-	public ClassResolver classResolver() {
-		return delegate.getClassResolver();
-	}
+    public ClassResolver classResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ResourceResolver resourceResolver() {
-		return delegate.getResourceResolver();
-	}
+    public ResourceResolver resourceResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BeanResolver beanResolver() {
-		return delegate.getBeanResolver();
-	}
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ConfigurationPropertySource configurationPropertySource() {
-		return delegate.getConfigurationPropertySource();
-	}
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public ThreadPoolProvider threadPoolProvider() {
-		return delegate.getThreadPoolProvider();
-	}
+    public ThreadPoolProvider threadPoolProvider() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public FailureHandler failureHandler() {
-		return delegate.getFailureHandler();
-	}
+    public FailureHandler failureHandler() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public EngineThreads engineThreads() {
-		return delegate.getEngineThreads();
-	}
+    public EngineThreads engineThreads() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public TimingSource timingSource() {
-		return delegate.getTimingSource();
-	}
+    public TimingSource timingSource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

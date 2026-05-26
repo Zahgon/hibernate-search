@@ -5,10 +5,8 @@
 package org.hibernate.search.mapper.orm.outboxpolling.mapping.impl;
 
 import static org.hibernate.search.mapper.orm.outboxpolling.event.impl.OutboxPollingOutboxEventAdditionalMappingProducer.ENTITY_NAME;
-
 import java.util.Set;
 import java.util.function.Function;
-
 import org.hibernate.Session;
 import org.hibernate.SessionBuilder;
 import org.hibernate.SessionFactory;
@@ -25,129 +23,122 @@ import org.hibernate.search.mapper.orm.tenancy.spi.TenancyConfiguration;
 
 public class OutboxPollingSearchMappingImpl implements OutboxPollingSearchMapping {
 
-	private static final String COUNT_EVENTS_WITH_STATUS =
-			"select count(e) from " + ENTITY_NAME + " e where e.status = :status";
-	private static final String UPDATE_EVENTS_WITH_STATUS =
-			"update " + ENTITY_NAME + " e set e.status = :newStatus where e.status = :status";
-	private static final String DELETE_EVENTS_WITH_STATUS = "delete " + ENTITY_NAME + " e where e.status = :status";
+    private static final String COUNT_EVENTS_WITH_STATUS = "select count(e) from " + ENTITY_NAME + " e where e.status = :status";
 
-	private final TransactionHelper transactionHelper;
-	private final SessionFactoryImplementor sessionFactory;
-	private final TenancyConfiguration tenancyConfiguration;
-	private final Set<String> tenantIds;
+    private static final String UPDATE_EVENTS_WITH_STATUS = "update " + ENTITY_NAME + " e set e.status = :newStatus where e.status = :status";
 
-	public OutboxPollingSearchMappingImpl(CoordinationStrategyStartContext context,
-			TenancyConfiguration tenancyConfiguration) {
-		this.sessionFactory = context.mapping().sessionFactory();
-		this.transactionHelper = new TransactionHelper( sessionFactory, null );
-		this.tenancyConfiguration = tenancyConfiguration;
-		this.tenantIds = this.tenancyConfiguration.tenantIdsOrFail();
-	}
+    private static final String DELETE_EVENTS_WITH_STATUS = "delete " + ENTITY_NAME + " e where e.status = :status";
 
-	@Override
-	public long countAbortedEvents() {
-		checkNoTenant();
-		return doCountAbortedEvents( SessionFactory::withOptions );
-	}
+    private final TransactionHelper transactionHelper;
 
-	@Override
-	@SuppressWarnings("removal")
-	public long countAbortedEvents(String tenantId) {
-		checkTenant( tenantId );
-		return doCountAbortedEvents( sf -> sf.withOptions().tenantIdentifier( tenancyConfiguration.convert( tenantId ) ) );
-	}
+    private final SessionFactoryImplementor sessionFactory;
 
-	@Override
-	public long countAbortedEvents(Object tenantId) {
-		checkTenant( tenantId );
-		return doCountAbortedEvents( sf -> sf.withOptions().tenantIdentifier( tenantId ) );
-	}
+    private final TenancyConfiguration tenancyConfiguration;
 
-	private long doCountAbortedEvents(Function<SessionFactory, SessionBuilder> sessionCreator) {
-		try ( Session session = sessionCreator.apply( sessionFactory ).openSession() ) {
-			return transactionHelper.inTransaction( (SharedSessionContractImplementor) session, () -> {
-				Query<Long> query = session.createQuery( COUNT_EVENTS_WITH_STATUS, Long.class );
-				query.setParameter( "status", OutboxEvent.Status.ABORTED );
-				return query.getSingleResult();
-			} );
-		}
-	}
+    private final Set<String> tenantIds;
 
-	@Override
-	public int reprocessAbortedEvents() {
-		checkNoTenant();
-		return doReprocessAbortedEvents( SessionFactory::withOptions );
-	}
+    public OutboxPollingSearchMappingImpl(CoordinationStrategyStartContext context, TenancyConfiguration tenancyConfiguration) {
+        this.sessionFactory = context.mapping().sessionFactory();
+        this.transactionHelper = new TransactionHelper(sessionFactory, null);
+        this.tenancyConfiguration = tenancyConfiguration;
+        this.tenantIds = this.tenancyConfiguration.tenantIdsOrFail();
+    }
 
-	@Override
-	@SuppressWarnings("removal")
-	public int reprocessAbortedEvents(String tenantId) {
-		checkTenant( tenantId );
-		return doReprocessAbortedEvents( sf -> sf.withOptions().tenantIdentifier( tenancyConfiguration.convert( tenantId ) ) );
-	}
+    @Override
+    public long countAbortedEvents() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int reprocessAbortedEvents(Object tenantId) {
-		checkTenant( tenantId );
-		return doReprocessAbortedEvents( sf -> sf.withOptions().tenantIdentifier( tenantId ) );
-	}
+    @Override
+    @SuppressWarnings("removal")
+    public long countAbortedEvents(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private int doReprocessAbortedEvents(Function<SessionFactory, SessionBuilder> sessionCreator) {
-		try ( Session session = sessionCreator.apply( sessionFactory ).openSession() ) {
-			return transactionHelper.inTransaction( (SharedSessionContractImplementor) session, () -> {
-				MutationQuery query = session.createMutationQuery( UPDATE_EVENTS_WITH_STATUS );
-				query.setParameter( "status", OutboxEvent.Status.ABORTED );
-				query.setParameter( "newStatus", OutboxEvent.Status.PENDING );
-				return query.executeUpdate();
-			} );
-		}
-	}
+    @Override
+    public long countAbortedEvents(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int clearAllAbortedEvents() {
-		checkNoTenant();
-		return doClearAllAbortedEvents( SessionFactory::withOptions );
-	}
+    private long doCountAbortedEvents(Function<SessionFactory, SessionBuilder> sessionCreator) {
+        try (Session session = sessionCreator.apply(sessionFactory).openSession()) {
+            return transactionHelper.inTransaction((SharedSessionContractImplementor) session, () -> {
+                Query<Long> query = session.createQuery(COUNT_EVENTS_WITH_STATUS, Long.class);
+                query.setParameter("status", OutboxEvent.Status.ABORTED);
+                return query.getSingleResult();
+            });
+        }
+    }
 
-	@Override
-	@SuppressWarnings("removal")
-	public int clearAllAbortedEvents(String tenantId) {
-		checkTenant( tenantId );
-		return doClearAllAbortedEvents( sf -> sf.withOptions().tenantIdentifier( tenancyConfiguration.convert( tenantId ) ) );
-	}
+    @Override
+    public int reprocessAbortedEvents() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int clearAllAbortedEvents(Object tenantId) {
-		checkTenant( tenantId );
-		return doClearAllAbortedEvents( sf -> sf.withOptions().tenantIdentifier( tenantId ) );
-	}
+    @Override
+    @SuppressWarnings("removal")
+    public int reprocessAbortedEvents(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private int doClearAllAbortedEvents(Function<SessionFactory, SessionBuilder> sessionCreator) {
-		try ( Session session = sessionCreator.apply( sessionFactory ).openSession() ) {
-			return transactionHelper.inTransaction( (SharedSessionContractImplementor) session, () -> {
-				MutationQuery query = session.createMutationQuery( DELETE_EVENTS_WITH_STATUS );
-				query.setParameter( "status", OutboxEvent.Status.ABORTED );
-				return query.executeUpdate();
-			} );
-		}
-	}
+    @Override
+    public int reprocessAbortedEvents(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void checkNoTenant() {
-		if ( !tenantIds.isEmpty() ) {
-			throw ConfigurationLog.INSTANCE.noTenantIdSpecified( tenantIds );
-		}
-	}
+    private int doReprocessAbortedEvents(Function<SessionFactory, SessionBuilder> sessionCreator) {
+        try (Session session = sessionCreator.apply(sessionFactory).openSession()) {
+            return transactionHelper.inTransaction((SharedSessionContractImplementor) session, () -> {
+                MutationQuery query = session.createMutationQuery(UPDATE_EVENTS_WITH_STATUS);
+                query.setParameter("status", OutboxEvent.Status.ABORTED);
+                query.setParameter("newStatus", OutboxEvent.Status.PENDING);
+                return query.executeUpdate();
+            });
+        }
+    }
 
-	private void checkTenant(Object tenantId) {
-		checkTenant( tenancyConfiguration.convert( tenantId ) );
-	}
+    @Override
+    public int clearAllAbortedEvents() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void checkTenant(String tenantId) {
-		if ( tenantIds.isEmpty() ) {
-			throw ConfigurationLog.INSTANCE.multiTenancyNotEnabled( tenantId );
-		}
-		if ( !tenantIds.contains( tenantId ) ) {
-			throw tenancyConfiguration.invalidTenantId( tenantId );
-		}
-	}
+    @Override
+    @SuppressWarnings("removal")
+    public int clearAllAbortedEvents(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int clearAllAbortedEvents(Object tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private int doClearAllAbortedEvents(Function<SessionFactory, SessionBuilder> sessionCreator) {
+        try (Session session = sessionCreator.apply(sessionFactory).openSession()) {
+            return transactionHelper.inTransaction((SharedSessionContractImplementor) session, () -> {
+                MutationQuery query = session.createMutationQuery(DELETE_EVENTS_WITH_STATUS);
+                query.setParameter("status", OutboxEvent.Status.ABORTED);
+                return query.executeUpdate();
+            });
+        }
+    }
+
+    private void checkNoTenant() {
+        if (!tenantIds.isEmpty()) {
+            throw ConfigurationLog.INSTANCE.noTenantIdSpecified(tenantIds);
+        }
+    }
+
+    private void checkTenant(Object tenantId) {
+        checkTenant(tenancyConfiguration.convert(tenantId));
+    }
+
+    private void checkTenant(String tenantId) {
+        if (tenantIds.isEmpty()) {
+            throw ConfigurationLog.INSTANCE.multiTenancyNotEnabled(tenantId);
+        }
+        if (!tenantIds.contains(tenantId)) {
+            throw tenancyConfiguration.invalidTenantId(tenantId);
+        }
+    }
 }

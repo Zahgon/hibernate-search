@@ -12,17 +12,14 @@ import org.hibernate.search.query.dsl.sort.SortDistanceNoFieldContext;
  * @author Emmanuel Bernard emmanuel@hibernate.org
  * @author Yoann Rodiere
  */
-public class ConnectedSortDistanceNoFieldContext extends AbstractConnectedSortContext
-		implements SortDistanceNoFieldContext {
+public class ConnectedSortDistanceNoFieldContext extends AbstractConnectedSortContext implements SortDistanceNoFieldContext {
 
-	public ConnectedSortDistanceNoFieldContext(QueryBuildingContext queryContext, SortFieldStates states) {
-		super( queryContext, states );
-	}
+    public ConnectedSortDistanceNoFieldContext(QueryBuildingContext queryContext, SortFieldStates states) {
+        super(queryContext, states);
+    }
 
-	@Override
-	public SortDistanceFieldContext onField(String fieldName) {
-		getStates().setCurrentName( fieldName );
-		return new ConnectedSortDistanceFieldContext( queryContext, states );
-	}
-
+    @Override
+    public SortDistanceFieldContext onField(String fieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

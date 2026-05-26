@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.work.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchResponse;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
@@ -19,45 +18,35 @@ import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
  */
 public class ForceMergeWork extends AbstractNonBulkableWork<Void> {
 
-	protected ForceMergeWork(Builder builder) {
-		super( builder );
-	}
+    protected ForceMergeWork(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		return null;
-	}
+    @Override
+    protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder
-			extends AbstractBuilder<Builder> {
-		private final List<URLEncodedString> indexNames = new ArrayList<>();
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		public Builder() {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-		}
+        private final List<URLEncodedString> indexNames = new ArrayList<>();
 
-		public Builder index(URLEncodedString indexName) {
-			this.indexNames.add( indexName );
-			return this;
-		}
+        public Builder() {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+        }
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.post();
+        public Builder index(URLEncodedString indexName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( !indexNames.isEmpty() ) {
-				builder.multiValuedPathComponent( indexNames );
-			}
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			builder.pathComponent( Paths._FORCEMERGE );
-
-			return builder.build();
-		}
-
-		@Override
-		public ForceMergeWork build() {
-			return new ForceMergeWork( this );
-		}
-	}
+        @Override
+        public ForceMergeWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

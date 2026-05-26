@@ -25,30 +25,28 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBind
  * @see org.hibernate.search.mapper.pojo.mapping.definition.annotation.CompositeProjection
  */
 public final class CompositeProjectionBinder implements ProjectionBinder {
-	private static final CompositeProjectionBinder INSTANCE = new CompositeProjectionBinder();
 
-	/**
-	 * Creates an {@link CompositeProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @return The binder.
-	 */
-	public static CompositeProjectionBinder create() {
-		return INSTANCE;
-	}
+    private static final CompositeProjectionBinder INSTANCE = new CompositeProjectionBinder();
 
-	private CompositeProjectionBinder() {
-	}
+    /**
+     * Creates an {@link CompositeProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @return The binder.
+     */
+    public static CompositeProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		bind( context, context.constructorParameter().rawType() );
-	}
+    private CompositeProjectionBinder() {
+    }
 
-	private <T> void bind(ProjectionBindingContext context, Class<T> constructorParameterType) {
-		context.definition(
-				constructorParameterType,
-				context.createCompositeDefinition( constructorParameterType )
-		);
-	}
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private <T> void bind(ProjectionBindingContext context, Class<T> constructorParameterType) {
+        context.definition(constructorParameterType, context.createCompositeDefinition(constructorParameterType));
+    }
 }

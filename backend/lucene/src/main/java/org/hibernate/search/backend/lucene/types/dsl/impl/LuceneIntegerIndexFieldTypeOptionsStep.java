@@ -11,21 +11,19 @@ import org.hibernate.search.backend.lucene.types.codec.impl.LuceneIntegerFieldCo
 import org.hibernate.search.backend.lucene.types.codec.impl.Storage;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 
-class LuceneIntegerIndexFieldTypeOptionsStep
-		extends AbstractLuceneNumericIndexFieldTypeOptionsStep<LuceneIntegerIndexFieldTypeOptionsStep, Integer> {
+class LuceneIntegerIndexFieldTypeOptionsStep extends AbstractLuceneNumericIndexFieldTypeOptionsStep<LuceneIntegerIndexFieldTypeOptionsStep, Integer> {
 
-	LuceneIntegerIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Integer.class, DefaultStringConverters.INTEGER );
-	}
+    LuceneIntegerIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Integer.class, DefaultStringConverters.INTEGER);
+    }
 
-	@Override
-	protected LuceneIntegerIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneIntegerIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneNumericFieldCodec<Integer, ?> createCodec(Indexing indexing, DocValues docValues,
-			Storage storage, Integer indexNullAsValue) {
-		return new LuceneIntegerFieldCodec( indexing, docValues, storage, indexNullAsValue );
-	}
+    @Override
+    protected AbstractLuceneNumericFieldCodec<Integer, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, Integer indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

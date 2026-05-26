@@ -16,118 +16,95 @@ import org.hibernate.search.backend.elasticsearch.types.codec.impl.Elasticsearch
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.MatchPredicateBuilder;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchTextMatchPredicate extends ElasticsearchStandardMatchPredicate {
 
-	private static final JsonAccessor<Integer> FUZZINESS_ACCESSOR = JsonAccessor.root().property( "fuzziness" ).asInteger();
-	private static final JsonAccessor<Integer> PREFIX_LENGTH_ACCESSOR =
-			JsonAccessor.root().property( "prefix_length" ).asInteger();
-	private static final JsonAccessor<String> ANALYZER_ACCESSOR = JsonAccessor.root().property( "analyzer" ).asString();
-	private static final JsonAccessor<String> MINIMUM_SHOULD_MATCH_ACCESSOR = JsonAccessor.root()
-			.property( "minimum_should_match" ).asString();
+    private static final JsonAccessor<Integer> FUZZINESS_ACCESSOR = JsonAccessor.root().property("fuzziness").asInteger();
 
-	private final Integer fuzziness;
-	private final Integer prefixLength;
-	private final String analyzer;
-	private final ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
+    private static final JsonAccessor<Integer> PREFIX_LENGTH_ACCESSOR = JsonAccessor.root().property("prefix_length").asInteger();
 
-	private ElasticsearchTextMatchPredicate(Builder builder) {
-		super( builder );
-		fuzziness = builder.fuzziness;
-		prefixLength = builder.prefixLength;
-		analyzer = builder.analyzer;
-		minimumShouldMatchConstraints = builder.minimumShouldMatchConstraints;
-		builder.minimumShouldMatchConstraints = null;
-	}
+    private static final JsonAccessor<String> ANALYZER_ACCESSOR = JsonAccessor.root().property("analyzer").asString();
 
-	@Override
-	protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject,
-			JsonObject innerObject) {
-		if ( fuzziness != null ) {
-			FUZZINESS_ACCESSOR.set( innerObject, fuzziness );
-		}
-		if ( analyzer != null ) {
-			ANALYZER_ACCESSOR.set( innerObject, analyzer );
-		}
-		if ( prefixLength != null ) {
-			PREFIX_LENGTH_ACCESSOR.set( innerObject, prefixLength );
-		}
-		if ( !minimumShouldMatchConstraints.isEmpty() ) {
-			MINIMUM_SHOULD_MATCH_ACCESSOR.set(
-					innerObject,
-					minimumShouldMatchConstraints.formatMinimumShouldMatchConstraints()
-			);
-		}
-		return super.doToJsonQuery( context, outerObject, innerObject );
-	}
+    private static final JsonAccessor<String> MINIMUM_SHOULD_MATCH_ACCESSOR = JsonAccessor.root().property("minimum_should_match").asString();
 
-	public static class Factory
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<MatchPredicateBuilder, String> {
-		public Factory(ElasticsearchFieldCodec<String> codec) {
-			super( codec );
-		}
+    private final Integer fuzziness;
 
-		@Override
-		public MatchPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<String> field) {
-			return new Builder( codec, scope, field );
-		}
-	}
+    private final Integer prefixLength;
 
-	private static class Builder extends ElasticsearchStandardMatchPredicate.Builder<String> {
-		private Integer fuzziness;
-		private Integer prefixLength;
-		private String analyzer;
-		private ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
+    private final String analyzer;
 
-		private Builder(ElasticsearchFieldCodec<String> codec, ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<String> field) {
-			super( codec, scope, field );
-			this.minimumShouldMatchConstraints = new ElasticsearchCommonMinimumShouldMatchConstraints();
-		}
+    private final ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
 
-		@Override
-		public void fuzzy(int maxEditDistance, int exactPrefixLength) {
-			this.fuzziness = maxEditDistance;
-			this.prefixLength = exactPrefixLength;
-		}
+    private ElasticsearchTextMatchPredicate(Builder builder) {
+        super(builder);
+        fuzziness = builder.fuzziness;
+        prefixLength = builder.prefixLength;
+        analyzer = builder.analyzer;
+        minimumShouldMatchConstraints = builder.minimumShouldMatchConstraints;
+        builder.minimumShouldMatchConstraints = null;
+    }
 
-		@Override
-		public void analyzer(String analyzerName) {
-			this.analyzer = analyzerName;
-		}
+    @Override
+    protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public void skipAnalysis() {
-			if ( field.type().hasNormalizerOnAtLeastOneIndex() ) {
-				throw AnalysisLog.INSTANCE.skipAnalysisOnNormalizedField( absoluteFieldPath,
-						EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath ) );
-			}
+    public static class Factory extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<MatchPredicateBuilder, String> {
 
-			analyzer( AnalyzerConstants.KEYWORD_ANALYZER );
-		}
+        public Factory(ElasticsearchFieldCodec<String> codec) {
+            super(codec);
+        }
 
-		@Override
-		public void minimumShouldMatchNumber(int ignoreConstraintCeiling, int matchingClausesNumber) {
-			minimumShouldMatchConstraints.minimumShouldMatchNumber( ignoreConstraintCeiling, matchingClausesNumber );
-		}
+        @Override
+        public MatchPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<String> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void minimumShouldMatchPercent(int ignoreConstraintCeiling, int matchingClausesPercent) {
-			minimumShouldMatchConstraints.minimumShouldMatchPercent( ignoreConstraintCeiling, matchingClausesPercent );
-		}
+    private static class Builder extends ElasticsearchStandardMatchPredicate.Builder<String> {
 
-		@Override
-		public SearchPredicate build() {
-			if ( analyzer == null ) {
-				// Check analyzer compatibility for multi-index search
-				field.type().searchAnalyzerName();
-				field.type().normalizerName();
-			}
+        private Integer fuzziness;
 
-			return new ElasticsearchTextMatchPredicate( this );
-		}
-	}
+        private Integer prefixLength;
+
+        private String analyzer;
+
+        private ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
+
+        private Builder(ElasticsearchFieldCodec<String> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<String> field) {
+            super(codec, scope, field);
+            this.minimumShouldMatchConstraints = new ElasticsearchCommonMinimumShouldMatchConstraints();
+        }
+
+        @Override
+        public void fuzzy(int maxEditDistance, int exactPrefixLength) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void analyzer(String analyzerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void skipAnalysis() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void minimumShouldMatchNumber(int ignoreConstraintCeiling, int matchingClausesNumber) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void minimumShouldMatchPercent(int ignoreConstraintCeiling, int matchingClausesPercent) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

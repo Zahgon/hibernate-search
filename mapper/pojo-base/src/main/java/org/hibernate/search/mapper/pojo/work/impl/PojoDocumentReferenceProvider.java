@@ -8,31 +8,30 @@ import org.hibernate.search.engine.backend.work.execution.spi.DocumentReferenceP
 
 public final class PojoDocumentReferenceProvider implements DocumentReferenceProvider {
 
-	private final String documentIdentifier;
-	private final String routingKey;
+    private final String documentIdentifier;
 
-	private final Object entityIdentifier;
+    private final String routingKey;
 
-	public PojoDocumentReferenceProvider(String documentIdentifier,
-			String routingKey,
-			Object entityIdentifier) {
-		this.documentIdentifier = documentIdentifier;
-		this.routingKey = routingKey;
-		this.entityIdentifier = entityIdentifier;
-	}
+    private final Object entityIdentifier;
 
-	@Override
-	public String identifier() {
-		return documentIdentifier;
-	}
+    public PojoDocumentReferenceProvider(String documentIdentifier, String routingKey, Object entityIdentifier) {
+        this.documentIdentifier = documentIdentifier;
+        this.routingKey = routingKey;
+        this.entityIdentifier = entityIdentifier;
+    }
 
-	@Override
-	public String routingKey() {
-		return routingKey;
-	}
+    @Override
+    public String identifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object entityIdentifier() {
-		return entityIdentifier;
-	}
+    @Override
+    public String routingKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Object entityIdentifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

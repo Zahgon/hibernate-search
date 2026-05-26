@@ -8,74 +8,56 @@ import org.apache.lucene.search.DocIdSetIterator;
 
 public final class ExplicitDocIdSetIterator extends DocIdSetIterator {
 
-	public static DocIdSetIterator of(int[] sortedTopLevelDocIds, int leafDocBase, int leafMaxLeafId) {
-		int firstIndex = findFirstGreaterThanOrEqualTo( sortedTopLevelDocIds, leafDocBase );
-		if ( firstIndex < 0 ) {
-			return null;
-		}
-		else {
-			return new ExplicitDocIdSetIterator( sortedTopLevelDocIds, leafDocBase, firstIndex, leafMaxLeafId );
-		}
-	}
+    public static DocIdSetIterator of(int[] sortedTopLevelDocIds, int leafDocBase, int leafMaxLeafId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static int findFirstGreaterThanOrEqualTo(int[] values, int min) {
-		for ( int i = 0; i < values.length; i++ ) {
-			if ( values[i] >= min ) {
-				return i;
-			}
-		}
-		return -1;
-	}
+    private static int findFirstGreaterThanOrEqualTo(int[] values, int min) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] >= min) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-	private final int[] sortedTopLevelDocIds;
-	private final int leafDocBase;
-	private final int firstIndex;
-	private final int leafMaxDocId;
+    private final int[] sortedTopLevelDocIds;
 
-	private int index;
-	private int leafDocId = -1;
+    private final int leafDocBase;
 
-	ExplicitDocIdSetIterator(int[] sortedTopLevelDocIds, int leafDocBase, int firstIndex, int leafMaxDocId) {
-		this.sortedTopLevelDocIds = sortedTopLevelDocIds;
-		this.leafDocBase = leafDocBase;
-		this.firstIndex = firstIndex;
-		this.leafMaxDocId = leafMaxDocId;
+    private final int firstIndex;
 
-		this.index = firstIndex;
-	}
+    private final int leafMaxDocId;
 
-	@Override
-	public int docID() {
-		return leafDocId;
-	}
+    private int index;
 
-	@Override
-	public int nextDoc() {
-		if ( index < sortedTopLevelDocIds.length ) {
-			// Subtract docBase to convert from top-level doc id to leaf docId
-			leafDocId = sortedTopLevelDocIds[index] - leafDocBase;
-			++index;
-			if ( leafDocId < leafMaxDocId ) {
-				return leafDocId;
-			}
-		}
+    private int leafDocId = -1;
 
-		leafDocId = NO_MORE_DOCS;
-		return leafDocId;
-	}
+    ExplicitDocIdSetIterator(int[] sortedTopLevelDocIds, int leafDocBase, int firstIndex, int leafMaxDocId) {
+        this.sortedTopLevelDocIds = sortedTopLevelDocIds;
+        this.leafDocBase = leafDocBase;
+        this.firstIndex = firstIndex;
+        this.leafMaxDocId = leafMaxDocId;
+        this.index = firstIndex;
+    }
 
-	@Override
-	public int advance(int target) {
-		int doc;
-		while ( ( doc = nextDoc() ) < target ) {
-			// Nothing to do: nextDoc() advances the iterator.
-			// Performance is acceptable since we don't expect there will be many doc IDs.
-		}
-		return doc;
-	}
+    @Override
+    public int docID() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long cost() {
-		return (long) sortedTopLevelDocIds.length - firstIndex;
-	}
+    @Override
+    public int nextDoc() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public int advance(int target) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public long cost() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -9,19 +9,18 @@ import org.hibernate.search.engine.backend.document.IndexFieldReference;
 
 public class ElasticsearchIndexFieldReference<F> implements IndexFieldReference<F> {
 
-	private ElasticsearchIndexValueField<F> schemaNode;
+    private ElasticsearchIndexValueField<F> schemaNode;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName()
-				+ "[absolutePath=" + ( schemaNode == null ? null : schemaNode.absolutePath() ) + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setSchemaNode(ElasticsearchIndexValueField<F> schemaNode) {
-		this.schemaNode = schemaNode;
-	}
+    public void setSchemaNode(ElasticsearchIndexValueField<F> schemaNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	ElasticsearchIndexValueField<F> getSchemaNode() {
-		return schemaNode;
-	}
+    ElasticsearchIndexValueField<F> getSchemaNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

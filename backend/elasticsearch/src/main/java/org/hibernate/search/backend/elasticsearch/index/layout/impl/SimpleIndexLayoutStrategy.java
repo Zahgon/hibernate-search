@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.index.layout.impl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.hibernate.search.backend.elasticsearch.index.layout.IndexLayoutStrategy;
 import org.hibernate.search.backend.elasticsearch.logging.spi.ElasticsearchClientLog;
 
@@ -23,37 +22,32 @@ import org.hibernate.search.backend.elasticsearch.logging.spi.ElasticsearchClien
  */
 public final class SimpleIndexLayoutStrategy implements IndexLayoutStrategy {
 
-	public static final String NAME = "simple";
+    public static final String NAME = "simple";
 
-	public static final Pattern UNIQUE_KEY_EXTRACTION_PATTERN = Pattern.compile( "(.*)-\\d{6}" );
+    public static final Pattern UNIQUE_KEY_EXTRACTION_PATTERN = Pattern.compile("(.*)-\\d{6}");
 
-	@Override
-	public String createInitialElasticsearchIndexName(String hibernateSearchIndexName) {
-		return hibernateSearchIndexName + "-000001";
-	}
+    @Override
+    public String createInitialElasticsearchIndexName(String hibernateSearchIndexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String createWriteAlias(String hibernateSearchIndexName) {
-		return hibernateSearchIndexName + "-write";
-	}
+    @Override
+    public String createWriteAlias(String hibernateSearchIndexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String createReadAlias(String hibernateSearchIndexName) {
-		return hibernateSearchIndexName + "-read";
-	}
+    @Override
+    public String createReadAlias(String hibernateSearchIndexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String extractUniqueKeyFromHibernateSearchIndexName(String hibernateSearchIndexName) {
-		return hibernateSearchIndexName;
-	}
+    @Override
+    public String extractUniqueKeyFromHibernateSearchIndexName(String hibernateSearchIndexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String extractUniqueKeyFromElasticsearchIndexName(String elasticsearchIndexName) {
-		Matcher matcher = UNIQUE_KEY_EXTRACTION_PATTERN.matcher( elasticsearchIndexName );
-		if ( !matcher.matches() ) {
-			throw ElasticsearchClientLog.INSTANCE.invalidIndexPrimaryName( elasticsearchIndexName,
-					UNIQUE_KEY_EXTRACTION_PATTERN );
-		}
-		return matcher.group( 1 );
-	}
+    @Override
+    public String extractUniqueKeyFromElasticsearchIndexName(String elasticsearchIndexName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

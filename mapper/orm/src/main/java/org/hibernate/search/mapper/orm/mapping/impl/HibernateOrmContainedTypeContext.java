@@ -13,29 +13,23 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
 class HibernateOrmContainedTypeContext<E> extends AbstractHibernateOrmTypeContext<E> {
 
-	private HibernateOrmContainedTypeContext(HibernateOrmContainedTypeContext.Builder<E> builder,
-			PojoLoadingTypeContext<E> delegate, SessionFactoryImplementor sessionFactory) {
-		super( builder, delegate, sessionFactory );
-	}
+    private HibernateOrmContainedTypeContext(HibernateOrmContainedTypeContext.Builder<E> builder, PojoLoadingTypeContext<E> delegate, SessionFactoryImplementor sessionFactory) {
+        super(builder, delegate, sessionFactory);
+    }
 
-	@Override
-	public Object toIndexingPlanProvidedId(Object entityId) {
-		// The concept of document ID is not relevant for contained types,
-		// so we always provide the entity ID to indexing plans
-		return entityId;
-	}
+    @Override
+    public Object toIndexingPlanProvidedId(Object entityId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static class Builder<E> extends AbstractHibernateOrmTypeContext.Builder<E>
-			implements PojoContainedTypeExtendedMappingCollector {
+    static class Builder<E> extends AbstractHibernateOrmTypeContext.Builder<E> implements PojoContainedTypeExtendedMappingCollector {
 
-		Builder(PojoRawTypeModel<E> typeModel, PersistentClass persistentClass) {
-			super( typeModel, persistentClass );
-		}
+        Builder(PojoRawTypeModel<E> typeModel, PersistentClass persistentClass) {
+            super(typeModel, persistentClass);
+        }
 
-		HibernateOrmContainedTypeContext<E> build(PojoLoadingTypeContextProvider delegateProvider,
-				SessionFactoryImplementor sessionFactory) {
-			return new HibernateOrmContainedTypeContext<>( this, delegateProvider.forExactType( typeIdentifier ),
-					sessionFactory );
-		}
-	}
+        HibernateOrmContainedTypeContext<E> build(PojoLoadingTypeContextProvider delegateProvider, SessionFactoryImplementor sessionFactory) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

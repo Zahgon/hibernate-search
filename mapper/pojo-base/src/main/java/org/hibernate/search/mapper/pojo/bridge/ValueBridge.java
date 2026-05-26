@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.bridge;
 
 import java.util.Objects;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeFromIndexedValueContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContextExtension;
@@ -23,71 +22,70 @@ import org.hibernate.search.util.common.annotation.Incubating;
  */
 public interface ValueBridge<V, F> extends AutoCloseable {
 
-	/**
-	 * Transform the given POJO-extracted value into the value of the indexed field.
-	 *
-	 * @param value The POJO-extracted value to be transformed.
-	 * @param context A context that can be
-	 * {@link ValueBridgeToIndexedValueContext#extension(ValueBridgeToIndexedValueContextExtension) extended}
-	 * to a more useful type, giving access to such things as a Hibernate ORM SessionFactory (if using the Hibernate ORM mapper).
-	 * @return The value of the indexed field.
-	 */
-	F toIndexedValue(V value, ValueBridgeToIndexedValueContext context);
+    /**
+     * Transform the given POJO-extracted value into the value of the indexed field.
+     *
+     * @param value The POJO-extracted value to be transformed.
+     * @param context A context that can be
+     * {@link ValueBridgeToIndexedValueContext#extension(ValueBridgeToIndexedValueContextExtension) extended}
+     * to a more useful type, giving access to such things as a Hibernate ORM SessionFactory (if using the Hibernate ORM mapper).
+     * @return The value of the indexed field.
+     */
+    F toIndexedValue(V value, ValueBridgeToIndexedValueContext context);
 
-	/**
-	 * Transform the given indexed field value to the corresponding POJO-extracted value.
-	 *
-	 * @param value The value of the indexed field to be transformed.
-	 * @param context A context that can be
-	 * {@link ValueBridgeToIndexedValueContext#extension(ValueBridgeToIndexedValueContextExtension) extended}
-	 * to a more useful type, giving access to such things as a Hibernate ORM SessionFactory (if using the Hibernate ORM mapper).
-	 * @return The POJO-extracted value.
-	 * @throws UnsupportedOperationException If conversion is not supported.
-	 */
-	default V fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
-		throw new UnsupportedOperationException( "Bridge " + this + " does not implement fromIndexedValue(...)." );
-	}
+    /**
+     * Transform the given indexed field value to the corresponding POJO-extracted value.
+     *
+     * @param value The value of the indexed field to be transformed.
+     * @param context A context that can be
+     * {@link ValueBridgeToIndexedValueContext#extension(ValueBridgeToIndexedValueContextExtension) extended}
+     * to a more useful type, giving access to such things as a Hibernate ORM SessionFactory (if using the Hibernate ORM mapper).
+     * @return The POJO-extracted value.
+     * @throws UnsupportedOperationException If conversion is not supported.
+     */
+    default V fromIndexedValue(F value, ValueBridgeFromIndexedValueContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Parse an input String to the raw index field value.
-	 *
-	 * @param value The value to parse.
-	 * @return The raw index field value.
-	 * @throws RuntimeException If the value cannot be parsed to the raw index field value.
-	 */
-	default F parse(String value) {
-		throw new UnsupportedOperationException( "Bridge " + toString()
-				+ " does not support parsing a value from a String. Trying to parse the value: " + value + "." );
-	}
+    /**
+     * Parse an input String to the raw index field value.
+     *
+     * @param value The value to parse.
+     * @return The raw index field value.
+     * @throws RuntimeException If the value cannot be parsed to the raw index field value.
+     */
+    default F parse(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Format the value to a String.
-	 * @param value The value to format.
-	 * @return The formatted String.
-	 */
-	@Incubating
-	default String format(F value) {
-		return Objects.toString( value, null );
-	}
+    /**
+     * Format the value to a String.
+     * @param value The value to format.
+     * @return The formatted String.
+     */
+    @Incubating
+    default String format(F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param other Another {@link ValueBridge}, never {@code null}.
-	 * @return {@code true} if the given object is also a {@link ValueBridge}
-	 * that behaves exactly the same as this object, i.e. its {@link #toIndexedValue(Object, ValueBridgeToIndexedValueContext)}
-	 * method is guaranteed to accept the same values as this object's
-	 * and to always return the same value as this object's
-	 * when given the same input.
-	 * {@code false} otherwise, or when in doubt.
-	 */
-	default boolean isCompatibleWith(ValueBridge<?, ?> other) {
-		return equals( other );
-	}
+    /**
+     * @param other Another {@link ValueBridge}, never {@code null}.
+     * @return {@code true} if the given object is also a {@link ValueBridge}
+     * that behaves exactly the same as this object, i.e. its {@link #toIndexedValue(Object, ValueBridgeToIndexedValueContext)}
+     * method is guaranteed to accept the same values as this object's
+     * and to always return the same value as this object's
+     * when given the same input.
+     * {@code false} otherwise, or when in doubt.
+     */
+    default boolean isCompatibleWith(ValueBridge<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Close any resource before the bridge is discarded.
-	 */
-	@Override
-	default void close() {
-	}
-
+    /**
+     * Close any resource before the bridge is discarded.
+     */
+    @Override
+    default void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

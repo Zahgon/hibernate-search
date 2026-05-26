@@ -6,10 +6,8 @@ package org.hibernate.search.backend.lucene.lowlevel.docvalues.impl;
 
 import java.io.IOException;
 import java.util.Objects;
-
 import org.hibernate.search.backend.lucene.lowlevel.join.impl.ChildDocIds;
 import org.hibernate.search.backend.lucene.lowlevel.join.impl.NestedDocsProvider;
-
 import org.apache.lucene.index.DocValues;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.SortedDocValues;
@@ -27,207 +25,119 @@ import org.apache.lucene.util.BytesRef;
  */
 public abstract class TextMultiValuesToSingleValuesSource {
 
-	/**
-	 * Creates a {@link TextMultiValuesToSingleValuesSource} that wraps a text field
-	 *
-	 * @param field the field
-	 * @param mode the mode
-	 * @param nested the nested provider
-	 * @return DoubleMultiValuesSource
-	 */
-	public static TextMultiValuesToSingleValuesSource fromField(String field, MultiValueMode mode, NestedDocsProvider nested) {
-		return new FieldMultiValuesToSingleValuesSource( field, mode, nested );
-	}
+    /**
+     * Creates a {@link TextMultiValuesToSingleValuesSource} that wraps a text field
+     *
+     * @param field the field
+     * @param mode the mode
+     * @param nested the nested provider
+     * @return DoubleMultiValuesSource
+     */
+    public static TextMultiValuesToSingleValuesSource fromField(String field, MultiValueMode mode, NestedDocsProvider nested) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected final MultiValueMode mode;
-	protected final NestedDocsProvider nestedDocsProvider;
+    protected final MultiValueMode mode;
 
-	public TextMultiValuesToSingleValuesSource(MultiValueMode mode, NestedDocsProvider nestedDocsProvider) {
-		this.mode = mode;
-		this.nestedDocsProvider = nestedDocsProvider;
-	}
+    protected final NestedDocsProvider nestedDocsProvider;
 
-	@Override
-	public boolean equals(Object o) {
-		if ( this == o ) {
-			return true;
-		}
-		if ( o == null || getClass() != o.getClass() ) {
-			return false;
-		}
-		TextMultiValuesToSingleValuesSource that = (TextMultiValuesToSingleValuesSource) o;
-		return Objects.equals( mode, that.mode )
-				&& Objects.equals( nestedDocsProvider, that.nestedDocsProvider );
-	}
+    public TextMultiValuesToSingleValuesSource(MultiValueMode mode, NestedDocsProvider nestedDocsProvider) {
+        this.mode = mode;
+        this.nestedDocsProvider = nestedDocsProvider;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash( mode, nestedDocsProvider );
-	}
+    @Override
+    public boolean equals(Object o) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public SortedDocValues getValues(LeafReaderContext ctx) throws IOException {
-		SortedSetDocValues values = getSortedSetDocValues( ctx );
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( nestedDocsProvider == null ) {
-			return select( values );
-		}
+    public SortedDocValues getValues(LeafReaderContext ctx) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return select( values, nestedDocsProvider.childDocs( ctx, values ) );
-	}
+    protected abstract SortedSetDocValues getSortedSetDocValues(LeafReaderContext ctx) throws IOException;
 
-	protected abstract SortedSetDocValues getSortedSetDocValues(LeafReaderContext ctx) throws IOException;
+    protected SortedDocValues select(SortedSetDocValues values) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected SortedDocValues select(SortedSetDocValues values) {
-		final SortedDocValues singleton = DocValues.unwrapSingleton( values );
-		if ( singleton != null ) {
-			return singleton;
-		}
-		else {
-			return new SortedSetDocValuesToSortedDocValuesWrapper( values ) {
-				int docID = -1;
-				int lastEmittedOrd = -1;
+    protected SortedDocValues select(SortedSetDocValues values, ChildDocIds childDocsWithValues) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-				@Override
-				public int ordValue() {
-					return lastEmittedOrd;
-				}
+    private static class FieldMultiValuesToSingleValuesSource extends TextMultiValuesToSingleValuesSource {
 
-				@Override
-				public int docID() {
-					return docID;
-				}
+        private final String field;
 
-				@Override
-				public boolean advanceExact(int doc) throws IOException {
-					if ( values.advanceExact( doc ) ) {
-						lastEmittedOrd = (int) mode.pick( values );
-						docID = doc;
-						return true;
-					}
-					return false;
-				}
-			};
-		}
-	}
+        public FieldMultiValuesToSingleValuesSource(String field, MultiValueMode mode, NestedDocsProvider nestedDocsProvider) {
+            super(mode, nestedDocsProvider);
+            this.field = field;
+        }
 
-	protected SortedDocValues select(SortedSetDocValues values, ChildDocIds childDocsWithValues) {
-		if ( childDocsWithValues == null ) {
-			return DocValues.emptySorted();
-		}
+        @Override
+        public String toString() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		return new SortedSetDocValuesToSortedDocValuesWrapper( values ) {
-			int lastSeenParentDoc = -1;
-			int lastEmittedOrd = -1;
-			boolean result = false;
+        @Override
+        public boolean equals(Object o) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			@Override
-			public int ordValue() {
-				return lastEmittedOrd;
-			}
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			@Override
-			public int docID() {
-				return lastSeenParentDoc;
-			}
+        @Override
+        protected SortedSetDocValues getSortedSetDocValues(LeafReaderContext ctx) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-			@Override
-			public boolean advanceExact(int parentDoc) throws IOException {
-				assert parentDoc >= lastSeenParentDoc : "can only evaluate current and upcoming parent docs";
-				if ( parentDoc == lastSeenParentDoc ) {
-					return result;
-				}
-				lastSeenParentDoc = parentDoc;
+    private abstract static class SortedSetDocValuesToSortedDocValuesWrapper extends SortedDocValues {
 
-				if ( !childDocsWithValues.advanceExactParent( parentDoc ) ) {
-					// No child of this parent has a value
-					result = false;
-					return false;
-				}
+        private final SortedSetDocValues delegate;
 
-				lastEmittedOrd = (int) mode.pick( values, childDocsWithValues );
-				result = true;
-				return true;
-			}
-		};
-	}
+        SortedSetDocValuesToSortedDocValuesWrapper(SortedSetDocValues delegate) {
+            this.delegate = delegate;
+            if (delegate.getValueCount() > Integer.MAX_VALUE) {
+                // We may want to remove this limitation?
+                // It would require defining our own FieldComparator mimicking TermOrdValComparator, which is pretty complex...
+                // Note that single-valued text docvalues are limited to that many different terms anyway,
+                // so this is no worse than the "legacy" sorts on single-valued text fields.
+                throw new IllegalStateException("Cannot sort when more than " + Integer.MAX_VALUE + " terms are indexed");
+            }
+        }
 
-	private static class FieldMultiValuesToSingleValuesSource extends TextMultiValuesToSingleValuesSource {
+        @Override
+        public int getValueCount() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final String field;
+        @Override
+        public BytesRef lookupOrd(int ord) throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public FieldMultiValuesToSingleValuesSource(String field, MultiValueMode mode, NestedDocsProvider nestedDocsProvider) {
-			super( mode, nestedDocsProvider );
-			this.field = field;
-		}
+        @Override
+        public int nextDoc() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public String toString() {
-			return "text(" + field + "," + mode + "," + nestedDocsProvider + ")";
-		}
+        @Override
+        public int advance(int target) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public boolean equals(Object o) {
-			if ( this == o ) {
-				return true;
-			}
-			if ( !super.equals( o ) ) {
-				return false;
-			}
-			FieldMultiValuesToSingleValuesSource that = (FieldMultiValuesToSingleValuesSource) o;
-			return Objects.equals( field, that.field );
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash( super.hashCode(), field );
-		}
-
-		@Override
-		protected SortedSetDocValues getSortedSetDocValues(LeafReaderContext ctx) throws IOException {
-			return DocValues.getSortedSet( ctx.reader(), field );
-		}
-	}
-
-	private abstract static class SortedSetDocValuesToSortedDocValuesWrapper extends SortedDocValues {
-
-		private final SortedSetDocValues delegate;
-
-		SortedSetDocValuesToSortedDocValuesWrapper(SortedSetDocValues delegate) {
-			this.delegate = delegate;
-			if ( delegate.getValueCount() > Integer.MAX_VALUE ) {
-				// We may want to remove this limitation?
-				// It would require defining our own FieldComparator mimicking TermOrdValComparator, which is pretty complex...
-				// Note that single-valued text docvalues are limited to that many different terms anyway,
-				// so this is no worse than the "legacy" sorts on single-valued text fields.
-				throw new IllegalStateException( "Cannot sort when more than " + Integer.MAX_VALUE + " terms are indexed" );
-			}
-		}
-
-		@Override
-		public int getValueCount() {
-			return (int) delegate.getValueCount();
-		}
-
-		@Override
-		public BytesRef lookupOrd(int ord) throws IOException {
-			return delegate.lookupOrd( ord );
-		}
-
-		@Override
-		public int nextDoc() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public int advance(int target) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public long cost() {
-			throw new UnsupportedOperationException();
-		}
-
-	}
-
+        @Override
+        public long cost() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

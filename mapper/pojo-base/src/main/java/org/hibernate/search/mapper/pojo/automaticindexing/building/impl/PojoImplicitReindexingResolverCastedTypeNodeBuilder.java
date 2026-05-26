@@ -8,26 +8,22 @@ import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReind
 import org.hibernate.search.mapper.pojo.automaticindexing.impl.PojoImplicitReindexingResolverNode;
 import org.hibernate.search.mapper.pojo.model.path.impl.BoundPojoModelPathCastedTypeNode;
 
-class PojoImplicitReindexingResolverCastedTypeNodeBuilder<T, U>
-		extends AbstractPojoImplicitReindexingResolverTypeNodeBuilder<T, U> {
+class PojoImplicitReindexingResolverCastedTypeNodeBuilder<T, U> extends AbstractPojoImplicitReindexingResolverTypeNodeBuilder<T, U> {
 
-	private final BoundPojoModelPathCastedTypeNode<T, U> modelPath;
+    private final BoundPojoModelPathCastedTypeNode<T, U> modelPath;
 
-	PojoImplicitReindexingResolverCastedTypeNodeBuilder(BoundPojoModelPathCastedTypeNode<T, U> modelPath,
-			PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
-		super( modelPath, buildingHelper );
-		this.modelPath = modelPath;
-	}
+    PojoImplicitReindexingResolverCastedTypeNodeBuilder(BoundPojoModelPathCastedTypeNode<T, U> modelPath, PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
+        super(modelPath, buildingHelper);
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	BoundPojoModelPathCastedTypeNode<T, U> getModelPath() {
-		return modelPath;
-	}
+    @Override
+    BoundPojoModelPathCastedTypeNode<T, U> getModelPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PojoImplicitReindexingResolverNode<T> doBuild(PojoImplicitReindexingResolverNode<? super U> nestedNode) {
-		return new PojoImplicitReindexingResolverCastedTypeNode<>(
-				getModelPath().getTypeModel().rawType().caster(), nestedNode
-		);
-	}
+    @Override
+    PojoImplicitReindexingResolverNode<T> doBuild(PojoImplicitReindexingResolverNode<? super U> nestedNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,14 +6,12 @@ package org.hibernate.search.backend.elasticsearch.lowlevel.index.settings.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.SerializeExtraProperties;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.AnalyzerDefinition;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.CharFilterDefinition;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.NormalizerDefinition;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.TokenFilterDefinition;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.TokenizerDefinition;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.JsonAdapter;
@@ -22,122 +20,107 @@ import com.google.gson.annotations.SerializedName;
 @JsonAdapter(AnalysisJsonAdapterFactory.class)
 public class Analysis {
 
-	@SerializedName("analyzer")
-	private Map<String, AnalyzerDefinition> analyzers;
+    @SerializedName("analyzer")
+    private Map<String, AnalyzerDefinition> analyzers;
 
-	@SerializedName("normalizer")
-	private Map<String, NormalizerDefinition> normalizers;
+    @SerializedName("normalizer")
+    private Map<String, NormalizerDefinition> normalizers;
 
-	@SerializedName("tokenizer")
-	private Map<String, TokenizerDefinition> tokenizers;
+    @SerializedName("tokenizer")
+    private Map<String, TokenizerDefinition> tokenizers;
 
-	@SerializedName("filter")
-	private Map<String, TokenFilterDefinition> tokenFilters;
+    @SerializedName("filter")
+    private Map<String, TokenFilterDefinition> tokenFilters;
 
-	@SerializedName("char_filter")
-	private Map<String, CharFilterDefinition> charFilters;
+    @SerializedName("char_filter")
+    private Map<String, CharFilterDefinition> charFilters;
 
-	@SerializeExtraProperties
-	private Map<String, JsonElement> extraAttributes;
+    @SerializeExtraProperties
+    private Map<String, JsonElement> extraAttributes;
 
-	public boolean isEmpty() {
-		return !hasContent( analyzers, normalizers, tokenizers, tokenFilters, charFilters );
-	}
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private boolean hasContent(Map<?, ?>... maps) {
-		for ( Map<?, ?> map : maps ) {
-			if ( map != null && !map.isEmpty() ) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean hasContent(Map<?, ?>... maps) {
+        for (Map<?, ?> map : maps) {
+            if (map != null && !map.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public Map<String, AnalyzerDefinition> getAnalyzers() {
-		return analyzers;
-	}
+    public Map<String, AnalyzerDefinition> getAnalyzers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setAnalyzers(Map<String, AnalyzerDefinition> analyzers) {
-		this.analyzers = analyzers;
-	}
+    public void setAnalyzers(Map<String, AnalyzerDefinition> analyzers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, NormalizerDefinition> getNormalizers() {
-		return normalizers;
-	}
+    public Map<String, NormalizerDefinition> getNormalizers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setNormalizers(Map<String, NormalizerDefinition> normalizers) {
-		this.normalizers = normalizers;
-	}
+    public void setNormalizers(Map<String, NormalizerDefinition> normalizers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, TokenizerDefinition> getTokenizers() {
-		return tokenizers;
-	}
+    public Map<String, TokenizerDefinition> getTokenizers() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setTokenizers(Map<String, TokenizerDefinition> tokenizers) {
-		this.tokenizers = tokenizers;
-	}
+    public void setTokenizers(Map<String, TokenizerDefinition> tokenizers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, TokenFilterDefinition> getTokenFilters() {
-		return tokenFilters;
-	}
+    public Map<String, TokenFilterDefinition> getTokenFilters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setTokenFilters(Map<String, TokenFilterDefinition> tokenFilters) {
-		this.tokenFilters = tokenFilters;
-	}
+    public void setTokenFilters(Map<String, TokenFilterDefinition> tokenFilters) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, CharFilterDefinition> getCharFilters() {
-		return charFilters;
-	}
+    public Map<String, CharFilterDefinition> getCharFilters() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setCharFilters(Map<String, CharFilterDefinition> charFilters) {
-		this.charFilters = charFilters;
-	}
+    public void setCharFilters(Map<String, CharFilterDefinition> charFilters) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Map<String, JsonElement> getExtraAttributes() {
-		return extraAttributes;
-	}
+    public Map<String, JsonElement> getExtraAttributes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return new GsonBuilder().setPrettyPrinting().create().toJson( this );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Merge these (custom) analysis settings with analysis settings generated by Hibernate Search.
-	 * <p>
-	 * Any conflict of definition will be solved in favor of {@code this}.
-	 *
-	 * @param other The other analysis settings
-	 */
-	public void merge(Analysis other) {
-		if ( other == null ) {
-			// nothing to do
-			return;
-		}
+    /**
+     * Merge these (custom) analysis settings with analysis settings generated by Hibernate Search.
+     * <p>
+     * Any conflict of definition will be solved in favor of {@code this}.
+     *
+     * @param other The other analysis settings
+     */
+    public void merge(Analysis other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		analyzers = merge( analyzers, other.analyzers );
-		normalizers = merge( normalizers, other.normalizers );
-		tokenizers = merge( tokenizers, other.tokenizers );
-		tokenFilters = merge( tokenFilters, other.tokenFilters );
-		charFilters = merge( charFilters, other.charFilters );
-
-		if ( extraAttributes == null ) {
-			extraAttributes = other.extraAttributes;
-		}
-	}
-
-	private static <K> Map<String, K> merge(Map<String, K> originalImmutableMap, Map<String, K> otherMap) {
-		if ( otherMap == null || otherMap.isEmpty() ) {
-			return originalImmutableMap;
-		}
-
-		if ( originalImmutableMap == null || originalImmutableMap.isEmpty() ) {
-			return otherMap;
-		}
-
-		// let's merge
-		HashMap<String, K> result = new HashMap<>( otherMap );
-		result.putAll( originalImmutableMap );
-		return result;
-	}
+    private static <K> Map<String, K> merge(Map<String, K> originalImmutableMap, Map<String, K> otherMap) {
+        if (otherMap == null || otherMap.isEmpty()) {
+            return originalImmutableMap;
+        }
+        if (originalImmutableMap == null || originalImmutableMap.isEmpty()) {
+            return otherMap;
+        }
+        // let's merge
+        HashMap<String, K> result = new HashMap<>(otherMap);
+        result.putAll(originalImmutableMap);
+        return result;
+    }
 }

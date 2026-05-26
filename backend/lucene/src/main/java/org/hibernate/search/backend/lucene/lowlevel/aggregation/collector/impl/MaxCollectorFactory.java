@@ -9,24 +9,23 @@ import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorFact
 import org.hibernate.search.backend.lucene.lowlevel.collector.impl.CollectorKey;
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningLongMultiValuesSource;
 
-public class MaxCollectorFactory
-		implements
-		CollectorFactory<AggregationFunctionCollector<Max>, Long, AggregationFunctionCollectorManager<Max>> {
+public class MaxCollectorFactory implements CollectorFactory<AggregationFunctionCollector<Max>, Long, AggregationFunctionCollectorManager<Max>> {
 
-	private final JoiningLongMultiValuesSource source;
-	private final CollectorKey<AggregationFunctionCollector<Max>, Long> key = CollectorKey.create();
+    private final JoiningLongMultiValuesSource source;
 
-	public MaxCollectorFactory(JoiningLongMultiValuesSource source) {
-		this.source = source;
-	}
+    private final CollectorKey<AggregationFunctionCollector<Max>, Long> key = CollectorKey.create();
 
-	@Override
-	public AggregationFunctionCollectorManager<Max> createCollectorManager(CollectorExecutionContext context) {
-		return new AggregationFunctionCollectorManager<>( source, Max::new );
-	}
+    public MaxCollectorFactory(JoiningLongMultiValuesSource source) {
+        this.source = source;
+    }
 
-	@Override
-	public CollectorKey<AggregationFunctionCollector<Max>, Long> getCollectorKey() {
-		return key;
-	}
+    @Override
+    public AggregationFunctionCollectorManager<Max> createCollectorManager(CollectorExecutionContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public CollectorKey<AggregationFunctionCollector<Max>, Long> getCollectorKey() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

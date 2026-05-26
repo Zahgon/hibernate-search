@@ -17,58 +17,32 @@ import java.util.stream.Collectors;
 
 public final class PojoPathOrdinals {
 
-	private final Map<String, Integer> ordinalByPath = new HashMap<>();
-	private final List<String> pathByOrdinal = new ArrayList<>();
+    private final Map<String, Integer> ordinalByPath = new HashMap<>();
 
-	@Override
-	public String toString() {
-		return "PojoPathOrdinals{"
-				+ "ordinalByPath=" + ordinalByPath
-				+ '}';
-	}
+    private final List<String> pathByOrdinal = new ArrayList<>();
 
-	public Integer toOrdinal(String path) {
-		return ordinalByPath.get( path );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String toPath(int ordinal) {
-		return ordinal < pathByOrdinal.size() ? pathByOrdinal.get( ordinal ) : null;
-	}
+    public Integer toOrdinal(String path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BitSet toPathSelection(Collection<String> paths) {
-		if ( paths.isEmpty() ) {
-			return null;
-		}
-		BitSet bitSet = null;
-		for ( String path : paths ) {
-			Integer ordinal = toOrdinal( path );
-			if ( ordinal == null ) {
-				continue;
-			}
-			if ( bitSet == null ) {
-				bitSet = new BitSet();
-			}
-			bitSet.set( ordinal );
-		}
-		return bitSet;
-	}
+    public String toPath(int ordinal) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Set<String> toPathSet(BitSet pathSelection) {
-		if ( pathSelection == null ) {
-			return Collections.emptySet();
-		}
-		return pathSelection.stream().mapToObj( this::toPath )
-				.collect( Collectors.toCollection( LinkedHashSet::new ) );
-	}
+    public BitSet toPathSelection(Collection<String> paths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public int toExistingOrNewOrdinal(String path) {
-		Integer ordinal = ordinalByPath.get( path );
-		if ( ordinal != null ) {
-			return ordinal;
-		}
-		pathByOrdinal.add( path );
-		ordinal = pathByOrdinal.size() - 1;
-		ordinalByPath.put( path, ordinal );
-		return ordinal;
-	}
+    public Set<String> toPathSet(BitSet pathSelection) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public int toExistingOrNewOrdinal(String path) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

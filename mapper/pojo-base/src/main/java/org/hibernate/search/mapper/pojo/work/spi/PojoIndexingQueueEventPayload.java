@@ -5,25 +5,21 @@
 package org.hibernate.search.mapper.pojo.work.spi;
 
 import java.io.Serializable;
-
 import org.hibernate.search.mapper.pojo.route.DocumentRoutesDescriptor;
 
 public final class PojoIndexingQueueEventPayload implements Serializable {
 
-	public final DocumentRoutesDescriptor routes;
-	public final DirtinessDescriptor dirtiness;
+    public final DocumentRoutesDescriptor routes;
 
-	public PojoIndexingQueueEventPayload(DocumentRoutesDescriptor routes,
-			DirtinessDescriptor dirtiness) {
-		this.routes = routes;
-		this.dirtiness = dirtiness;
-	}
+    public final DirtinessDescriptor dirtiness;
 
-	@Override
-	public String toString() {
-		return "PojoIndexingQueueEventPayload{" +
-				"routes=" + routes +
-				", updateCause=" + dirtiness +
-				'}';
-	}
+    public PojoIndexingQueueEventPayload(DocumentRoutesDescriptor routes, DirtinessDescriptor dirtiness) {
+        this.routes = routes;
+        this.dirtiness = dirtiness;
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

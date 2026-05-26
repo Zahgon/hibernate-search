@@ -8,9 +8,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import jakarta.persistence.EntityManagerFactory;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -34,87 +32,46 @@ import org.hibernate.search.jakarta.batch.core.logging.impl.JakartaBatchLog;
  */
 public class ActiveSessionFactoryRegistry implements EntityManagerFactoryRegistry {
 
-	private static final ActiveSessionFactoryRegistry INSTANCE = new ActiveSessionFactoryRegistry();
+    private static final ActiveSessionFactoryRegistry INSTANCE = new ActiveSessionFactoryRegistry();
 
-	private static final String PERSISTENCE_UNIT_NAME_NAMESPACE = "persistence-unit-name";
-	private static final String SESSION_FACTORY_NAME_NAMESPACE = "session-factory-name";
+    private static final String PERSISTENCE_UNIT_NAME_NAMESPACE = "persistence-unit-name";
 
-	public static ActiveSessionFactoryRegistry getInstance() {
-		return INSTANCE;
-	}
+    private static final String SESSION_FACTORY_NAME_NAMESPACE = "session-factory-name";
 
-	private final Collection<SessionFactoryImplementor> sessionFactories = new HashSet<>();
+    public static ActiveSessionFactoryRegistry getInstance() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final ConcurrentMap<String, SessionFactoryImplementor> sessionFactoriesByPUName = new ConcurrentHashMap<>();
+    private final Collection<SessionFactoryImplementor> sessionFactories = new HashSet<>();
 
-	private final ConcurrentMap<String, SessionFactoryImplementor> sessionFactoriesByName = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, SessionFactoryImplementor> sessionFactoriesByPUName = new ConcurrentHashMap<>();
 
-	private ActiveSessionFactoryRegistry() {
-		// Use getInstance()
-	}
+    private final ConcurrentMap<String, SessionFactoryImplementor> sessionFactoriesByName = new ConcurrentHashMap<>();
 
-	public synchronized void register(SessionFactoryImplementor sessionFactory) {
-		sessionFactories.add( sessionFactory );
-		Object persistenceUnitName = sessionFactory.getProperties().get( AvailableSettings.PERSISTENCE_UNIT_NAME );
-		if ( persistenceUnitName instanceof String ) {
-			sessionFactoriesByPUName.put( (String) persistenceUnitName, sessionFactory );
-		}
-		String name = sessionFactory.getName();
-		if ( name != null ) {
-			sessionFactoriesByName.put( name, sessionFactory );
-		}
-	}
+    private ActiveSessionFactoryRegistry() {
+        // Use getInstance()
+    }
 
-	public synchronized void unregister(SessionFactoryImplementor sessionFactory) {
-		sessionFactories.remove( sessionFactory );
-		/*
-		 * Remove by value. This is inefficient, but we don't expect to have billions of session factories anyway,
-		 * and it allows to easily handle the case where multiple session factories have been registered with the same name.
-		 */
-		sessionFactoriesByPUName.values().remove( sessionFactory );
-		sessionFactoriesByName.values().remove( sessionFactory );
-	}
+    public synchronized void register(SessionFactoryImplementor sessionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public synchronized EntityManagerFactory useDefault() {
-		if ( sessionFactories.isEmpty() ) {
-			throw JakartaBatchLog.INSTANCE.noEntityManagerFactoryCreated();
-		}
-		else if ( sessionFactories.size() > 1 ) {
-			throw JakartaBatchLog.INSTANCE.tooManyActiveEntityManagerFactories();
-		}
-		else {
-			return sessionFactories.iterator().next();
-		}
-	}
+    public synchronized void unregister(SessionFactoryImplementor sessionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EntityManagerFactory get(String reference) {
-		return get( PERSISTENCE_UNIT_NAME_NAMESPACE, reference );
-	}
+    @Override
+    public synchronized EntityManagerFactory useDefault() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EntityManagerFactory get(String namespace, String reference) {
-		SessionFactory factory;
+    @Override
+    public EntityManagerFactory get(String reference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		switch ( namespace ) {
-			case PERSISTENCE_UNIT_NAME_NAMESPACE:
-				factory = sessionFactoriesByPUName.get( reference );
-				if ( factory == null ) {
-					throw JakartaBatchLog.INSTANCE.cannotFindEntityManagerFactoryByPUName( reference );
-				}
-				break;
-			case SESSION_FACTORY_NAME_NAMESPACE:
-				factory = sessionFactoriesByName.get( reference );
-				if ( factory == null ) {
-					throw JakartaBatchLog.INSTANCE.cannotFindEntityManagerFactoryByName( reference );
-				}
-				break;
-			default:
-				throw JakartaBatchLog.INSTANCE.unknownEntityManagerFactoryNamespace( namespace );
-		}
-
-		return factory;
-	}
-
+    @Override
+    public EntityManagerFactory get(String namespace, String reference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

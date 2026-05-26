@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.search.definition.binding.builtin;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.common.tree.TreeFilterDefinition;
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 import org.hibernate.search.engine.search.projection.dsl.TypedSearchProjectionFactory;
@@ -33,98 +32,78 @@ import org.hibernate.search.mapper.pojo.search.definition.binding.ProjectionBind
  */
 public final class ObjectProjectionBinder implements ProjectionBinder {
 
-	/**
-	 * Creates an {@link ObjectProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 * <p>
-	 * This method requires the projection constructor class to be compiled with the {@code -parameters} flag
-	 * to infer the field path from the name of the constructor parameter being bound.
-	 * If this compiler flag is not used,
-	 * use {@link #create(String)} instead and pass the field path explicitly.
-	 *
-	 * @return The binder.
-	 */
-	public static ObjectProjectionBinder create() {
-		return create( null );
-	}
+    /**
+     * Creates an {@link ObjectProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     * <p>
+     * This method requires the projection constructor class to be compiled with the {@code -parameters} flag
+     * to infer the field path from the name of the constructor parameter being bound.
+     * If this compiler flag is not used,
+     * use {@link #create(String)} instead and pass the field path explicitly.
+     *
+     * @return The binder.
+     */
+    public static ObjectProjectionBinder create() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Creates an {@link ObjectProjectionBinder} to be passed
-	 * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
-	 *
-	 * @param fieldPath The <a href="../../../../../../engine/search/projection/dsl/SearchProjectionFactory.html#field-paths">path</a>
-	 * to the index field whose value will be extracted.
-	 * When {@code null}, defaults to the name of the constructor parameter being bound,
-	 * if it can be retrieved (requires the class to be compiled with the {@code -parameters} flag;
-	 * otherwise a null {@code fieldPath} will lead to a failure).
-	 * @return The binder.
-	 */
-	public static ObjectProjectionBinder create(String fieldPath) {
-		return new ObjectProjectionBinder( fieldPath );
-	}
+    /**
+     * Creates an {@link ObjectProjectionBinder} to be passed
+     * to {@link org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep#projection(ProjectionBinder)}.
+     *
+     * @param fieldPath The <a href="../../../../../../engine/search/projection/dsl/SearchProjectionFactory.html#field-paths">path</a>
+     * to the index field whose value will be extracted.
+     * When {@code null}, defaults to the name of the constructor parameter being bound,
+     * if it can be retrieved (requires the class to be compiled with the {@code -parameters} flag;
+     * otherwise a null {@code fieldPath} will lead to a failure).
+     * @return The binder.
+     */
+    public static ObjectProjectionBinder create(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final String fieldPathOrNull;
+    private final String fieldPathOrNull;
 
-	private TreeFilterDefinition filter = TreeFilterDefinition.includeAll();
+    private TreeFilterDefinition filter = TreeFilterDefinition.includeAll();
 
-	private ObjectProjectionBinder(String fieldPathOrNull) {
-		this.fieldPathOrNull = fieldPathOrNull;
-	}
+    private ObjectProjectionBinder(String fieldPathOrNull) {
+        this.fieldPathOrNull = fieldPathOrNull;
+    }
 
-	@Override
-	public String toString() {
-		return "ObjectProjectionBinder(...)";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @param filter The filter to apply to determine which nested index field projections should be included in the projection.
-	 * @return {@code this}, for method chaining.
-	 * @see ObjectProjection#includePaths()
-	 * @see ObjectProjection#excludePaths()
-	 * @see ObjectProjection#includeDepth()
-	 */
-	public ObjectProjectionBinder filter(TreeFilterDefinition filter) {
-		this.filter = filter;
-		return this;
-	}
+    /**
+     * @param filter The filter to apply to determine which nested index field projections should be included in the projection.
+     * @return {@code this}, for method chaining.
+     * @see ObjectProjection#includePaths()
+     * @see ObjectProjection#excludePaths()
+     * @see ObjectProjection#includeDepth()
+     */
+    public ObjectProjectionBinder filter(TreeFilterDefinition filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void bind(ProjectionBindingContext context) {
-		Optional<PojoModelValue<?>> containerElementOptional = context.containerElement();
-		String fieldPath = fieldPathOrFail( context );
-		Class<?> containerClass;
-		Class<?> containerElementClass;
-		if ( containerElementOptional.isPresent() ) {
-			PojoModelValue<?> containerElement = containerElementOptional.get();
-			containerElementClass = containerElement.rawType();
-			containerClass = context.constructorParameter().rawType();
-		}
-		else {
-			containerElementClass = context.constructorParameter().rawType();
-			containerClass = null;
-		}
-		bind( context, fieldPath, containerClass, containerElementClass );
-	}
+    @Override
+    public void bind(ProjectionBindingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private <T, C> void bind(ProjectionBindingContext context, String fieldPath, Class<C> containerType,
-			Class<T> containerElementType) {
-		ProjectionCollector.Provider<T, ?> collector = context.projectionCollectorProviderFactory()
-				.projectionCollectorProvider( containerType, containerElementType );
+    private <T, C> void bind(ProjectionBindingContext context, String fieldPath, Class<C> containerType, Class<T> containerElementType) {
+        ProjectionCollector.Provider<T, ?> collector = context.projectionCollectorProviderFactory().projectionCollectorProvider(containerType, containerElementType);
+        context.definition(containerElementType, context.createObjectDefinition(fieldPath, containerElementType, filter, collector));
+    }
 
-		context.definition(
-				containerElementType,
-				context.createObjectDefinition( fieldPath, containerElementType, filter, collector )
-		);
-	}
-
-	private String fieldPathOrFail(ProjectionBindingContext context) {
-		if ( fieldPathOrNull != null ) {
-			return fieldPathOrNull;
-		}
-		Optional<String> paramName = context.constructorParameter().name();
-		if ( !paramName.isPresent() ) {
-			throw ProjectionLog.INSTANCE.missingParameterNameForObjectProjectionInProjectionConstructor();
-		}
-		return paramName.get();
-	}
+    private String fieldPathOrFail(ProjectionBindingContext context) {
+        if (fieldPathOrNull != null) {
+            return fieldPathOrNull;
+        }
+        Optional<String> paramName = context.constructorParameter().name();
+        if (!paramName.isPresent()) {
+            throw ProjectionLog.INSTANCE.missingParameterNameForObjectProjectionInProjectionConstructor();
+        }
+        return paramName.get();
+    }
 }

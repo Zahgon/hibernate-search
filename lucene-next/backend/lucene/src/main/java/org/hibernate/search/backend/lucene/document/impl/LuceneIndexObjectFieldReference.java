@@ -9,19 +9,18 @@ import org.hibernate.search.engine.backend.document.IndexObjectFieldReference;
 
 public class LuceneIndexObjectFieldReference implements IndexObjectFieldReference {
 
-	private LuceneIndexObjectField schemaNode;
+    private LuceneIndexObjectField schemaNode;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName()
-				+ "[absolutePath=" + ( schemaNode == null ? null : schemaNode.absolutePath() ) + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void setSchemaNode(LuceneIndexObjectField schemaNode) {
-		this.schemaNode = schemaNode;
-	}
+    public void setSchemaNode(LuceneIndexObjectField schemaNode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	LuceneIndexObjectField getSchemaNode() {
-		return schemaNode;
-	}
+    LuceneIndexObjectField getSchemaNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

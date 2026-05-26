@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.time.Instant;
 import java.util.TimeZone;
 import java.util.function.UnaryOperator;
-
 import org.hibernate.CacheMode;
 import org.hibernate.ConnectionAcquisitionMode;
 import org.hibernate.ConnectionReleaseMode;
@@ -27,217 +26,185 @@ import org.hibernate.search.Search;
  */
 class FullTextSharedSessionBuilderDelegator implements FullTextSharedSessionBuilder {
 
-	private final SharedSessionBuilder builder;
+    private final SharedSessionBuilder builder;
 
-	public FullTextSharedSessionBuilderDelegator(SharedSessionBuilder builder) {
-		this.builder = builder;
-	}
+    public FullTextSharedSessionBuilderDelegator(SharedSessionBuilder builder) {
+        this.builder = builder;
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder interceptor() {
-		builder.interceptor();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder interceptor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder connection() {
-		builder.connection();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder connection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Deprecated
-	@Override
-	public FullTextSharedSessionBuilder connectionReleaseMode() {
-		builder.connectionReleaseMode();
-		return this;
-	}
+    @Deprecated
+    @Override
+    public FullTextSharedSessionBuilder connectionReleaseMode() {
+        builder.connectionReleaseMode();
+        return this;
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder autoJoinTransactions() {
-		builder.autoJoinTransactions();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder autoJoinTransactions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder autoClose() {
-		builder.autoClose();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder autoClose() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SharedSessionBuilder asOf(Instant instant) {
-		builder.asOf( instant );
-		return this;
-	}
+    @Override
+    public SharedSessionBuilder asOf(Instant instant) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SharedSessionBuilder atChangeset(Object changesetId) {
-		builder.atChangeset( changesetId );
-		return this;
-	}
+    @Override
+    public SharedSessionBuilder atChangeset(Object changesetId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder interceptor(Interceptor interceptor) {
-		builder.interceptor( interceptor );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder interceptor(Interceptor interceptor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder noInterceptor() {
-		builder.noInterceptor();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder noInterceptor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder noSessionInterceptorCreation() {
-		builder.noSessionInterceptorCreation();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder noSessionInterceptorCreation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder connection(Connection connection) {
-		builder.connection( connection );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder connection(Connection connection) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder autoJoinTransactions(boolean autoJoinTransactions) {
-		builder.autoJoinTransactions( autoJoinTransactions );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder autoJoinTransactions(boolean autoJoinTransactions) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Deprecated
-	@Override
-	public FullTextSharedSessionBuilder autoClose(boolean autoClose) {
-		builder.autoClose( autoClose );
-		return this;
-	}
+    @Deprecated
+    @Override
+    public FullTextSharedSessionBuilder autoClose(boolean autoClose) {
+        builder.autoClose(autoClose);
+        return this;
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder identifierRollback(boolean identifierRollback) {
-		builder.identifierRollback( identifierRollback );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder identifierRollback(boolean identifierRollback) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder defaultBatchFetchSize(int defaultBatchFetchSize) {
-		builder.defaultBatchFetchSize( defaultBatchFetchSize );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder defaultBatchFetchSize(int defaultBatchFetchSize) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder subselectFetchEnabled(boolean subselectFetchEnabled) {
-		builder.subselectFetchEnabled( subselectFetchEnabled );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder subselectFetchEnabled(boolean subselectFetchEnabled) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSession openSession() {
-		return Search.getFullTextSession( builder.openSession() );
-	}
+    @Override
+    public FullTextSession openSession() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Deprecated(forRemoval = true)
-	@Override
-	public FullTextSharedSessionBuilder tenantIdentifier(String tenantIdentifier) {
-		builder.tenantIdentifier( tenantIdentifier );
-		return this;
-	}
+    @Deprecated(forRemoval = true)
+    @Override
+    public FullTextSharedSessionBuilder tenantIdentifier(String tenantIdentifier) {
+        builder.tenantIdentifier(tenantIdentifier);
+        return this;
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder tenantIdentifier(Object tenantIdentifier) {
-		builder.tenantIdentifier( tenantIdentifier );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder tenantIdentifier(Object tenantIdentifier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder readOnly(boolean readOnly) {
-		builder.readOnly( readOnly );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder readOnly(boolean readOnly) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder initialCacheMode(CacheMode cacheMode) {
-		builder.initialCacheMode( cacheMode );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder initialCacheMode(CacheMode cacheMode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder clearEventListeners() {
-		builder.clearEventListeners();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder clearEventListeners() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder eventListeners(SessionEventListener... listeners) {
-		builder.eventListeners( listeners );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder eventListeners(SessionEventListener... listeners) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder statementInspector(StatementInspector statementInspector) {
-		builder.statementInspector( statementInspector );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder statementInspector(StatementInspector statementInspector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder statementInspector(UnaryOperator<String> operator) {
-		builder.statementInspector( operator );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder statementInspector(UnaryOperator<String> operator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder statementInspector() {
-		builder.statementInspector();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder statementInspector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder noStatementInspector() {
-		builder.noStatementInspector();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder noStatementInspector() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder connectionHandlingMode() {
-		builder.connectionHandlingMode();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder connectionHandlingMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder flushMode() {
-		builder.flushMode();
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder flushMode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder connectionHandlingMode(PhysicalConnectionHandlingMode mode) {
-		builder.connectionHandlingMode( mode );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder connectionHandlingMode(PhysicalConnectionHandlingMode mode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder connectionHandling(ConnectionAcquisitionMode acquisitionMode,
-			ConnectionReleaseMode releaseMode) {
-		builder.connectionHandling( acquisitionMode, releaseMode );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder connectionHandling(ConnectionAcquisitionMode acquisitionMode, ConnectionReleaseMode releaseMode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder autoClear(boolean autoClear) {
-		builder.autoClear( autoClear );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder autoClear(boolean autoClear) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder flushMode(FlushMode flushMode) {
-		builder.flushMode( flushMode );
-		return this;
-	}
+    @Override
+    public FullTextSharedSessionBuilder flushMode(FlushMode flushMode) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public FullTextSharedSessionBuilder jdbcTimeZone(TimeZone timeZone) {
-		builder.jdbcTimeZone( timeZone );
-		return this;
-	}
-
+    @Override
+    public FullTextSharedSessionBuilder jdbcTimeZone(TimeZone timeZone) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

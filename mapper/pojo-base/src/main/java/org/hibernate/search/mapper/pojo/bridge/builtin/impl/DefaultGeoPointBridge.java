@@ -9,19 +9,18 @@ import org.hibernate.search.engine.spatial.GeoPoint;
 
 public final class DefaultGeoPointBridge extends AbstractPassThroughDefaultBridge<GeoPoint> {
 
-	public static final DefaultGeoPointBridge INSTANCE = new DefaultGeoPointBridge();
+    public static final DefaultGeoPointBridge INSTANCE = new DefaultGeoPointBridge();
 
-	private DefaultGeoPointBridge() {
-	}
+    private DefaultGeoPointBridge() {
+    }
 
-	@Override
-	protected String toString(GeoPoint value) {
-		return value.latitude() + ", " + value.longitude();
-	}
+    @Override
+    protected String toString(GeoPoint value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected GeoPoint fromString(String value) {
-		return ParseUtils.parseGeoPoint( value );
-	}
-
+    @Override
+    protected GeoPoint fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

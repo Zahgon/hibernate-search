@@ -5,29 +5,25 @@
 package org.hibernate.search.mapper.pojo.model.spi;
 
 public final class JavaClassPojoCaster<T> implements PojoCaster<T> {
-	private final Class<T> clazz;
 
-	public JavaClassPojoCaster(Class<T> clazz) {
-		this.clazz = clazz;
-	}
+    private final Class<T> clazz;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + clazz.getSimpleName() + "]";
-	}
+    public JavaClassPojoCaster(Class<T> clazz) {
+        this.clazz = clazz;
+    }
 
-	@Override
-	public T cast(Object object) {
-		return clazz.cast( object );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T castOrNull(Object object) {
-		if ( clazz.isInstance( object ) ) {
-			return clazz.cast( object );
-		}
-		else {
-			return null;
-		}
-	}
+    @Override
+    public T cast(Object object) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public T castOrNull(Object object) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

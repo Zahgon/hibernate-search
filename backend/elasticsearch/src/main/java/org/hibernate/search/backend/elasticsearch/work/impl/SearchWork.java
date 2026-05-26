@@ -7,197 +7,143 @@ package org.hibernate.search.backend.elasticsearch.work.impl;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchResponse;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.engine.common.timing.Deadline;
-
 import com.google.gson.JsonObject;
 
 public class SearchWork<R> extends AbstractNonBulkableWork<R> {
 
-	private final ElasticsearchSearchResultExtractor<R> resultExtractor;
-	private final Deadline deadline;
-	private final boolean failOnDeadline;
+    private final ElasticsearchSearchResultExtractor<R> resultExtractor;
 
-	protected SearchWork(Builder<R> builder) {
-		super( builder );
-		this.resultExtractor = builder.resultExtractor;
-		this.deadline = builder.deadline;
-		this.failOnDeadline = builder.failOnDeadline;
-	}
+    private final Deadline deadline;
 
-	@Override
-	protected CompletableFuture<?> beforeExecute(ElasticsearchWorkExecutionContext executionContext,
-			ElasticsearchRequest request) {
-		QueryLog.INSTANCE.executingElasticsearchQuery(
-				request.path(),
-				request.parameters(),
-				executionContext.getGsonProvider().getLogHelper().toString( request.bodyParts() )
-		);
-		return super.beforeExecute( executionContext, request );
-	}
+    private final boolean failOnDeadline;
 
-	@Override
-	protected R generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		JsonObject body = response.body();
-		return resultExtractor.extract( body, failOnDeadline ? deadline : null );
-	}
+    protected SearchWork(Builder<R> builder) {
+        super(builder);
+        this.resultExtractor = builder.resultExtractor;
+        this.deadline = builder.deadline;
+        this.failOnDeadline = builder.failOnDeadline;
+    }
 
-	public static class Builder<R>
-			extends AbstractBuilder<Builder<R>> {
+    @Override
+    protected CompletableFuture<?> beforeExecute(ElasticsearchWorkExecutionContext executionContext, ElasticsearchRequest request) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public static <T> Builder<T> create(JsonObject payload, ElasticsearchSearchResultExtractor<T> resultExtractor) {
-			return new Builder<>( payload, resultExtractor, true, false );
-		}
+    @Override
+    protected R generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private final JsonObject payload;
-		private final ElasticsearchSearchResultExtractor<R> resultExtractor;
-		private final boolean allowPartialSearchResultsSupported;
-		private final Set<URLEncodedString> indexes = new HashSet<>();
+    public static class Builder<R> extends AbstractBuilder<Builder<R>> {
 
-		private Boolean trackTotalHits;
-		private Long totalHitCountThreshold;
-		private Integer from;
-		private Integer size;
-		private Integer scrollSize;
-		private String scrollTimeout;
-		private Set<String> routingKeys;
-		private Deadline deadline;
-		private boolean failOnDeadline;
+        public static <T> Builder<T> create(JsonObject payload, ElasticsearchSearchResultExtractor<T> resultExtractor) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private Builder(JsonObject payload, ElasticsearchSearchResultExtractor<R> resultExtractor, Boolean trackTotalHits,
-				boolean allowPartialSearchResultsSupported) {
-			super( ElasticsearchRequestSuccessAssessor.SHARD_FAILURE_CHECKED_INSTANCE );
-			this.payload = payload;
-			this.resultExtractor = resultExtractor;
-			this.trackTotalHits = trackTotalHits;
-			this.allowPartialSearchResultsSupported = allowPartialSearchResultsSupported;
-		}
+        private final JsonObject payload;
 
-		public Builder<R> index(URLEncodedString indexName) {
-			indexes.add( indexName );
-			return this;
-		}
+        private final ElasticsearchSearchResultExtractor<R> resultExtractor;
 
-		public Builder<R> paging(Integer limit, Integer offset) {
-			this.from = offset;
-			this.size = limit;
-			return this;
-		}
+        private final boolean allowPartialSearchResultsSupported;
 
-		public Builder<R> scrolling(int scrollSize, String scrollTimeout) {
-			this.scrollSize = scrollSize;
-			this.scrollTimeout = scrollTimeout;
-			return this;
-		}
+        private final Set<URLEncodedString> indexes = new HashSet<>();
 
-		public Builder<R> routingKeys(Set<String> routingKeys) {
-			this.routingKeys = routingKeys;
-			return this;
-		}
+        private Boolean trackTotalHits;
 
-		public Builder<R> deadline(Deadline deadline, boolean failOnDeadline) {
-			this.deadline = deadline;
-			this.failOnDeadline = failOnDeadline;
-			return this;
-		}
+        private Long totalHitCountThreshold;
 
-		public Builder<R> disableTrackTotalHits() {
-			// setting trackTotalHits to false only if this parameter was already set,
-			// the parameter is not supported by the older Elasticsearch server
-			if ( trackTotalHits != null && trackTotalHits ) {
-				trackTotalHits = false;
-			}
-			return this;
-		}
+        private Integer from;
 
-		public Builder<R> ignoreShardFailures() {
-			resultAssessor = ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE;
-			return this;
-		}
+        private Integer size;
 
-		public Builder<R> totalHitCountThreshold(Long totalHitCountThreshold) {
-			// setting trackTotalHits to false only if this parameter was already set,
-			// the parameter is not supported by the older Elasticsearch server
-			if ( trackTotalHits != null && trackTotalHits ) {
-				this.totalHitCountThreshold = totalHitCountThreshold;
-			}
-			return this;
-		}
+        private Integer scrollSize;
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.post()
-							.multiValuedPathComponent( indexes )
-							.pathComponent( Paths._SEARCH )
-							.body( payload );
+        private String scrollTimeout;
 
-			if ( from != null ) {
-				builder.param( "from", from );
-			}
+        private Set<String> routingKeys;
 
-			if ( size != null ) {
-				builder.param( "size", size );
-			}
+        private Deadline deadline;
 
-			if ( scrollSize != null && scrollTimeout != null ) {
-				builder.param( "size", scrollSize );
-				builder.param( "scroll", scrollTimeout );
-			}
+        private boolean failOnDeadline;
 
-			if ( routingKeys != null && !routingKeys.isEmpty() ) {
-				builder.multiValuedParam( "routing", routingKeys );
-			}
+        private Builder(JsonObject payload, ElasticsearchSearchResultExtractor<R> resultExtractor, Boolean trackTotalHits, boolean allowPartialSearchResultsSupported) {
+            super(ElasticsearchRequestSuccessAssessor.SHARD_FAILURE_CHECKED_INSTANCE);
+            this.payload = payload;
+            this.resultExtractor = resultExtractor;
+            this.trackTotalHits = trackTotalHits;
+            this.allowPartialSearchResultsSupported = allowPartialSearchResultsSupported;
+        }
 
-			if ( trackTotalHits != null ) {
-				if ( trackTotalHits && totalHitCountThreshold != null ) {
-					// total hits is tracked but a with a limited precision
-					builder.param( "track_total_hits", totalHitCountThreshold );
-				}
-				else {
-					builder.param( "track_total_hits", trackTotalHits );
-				}
-			}
+        public Builder<R> index(URLEncodedString indexName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			handleDeadline( builder );
+        public Builder<R> paging(Integer limit, Integer offset) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return builder.build();
-		}
+        public Builder<R> scrolling(int scrollSize, String scrollTimeout) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public SearchWork<R> build() {
-			return new SearchWork<>( this );
-		}
+        public Builder<R> routingKeys(Set<String> routingKeys) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private void handleDeadline(ElasticsearchRequest.Builder builder) {
-			if ( deadline == null ) {
-				return;
-			}
+        public Builder<R> deadline(Deadline deadline, boolean failOnDeadline) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Client-side timeout: the search will fail on timeout.
-			// This is necessary to address network problems: the server-side timeout would not detect that.
-			if ( failOnDeadline ) {
-				builder.deadline( deadline );
-			}
+        public Builder<R> disableTrackTotalHits() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			// Server-side timeout
-			builder.param( "timeout", deadline.checkRemainingTimeMillis() + "ms" );
-			if ( allowPartialSearchResultsSupported ) {
-				// If failOnDeadline is true: ask the server to fail on timeout.
-				// Functionally, this does not matter, because we also have a client-side timeout.
-				// The server-side timeout is just an optimization so that Elasticsearch doesn't continue
-				// to work on a search we cancelled on the client side.
-				//
-				// Otherwise: ask the server to truncate results on timeout.
-				// This is normally the default behavior, but can be overridden with server-side settings,
-				// so we set it just to be safe.
-				builder.param( "allow_partial_search_results", !failOnDeadline );
-			}
-		}
-	}
+        public Builder<R> ignoreShardFailures() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Builder<R> totalHitCountThreshold(Long totalHitCountThreshold) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public SearchWork<R> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private void handleDeadline(ElasticsearchRequest.Builder builder) {
+            if (deadline == null) {
+                return;
+            }
+            // Client-side timeout: the search will fail on timeout.
+            // This is necessary to address network problems: the server-side timeout would not detect that.
+            if (failOnDeadline) {
+                builder.deadline(deadline);
+            }
+            // Server-side timeout
+            builder.param("timeout", deadline.checkRemainingTimeMillis() + "ms");
+            if (allowPartialSearchResultsSupported) {
+                // If failOnDeadline is true: ask the server to fail on timeout.
+                // Functionally, this does not matter, because we also have a client-side timeout.
+                // The server-side timeout is just an optimization so that Elasticsearch doesn't continue
+                // to work on a search we cancelled on the client side.
+                //
+                // Otherwise: ask the server to truncate results on timeout.
+                // This is normally the default behavior, but can be overridden with server-side settings,
+                // so we set it just to be safe.
+                builder.param("allow_partial_search_results", !failOnDeadline);
+            }
+        }
+    }
 }

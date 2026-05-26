@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.document.model.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.analysis.model.impl.ElasticsearchAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.elasticsearch.document.model.lowlevel.impl.LowLevelIndexMetadataBuilder;
 import org.hibernate.search.backend.elasticsearch.index.impl.IndexManagerBackendContext;
@@ -19,83 +18,71 @@ import org.hibernate.search.backend.elasticsearch.search.common.impl.Elasticsear
 import org.hibernate.search.engine.backend.document.model.spi.AbstractIndexModel;
 import org.hibernate.search.engine.backend.document.model.spi.IndexIdentifier;
 
-public class ElasticsearchIndexModel
-		extends AbstractIndexModel<ElasticsearchIndexModel, ElasticsearchIndexRoot, ElasticsearchIndexField>
-		implements ElasticsearchIndexDescriptor, ElasticsearchSearchIndexContext {
+public class ElasticsearchIndexModel extends AbstractIndexModel<ElasticsearchIndexModel, ElasticsearchIndexRoot, ElasticsearchIndexField> implements ElasticsearchIndexDescriptor, ElasticsearchSearchIndexContext {
 
-	private final String hibernateSearchIndexName;
+    private final String hibernateSearchIndexName;
 
-	private final ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry;
-	private final PropertyMappingIndexSettingsContributor propertyMappingIndexSettingsContributor;
-	private final IndexSettings customIndexSettings;
-	private final RootTypeMapping mapping;
-	private final RootTypeMapping customMapping;
+    private final ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	private IndexNames names;
+    private final PropertyMappingIndexSettingsContributor propertyMappingIndexSettingsContributor;
 
-	public ElasticsearchIndexModel(String hibernateSearchIndexName, String mappedTypeName,
-			IndexIdentifier identifier,
-			ElasticsearchIndexRoot rootNode, Map<String, ElasticsearchIndexField> staticFields,
-			List<AbstractElasticsearchIndexFieldTemplate<?>> fieldTemplates,
-			ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry,
-			PropertyMappingIndexSettingsContributor propertyMappingIndexSettingsContributor,
-			IndexSettings customIndexSettings,
-			RootTypeMapping mapping, RootTypeMapping customMapping) {
-		super( analysisDefinitionRegistry, hibernateSearchIndexName, mappedTypeName, identifier, rootNode, staticFields,
-				fieldTemplates );
-		this.hibernateSearchIndexName = hibernateSearchIndexName;
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
-		this.propertyMappingIndexSettingsContributor = propertyMappingIndexSettingsContributor;
-		this.customIndexSettings = customIndexSettings;
-		this.mapping = mapping;
-		this.customMapping = customMapping;
-	}
+    private final IndexSettings customIndexSettings;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[names=" + names + ", mapping=" + mapping + "]";
-	}
+    private final RootTypeMapping mapping;
 
-	@Override
-	protected ElasticsearchIndexModel self() {
-		return this;
-	}
+    private final RootTypeMapping customMapping;
 
-	@Override
-	public IndexNames names() {
-		return names;
-	}
+    private IndexNames names;
 
-	@Override
-	public int maxResultWindow() {
-		return ( customIndexSettings == null || customIndexSettings.getMaxResultWindow() == null )
-				? IndexSettings.MAX_RESULT_WINDOW_DEFAULT
-				: customIndexSettings.getMaxResultWindow();
-	}
+    public ElasticsearchIndexModel(String hibernateSearchIndexName, String mappedTypeName, IndexIdentifier identifier, ElasticsearchIndexRoot rootNode, Map<String, ElasticsearchIndexField> staticFields, List<AbstractElasticsearchIndexFieldTemplate<?>> fieldTemplates, ElasticsearchAnalysisDefinitionRegistry analysisDefinitionRegistry, PropertyMappingIndexSettingsContributor propertyMappingIndexSettingsContributor, IndexSettings customIndexSettings, RootTypeMapping mapping, RootTypeMapping customMapping) {
+        super(analysisDefinitionRegistry, hibernateSearchIndexName, mappedTypeName, identifier, rootNode, staticFields, fieldTemplates);
+        this.hibernateSearchIndexName = hibernateSearchIndexName;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        this.propertyMappingIndexSettingsContributor = propertyMappingIndexSettingsContributor;
+        this.customIndexSettings = customIndexSettings;
+        this.mapping = mapping;
+        this.customMapping = customMapping;
+    }
 
-	public void contributeLowLevelMetadata(LowLevelIndexMetadataBuilder builder) {
-		builder.setPropertyMappingIndexSettingsContributor( propertyMappingIndexSettingsContributor );
-		builder.setAnalysisDefinitionRegistry( analysisDefinitionRegistry );
-		builder.setCustomIndexSettings( customIndexSettings );
-		builder.setMapping( mapping );
-		builder.setCustomMapping( customMapping );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String readName() {
-		return names.read().toString();
-	}
+    @Override
+    protected ElasticsearchIndexModel self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String writeName() {
-		return names.write().toString();
-	}
+    @Override
+    public IndexNames names() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public String hibernateSearchIndexName() {
-		return hibernateSearchIndexName;
-	}
+    @Override
+    public int maxResultWindow() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void onStart(IndexManagerBackendContext backendContext) {
-		this.names = backendContext.createIndexNames( hibernateSearchIndexName, mappedTypeName() );
-	}
+    public void contributeLowLevelMetadata(LowLevelIndexMetadataBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String readName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String writeName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public String hibernateSearchIndexName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public void onStart(IndexManagerBackendContext backendContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

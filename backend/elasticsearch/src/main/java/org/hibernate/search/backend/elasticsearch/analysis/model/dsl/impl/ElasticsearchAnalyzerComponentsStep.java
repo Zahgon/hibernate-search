@@ -12,50 +12,34 @@ import org.hibernate.search.backend.elasticsearch.logging.impl.AnalysisLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.AnalyzerDefinition;
 import org.hibernate.search.util.common.impl.StringHelper;
 
-class ElasticsearchAnalyzerComponentsStep
-		implements ElasticsearchAnalyzerTokenizerStep,
-		ElasticsearchAnalyzerOptionalComponentsStep,
-		ElasticsearchAnalysisDefinitionContributor {
+class ElasticsearchAnalyzerComponentsStep implements ElasticsearchAnalyzerTokenizerStep, ElasticsearchAnalyzerOptionalComponentsStep, ElasticsearchAnalysisDefinitionContributor {
 
-	private final String name;
+    private final String name;
 
-	private final AnalyzerDefinition definition = new AnalyzerDefinition();
+    private final AnalyzerDefinition definition = new AnalyzerDefinition();
 
-	ElasticsearchAnalyzerComponentsStep(String name) {
-		this.name = name;
-		this.definition.setType( "custom" );
-	}
+    ElasticsearchAnalyzerComponentsStep(String name) {
+        this.name = name;
+        this.definition.setType("custom");
+    }
 
-	@Override
-	public ElasticsearchAnalyzerOptionalComponentsStep tokenizer(String tokenizerName) {
-		definition.setTokenizer( tokenizerName );
-		return this;
-	}
+    @Override
+    public ElasticsearchAnalyzerOptionalComponentsStep tokenizer(String tokenizerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchAnalyzerOptionalComponentsStep charFilters(String... names) {
-		definition.setCharFilters( null );
-		for ( String charFilterName : names ) {
-			definition.addCharFilter( charFilterName );
-		}
-		return this;
-	}
+    @Override
+    public ElasticsearchAnalyzerOptionalComponentsStep charFilters(String... names) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchAnalyzerOptionalComponentsStep tokenFilters(String... names) {
-		definition.setTokenFilters( null );
-		for ( String tokenFilterName : names ) {
-			definition.addTokenFilter( tokenFilterName );
-		}
-		return this;
-	}
+    @Override
+    public ElasticsearchAnalyzerOptionalComponentsStep tokenFilters(String... names) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void contribute(ElasticsearchAnalysisDefinitionCollector collector) {
-		if ( StringHelper.isEmpty( definition.getTokenizer() ) ) {
-			throw AnalysisLog.INSTANCE.invalidElasticsearchAnalyzerDefinition( name );
-		}
-		collector.collect( name, definition );
-	}
-
+    @Override
+    public void contribute(ElasticsearchAnalysisDefinitionCollector collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

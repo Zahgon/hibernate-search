@@ -8,34 +8,22 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import org.hibernate.search.mapper.pojo.logging.impl.FormattingLog;
 
 public final class DefaultJavaNetURLBridge extends AbstractStringBasedDefaultBridge<URL> {
 
-	public static final DefaultJavaNetURLBridge INSTANCE = new DefaultJavaNetURLBridge();
+    public static final DefaultJavaNetURLBridge INSTANCE = new DefaultJavaNetURLBridge();
 
-	private DefaultJavaNetURLBridge() {
-	}
+    private DefaultJavaNetURLBridge() {
+    }
 
-	@Override
-	protected String toString(URL value) {
-		try {
-			return value.toURI().toString();
-		}
-		catch (URISyntaxException e) {
-			throw FormattingLog.INSTANCE.badURISyntax( value.toString(), e );
-		}
-	}
+    @Override
+    protected String toString(URL value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected URL fromString(String value) {
-		try {
-			return new URI( value ).toURL();
-		}
-		catch (MalformedURLException | URISyntaxException e) {
-			throw FormattingLog.INSTANCE.malformedURL( value, e );
-		}
-	}
-
+    @Override
+    protected URL fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

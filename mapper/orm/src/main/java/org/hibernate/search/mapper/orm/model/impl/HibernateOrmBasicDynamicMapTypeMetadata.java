@@ -9,24 +9,24 @@ import java.util.Set;
 
 class HibernateOrmBasicDynamicMapTypeMetadata {
 
-	private final String superEntityName;
-	private final Map<String, HibernateOrmBasicDynamicMapPropertyMetadata> properties;
+    private final String superEntityName;
 
-	HibernateOrmBasicDynamicMapTypeMetadata(String superEntityName,
-			Map<String, HibernateOrmBasicDynamicMapPropertyMetadata> properties) {
-		this.superEntityName = superEntityName;
-		this.properties = properties;
-	}
+    private final Map<String, HibernateOrmBasicDynamicMapPropertyMetadata> properties;
 
-	String getSuperEntityNameOrNull() {
-		return superEntityName;
-	}
+    HibernateOrmBasicDynamicMapTypeMetadata(String superEntityName, Map<String, HibernateOrmBasicDynamicMapPropertyMetadata> properties) {
+        this.superEntityName = superEntityName;
+        this.properties = properties;
+    }
 
-	HibernateOrmBasicDynamicMapPropertyMetadata getDynamicMapPropertyMetadataOrNull(String propertyName) {
-		return properties.get( propertyName );
-	}
+    String getSuperEntityNameOrNull() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	Set<String> getPropertyNames() {
-		return properties.keySet();
-	}
+    HibernateOrmBasicDynamicMapPropertyMetadata getDynamicMapPropertyMetadataOrNull(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    Set<String> getPropertyNames() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

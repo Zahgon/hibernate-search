@@ -16,42 +16,36 @@ import org.hibernate.search.mapper.orm.session.SearchSession;
 @Deprecated(since = "6.1")
 public enum AutomaticIndexingStrategyName {
 
-	/**
-	 * No listener-triggered indexing is performed:
-	 * indexing will only happen when explicitly requested through APIs
-	 * such as {@link SearchSession#indexingPlan()}.
-	 *
-	 * @deprecated Use {@link org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings#INDEXING_LISTENERS_ENABLED} instead.
-	 */
-	@Deprecated( since = "6.1")
-	NONE("none" ),
+    /**
+     * No listener-triggered indexing is performed:
+     * indexing will only happen when explicitly requested through APIs
+     * such as {@link SearchSession#indexingPlan()}.
+     *
+     * @deprecated Use {@link org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings#INDEXING_LISTENERS_ENABLED} instead.
+     */
+    @Deprecated(since = "6.1")
+    NONE("none"),
+    /**
+     * Indexing is triggered automatically when entities are modified in the Hibernate ORM session:
+     * entity insertion, update etc.
+     *
+     * @deprecated Use {@link org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings#INDEXING_LISTENERS_ENABLED} instead.
+     */
+    @Deprecated(since = "6.1")
+    SESSION("session");
 
-	/**
-	 * Indexing is triggered automatically when entities are modified in the Hibernate ORM session:
-	 * entity insertion, update etc.
-	 *
-	 * @deprecated Use {@link org.hibernate.search.mapper.orm.cfg.HibernateOrmMapperSettings#INDEXING_LISTENERS_ENABLED} instead.
-	 */
-	@Deprecated( since = "6.1")
-	SESSION("session" );
+    // This method conforms to the MicroProfile Config specification. Do not change its signature.
+    public static AutomaticIndexingStrategyName of(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// This method conforms to the MicroProfile Config specification. Do not change its signature.
-	public static AutomaticIndexingStrategyName of(String value) {
-		return ParseUtils.parseDiscreteValues(
-				AutomaticIndexingStrategyName.values(),
-				AutomaticIndexingStrategyName::getExternalRepresentation,
-				ConfigurationLog.INSTANCE::invalidAutomaticIndexingStrategyName,
-				value
-		);
-	}
+    private final String externalRepresentation;
 
-	private final String externalRepresentation;
+    AutomaticIndexingStrategyName(String externalRepresentation) {
+        this.externalRepresentation = externalRepresentation;
+    }
 
-	AutomaticIndexingStrategyName(String externalRepresentation) {
-		this.externalRepresentation = externalRepresentation;
-	}
-
-	private String getExternalRepresentation() {
-		return externalRepresentation;
-	}
+    private String getExternalRepresentation() {
+        return externalRepresentation;
+    }
 }

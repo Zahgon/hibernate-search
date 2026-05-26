@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonObjectAccessor;
 import org.hibernate.search.backend.elasticsearch.search.aggregation.impl.ElasticsearchSearchAggregation;
@@ -22,135 +21,78 @@ import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.engine.search.query.SearchResultTotal;
 import org.hibernate.search.engine.search.query.spi.SimpleSearchResultTotal;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-class Elasticsearch7SearchResultExtractor<H>
-		implements ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> {
+class Elasticsearch7SearchResultExtractor<H> implements ElasticsearchSearchResultExtractor<ElasticsearchLoadableSearchResult<H>> {
 
-	protected static final JsonObjectAccessor HITS_ACCESSOR =
-			JsonAccessor.root().property( "hits" ).asObject();
+    protected static final JsonObjectAccessor HITS_ACCESSOR = JsonAccessor.root().property("hits").asObject();
 
-	private static final JsonAccessor<JsonArray> HITS_HITS_ACCESSOR =
-			HITS_ACCESSOR.property( "hits" ).asArray();
+    private static final JsonAccessor<JsonArray> HITS_HITS_ACCESSOR = HITS_ACCESSOR.property("hits").asArray();
 
-	private static final JsonAccessor<Long> HITS_TOTAL_ACCESSOR =
-			HITS_ACCESSOR.property( "total" ).property( "value" ).asLong();
+    private static final JsonAccessor<Long> HITS_TOTAL_ACCESSOR = HITS_ACCESSOR.property("total").property("value").asLong();
 
-	private static final JsonAccessor<String> HITS_TOTAL_RELATION_ACCESSOR =
-			HITS_ACCESSOR.property( "total" ).property( "relation" ).asString();
+    private static final JsonAccessor<String> HITS_TOTAL_RELATION_ACCESSOR = HITS_ACCESSOR.property("total").property("relation").asString();
 
-	private static final JsonObjectAccessor AGGREGATIONS_ACCESSOR =
-			JsonAccessor.root().property( "aggregations" ).asObject();
+    private static final JsonObjectAccessor AGGREGATIONS_ACCESSOR = JsonAccessor.root().property("aggregations").asObject();
 
-	private static final JsonAccessor<Integer> TOOK_ACCESSOR =
-			JsonAccessor.root().property( "took" ).asInteger();
+    private static final JsonAccessor<Integer> TOOK_ACCESSOR = JsonAccessor.root().property("took").asInteger();
 
-	private static final JsonAccessor<Boolean> TIMED_OUT_ACCESSOR =
-			JsonAccessor.root().property( "timed_out" ).asBoolean();
+    private static final JsonAccessor<Boolean> TIMED_OUT_ACCESSOR = JsonAccessor.root().property("timed_out").asBoolean();
 
-	private static final JsonAccessor<String> SCROLL_ID_ACCESSOR =
-			JsonAccessor.root().property( "_scroll_id" ).asString();
+    private static final JsonAccessor<String> SCROLL_ID_ACCESSOR = JsonAccessor.root().property("_scroll_id").asString();
 
-	private static final JsonObjectAccessor HIT_SOURCE_ACCESSOR =
-			JsonAccessor.root().property( "_source" ).asObject();
+    private static final JsonObjectAccessor HIT_SOURCE_ACCESSOR = JsonAccessor.root().property("_source").asObject();
 
-	private static final String HITS_TOTAL_RELATION_EXACT_VALUE = "eq";
+    private static final String HITS_TOTAL_RELATION_EXACT_VALUE = "eq";
 
-	private final ElasticsearchSearchQueryRequestContext requestContext;
+    private final ElasticsearchSearchQueryRequestContext requestContext;
 
-	private final ElasticsearchSearchProjection.Extractor<?, H> rootExtractor;
-	private final List<ElasticsearchSearchAggregation.Extractor<?>> aggregations;
+    private final ElasticsearchSearchProjection.Extractor<?, H> rootExtractor;
 
-	Elasticsearch7SearchResultExtractor(
-			ElasticsearchSearchQueryRequestContext requestContext,
-			ElasticsearchSearchProjection.Extractor<?, H> rootExtractor,
-			List<ElasticsearchSearchAggregation.Extractor<?>> aggregations) {
-		this.requestContext = requestContext;
-		this.rootExtractor = rootExtractor;
-		this.aggregations = aggregations;
-	}
+    private final List<ElasticsearchSearchAggregation.Extractor<?>> aggregations;
 
-	@Override
-	public ElasticsearchLoadableSearchResult<H> extract(JsonObject responseBody, Deadline deadline) {
-		ElasticsearchSearchQueryExtractContext extractContext = requestContext.createExtractContext(
-				responseBody
-		);
+    Elasticsearch7SearchResultExtractor(ElasticsearchSearchQueryRequestContext requestContext, ElasticsearchSearchProjection.Extractor<?, H> rootExtractor, List<ElasticsearchSearchAggregation.Extractor<?>> aggregations) {
+        this.requestContext = requestContext;
+        this.rootExtractor = rootExtractor;
+        this.aggregations = aggregations;
+    }
 
-		Integer took = TOOK_ACCESSOR.get( responseBody ).get();
-		boolean timedOut = TIMED_OUT_ACCESSOR.get( responseBody ).get();
+    @Override
+    public ElasticsearchLoadableSearchResult<H> extract(JsonObject responseBody, Deadline deadline) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		SearchResultTotal total = extractTotal( responseBody );
-		if ( timedOut ) {
-			// Elasticsearch doesn't return the correct relation in this case:
-			// it tells us the count is exact, but it obviously isn't.
-			total = SimpleSearchResultTotal.lowerBound( total.hitCountLowerBound() );
-		}
+    protected SearchResultTotal extractTotal(JsonObject responseBody) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		List<Object> extractedHits = ( total.isHitCountLowerBound() || total.hitCount() > 0 )
-				? extractHits( extractContext )
-				: Collections.emptyList();
+    private List<Object> extractHits(ElasticsearchSearchQueryExtractContext extractContext) {
+        JsonObject responseBody = extractContext.getResponseBody();
+        ProjectionHitMapper<?> hitMapper = extractContext.getProjectionHitMapper();
+        JsonArray jsonHits = HITS_HITS_ACCESSOR.get(responseBody).orElseGet(JsonArray::new);
+        ProjectionExtractContext projectionExtractContext = extractContext.createProjectionExtractContext();
+        List<Object> extractedData = new ArrayList<>(jsonHits.size());
+        for (JsonElement hit : jsonHits) {
+            JsonObject hitObject = hit.getAsJsonObject();
+            JsonObject source = HIT_SOURCE_ACCESSOR.get(hitObject).orElse(null);
+            extractedData.add(rootExtractor.extract(hitMapper, hitObject, source, projectionExtractContext));
+        }
+        return extractedData;
+    }
 
-		Map<AggregationKey<?>, ?> extractedAggregations =
-				aggregations.isEmpty() ? Collections.emptyMap() : extractAggregations( extractContext, responseBody );
+    private Map<AggregationKey<?>, ?> extractAggregations(ElasticsearchSearchQueryExtractContext extractContext, JsonObject responseBody) {
+        JsonObject jsonAggregations = AGGREGATIONS_ACCESSOR.get(responseBody).orElseGet(JsonObject::new);
+        Map<AggregationKey<?>, Object> extractedMap = new LinkedHashMap<>();
+        for (ElasticsearchSearchAggregation.Extractor<?> extractor : aggregations) {
+            Object extracted = extractor.extract(jsonAggregations, extractContext);
+            extractedMap.put(extractor.key(), extracted);
+        }
+        return extractedMap;
+    }
 
-		String scrollId = extractScrollId( responseBody );
-
-		return new ElasticsearchLoadableSearchResult<>(
-				extractContext,
-				rootExtractor,
-				total,
-				extractedHits,
-				extractedAggregations,
-				took, timedOut, scrollId,
-				deadline
-		);
-	}
-
-	protected SearchResultTotal extractTotal(JsonObject responseBody) {
-		Long hitsTotal = HITS_TOTAL_ACCESSOR.get( responseBody ).orElse( 0L );
-		Optional<String> hitsTotalRelation = HITS_TOTAL_RELATION_ACCESSOR.get( responseBody );
-		boolean exact = hitsTotalRelation.isPresent()
-				&& HITS_TOTAL_RELATION_EXACT_VALUE.equals( hitsTotalRelation.get() );
-		return SimpleSearchResultTotal.of( hitsTotal, exact );
-	}
-
-	private List<Object> extractHits(ElasticsearchSearchQueryExtractContext extractContext) {
-		JsonObject responseBody = extractContext.getResponseBody();
-		ProjectionHitMapper<?> hitMapper = extractContext.getProjectionHitMapper();
-		JsonArray jsonHits = HITS_HITS_ACCESSOR.get( responseBody ).orElseGet( JsonArray::new );
-
-		ProjectionExtractContext projectionExtractContext = extractContext.createProjectionExtractContext();
-		List<Object> extractedData = new ArrayList<>( jsonHits.size() );
-
-		for ( JsonElement hit : jsonHits ) {
-			JsonObject hitObject = hit.getAsJsonObject();
-			JsonObject source = HIT_SOURCE_ACCESSOR.get( hitObject ).orElse( null );
-			extractedData.add( rootExtractor.extract(
-					hitMapper, hitObject, source, projectionExtractContext
-			) );
-		}
-
-		return extractedData;
-	}
-
-	private Map<AggregationKey<?>, ?> extractAggregations(ElasticsearchSearchQueryExtractContext extractContext,
-			JsonObject responseBody) {
-		JsonObject jsonAggregations = AGGREGATIONS_ACCESSOR.get( responseBody ).orElseGet( JsonObject::new );
-
-		Map<AggregationKey<?>, Object> extractedMap = new LinkedHashMap<>();
-
-		for ( ElasticsearchSearchAggregation.Extractor<?> extractor : aggregations ) {
-			Object extracted = extractor.extract( jsonAggregations, extractContext );
-			extractedMap.put( extractor.key(), extracted );
-		}
-
-		return extractedMap;
-	}
-
-	protected String extractScrollId(JsonObject responseBody) {
-		return SCROLL_ID_ACCESSOR.get( responseBody ).orElse( null );
-	}
+    protected String extractScrollId(JsonObject responseBody) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

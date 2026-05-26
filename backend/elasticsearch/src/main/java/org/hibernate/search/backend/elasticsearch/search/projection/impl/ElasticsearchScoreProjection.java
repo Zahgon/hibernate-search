@@ -10,44 +10,33 @@ import org.hibernate.search.backend.elasticsearch.search.common.impl.Elasticsear
 import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
-
 import com.google.gson.JsonObject;
 
-class ElasticsearchScoreProjection extends AbstractElasticsearchProjection<Float>
-		implements ElasticsearchSearchProjection.Extractor<Float, Float> {
+class ElasticsearchScoreProjection extends AbstractElasticsearchProjection<Float> implements ElasticsearchSearchProjection.Extractor<Float, Float> {
 
-	private static final JsonAccessor<Boolean> TRACK_SCORES_ACCESSOR = JsonAccessor.root().property( "track_scores" )
-			.asBoolean();
+    private static final JsonAccessor<Boolean> TRACK_SCORES_ACCESSOR = JsonAccessor.root().property("track_scores").asBoolean();
 
-	ElasticsearchScoreProjection(ElasticsearchSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    ElasticsearchScoreProjection(ElasticsearchSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, Float> request(JsonObject requestBody, ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.SCORE,
-				ElasticsearchSearchHints.INSTANCE.scoreProjectionNestingNotSupportedHint()
-		);
-		TRACK_SCORES_ACCESSOR.set( requestBody, true );
-		return this;
-	}
+    @Override
+    public Extractor<?, Float> request(JsonObject requestBody, ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Float extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit,
-			JsonObject source, ProjectionExtractContext context) {
-		return hit.get( "_score" ).getAsFloat();
-	}
+    @Override
+    public Float extract(ProjectionHitMapper<?> projectionHitMapper, JsonObject hit, JsonObject source, ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Float transform(LoadingResult<?> loadingResult, Float extractedData,
-			ProjectionTransformContext context) {
-		return extractedData;
-	}
-
+    @Override
+    public Float transform(LoadingResult<?> loadingResult, Float extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

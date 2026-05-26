@@ -2,65 +2,63 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import org.hibernate.search.query.dsl.FuzzyContext;
 import org.hibernate.search.query.dsl.TermContext;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.hibernate.search.query.dsl.WildcardContext;
-
 import org.apache.lucene.search.Query;
 
 /**
  * @author Emmanuel Bernard
  */
 class ConnectedTermContext implements TermContext {
-	private final QueryBuildingContext queryContext;
-	private final QueryCustomizer queryCustomizer;
-	private final TermQueryContext termContext;
 
-	public ConnectedTermContext(QueryBuildingContext queryContext) {
-		this.queryContext = queryContext;
-		this.queryCustomizer = new QueryCustomizer();
-		this.termContext = new TermQueryContext( TermQueryContext.Approximation.EXACT );
-	}
+    private final QueryBuildingContext queryContext;
 
-	@Override
-	public TermMatchingContext onField(String field) {
-		return new ConnectedTermMatchingContext( termContext, field, queryCustomizer, queryContext );
-	}
+    private final QueryCustomizer queryCustomizer;
 
-	@Override
-	public TermMatchingContext onFields(String... fields) {
-		return new ConnectedTermMatchingContext( termContext, fields, queryCustomizer, queryContext );
-	}
+    private final TermQueryContext termContext;
 
-	@Override
-	public FuzzyContext fuzzy() {
-		return new ConnectedFuzzyContext( queryCustomizer, queryContext );
-	}
+    public ConnectedTermContext(QueryBuildingContext queryContext) {
+        this.queryContext = queryContext;
+        this.queryCustomizer = new QueryCustomizer();
+        this.termContext = new TermQueryContext(TermQueryContext.Approximation.EXACT);
+    }
 
-	@Override
-	public WildcardContext wildcard() {
-		return new ConnectedWildcardContext( queryCustomizer, queryContext );
-	}
+    @Override
+    public TermMatchingContext onField(String field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConnectedTermContext boostedTo(float boost) {
-		queryCustomizer.boostedTo( boost );
-		return this;
-	}
+    @Override
+    public TermMatchingContext onFields(String... fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConnectedTermContext withConstantScore() {
-		queryCustomizer.withConstantScore();
-		return this;
-	}
+    @Override
+    public FuzzyContext fuzzy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConnectedTermContext filteredBy(Query filter) {
-		queryCustomizer.filteredBy( filter );
-		return this;
-	}
+    @Override
+    public WildcardContext wildcard() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConnectedTermContext boostedTo(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConnectedTermContext withConstantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public ConnectedTermContext filteredBy(Query filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

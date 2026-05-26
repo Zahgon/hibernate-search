@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.lowlevel.writer.impl;
 
 import org.hibernate.search.backend.lucene.logging.impl.LuceneInfoStreamLog;
-
 import org.apache.lucene.util.InfoStream;
 
 /**
@@ -14,18 +13,18 @@ import org.apache.lucene.util.InfoStream;
  */
 public class LoggerInfoStream extends InfoStream {
 
-	@Override
-	public void message(String component, String message) {
-		LuceneInfoStreamLog.INSTANCE.logInfoStreamMessage( component, message );
-	}
+    @Override
+    public void message(String component, String message) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isEnabled(String component) {
-		return LuceneInfoStreamLog.INSTANCE.isTraceEnabled();
-	}
+    @Override
+    public boolean isEnabled(String component) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		// Nothing to do
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

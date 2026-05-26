@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 import org.hibernate.search.backend.elasticsearch.common.impl.DocumentIdHelper;
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexModel;
 import org.hibernate.search.backend.elasticsearch.lowlevel.syntax.search.impl.ElasticsearchSearchSyntax;
@@ -50,230 +49,196 @@ import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.spi.SearchProjectionDslContext;
 import org.hibernate.search.engine.search.sort.dsl.spi.SearchSortDslContext;
 import org.hibernate.search.engine.search.timeout.spi.TimeoutManager;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-public final class ElasticsearchSearchIndexScopeImpl<SR>
-		extends AbstractSearchIndexScope<
-				SR,
-				ElasticsearchSearchIndexScopeImpl<SR>,
-				ElasticsearchIndexModel,
-				ElasticsearchSearchIndexNodeContext,
-				ElasticsearchSearchIndexCompositeNodeContext>
-		implements ElasticsearchSearchIndexScope<ElasticsearchSearchIndexScopeImpl<SR>>,
-		ElasticsearchSearchQueryIndexScope<SR, ElasticsearchSearchIndexScopeImpl<SR>> {
+public final class ElasticsearchSearchIndexScopeImpl<SR> extends AbstractSearchIndexScope<SR, ElasticsearchSearchIndexScopeImpl<SR>, ElasticsearchIndexModel, ElasticsearchSearchIndexNodeContext, ElasticsearchSearchIndexCompositeNodeContext> implements ElasticsearchSearchIndexScope<ElasticsearchSearchIndexScopeImpl<SR>>, ElasticsearchSearchQueryIndexScope<SR, ElasticsearchSearchIndexScopeImpl<SR>> {
 
-	// Backend context
-	private final SearchBackendContext backendContext;
-	private final Gson userFacingGson;
-	private final ElasticsearchSearchSyntax searchSyntax;
-	private final MultiTenancyStrategy multiTenancyStrategy;
-	private final TimingSource timingSource;
+    // Backend context
+    private final SearchBackendContext backendContext;
 
-	// Targeted indexes
-	private final Map<String, ElasticsearchSearchIndexContext> mappedTypeNameToIndex;
-	private final int maxResultWindow;
+    private final Gson userFacingGson;
 
-	// Query support
-	private final ElasticsearchSearchPredicateBuilderFactory predicateBuilderFactory;
-	private final ElasticsearchSearchSortBuilderFactory sortBuilderFactory;
-	private final ElasticsearchSearchProjectionBuilderFactory projectionBuilderFactory;
-	private final ElasticsearchSearchAggregationBuilderFactory aggregationFactory;
+    private final ElasticsearchSearchSyntax searchSyntax;
 
-	public ElasticsearchSearchIndexScopeImpl(BackendMappingContext mappingContext,
-			Class<SR> rootScopeType,
-			SearchBackendContext backendContext,
-			Gson userFacingGson, ElasticsearchSearchSyntax searchSyntax,
-			MultiTenancyStrategy multiTenancyStrategy,
-			TimingSource timingSource,
-			Set<ElasticsearchIndexModel> indexModels) {
-		super( mappingContext, rootScopeType, indexModels );
-		this.backendContext = backendContext;
-		this.userFacingGson = userFacingGson;
-		this.searchSyntax = searchSyntax;
-		this.multiTenancyStrategy = multiTenancyStrategy;
-		this.timingSource = timingSource;
+    private final MultiTenancyStrategy multiTenancyStrategy;
 
-		// Use LinkedHashMap/LinkedHashSet to ensure stable order when generating requests
-		this.mappedTypeNameToIndex = new LinkedHashMap<>();
-		for ( ElasticsearchIndexModel model : indexModels ) {
-			mappedTypeNameToIndex.put( model.mappedTypeName(), model );
-		}
+    private final TimingSource timingSource;
 
-		int currentMaxResultWindow = Integer.MAX_VALUE;
-		for ( ElasticsearchIndexModel index : indexModels ) {
-			if ( index.maxResultWindow() < currentMaxResultWindow ) {
-				// take the minimum
-				currentMaxResultWindow = index.maxResultWindow();
-			}
-		}
-		this.maxResultWindow = currentMaxResultWindow;
+    // Targeted indexes
+    private final Map<String, ElasticsearchSearchIndexContext> mappedTypeNameToIndex;
 
-		this.predicateBuilderFactory = new ElasticsearchSearchPredicateBuilderFactory( this );
-		this.sortBuilderFactory = new ElasticsearchSearchSortBuilderFactory( this );
-		this.projectionBuilderFactory = new ElasticsearchSearchProjectionBuilderFactory(
-				backendContext.getSearchProjectionBackendContext(), this );
-		this.aggregationFactory = new ElasticsearchSearchAggregationBuilderFactory( this );
-	}
+    private final int maxResultWindow;
 
-	private ElasticsearchSearchIndexScopeImpl(ElasticsearchSearchIndexScopeImpl<SR> parentScope,
-			ElasticsearchSearchIndexCompositeNodeContext overriddenRoot) {
-		super( parentScope, overriddenRoot );
-		this.backendContext = parentScope.backendContext;
-		this.userFacingGson = parentScope.userFacingGson;
-		this.searchSyntax = parentScope.searchSyntax;
-		this.multiTenancyStrategy = parentScope.multiTenancyStrategy;
-		this.timingSource = parentScope.timingSource;
-		this.mappedTypeNameToIndex = parentScope.mappedTypeNameToIndex;
-		this.maxResultWindow = parentScope.maxResultWindow;
+    // Query support
+    private final ElasticsearchSearchPredicateBuilderFactory predicateBuilderFactory;
 
-		this.predicateBuilderFactory = new ElasticsearchSearchPredicateBuilderFactory( this );
-		this.sortBuilderFactory = new ElasticsearchSearchSortBuilderFactory( this );
-		this.projectionBuilderFactory = new ElasticsearchSearchProjectionBuilderFactory(
-				backendContext.getSearchProjectionBackendContext(), this );
-		this.aggregationFactory = new ElasticsearchSearchAggregationBuilderFactory( this );
-	}
+    private final ElasticsearchSearchSortBuilderFactory sortBuilderFactory;
 
-	@Override
-	protected ElasticsearchSearchIndexScopeImpl<SR> self() {
-		return this;
-	}
+    private final ElasticsearchSearchProjectionBuilderFactory projectionBuilderFactory;
 
-	@Override
-	public ElasticsearchSearchIndexScopeImpl<SR> withRoot(String objectFieldPath) {
-		return new ElasticsearchSearchIndexScopeImpl<>( this, field( objectFieldPath ).toComposite() );
-	}
+    private final ElasticsearchSearchAggregationBuilderFactory aggregationFactory;
 
-	@Override
-	public ElasticsearchSearchPredicateBuilderFactory predicateBuilders() {
-		return predicateBuilderFactory;
-	}
+    public ElasticsearchSearchIndexScopeImpl(BackendMappingContext mappingContext, Class<SR> rootScopeType, SearchBackendContext backendContext, Gson userFacingGson, ElasticsearchSearchSyntax searchSyntax, MultiTenancyStrategy multiTenancyStrategy, TimingSource timingSource, Set<ElasticsearchIndexModel> indexModels) {
+        super(mappingContext, rootScopeType, indexModels);
+        this.backendContext = backendContext;
+        this.userFacingGson = userFacingGson;
+        this.searchSyntax = searchSyntax;
+        this.multiTenancyStrategy = multiTenancyStrategy;
+        this.timingSource = timingSource;
+        // Use LinkedHashMap/LinkedHashSet to ensure stable order when generating requests
+        this.mappedTypeNameToIndex = new LinkedHashMap<>();
+        for (ElasticsearchIndexModel model : indexModels) {
+            mappedTypeNameToIndex.put(model.mappedTypeName(), model);
+        }
+        int currentMaxResultWindow = Integer.MAX_VALUE;
+        for (ElasticsearchIndexModel index : indexModels) {
+            if (index.maxResultWindow() < currentMaxResultWindow) {
+                // take the minimum
+                currentMaxResultWindow = index.maxResultWindow();
+            }
+        }
+        this.maxResultWindow = currentMaxResultWindow;
+        this.predicateBuilderFactory = new ElasticsearchSearchPredicateBuilderFactory(this);
+        this.sortBuilderFactory = new ElasticsearchSearchSortBuilderFactory(this);
+        this.projectionBuilderFactory = new ElasticsearchSearchProjectionBuilderFactory(backendContext.getSearchProjectionBackendContext(), this);
+        this.aggregationFactory = new ElasticsearchSearchAggregationBuilderFactory(this);
+    }
 
-	@Override
-	public ElasticsearchSearchSortBuilderFactory sortBuilders() {
-		return sortBuilderFactory;
-	}
+    private ElasticsearchSearchIndexScopeImpl(ElasticsearchSearchIndexScopeImpl<SR> parentScope, ElasticsearchSearchIndexCompositeNodeContext overriddenRoot) {
+        super(parentScope, overriddenRoot);
+        this.backendContext = parentScope.backendContext;
+        this.userFacingGson = parentScope.userFacingGson;
+        this.searchSyntax = parentScope.searchSyntax;
+        this.multiTenancyStrategy = parentScope.multiTenancyStrategy;
+        this.timingSource = parentScope.timingSource;
+        this.mappedTypeNameToIndex = parentScope.mappedTypeNameToIndex;
+        this.maxResultWindow = parentScope.maxResultWindow;
+        this.predicateBuilderFactory = new ElasticsearchSearchPredicateBuilderFactory(this);
+        this.sortBuilderFactory = new ElasticsearchSearchSortBuilderFactory(this);
+        this.projectionBuilderFactory = new ElasticsearchSearchProjectionBuilderFactory(backendContext.getSearchProjectionBackendContext(), this);
+        this.aggregationFactory = new ElasticsearchSearchAggregationBuilderFactory(this);
+    }
 
-	@Override
-	public ElasticsearchSearchProjectionBuilderFactory projectionBuilders() {
-		return projectionBuilderFactory;
-	}
+    @Override
+    protected ElasticsearchSearchIndexScopeImpl<SR> self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchAggregationBuilderFactory aggregationBuilders() {
-		return aggregationFactory;
-	}
+    @Override
+    public ElasticsearchSearchIndexScopeImpl<SR> withRoot(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <P> ElasticsearchSearchQueryBuilder<P> select(BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<?, ?> loadingContextBuilder, SearchProjection<P> projection) {
-		return backendContext.createSearchQueryBuilder( this, sessionContext, loadingContextBuilder,
-				ElasticsearchSearchProjection.from( this, projection ) );
-	}
+    @Override
+    public ElasticsearchSearchPredicateBuilderFactory predicateBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchPredicateFactory<SR> predicateFactory() {
-		return new ElasticsearchSearchPredicateFactoryImpl<>( rootScopeType, SearchPredicateDslContext.root( this ) );
-	}
+    @Override
+    public ElasticsearchSearchSortBuilderFactory sortBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchSortFactory<SR> sortFactory() {
-		return new ElasticsearchSearchSortFactoryImpl<>( SearchSortDslContext
-				.root( this, ElasticsearchSearchSortFactoryImpl::new, predicateFactory() ) );
-	}
+    @Override
+    public ElasticsearchSearchProjectionBuilderFactory projectionBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <R, E> ElasticsearchSearchProjectionFactory<SR, R, E> projectionFactory() {
-		return new ElasticsearchSearchProjectionFactoryImpl<>( SearchProjectionDslContext.root( this ) );
-	}
+    @Override
+    public ElasticsearchSearchAggregationBuilderFactory aggregationBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchAggregationFactory<SR> aggregationFactory() {
-		return new ElasticsearchSearchAggregationFactoryImpl<>(
-				SearchAggregationDslContext.root( this, predicateFactory() ) );
-	}
+    @Override
+    public <P> ElasticsearchSearchQueryBuilder<P> select(BackendSessionContext sessionContext, SearchLoadingContextBuilder<?, ?> loadingContextBuilder, SearchProjection<P> projection) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchHighlighterFactory highlighterFactory() {
-		return new ElasticsearchSearchHighlighterFactory( this );
-	}
+    @Override
+    public ElasticsearchSearchPredicateFactory<SR> predicateFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchIndexNodeContext field(String fieldPath) {
-		return super.field( fieldPath );
-	}
+    @Override
+    public ElasticsearchSearchSortFactory<SR> sortFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Gson userFacingGson() {
-		return userFacingGson;
-	}
+    @Override
+    public <R, E> ElasticsearchSearchProjectionFactory<SR, R, E> projectionFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchSyntax searchSyntax() {
-		return searchSyntax;
-	}
+    @Override
+    public ElasticsearchSearchAggregationFactory<SR> aggregationFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public DocumentIdHelper documentIdHelper() {
-		return multiTenancyStrategy.documentIdHelper();
-	}
+    @Override
+    public SearchHighlighterFactory highlighterFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public JsonObject filterOrNull(String tenantId) {
-		return multiTenancyStrategy.filterOrNull( tenantId );
-	}
+    @Override
+    public ElasticsearchSearchIndexNodeContext field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TimeoutManager createTimeoutManager(Long timeout,
-			TimeUnit timeUnit, boolean exceptionOnTimeout) {
-		if ( timeout != null && timeUnit != null ) {
-			if ( exceptionOnTimeout ) {
-				return TimeoutManager.hardTimeout( timingSource, timeout, timeUnit );
-			}
-			else {
-				return TimeoutManager.softTimeout( timingSource, timeout, timeUnit );
-			}
-		}
-		return TimeoutManager.noTimeout( timingSource );
-	}
+    @Override
+    public Gson userFacingGson() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<ElasticsearchSearchIndexContext> indexes() {
-		return mappedTypeNameToIndex.values();
-	}
+    @Override
+    public ElasticsearchSearchSyntax searchSyntax() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Map<String, ElasticsearchSearchIndexContext> mappedTypeNameToIndex() {
-		return mappedTypeNameToIndex;
-	}
+    @Override
+    public DocumentIdHelper documentIdHelper() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int maxResultWindow() {
-		return maxResultWindow;
-	}
+    @Override
+    public JsonObject filterOrNull(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchIndexCompositeNodeContext createMultiIndexSearchRootContext(
-			List<ElasticsearchSearchIndexCompositeNodeContext> rootForEachIndex) {
-		return new ElasticsearchMultiIndexSearchIndexCompositeNodeContext( this, null,
-				rootForEachIndex );
-	}
+    @Override
+    public TimeoutManager createTimeoutManager(Long timeout, TimeUnit timeUnit, boolean exceptionOnTimeout) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected ElasticsearchSearchIndexNodeContext createMultiIndexSearchValueFieldContext(String absolutePath,
-			List<ElasticsearchSearchIndexNodeContext> fieldForEachIndex) {
-		return new ElasticsearchMultiIndexSearchIndexValueFieldContext<>( this, absolutePath,
-				(List) fieldForEachIndex );
-	}
+    @Override
+    public Collection<ElasticsearchSearchIndexContext> indexes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected ElasticsearchSearchIndexNodeContext createMultiIndexSearchObjectFieldContext(String absolutePath,
-			List<ElasticsearchSearchIndexNodeContext> fieldForEachIndex) {
-		return new ElasticsearchMultiIndexSearchIndexCompositeNodeContext( this, absolutePath,
-				(List) fieldForEachIndex );
-	}
+    @Override
+    public Map<String, ElasticsearchSearchIndexContext> mappedTypeNameToIndex() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public int maxResultWindow() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected ElasticsearchSearchIndexCompositeNodeContext createMultiIndexSearchRootContext(List<ElasticsearchSearchIndexCompositeNodeContext> rootForEachIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected ElasticsearchSearchIndexNodeContext createMultiIndexSearchValueFieldContext(String absolutePath, List<ElasticsearchSearchIndexNodeContext> fieldForEachIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected ElasticsearchSearchIndexNodeContext createMultiIndexSearchObjectFieldContext(String absolutePath, List<ElasticsearchSearchIndexNodeContext> fieldForEachIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

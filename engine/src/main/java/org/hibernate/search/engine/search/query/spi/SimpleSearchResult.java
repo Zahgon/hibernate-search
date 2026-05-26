@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
-
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.engine.search.aggregation.AggregationKey;
 import org.hibernate.search.engine.search.query.SearchResult;
@@ -16,59 +15,53 @@ import org.hibernate.search.engine.search.query.SearchResultTotal;
 
 public class SimpleSearchResult<H> implements SearchResult<H> {
 
-	private final SearchResultTotal resultTotal;
-	private final List<H> hits;
-	private final Map<AggregationKey<?>, ?> aggregationResults;
-	private final Duration took;
-	private final boolean timedOut;
+    private final SearchResultTotal resultTotal;
 
-	public SimpleSearchResult(SearchResultTotal resultTotal, List<H> hits, Map<AggregationKey<?>, ?> aggregationResults,
-			Duration took, Boolean timedOut) {
-		this.resultTotal = resultTotal;
-		this.hits = hits;
-		this.aggregationResults = aggregationResults;
-		this.took = took;
-		this.timedOut = ( timedOut != null ) && timedOut;
-	}
+    private final List<H> hits;
 
-	@Override
-	public SearchResultTotal total() {
-		return resultTotal;
-	}
+    private final Map<AggregationKey<?>, ?> aggregationResults;
 
-	@Override
-	public List<H> hits() {
-		return hits;
-	}
+    private final Duration took;
 
-	@Override
-	@SuppressWarnings("unchecked") // The type of aggregation results must be consistent with the type of keys, by contract
-	public <T> T aggregation(AggregationKey<T> key) {
-		Object aggregationResult = aggregationResults.get( key );
-		if ( aggregationResult == null && !aggregationResults.containsKey( key ) ) {
-			throw QueryLog.INSTANCE.unknownAggregationKey( key );
-		}
-		return (T) aggregationResult;
-	}
+    private final boolean timedOut;
 
-	@Override
-	public Duration took() {
-		return took;
-	}
+    public SimpleSearchResult(SearchResultTotal resultTotal, List<H> hits, Map<AggregationKey<?>, ?> aggregationResults, Duration took, Boolean timedOut) {
+        this.resultTotal = resultTotal;
+        this.hits = hits;
+        this.aggregationResults = aggregationResults;
+        this.took = took;
+        this.timedOut = (timedOut != null) && timedOut;
+    }
 
-	@Override
-	public boolean timedOut() {
-		return timedOut;
-	}
+    @Override
+    public SearchResultTotal total() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return new StringJoiner( ", ", SimpleSearchResult.class.getSimpleName() + "[", "]" )
-				.add( "resultTotal=" + resultTotal )
-				.add( "hits=" + hits )
-				.add( "aggregationResults=" + aggregationResults )
-				.add( "took=" + took )
-				.add( "timedOut=" + timedOut )
-				.toString();
-	}
+    @Override
+    public List<H> hits() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    // The type of aggregation results must be consistent with the type of keys, by contract
+    @SuppressWarnings("unchecked")
+    public <T> T aggregation(AggregationKey<T> key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Duration took() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean timedOut() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

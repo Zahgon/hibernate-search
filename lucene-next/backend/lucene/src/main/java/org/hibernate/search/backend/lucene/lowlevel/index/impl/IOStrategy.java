@@ -15,39 +15,20 @@ import org.hibernate.search.util.common.reporting.EventContext;
 
 public abstract class IOStrategy {
 
-	final BackendThreads threads;
-	final FailureHandler failureHandler;
+    final BackendThreads threads;
 
-	protected IOStrategy(BackendThreads threads, FailureHandler failureHandler) {
-		this.threads = threads;
-		this.failureHandler = failureHandler;
-	}
+    final FailureHandler failureHandler;
 
-	public IndexAccessorImpl createIndexAccessor(String indexName, EventContext eventContext,
-			DirectoryHolder directoryHolder, IndexWriterConfigSource writerConfigSource) {
-		IndexWriterProvider indexWriterProvider = null;
-		IndexReaderProvider indexReaderProvider = null;
-		try {
-			indexWriterProvider = createIndexWriterProvider( indexName, eventContext, directoryHolder, writerConfigSource );
-			indexReaderProvider = createIndexReaderProvider( directoryHolder, indexWriterProvider );
-			return new IndexAccessorImpl(
-					eventContext,
-					directoryHolder, indexWriterProvider, indexReaderProvider
-			);
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e )
-					.push( IndexWriterProvider::clear, indexWriterProvider )
-					.push( IndexReaderProvider::clear, indexReaderProvider )
-					.push( directoryHolder );
-			throw e;
-		}
-	}
+    protected IOStrategy(BackendThreads threads, FailureHandler failureHandler) {
+        this.threads = threads;
+        this.failureHandler = failureHandler;
+    }
 
-	abstract IndexWriterProvider createIndexWriterProvider(String indexName, EventContext eventContext,
-			DirectoryHolder directoryHolder, IndexWriterConfigSource configSource);
+    public IndexAccessorImpl createIndexAccessor(String indexName, EventContext eventContext, DirectoryHolder directoryHolder, IndexWriterConfigSource writerConfigSource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract IndexReaderProvider createIndexReaderProvider(DirectoryHolder directoryHolder,
-			IndexWriterProvider indexWriterProvider);
+    abstract IndexWriterProvider createIndexWriterProvider(String indexName, EventContext eventContext, DirectoryHolder directoryHolder, IndexWriterConfigSource configSource);
 
+    abstract IndexReaderProvider createIndexReaderProvider(DirectoryHolder directoryHolder, IndexWriterProvider indexWriterProvider);
 }

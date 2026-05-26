@@ -19,47 +19,22 @@ import org.hibernate.search.engine.search.aggregation.spi.AggregationTypeKeys;
 import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-class ElasticsearchNativeIndexFieldTypeOptionsStepImpl
-		extends AbstractElasticsearchIndexFieldTypeOptionsStep<ElasticsearchNativeIndexFieldTypeOptionsStepImpl, JsonElement>
-		implements ElasticsearchNativeIndexFieldTypeOptionsStep<ElasticsearchNativeIndexFieldTypeOptionsStepImpl> {
+class ElasticsearchNativeIndexFieldTypeOptionsStepImpl extends AbstractElasticsearchIndexFieldTypeOptionsStep<ElasticsearchNativeIndexFieldTypeOptionsStepImpl, JsonElement> implements ElasticsearchNativeIndexFieldTypeOptionsStep<ElasticsearchNativeIndexFieldTypeOptionsStepImpl> {
 
-	ElasticsearchNativeIndexFieldTypeOptionsStepImpl(ElasticsearchIndexFieldTypeBuildContext buildContext,
-			PropertyMapping mapping) {
-		super( buildContext, JsonElement.class, mapping );
-	}
+    ElasticsearchNativeIndexFieldTypeOptionsStepImpl(ElasticsearchIndexFieldTypeBuildContext buildContext, PropertyMapping mapping) {
+        super(buildContext, JsonElement.class, mapping);
+    }
 
-	@Override
-	protected ElasticsearchNativeIndexFieldTypeOptionsStepImpl thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchNativeIndexFieldTypeOptionsStepImpl thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexFieldType<JsonElement> toIndexFieldType() {
-		Gson gson = buildContext.getUserFacingGson();
-
-		ElasticsearchJsonElementFieldCodec codec = new ElasticsearchJsonElementFieldCodec( gson );
-		builder.codec( codec );
-
-		builder.searchable( true );
-		builder.queryElementFactory( PredicateTypeKeys.MATCH,
-				new ElasticsearchStandardMatchPredicate.Factory<>( codec ) );
-		builder.queryElementFactory( PredicateTypeKeys.RANGE, new ElasticsearchRangePredicate.Factory<>( codec ) );
-		builder.queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.Factory<>() );
-
-		builder.sortable( true );
-		builder.queryElementFactory( SortTypeKeys.FIELD, new ElasticsearchStandardFieldSort.Factory<>( codec ) );
-
-		builder.projectable( true );
-		builder.queryElementFactory( ProjectionTypeKeys.FIELD, new ElasticsearchFieldProjection.Factory<>( codec ) );
-
-		builder.aggregable( true );
-		builder.queryElementFactory( AggregationTypeKeys.TERMS, new ElasticsearchTermsAggregation.Factory<>( codec ) );
-		builder.queryElementFactory( AggregationTypeKeys.RANGE, new ElasticsearchRangeAggregation.Factory<>( codec ) );
-
-		return builder.build();
-	}
+    @Override
+    public IndexFieldType<JsonElement> toIndexFieldType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

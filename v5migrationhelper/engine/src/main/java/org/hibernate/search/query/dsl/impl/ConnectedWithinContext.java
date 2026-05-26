@@ -13,46 +13,39 @@ import org.hibernate.search.spatial.impl.Point;
  * @author Hardy Ferentschik
  */
 final class ConnectedWithinContext implements WithinContext, WithinContext.LongitudeContext {
-	private final QueryBuildingContext queryContext;
-	private final QueryCustomizer queryCustomizer;
-	private final SpatialQueryContext spatialContext;
-	private double latitude;
 
-	public ConnectedWithinContext(ConnectedSpatialContext mother) {
-		queryContext = mother.getQueryContext();
-		queryCustomizer = mother.getQueryCustomizer();
-		spatialContext = mother.getSpatialContext();
-	}
+    private final QueryBuildingContext queryContext;
 
-	public ConnectedWithinContext(ConnectedSpatialMatchingContext mother) {
-		queryContext = mother.getQueryContext();
-		queryCustomizer = mother.getQueryCustomizer();
-		spatialContext = mother.getSpatialContext();
-	}
+    private final QueryCustomizer queryCustomizer;
 
-	@Override
-	public SpatialTermination ofCoordinates(Coordinates coordinates) {
-		spatialContext.setCoordinates( coordinates );
-		return new ConnectedSpatialQueryBuilder(
-				queryContext,
-				queryCustomizer,
-				spatialContext
-		);
-	}
+    private final SpatialQueryContext spatialContext;
 
-	@Override
-	public LongitudeContext ofLatitude(double latitude) {
-		this.latitude = latitude;
-		return this;
-	}
+    private double latitude;
 
-	@Override
-	public SpatialTermination andLongitude(double longitude) {
-		spatialContext.setCoordinates( Point.fromDegrees( latitude, longitude ) );
-		return new ConnectedSpatialQueryBuilder(
-				queryContext,
-				queryCustomizer,
-				spatialContext
-		);
-	}
+    public ConnectedWithinContext(ConnectedSpatialContext mother) {
+        queryContext = mother.getQueryContext();
+        queryCustomizer = mother.getQueryCustomizer();
+        spatialContext = mother.getSpatialContext();
+    }
+
+    public ConnectedWithinContext(ConnectedSpatialMatchingContext mother) {
+        queryContext = mother.getQueryContext();
+        queryCustomizer = mother.getQueryCustomizer();
+        spatialContext = mother.getSpatialContext();
+    }
+
+    @Override
+    public SpatialTermination ofCoordinates(Coordinates coordinates) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public LongitudeContext ofLatitude(double latitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public SpatialTermination andLongitude(double longitude) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

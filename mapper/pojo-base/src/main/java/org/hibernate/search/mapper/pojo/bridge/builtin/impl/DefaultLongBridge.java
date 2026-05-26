@@ -8,19 +8,18 @@ import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultLongBridge extends AbstractPassThroughDefaultBridge<Long> {
 
-	public static final DefaultLongBridge INSTANCE = new DefaultLongBridge();
+    public static final DefaultLongBridge INSTANCE = new DefaultLongBridge();
 
-	private DefaultLongBridge() {
-	}
+    private DefaultLongBridge() {
+    }
 
-	@Override
-	protected String toString(Long value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Long fromString(String value) {
-		return ParseUtils.parseLong( value );
-	}
-
+    @Override
+    protected Long fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

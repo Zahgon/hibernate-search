@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.identity.impl;
 
 import java.util.function.Supplier;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeMappingContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
 import org.hibernate.search.mapper.pojo.identity.spi.IdentifierMapping;
@@ -16,17 +15,17 @@ import org.hibernate.search.mapper.pojo.identity.spi.IdentifierMapping;
  */
 public interface IdentifierMappingImplementor<I, E> extends IdentifierMapping, AutoCloseable {
 
-	@Override
-	default void close() {
-	}
+    @Override
+    default void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	I fromDocumentIdentifier(String documentId, BridgeSessionContext sessionContext);
+    @Override
+    I fromDocumentIdentifier(String documentId, BridgeSessionContext sessionContext);
 
-	I getIdentifier(Object providedId, Supplier<? extends E> entitySupplier);
+    I getIdentifier(Object providedId, Supplier<? extends E> entitySupplier);
 
-	I getIdentifierOrNull(E entity);
+    I getIdentifierOrNull(E entity);
 
-	String toDocumentIdentifier(I identifier, BridgeMappingContext context);
-
+    String toDocumentIdentifier(I identifier, BridgeMappingContext context);
 }

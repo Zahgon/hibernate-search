@@ -5,9 +5,7 @@
 package org.hibernate.search.mapper.orm.search.query.spi;
 
 import java.util.function.Function;
-
 import jakarta.persistence.QueryTimeoutException;
-
 import org.hibernate.ScrollableResults;
 import org.hibernate.query.spi.ScrollableResultsImplementor;
 import org.hibernate.search.engine.search.query.SearchScroll;
@@ -15,224 +13,149 @@ import org.hibernate.search.engine.search.query.SearchScrollResult;
 import org.hibernate.search.mapper.orm.logging.impl.OrmMiscLog;
 import org.hibernate.search.util.common.SearchTimeoutException;
 
-public class HibernateOrmSearchScrollableResultsAdapter<R, H>
-		implements ScrollableResults<R>, ScrollableResultsImplementor<R> {
+public class HibernateOrmSearchScrollableResultsAdapter<R, H> implements ScrollableResults<R>, ScrollableResultsImplementor<R> {
 
-	private final SearchScroll<H> scroll;
-	private final int maxResults;
-	private final Function<? super H, ? extends R> hitExtractor;
-	private SearchScrollResult<H> currentChunk;
-	private H currentHit;
-	private int currentIndexInScroll;
-	private int currentIndexInCurrentChunk;
-	private boolean afterLast;
-	private boolean closed;
+    private final SearchScroll<H> scroll;
 
-	public HibernateOrmSearchScrollableResultsAdapter(SearchScroll<H> scroll, int maxResults,
-			Function<? super H, ? extends R> hitExtractor) {
-		this.scroll = scroll;
-		this.maxResults = maxResults;
-		this.hitExtractor = hitExtractor;
-		this.currentChunk = null;
-		this.currentHit = null;
-		this.currentIndexInScroll = -1;
-		this.currentIndexInCurrentChunk = -1;
-		this.afterLast = false;
-		this.closed = false;
-	}
+    private final int maxResults;
 
-	@Override
-	public boolean next() {
-		checkNotClosed();
-		return scroll( 1 );
-	}
+    private final Function<? super H, ? extends R> hitExtractor;
 
-	@Override
-	public boolean previous() {
-		checkNotClosed();
-		throw OrmMiscLog.INSTANCE.cannotScrollBackwards();
-	}
+    private SearchScrollResult<H> currentChunk;
 
-	@Override
-	public boolean scroll(int positions) {
-		checkNotClosed();
-		if ( positions < 0 ) {
-			throw OrmMiscLog.INSTANCE.cannotScrollBackwards();
-		}
-		if ( afterLast ) {
-			return false;
-		}
-		if ( positions == 0 ) {
-			return currentIndexInScroll >= 0;
-		}
-		currentIndexInScroll += positions;
-		currentIndexInCurrentChunk += positions;
-		if ( currentIndexInScroll >= maxResults ) {
-			afterLast();
-			return false;
-		}
-		if ( currentChunk == null ) { // Very first call
-			currentChunk = nextChunk();
-		}
-		int currentChunkSize = currentChunk.hits().size();
-		while ( currentIndexInCurrentChunk >= currentChunkSize && currentChunk.hasHits() ) {
-			currentIndexInCurrentChunk -= currentChunkSize;
-			currentChunk = nextChunk();
-			currentChunkSize = currentChunk.hits().size();
-		}
-		if ( currentIndexInCurrentChunk >= currentChunk.hits().size() ) {
-			afterLast();
-			return false;
-		}
-		currentHit = currentChunk.hits().get( currentIndexInCurrentChunk );
-		if ( currentIndexInCurrentChunk == ( currentChunkSize - 1 ) ) {
-			// Fetch the next chunk in order to be able to implement isLast()
-			currentChunk = nextChunk();
-			currentIndexInCurrentChunk = -1;
-		}
-		return true;
-	}
+    private H currentHit;
 
-	@Override
-	public boolean last() {
-		checkNotClosed();
-		if ( afterLast ) {
-			throw OrmMiscLog.INSTANCE.cannotScrollBackwards();
-		}
-		while ( !isLast() && !afterLast ) {
-			next();
-		}
-		return isLast(); // May be false if the scroll has no hits
-	}
+    private int currentIndexInScroll;
 
-	@Override
-	public boolean first() {
-		checkNotClosed();
-		if ( currentIndexInScroll == 0 ) {
-			return true;
-		}
-		if ( currentIndexInScroll != -1 ) {
-			throw OrmMiscLog.INSTANCE.cannotScrollBackwards();
-		}
-		return scroll( 1 );
-	}
+    private int currentIndexInCurrentChunk;
 
-	@Override
-	public void beforeFirst() {
-		checkNotClosed();
-		if ( currentIndexInScroll != -1 ) {
-			throw OrmMiscLog.INSTANCE.cannotScrollBackwards();
-		}
-	}
+    private boolean afterLast;
 
-	@Override
-	public void afterLast() {
-		checkNotClosed();
-		currentChunk = null;
-		currentHit = null;
-		currentIndexInScroll = Integer.MAX_VALUE;
-		currentIndexInCurrentChunk = -1;
-		afterLast = true;
-	}
+    private boolean closed;
 
-	@Override
-	public boolean isFirst() {
-		return !afterLast && currentIndexInScroll == 0;
-	}
+    public HibernateOrmSearchScrollableResultsAdapter(SearchScroll<H> scroll, int maxResults, Function<? super H, ? extends R> hitExtractor) {
+        this.scroll = scroll;
+        this.maxResults = maxResults;
+        this.hitExtractor = hitExtractor;
+        this.currentChunk = null;
+        this.currentHit = null;
+        this.currentIndexInScroll = -1;
+        this.currentIndexInCurrentChunk = -1;
+        this.afterLast = false;
+        this.closed = false;
+    }
 
-	@Override
-	public boolean isLast() {
-		// If we're on the last element, we should have already fetched the last (empty) chunk
-		return !afterLast
-				&& ( currentIndexInScroll == ( maxResults - 1 )
-						|| currentChunk != null && !currentChunk.hasHits() );
-	}
+    @Override
+    public boolean next() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		if ( closed ) {
-			return;
-		}
-		closed = true;
-		try {
-			scroll.close();
-		}
-		catch (RuntimeException e) {
-			OrmMiscLog.INSTANCE.unableToCloseSearcherInScrollableResult( e );
-		}
-	}
+    @Override
+    public boolean previous() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("removal")
-	@Deprecated(since = "8.0", forRemoval = true)
-	@Override
-	public int getRowNumber() {
-		if ( afterLast ) {
-			return -1;
-		}
-		return currentIndexInScroll;
-	}
+    @Override
+    public boolean scroll(int positions) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings({ "removal", "deprecation" }) // For EJC
-	@Override
-	public boolean position(int position) {
-		return setRowNumber( position - 1 );
-	}
+    @Override
+    public boolean last() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int getPosition() {
-		if ( afterLast ) {
-			return -1;
-		}
-		return currentIndexInScroll + 1;
-	}
+    @Override
+    public boolean first() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("removal")
-	@Deprecated(since = "8.0", forRemoval = true)
-	@Override
-	public boolean setRowNumber(int rowNumber) {
-		checkNotClosed();
+    @Override
+    public void beforeFirst() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( rowNumber < 0 ) {
-			// Can't set the position relative to the last element if we're forward only,
-			// since we don't know it's the last element until we reach it.
-			throw OrmMiscLog.INSTANCE.cannotSetScrollPositionRelativeToEnd();
-		}
+    @Override
+    public void afterLast() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return scroll( rowNumber - currentIndexInScroll );
-	}
+    @Override
+    public boolean isFirst() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	// We cannot use @Override here because this method only exists in ORM 6.1.2+
-	public void setFetchSize(int i) {
-		throw OrmMiscLog.INSTANCE.cannotSetFetchSize();
-	}
+    @Override
+    public boolean isLast() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isClosed() {
-		return closed;
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public R get() {
-		checkNotClosed();
-		if ( currentIndexInScroll < 0 || afterLast ) {
-			return null;
-		}
-		return hitExtractor.apply( currentHit );
-	}
+    @SuppressWarnings("removal")
+    @Deprecated(since = "8.0", forRemoval = true)
+    @Override
+    public int getRowNumber() {
+        if (afterLast) {
+            return -1;
+        }
+        return currentIndexInScroll;
+    }
 
-	private SearchScrollResult<H> nextChunk() {
-		try {
-			return scroll.next();
-		}
-		catch (SearchTimeoutException e) {
-			throw new QueryTimeoutException( e );
-		}
-	}
+    // For EJC
+    @SuppressWarnings({ "removal", "deprecation" })
+    @Override
+    public boolean position(int position) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void checkNotClosed() {
-		if ( closed ) {
-			throw OrmMiscLog.INSTANCE.cannotUseClosedScrollableResults();
-		}
-	}
+    @Override
+    public int getPosition() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @SuppressWarnings("removal")
+    @Deprecated(since = "8.0", forRemoval = true)
+    @Override
+    public boolean setRowNumber(int rowNumber) {
+        checkNotClosed();
+        if (rowNumber < 0) {
+            // Can't set the position relative to the last element if we're forward only,
+            // since we don't know it's the last element until we reach it.
+            throw OrmMiscLog.INSTANCE.cannotSetScrollPositionRelativeToEnd();
+        }
+        return scroll(rowNumber - currentIndexInScroll);
+    }
+
+    // We cannot use @Override here because this method only exists in ORM 6.1.2+
+    public void setFetchSize(int i) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean isClosed() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public R get() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private SearchScrollResult<H> nextChunk() {
+        try {
+            return scroll.next();
+        } catch (SearchTimeoutException e) {
+            throw new QueryTimeoutException(e);
+        }
+    }
+
+    private void checkNotClosed() {
+        if (closed) {
+            throw OrmMiscLog.INSTANCE.cannotUseClosedScrollableResults();
+        }
+    }
 }

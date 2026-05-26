@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.identity.impl;
 
 import java.util.function.Supplier;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeMappingContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
@@ -13,44 +12,39 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeIdentifier;
 
 public final class UnconfiguredIdentifierMapping<E> implements IdentifierMappingImplementor<Object, E> {
 
-	private final PojoRawTypeIdentifier<E> typeIdentifier;
+    private final PojoRawTypeIdentifier<E> typeIdentifier;
 
-	public UnconfiguredIdentifierMapping(PojoRawTypeIdentifier<E> typeIdentifier) {
-		this.typeIdentifier = typeIdentifier;
-	}
+    public UnconfiguredIdentifierMapping(PojoRawTypeIdentifier<E> typeIdentifier) {
+        this.typeIdentifier = typeIdentifier;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[entityType = " + typeIdentifier + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void close() {
-		// Nothing to close
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object getIdentifier(Object providedId, Supplier<? extends E> entitySupplierOrNull) {
-		if ( providedId != null ) {
-			return providedId;
-		}
-		else {
-			throw MappingLog.INSTANCE.cannotWorkWithIdentifierBecauseUnconfiguredIdentifierMapping( typeIdentifier );
-		}
-	}
+    @Override
+    public Object getIdentifier(Object providedId, Supplier<? extends E> entitySupplierOrNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object getIdentifierOrNull(E entity) {
-		return null;
-	}
+    @Override
+    public Object getIdentifierOrNull(E entity) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toDocumentIdentifier(Object identifier, BridgeMappingContext context) {
-		throw MappingLog.INSTANCE.cannotWorkWithIdentifierBecauseUnconfiguredIdentifierMapping( typeIdentifier );
-	}
+    @Override
+    public String toDocumentIdentifier(Object identifier, BridgeMappingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object fromDocumentIdentifier(String documentId, BridgeSessionContext sessionContext) {
-		throw MappingLog.INSTANCE.cannotWorkWithIdentifierBecauseUnconfiguredIdentifierMapping( typeIdentifier );
-	}
+    @Override
+    public Object fromDocumentIdentifier(String documentId, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

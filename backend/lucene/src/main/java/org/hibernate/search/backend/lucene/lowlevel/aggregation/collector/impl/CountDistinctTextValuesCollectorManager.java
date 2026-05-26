@@ -6,40 +6,28 @@ package org.hibernate.search.backend.lucene.lowlevel.aggregation.collector.impl;
 
 import java.io.IOException;
 import java.util.Collection;
-
 import org.hibernate.search.backend.lucene.lowlevel.docvalues.impl.JoiningTextMultiValuesSource;
-
 import com.carrotsearch.hppc.LongHashSet;
-
 import org.apache.lucene.search.CollectorManager;
 
 public class CountDistinctTextValuesCollectorManager implements CollectorManager<CountDistinctTextValuesCollector, Long> {
 
-	private final JoiningTextMultiValuesSource source;
-	private final String field;
+    private final JoiningTextMultiValuesSource source;
 
-	public CountDistinctTextValuesCollectorManager(JoiningTextMultiValuesSource source, String field) {
-		this.source = source;
-		this.field = field;
-	}
+    private final String field;
 
-	@Override
-	public CountDistinctTextValuesCollector newCollector() throws IOException {
-		return new CountDistinctTextValuesCollector( source, field );
-	}
+    public CountDistinctTextValuesCollectorManager(JoiningTextMultiValuesSource source, String field) {
+        this.source = source;
+        this.field = field;
+    }
 
-	@Override
-	public Long reduce(Collection<CountDistinctTextValuesCollector> collectors) throws IOException {
-		if ( collectors.isEmpty() ) {
-			return 0L;
-		}
-		if ( collectors.size() == 1 ) {
-			return (long) collectors.iterator().next().globalOrds().size();
-		}
-		LongHashSet ords = new LongHashSet();
-		for ( CountDistinctTextValuesCollector collector : collectors ) {
-			ords.addAll( collector.globalOrds() );
-		}
-		return (long) ords.size();
-	}
+    @Override
+    public CountDistinctTextValuesCollector newCollector() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Long reduce(Collection<CountDistinctTextValuesCollector> collectors) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,39 +6,36 @@ package org.hibernate.search.engine.search.projection.spi;
 
 @SuppressWarnings({ "deprecation", "removal" })
 @Deprecated(since = "8.1", forRemoval = true)
-abstract class ObjectArrayProjectionCompositor<V>
-		implements ProjectionCompositor<Object[], V> {
+abstract class ObjectArrayProjectionCompositor<V> implements ProjectionCompositor<Object[], V> {
 
-	private final int size;
+    private final int size;
 
-	ObjectArrayProjectionCompositor(int size) {
-		this.size = size;
-	}
+    ObjectArrayProjectionCompositor(int size) {
+        this.size = size;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + transformer() + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract Object transformer();
+    protected abstract Object transformer();
 
-	@Override
-	public Object[] createInitial() {
-		return new Object[size];
-	}
+    @Override
+    public Object[] createInitial() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object[] set(Object[] components, int index, Object value) {
-		components[index] = value;
-		return components;
-	}
+    @Override
+    public Object[] set(Object[] components, int index, Object value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Object get(Object[] components, int index) {
-		return components[index];
-	}
+    @Override
+    public Object get(Object[] components, int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public abstract V finish(Object[] components);
-
+    @Override
+    public abstract V finish(Object[] components);
 }

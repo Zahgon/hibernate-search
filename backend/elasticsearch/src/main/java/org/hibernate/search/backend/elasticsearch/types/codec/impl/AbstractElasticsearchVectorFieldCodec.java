@@ -5,90 +5,65 @@
 package org.hibernate.search.backend.elasticsearch.types.codec.impl;
 
 import java.util.Objects;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonElementTypes;
 import org.hibernate.search.engine.backend.types.VectorSimilarity;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 
-public abstract class AbstractElasticsearchVectorFieldCodec<F> extends AbstractElasticsearchFieldCodec<F>
-		implements ElasticsearchVectorFieldCodec<F> {
+public abstract class AbstractElasticsearchVectorFieldCodec<F> extends AbstractElasticsearchFieldCodec<F> implements ElasticsearchVectorFieldCodec<F> {
 
-	protected final VectorSimilarity similarity;
-	protected final int dimension;
-	private final Integer m;
-	private final Integer efConstruction;
-	private final F indexNullAs;
+    protected final VectorSimilarity similarity;
 
-	protected AbstractElasticsearchVectorFieldCodec(Gson gson, VectorSimilarity similarity, int dimension, Integer m,
-			Integer efConstruction, F indexNullAs) {
-		super( gson );
-		this.similarity = similarity;
-		this.dimension = dimension;
-		this.m = m;
-		this.efConstruction = efConstruction;
-		this.indexNullAs = indexNullAs;
-	}
+    protected final int dimension;
 
-	@Override
-	public JsonElement encode(F value) {
-		if ( value == null ) {
-			if ( indexNullAs == null ) {
-				return JsonNull.INSTANCE;
-			}
-			value = indexNullAs;
-		}
-		return toJsonArray( value );
-	}
+    private final Integer m;
 
-	protected abstract JsonArray toJsonArray(F value);
+    private final Integer efConstruction;
 
-	@Override
-	public F decode(JsonElement element) {
-		if ( element == null || element.isJsonNull() ) {
-			return null;
-		}
-		return fromJsonArray( JsonElementTypes.ARRAY.fromElement( element ) );
-	}
+    private final F indexNullAs;
 
-	protected abstract F fromJsonArray(JsonArray jsonElements);
+    protected AbstractElasticsearchVectorFieldCodec(Gson gson, VectorSimilarity similarity, int dimension, Integer m, Integer efConstruction, F indexNullAs) {
+        super(gson);
+        this.similarity = similarity;
+        this.dimension = dimension;
+        this.m = m;
+        this.efConstruction = efConstruction;
+        this.indexNullAs = indexNullAs;
+    }
 
-	@Override
-	public int getConfiguredDimensions() {
-		return dimension;
-	}
+    @Override
+    public JsonElement encode(F value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ElasticsearchFieldCodec<?> other) {
+    protected abstract JsonArray toJsonArray(F value);
 
-		if ( this == other ) {
-			return true;
-		}
-		if ( other == null || getClass() != other.getClass() ) {
-			return false;
-		}
-		AbstractElasticsearchVectorFieldCodec<?> that = (AbstractElasticsearchVectorFieldCodec<?>) other;
-		return dimension == that.dimension
-				&& Objects.equals( similarity, that.similarity )
-				&& Objects.equals( m, that.m )
-				&& Objects.equals( efConstruction, that.efConstruction );
-	}
+    @Override
+    public F decode(JsonElement element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean canDecodeArrays() {
-		return true;
-	}
+    protected abstract F fromJsonArray(JsonArray jsonElements);
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "{" +
-				"vectorSimilarity=" + similarity +
-				", dimension=" + dimension +
-				", efConstruction=" + efConstruction +
-				", m=" + m +
-				'}';
-	}
+    @Override
+    public int getConfiguredDimensions() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean isCompatibleWith(ElasticsearchFieldCodec<?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public boolean canDecodeArrays() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

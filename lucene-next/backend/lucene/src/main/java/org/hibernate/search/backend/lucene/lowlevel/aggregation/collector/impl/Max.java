@@ -8,38 +8,30 @@ import java.util.Locale;
 
 public class Max implements AggregationFunction<Max> {
 
-	private Long max;
+    private Long max;
 
-	@Override
-	public void apply(long value) {
-		if ( max == null ) {
-			max = value;
-			return;
-		}
+    @Override
+    public void apply(long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		max = Math.max( max, value );
-	}
+    @Override
+    public void merge(AggregationFunction<Max> sibling) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void merge(AggregationFunction<Max> sibling) {
-		Long other = sibling.implementation().max;
-		if ( other != null ) {
-			apply( other );
-		}
-	}
+    @Override
+    public Long result() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Long result() {
-		return max;
-	}
+    @Override
+    public Max implementation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Max implementation() {
-		return this;
-	}
-
-	@Override
-	public String toString() {
-		return String.format( Locale.ROOT, "Max{max=%d}", max );
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

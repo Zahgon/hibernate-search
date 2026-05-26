@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.impl;
 
 import java.util.Locale;
 import java.util.Optional;
-
 import org.hibernate.search.backend.elasticsearch.ElasticsearchVersion;
 import org.hibernate.search.backend.elasticsearch.cfg.ElasticsearchBackendSettings;
 import org.hibernate.search.backend.elasticsearch.client.common.gson.spi.GsonProvider;
@@ -38,158 +37,58 @@ import org.hibernate.search.engine.environment.bean.BeanResolver;
 import org.hibernate.search.util.common.AssertionFailure;
 import org.hibernate.search.util.common.impl.SuppressingCloser;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class ElasticsearchBackendFactory implements BackendFactory {
 
-	private static final OptionalConfigurationProperty<MultiTenancyStrategyName> MULTI_TENANCY_STRATEGY =
-			ConfigurationProperty.forKey( ElasticsearchBackendSettings.MULTI_TENANCY_STRATEGY )
-					.as( MultiTenancyStrategyName.class, MultiTenancyStrategyName::of )
-					.build();
+    private static final OptionalConfigurationProperty<MultiTenancyStrategyName> MULTI_TENANCY_STRATEGY = ConfigurationProperty.forKey(ElasticsearchBackendSettings.MULTI_TENANCY_STRATEGY).as(MultiTenancyStrategyName.class, MultiTenancyStrategyName::of).build();
 
-	private static final ConfigurationProperty<Boolean> LOG_JSON_PRETTY_PRINTING =
-			ConfigurationProperty.forKey( ElasticsearchBackendSettings.LOG_JSON_PRETTY_PRINTING )
-					.asBoolean()
-					.withDefault( ElasticsearchBackendSettings.Defaults.LOG_JSON_PRETTY_PRINTING )
-					.build();
+    private static final ConfigurationProperty<Boolean> LOG_JSON_PRETTY_PRINTING = ConfigurationProperty.forKey(ElasticsearchBackendSettings.LOG_JSON_PRETTY_PRINTING).asBoolean().withDefault(ElasticsearchBackendSettings.Defaults.LOG_JSON_PRETTY_PRINTING).build();
 
-	private static final ConfigurationProperty<BeanReference<? extends ElasticsearchClientFactory>> CLIENT_FACTORY =
-			ConfigurationProperty.forKey( ElasticsearchBackendSettings.CLIENT_FACTORY )
-					.asBeanReference( ElasticsearchClientFactory.class )
-					// Creating a reference here so that we don't "expose" the fact
-					//  that it's a bean reference to an SPI type to the users in the API interfaces:
-					.withDefault( BeanReference.of( ElasticsearchClientFactory.class,
-							ElasticsearchBackendSettings.Defaults.CLIENT_FACTORY ) )
-					.build();
+    private static final ConfigurationProperty<BeanReference<? extends ElasticsearchClientFactory>> CLIENT_FACTORY = ConfigurationProperty.forKey(ElasticsearchBackendSettings.CLIENT_FACTORY).asBeanReference(ElasticsearchClientFactory.class).// Creating a reference here so that we don't "expose" the fact
+    //  that it's a bean reference to an SPI type to the users in the API interfaces:
+    withDefault(BeanReference.of(ElasticsearchClientFactory.class, ElasticsearchBackendSettings.Defaults.CLIENT_FACTORY)).build();
 
-	private static final ConfigurationProperty<TypeNameMappingStrategyName> MAPPING_TYPE_STRATEGY =
-			ConfigurationProperty.forKey( ElasticsearchBackendSettings.MAPPING_TYPE_NAME_STRATEGY )
-					.as( TypeNameMappingStrategyName.class, TypeNameMappingStrategyName::of )
-					.withDefault( ElasticsearchBackendSettings.Defaults.MAPPING_TYPE_NAME_STRATEGY )
-					.build();
+    private static final ConfigurationProperty<TypeNameMappingStrategyName> MAPPING_TYPE_STRATEGY = ConfigurationProperty.forKey(ElasticsearchBackendSettings.MAPPING_TYPE_NAME_STRATEGY).as(TypeNameMappingStrategyName.class, TypeNameMappingStrategyName::of).withDefault(ElasticsearchBackendSettings.Defaults.MAPPING_TYPE_NAME_STRATEGY).build();
 
-	@Override
-	public BackendImplementor create(EventContext eventContext, BackendBuildContext buildContext,
-			ConfigurationPropertySource propertySource) {
-		boolean logPrettyPrinting = LOG_JSON_PRETTY_PRINTING.get( propertySource );
-		/*
-		 * The Elasticsearch client only converts JsonObjects to String and
-		 * vice-versa, it doesn't need a Gson instance that was specially
-		 * configured for a particular Elasticsearch version.
-		 */
-		GsonProvider defaultGsonProvider = GsonProviderHelper.create( GsonBuilder::new, logPrettyPrinting );
+    @Override
+    public BackendImplementor create(EventContext eventContext, BackendBuildContext buildContext, ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Optional<ElasticsearchVersion> configuredVersion = ElasticsearchLinkImpl.VERSION.get( propertySource );
+    private MultiTenancyStrategy getMultiTenancyStrategy(ConfigurationPropertySource propertySource, BackendBuildContext buildContext) {
+        MultiTenancyStrategyName multiTenancyStrategy = MULTI_TENANCY_STRATEGY.getAndMap(propertySource, optionalName -> {
+            if (MultiTenancyStrategyName.NONE.equals(optionalName) && buildContext.multiTenancyEnabled()) {
+                throw ConfigurationLog.INSTANCE.multiTenancyRequiredButExplicitlyDisabledByBackend();
+            }
+            if (MultiTenancyStrategyName.DISCRIMINATOR.equals(optionalName) && !buildContext.multiTenancyEnabled()) {
+                throw ConfigurationLog.INSTANCE.multiTenancyNotRequiredButExplicitlyEnabledByTheBackend();
+            }
+            return optionalName;
+        }).orElseGet(() -> {
+            // set dynamic default
+            return (buildContext.multiTenancyEnabled()) ? MultiTenancyStrategyName.DISCRIMINATOR : MultiTenancyStrategyName.NONE;
+        });
+        switch(multiTenancyStrategy) {
+            case NONE:
+                return new NoMultiTenancyStrategy();
+            case DISCRIMINATOR:
+                return new DiscriminatorMultiTenancyStrategy();
+            default:
+                throw new AssertionFailure(String.format(Locale.ROOT, "Unsupported multi-tenancy strategy '%1$s'", multiTenancyStrategy));
+        }
+    }
 
-		BeanResolver beanResolver = buildContext.beanResolver();
-		BeanHolder<? extends ElasticsearchClientFactory> clientFactoryHolder = null;
-		BackendThreads threads = null;
-		ElasticsearchLinkImpl link = null;
-		try {
-			threads = new BackendThreads( eventContext.render() );
-
-			// First, let's see if the factory was configured explicitly:
-			clientFactoryHolder = CLIENT_FACTORY.getAndTransform( propertySource, beanResolver::resolve );
-			ConfigurationLog.INSTANCE.backendClientFactory( clientFactoryHolder, eventContext );
-
-			ElasticsearchDialectFactory dialectFactory = new ElasticsearchDialectFactory();
-			link = new ElasticsearchLinkImpl(
-					clientFactoryHolder, threads, defaultGsonProvider, logPrettyPrinting,
-					dialectFactory, configuredVersion, createTypeNameMapping( propertySource )
-			);
-			MultiTenancyStrategy multiTenancyStrategy = getMultiTenancyStrategy( propertySource, buildContext );
-
-			ElasticsearchModelDialect dialect;
-			ElasticsearchVersion version;
-			if ( configuredVersion.isPresent()
-					&& ElasticsearchDialectFactory.isPreciseEnoughForModelDialect( configuredVersion.get() ) ) {
-				version = configuredVersion.get();
-			}
-			else {
-				// We must determine the Elasticsearch version, and thus instantiate the client, right now.
-				threads.onStart( propertySource, beanResolver, buildContext.threadPoolProvider() );
-				link.onStart( beanResolver, multiTenancyStrategy, propertySource );
-
-				version = link.getElasticsearchVersion();
-			}
-
-			dialect = dialectFactory.createModelDialect( version );
-
-			Gson userFacingGson = new GsonBuilder().setPrettyPrinting().create();
-
-			ElasticsearchIndexFieldTypeFactoryProvider typeFactoryProvider =
-					dialect.createIndexTypeFieldFactoryProvider( userFacingGson );
-			ElasticsearchPropertyMappingValidatorProvider propertyMappingValidatorProvider =
-					dialect.createElasticsearchPropertyMappingValidatorProvider();
-
-			return new ElasticsearchBackendImpl(
-					buildContext.backendName(),
-					eventContext,
-					threads, link,
-					typeFactoryProvider,
-					propertyMappingValidatorProvider,
-					userFacingGson,
-					multiTenancyStrategy,
-					buildContext.failureHandler(), buildContext.timingSource()
-			);
-		}
-		catch (RuntimeException e) {
-			new SuppressingCloser( e )
-					.push( BeanHolder::close, clientFactoryHolder )
-					.push( ElasticsearchLinkImpl::onStop, link )
-					.push( BackendThreads::onStop, threads );
-			throw e;
-		}
-	}
-
-	private MultiTenancyStrategy getMultiTenancyStrategy(ConfigurationPropertySource propertySource,
-			BackendBuildContext buildContext) {
-		MultiTenancyStrategyName multiTenancyStrategy = MULTI_TENANCY_STRATEGY.getAndMap(
-				propertySource, optionalName -> {
-					if ( MultiTenancyStrategyName.NONE.equals( optionalName )
-							&& buildContext.multiTenancyEnabled() ) {
-						throw ConfigurationLog.INSTANCE.multiTenancyRequiredButExplicitlyDisabledByBackend();
-					}
-					if ( MultiTenancyStrategyName.DISCRIMINATOR.equals( optionalName )
-							&& !buildContext.multiTenancyEnabled() ) {
-						throw ConfigurationLog.INSTANCE.multiTenancyNotRequiredButExplicitlyEnabledByTheBackend();
-					}
-					return optionalName;
-				} ).orElseGet( () -> {
-					// set dynamic default
-					return ( buildContext.multiTenancyEnabled() )
-							? MultiTenancyStrategyName.DISCRIMINATOR
-							: MultiTenancyStrategyName.NONE;
-				} );
-
-		switch ( multiTenancyStrategy ) {
-			case NONE:
-				return new NoMultiTenancyStrategy();
-			case DISCRIMINATOR:
-				return new DiscriminatorMultiTenancyStrategy();
-			default:
-				throw new AssertionFailure( String.format(
-						Locale.ROOT, "Unsupported multi-tenancy strategy '%1$s'",
-						multiTenancyStrategy
-				) );
-		}
-	}
-
-	private TypeNameMapping createTypeNameMapping(ConfigurationPropertySource propertySource) {
-		TypeNameMappingStrategyName strategyName = MAPPING_TYPE_STRATEGY.get( propertySource );
-
-		switch ( strategyName ) {
-			case INDEX_NAME:
-				return new IndexNameTypeNameMapping();
-			case DISCRIMINATOR:
-				return new DiscriminatorTypeNameMapping();
-			default:
-				throw new AssertionFailure( String.format(
-						Locale.ROOT, "Unsupported type mapping strategy '%1$s'",
-						strategyName
-				) );
-		}
-	}
+    private TypeNameMapping createTypeNameMapping(ConfigurationPropertySource propertySource) {
+        TypeNameMappingStrategyName strategyName = MAPPING_TYPE_STRATEGY.get(propertySource);
+        switch(strategyName) {
+            case INDEX_NAME:
+                return new IndexNameTypeNameMapping();
+            case DISCRIMINATOR:
+                return new DiscriminatorTypeNameMapping();
+            default:
+                throw new AssertionFailure(String.format(Locale.ROOT, "Unsupported type mapping strategy '%1$s'", strategyName));
+        }
+    }
 }

@@ -6,29 +6,24 @@ package org.hibernate.search.backend.elasticsearch.types.dsl.impl;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchFieldCodec;
 import org.hibernate.search.backend.elasticsearch.types.codec.impl.ElasticsearchOffsetDateTimeFieldCodec;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
-
 import com.google.gson.Gson;
 
-class ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep
-		extends
-		AbstractElasticsearchTemporalIndexFieldTypeOptionsStep<ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep,
-				OffsetDateTime> {
+class ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep extends AbstractElasticsearchTemporalIndexFieldTypeOptionsStep<ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep, OffsetDateTime> {
 
-	ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, OffsetDateTime.class, DefaultStringConverters.OFFSET_DATE_TIME );
-	}
+    ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, OffsetDateTime.class, DefaultStringConverters.OFFSET_DATE_TIME);
+    }
 
-	@Override
-	protected ElasticsearchFieldCodec<OffsetDateTime> createCodec(Gson gson, DateTimeFormatter formatter) {
-		return new ElasticsearchOffsetDateTimeFieldCodec( gson, formatter );
-	}
+    @Override
+    protected ElasticsearchFieldCodec<OffsetDateTime> createCodec(Gson gson, DateTimeFormatter formatter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchOffsetDateTimeIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

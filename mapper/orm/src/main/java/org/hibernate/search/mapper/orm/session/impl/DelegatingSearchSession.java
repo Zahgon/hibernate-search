@@ -6,9 +6,7 @@ package org.hibernate.search.mapper.orm.session.impl;
 
 import java.util.Collection;
 import java.util.function.Supplier;
-
 import jakarta.persistence.EntityManager;
-
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.search.engine.search.common.NonStaticMetamodelScope;
@@ -35,129 +33,106 @@ import org.hibernate.search.mapper.pojo.work.SearchIndexingPlanFilter;
  */
 public class DelegatingSearchSession implements SearchSession {
 
-	private final Supplier<? extends HibernateOrmSearchSessionMappingContext> mappingContextProvider;
-	private final Session session;
+    private final Supplier<? extends HibernateOrmSearchSessionMappingContext> mappingContextProvider;
 
-	public DelegatingSearchSession(Supplier<? extends HibernateOrmSearchSessionMappingContext> mappingContextProvider,
-			Session session) {
-		this.mappingContextProvider = mappingContextProvider;
-		this.session = session;
-	}
+    private final Session session;
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public <T> SearchQuerySelectStep<NonStaticMetamodelScope,
-			?,
-			org.hibernate.search.mapper.orm.common.EntityReference,
-			T,
-			SearchLoadingOptionsStep,
-			?,
-			?> search(
-					Collection<? extends Class<? extends T>> classes) {
-		return getDelegate().search( classes );
-	}
+    public DelegatingSearchSession(Supplier<? extends HibernateOrmSearchSessionMappingContext> mappingContextProvider, Session session) {
+        this.mappingContextProvider = mappingContextProvider;
+        this.session = session;
+    }
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public <SR, T> SearchQuerySelectStep<SR,
-			?,
-			org.hibernate.search.mapper.orm.common.EntityReference,
-			T,
-			SearchLoadingOptionsStep,
-			?,
-			?> search(TypedSearchScope<SR, T> scope) {
-		return getDelegate().search( scope );
-	}
+    @Override
+    @SuppressWarnings("deprecation")
+    public <T> SearchQuerySelectStep<NonStaticMetamodelScope, ?, org.hibernate.search.mapper.orm.common.EntityReference, T, SearchLoadingOptionsStep, ?, ?> search(Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public <T> SearchQuerySelectStep<?, ?, EntityReference, T, SearchLoadingOptionsStep, ?, ?> search(SearchScope<T> scope) {
-		return getDelegate().search( scope );
-	}
+    @Override
+    @SuppressWarnings("deprecation")
+    public <SR, T> SearchQuerySelectStep<SR, ?, org.hibernate.search.mapper.orm.common.EntityReference, T, SearchLoadingOptionsStep, ?, ?> search(TypedSearchScope<SR, T> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public <
-			SR,
-			T> SearchQuerySelectStep<SR,
-					?,
-					org.hibernate.search.mapper.orm.common.EntityReference,
-					T,
-					SearchLoadingOptionsStep,
-					?,
-					?> search(
-							HibernateOrmRootReferenceScope<SR, T> scope) {
-		return getDelegate().search( scope );
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public <T> SearchQuerySelectStep<?, ?, EntityReference, T, SearchLoadingOptionsStep, ?, ?> search(SearchScope<T> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchSchemaManager schemaManager(Collection<? extends Class<?>> classes) {
-		return getDelegate().schemaManager( classes );
-	}
+    @Override
+    @SuppressWarnings("deprecation")
+    public <SR, T> SearchQuerySelectStep<SR, ?, org.hibernate.search.mapper.orm.common.EntityReference, T, SearchLoadingOptionsStep, ?, ?> search(HibernateOrmRootReferenceScope<SR, T> scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchWorkspace workspace(Collection<? extends Class<?>> classes) {
-		return getDelegate().workspace( classes );
-	}
+    @Override
+    public SearchSchemaManager schemaManager(Collection<? extends Class<?>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MassIndexer massIndexer(Collection<? extends Class<?>> classes) {
-		return getDelegate().massIndexer( classes );
-	}
+    @Override
+    public SearchWorkspace workspace(Collection<? extends Class<?>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchScope<T> scope(Collection<? extends Class<? extends T>> classes) {
-		return getDelegate().scope( classes );
-	}
+    @Override
+    public MassIndexer massIndexer(Collection<? extends Class<?>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> SearchScope<T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
-		return getDelegate().scope( expectedSuperType, entityNames );
-	}
+    @Override
+    public <T> SearchScope<T> scope(Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
-		return getDelegate().typedScope( rootScope, classes );
-	}
+    @Override
+    public <T> SearchScope<T> scope(Class<T> expectedSuperType, Collection<String> entityNames) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public EntityManager toEntityManager() {
-		return session;
-	}
+    @Override
+    public <SR, T> TypedSearchScope<SR, T> typedScope(Class<SR> rootScope, Collection<? extends Class<? extends T>> classes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Session toOrmSession() {
-		return session;
-	}
+    @Override
+    public EntityManager toEntityManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexingPlan indexingPlan() {
-		return getDelegate().indexingPlan();
-	}
+    @Override
+    public Session toOrmSession() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public void automaticIndexingSynchronizationStrategy(
-			org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategy synchronizationStrategy) {
-		getDelegate().automaticIndexingSynchronizationStrategy( synchronizationStrategy );
-	}
+    @Override
+    public SearchIndexingPlan indexingPlan() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
-		getDelegate().indexingPlanSynchronizationStrategy( synchronizationStrategy );
-	}
+    @Override
+    @SuppressWarnings("deprecation")
+    public void automaticIndexingSynchronizationStrategy(org.hibernate.search.mapper.orm.automaticindexing.session.AutomaticIndexingSynchronizationStrategy synchronizationStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void indexingPlanFilter(SearchIndexingPlanFilter filter) {
-		getDelegate().indexingPlanFilter( filter );
-	}
+    @Override
+    public void indexingPlanSynchronizationStrategy(IndexingPlanSynchronizationStrategy synchronizationStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private HibernateOrmSearchSession getDelegate() {
-		// We cannot cache this session implementor, nor the resulting delegate,
-		// because the session may be a proxy that returns a different session based
-		// on the current thread (Spring, SessionFactory.getCurrentSession(), ...)
-		// See https://hibernate.atlassian.net/browse/HSEARCH-4108
-		SessionImplementor sessionImpl = HibernateOrmUtils.toSessionImplementor( session );
-		return HibernateOrmSearchSession.get( mappingContextProvider.get(), sessionImpl );
-	}
+    @Override
+    public void indexingPlanFilter(SearchIndexingPlanFilter filter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private HibernateOrmSearchSession getDelegate() {
+        // We cannot cache this session implementor, nor the resulting delegate,
+        // because the session may be a proxy that returns a different session based
+        // on the current thread (Spring, SessionFactory.getCurrentSession(), ...)
+        // See https://hibernate.atlassian.net/browse/HSEARCH-4108
+        SessionImplementor sessionImpl = HibernateOrmUtils.toSessionImplementor(session);
+        return HibernateOrmSearchSession.get(mappingContextProvider.get(), sessionImpl);
+    }
 }

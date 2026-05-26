@@ -10,17 +10,17 @@ import org.hibernate.search.mapper.orm.massindexing.MassIndexerReindexParameterS
 
 public class HibernateOrmMassIndexerFilteringTypeStep implements MassIndexerFilteringTypeStep {
 
-	private final HibernateOrmMassIndexer massIndexer;
-	private final Class<?> type;
+    private final HibernateOrmMassIndexer massIndexer;
 
-	public HibernateOrmMassIndexerFilteringTypeStep(HibernateOrmMassIndexer massIndexer, Class<?> type) {
-		this.massIndexer = massIndexer;
-		this.type = type;
-	}
+    private final Class<?> type;
 
-	@Override
-	public MassIndexerReindexParameterStep reindexOnly(String conditionalExpression) {
-		ConditionalExpression expression = massIndexer.reindexOnly( type, conditionalExpression );
-		return new HibernateOrmMassIndexerReindexParameterStep( massIndexer, type, expression );
-	}
+    public HibernateOrmMassIndexerFilteringTypeStep(HibernateOrmMassIndexer massIndexer, Class<?> type) {
+        this.massIndexer = massIndexer;
+        this.type = type;
+    }
+
+    @Override
+    public MassIndexerReindexParameterStep reindexOnly(String conditionalExpression) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

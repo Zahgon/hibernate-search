@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.predicate.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.search.common.impl.AbstractLuceneValueFieldSearchQueryElementFactory;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexValueFieldContext;
@@ -14,7 +13,6 @@ import org.hibernate.search.backend.lucene.search.predicate.impl.PredicateReques
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.RegexpQueryFlag;
 import org.hibernate.search.engine.search.predicate.spi.RegexpPredicateBuilder;
-
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RegexpQuery;
@@ -22,67 +20,67 @@ import org.apache.lucene.util.automaton.RegExp;
 
 public class LuceneTextRegexpPredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneTextRegexpPredicate(Builder<?> builder) {
-		super( builder );
-	}
+    private LuceneTextRegexpPredicate(Builder<?> builder) {
+        super(builder);
+    }
 
-	public static class Factory<F>
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<RegexpPredicateBuilder, F> {
-		@Override
-		public Builder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new Builder<>( scope, field );
-		}
-	}
+    public static class Factory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<RegexpPredicateBuilder, F> {
 
-	private static class Builder<F> extends AbstractBuilder<F> implements RegexpPredicateBuilder {
-		private String pattern;
-		private int flags = RegExp.NONE;
+        @Override
+        public Builder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-		}
+    private static class Builder<F> extends AbstractBuilder<F> implements RegexpPredicateBuilder {
 
-		@Override
-		public void pattern(String regexpPattern) {
-			this.pattern = regexpPattern;
-		}
+        private String pattern;
 
-		@Override
-		public void flags(Set<RegexpQueryFlag> flags) {
-			this.flags = toFlagsMask( flags );
-		}
+        private int flags = RegExp.NONE;
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneTextRegexpPredicate( this );
-		}
+        private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			// set no optional flag as default
-			return new RegexpQuery( new Term( absoluteFieldPath, pattern ), flags );
-		}
-	}
+        @Override
+        public void pattern(String regexpPattern) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static int toFlagsMask(Set<RegexpQueryFlag> flags) {
-		int flag = 0;
-		if ( flags == null || flags.isEmpty() ) {
-			return RegExp.NONE;
-		}
+        @Override
+        public void flags(Set<RegexpQueryFlag> flags) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		for ( RegexpQueryFlag operation : flags ) {
-			switch ( operation ) {
-				case INTERVAL:
-					flag |= RegExp.INTERVAL;
-					break;
-				case INTERSECTION:
-					flag |= RegExp.INTERSECTION;
-					break;
-				case ANY_STRING:
-					flag |= RegExp.ANYSTRING;
-					break;
-			}
-		}
-		return flag;
-	}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static int toFlagsMask(Set<RegexpQueryFlag> flags) {
+        int flag = 0;
+        if (flags == null || flags.isEmpty()) {
+            return RegExp.NONE;
+        }
+        for (RegexpQueryFlag operation : flags) {
+            switch(operation) {
+                case INTERVAL:
+                    flag |= RegExp.INTERVAL;
+                    break;
+                case INTERSECTION:
+                    flag |= RegExp.INTERSECTION;
+                    break;
+                case ANY_STRING:
+                    flag |= RegExp.ANYSTRING;
+                    break;
+            }
+        }
+        return flag;
+    }
 }

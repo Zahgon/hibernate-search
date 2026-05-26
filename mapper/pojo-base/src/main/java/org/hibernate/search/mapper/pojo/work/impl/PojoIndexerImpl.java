@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.pojo.work.impl;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.hibernate.search.engine.backend.work.execution.DocumentCommitStrategy;
 import org.hibernate.search.engine.backend.work.execution.DocumentRefreshStrategy;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
@@ -19,71 +18,49 @@ import org.hibernate.search.mapper.pojo.work.spi.PojoWorkSessionContext;
 
 public class PojoIndexerImpl implements PojoIndexer {
 
-	private final PojoWorkTypeContextProvider typeContextProvider;
-	private final PojoWorkSessionContext sessionContext;
+    private final PojoWorkTypeContextProvider typeContextProvider;
 
-	private final Map<PojoRawTypeIdentifier<?>, PojoTypeIndexer<?, ?>> delegates = new ConcurrentHashMap<>();
+    private final PojoWorkSessionContext sessionContext;
 
-	public PojoIndexerImpl(PojoWorkTypeContextProvider typeContextProvider,
-			PojoWorkSessionContext sessionContext) {
-		this.typeContextProvider = typeContextProvider;
-		this.sessionContext = sessionContext;
-	}
+    private final Map<PojoRawTypeIdentifier<?>, PojoTypeIndexer<?, ?>> delegates = new ConcurrentHashMap<>();
 
-	@Override
-	public CompletableFuture<?> add(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId,
-			DocumentRoutesDescriptor providedRoutes,
-			Object entity, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		if ( entity == null ) {
-			throw IndexingLog.INSTANCE.nullEntityForIndexerAddOrUpdate();
-		}
-		return getDelegate( typeIdentifier )
-				.add( providedId, providedRoutes, entity, commitStrategy, refreshStrategy, operationSubmitter );
-	}
+    public PojoIndexerImpl(PojoWorkTypeContextProvider typeContextProvider, PojoWorkSessionContext sessionContext) {
+        this.typeContextProvider = typeContextProvider;
+        this.sessionContext = sessionContext;
+    }
 
-	@Override
-	public CompletableFuture<?> addOrUpdate(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId,
-			DocumentRoutesDescriptor providedRoutes, Object entity,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		if ( entity == null ) {
-			throw IndexingLog.INSTANCE.nullEntityForIndexerAddOrUpdate();
-		}
-		return getDelegate( typeIdentifier )
-				.addOrUpdate( providedId, providedRoutes, entity, commitStrategy, refreshStrategy, operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<?> add(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> delete(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId,
-			DocumentRoutesDescriptor providedRoutes, Object entity,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		return getDelegate( typeIdentifier )
-				.delete( providedId, providedRoutes, entity, commitStrategy, refreshStrategy, operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<?> addOrUpdate(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> delete(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId,
-			DocumentRoutesDescriptor providedRoutes,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy,
-			OperationSubmitter operationSubmitter) {
-		return getDelegate( typeIdentifier )
-				.delete( providedId, providedRoutes, commitStrategy, refreshStrategy, operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<?> delete(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId, DocumentRoutesDescriptor providedRoutes, Object entity, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private PojoTypeIndexer<?, ?> getDelegate(PojoRawTypeIdentifier<?> typeIdentifier) {
-		// Call get() before resorting to computeIfAbsent,
-		// because it's faster and will be enough in the vast majority of cases.
-		PojoTypeIndexer<?, ?> delegate = this.delegates.get( typeIdentifier );
-		if ( delegate == null ) {
-			delegate = this.delegates.computeIfAbsent( typeIdentifier, this::createTypeIndexer );
-		}
-		return delegate;
-	}
+    @Override
+    public CompletableFuture<?> delete(PojoRawTypeIdentifier<?> typeIdentifier, Object providedId, DocumentRoutesDescriptor providedRoutes, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private PojoTypeIndexer<?, ?> createTypeIndexer(PojoRawTypeIdentifier<?> typeIdentifier) {
-		PojoWorkIndexedTypeContext<?, ?> typeContext = typeContextProvider.indexedForExactType( typeIdentifier );
-		return new PojoTypeIndexer<>( typeContext, sessionContext, typeContext.createIndexer( sessionContext ) );
-	}
+    private PojoTypeIndexer<?, ?> getDelegate(PojoRawTypeIdentifier<?> typeIdentifier) {
+        // Call get() before resorting to computeIfAbsent,
+        // because it's faster and will be enough in the vast majority of cases.
+        PojoTypeIndexer<?, ?> delegate = this.delegates.get(typeIdentifier);
+        if (delegate == null) {
+            delegate = this.delegates.computeIfAbsent(typeIdentifier, this::createTypeIndexer);
+        }
+        return delegate;
+    }
+
+    private PojoTypeIndexer<?, ?> createTypeIndexer(PojoRawTypeIdentifier<?> typeIdentifier) {
+        PojoWorkIndexedTypeContext<?, ?> typeContext = typeContextProvider.indexedForExactType(typeIdentifier);
+        return new PojoTypeIndexer<>(typeContext, sessionContext, typeContext.createIndexer(sessionContext));
+    }
 }

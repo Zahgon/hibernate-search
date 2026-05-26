@@ -18,66 +18,49 @@ import org.hibernate.search.mapper.pojo.model.path.impl.BoundPojoModelPathProper
  */
 public class PojoIndexingDependencyCollectorPropertyNode<T, P> extends PojoIndexingDependencyCollectorNode {
 
-	private final PojoIndexingDependencyCollectorTypeNode<T> parentNode;
-	/**
-	 * The path to this node from the parent node, i.e. from the node representing the type holding this property.
-	 */
-	private final BoundPojoModelPathPropertyNode<T, P> modelPathFromParentNode;
-	private final BoundPojoModelPathPropertyNode<T, P> modelPathFromLastEntityNode;
+    private final PojoIndexingDependencyCollectorTypeNode<T> parentNode;
 
-	PojoIndexingDependencyCollectorPropertyNode(PojoIndexingDependencyCollectorTypeNode<T> parentNode,
-			BoundPojoModelPathPropertyNode<T, P> modelPathFromParentNode,
-			BoundPojoModelPathPropertyNode<T, P> modelPathFromLastEntityNode,
-			PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
-		super( buildingHelper );
-		this.parentNode = parentNode;
-		this.modelPathFromParentNode = modelPathFromParentNode;
-		this.modelPathFromLastEntityNode = modelPathFromLastEntityNode;
-	}
+    /**
+     * The path to this node from the parent node, i.e. from the node representing the type holding this property.
+     */
+    private final BoundPojoModelPathPropertyNode<T, P> modelPathFromParentNode;
 
-	public <V> AbstractPojoIndexingDependencyCollectorDirectValueNode<P, V> value(
-			BoundContainerExtractorPath<? super P, V> boundExtractorPath) {
-		return PojoIndexingDependencyCollectorPolymorphicDirectValueNode.create(
-				this,
-				modelPathFromLastEntityNode.value( boundExtractorPath ),
-				buildingHelper
-		);
-	}
+    private final BoundPojoModelPathPropertyNode<T, P> modelPathFromLastEntityNode;
 
-	public AbstractPojoIndexingDependencyCollectorDirectValueNode<P, ?> value(
-			ContainerExtractorPath extractorPath) {
-		BoundContainerExtractorPath<P, ?> boundExtractorPath =
-				buildingHelper.extractorBinder().bindPath(
-						modelPathFromLastEntityNode.getPropertyModel().typeModel(),
-						extractorPath
-				);
-		return value( boundExtractorPath );
-	}
+    PojoIndexingDependencyCollectorPropertyNode(PojoIndexingDependencyCollectorTypeNode<T> parentNode, BoundPojoModelPathPropertyNode<T, P> modelPathFromParentNode, BoundPojoModelPathPropertyNode<T, P> modelPathFromLastEntityNode, PojoImplicitReindexingResolverBuildingHelper buildingHelper) {
+        super(buildingHelper);
+        this.parentNode = parentNode;
+        this.modelPathFromParentNode = modelPathFromParentNode;
+        this.modelPathFromLastEntityNode = modelPathFromLastEntityNode;
+    }
 
-	<V> PojoIndexingDependencyCollectorMonomorphicDirectValueNode<P, V> monomorphicValue(
-			BoundContainerExtractorPath<? super P, V> boundExtractorPath) {
-		return PojoIndexingDependencyCollectorMonomorphicDirectValueNode.create(
-				this,
-				modelPathFromLastEntityNode.value( boundExtractorPath ),
-				buildingHelper
-		);
-	}
+    public <V> AbstractPojoIndexingDependencyCollectorDirectValueNode<P, V> value(BoundContainerExtractorPath<? super P, V> boundExtractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PojoIndexingDependencyCollectorTypeNode<?> lastEntityNode() {
-		return parentNode.lastEntityNode();
-	}
+    public AbstractPojoIndexingDependencyCollectorDirectValueNode<P, ?> value(ContainerExtractorPath extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	ReindexOnUpdate reindexOnUpdate() {
-		return parentNode.reindexOnUpdate();
-	}
+    <V> PojoIndexingDependencyCollectorMonomorphicDirectValueNode<P, V> monomorphicValue(BoundContainerExtractorPath<? super P, V> boundExtractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	PojoIndexingDependencyCollectorTypeNode<T> parentNode() {
-		return parentNode;
-	}
+    @Override
+    PojoIndexingDependencyCollectorTypeNode<?> lastEntityNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	BoundPojoModelPathPropertyNode<T, P> modelPathFromParentNode() {
-		return modelPathFromParentNode;
-	}
+    @Override
+    ReindexOnUpdate reindexOnUpdate() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    PojoIndexingDependencyCollectorTypeNode<T> parentNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    BoundPojoModelPathPropertyNode<T, P> modelPathFromParentNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,22 +8,14 @@ import java.lang.reflect.Type;
 
 public final class TypeFormatter {
 
-	private final Type type;
+    private final Type type;
 
-	public TypeFormatter(Type type) {
-		this.type = type;
-	}
+    public TypeFormatter(Type type) {
+        this.type = type;
+    }
 
-	@Override
-	public String toString() {
-		if ( type instanceof Class ) {
-			return ( (Class<?>) type ).getName();
-		}
-		else if ( type != null ) {
-			return type.toString();
-		}
-		else {
-			return "null";
-		}
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

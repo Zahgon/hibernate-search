@@ -12,24 +12,23 @@ import java.util.Set;
  */
 public final class PojoPathDefinition {
 
-	private final Set<String> stringRepresentations;
-	private final Optional<PojoPathEntityStateRepresentation> stateRepresentation;
+    private final Set<String> stringRepresentations;
 
-	public PojoPathDefinition(Set<String> stringRepresentations,
-			Optional<PojoPathEntityStateRepresentation> entityStateRepresentation) {
-		this.stringRepresentations = stringRepresentations;
-		this.stateRepresentation = entityStateRepresentation;
-	}
+    private final Optional<PojoPathEntityStateRepresentation> stateRepresentation;
 
-	/**
-	 * @return The string representations of this path.
-	 */
-	public Set<String> stringRepresentations() {
-		return stringRepresentations;
-	}
+    public PojoPathDefinition(Set<String> stringRepresentations, Optional<PojoPathEntityStateRepresentation> entityStateRepresentation) {
+        this.stringRepresentations = stringRepresentations;
+        this.stateRepresentation = entityStateRepresentation;
+    }
 
-	public Optional<PojoPathEntityStateRepresentation> entityStateRepresentation() {
-		return stateRepresentation;
-	}
+    /**
+     * @return The string representations of this path.
+     */
+    public Set<String> stringRepresentations() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public Optional<PojoPathEntityStateRepresentation> entityStateRepresentation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

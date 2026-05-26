@@ -6,7 +6,6 @@ package org.hibernate.search.backend.lucene.impl;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.LuceneBackend;
 import org.hibernate.search.backend.lucene.analysis.model.impl.LuceneAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.lucene.cache.impl.LuceneQueryCachingContext;
@@ -30,125 +29,82 @@ import org.hibernate.search.engine.reporting.FailureHandler;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.similarities.Similarity;
 
 public class LuceneBackendImpl implements BackendImplementor, LuceneBackend {
 
-	private final Optional<String> backendName;
+    private final Optional<String> backendName;
 
-	private final EventContext eventContext;
+    private final EventContext eventContext;
 
-	private final BackendThreads threads;
+    private final BackendThreads threads;
 
-	private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
+    private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	private final LuceneSyncWorkOrchestratorImpl readOrchestrator;
+    private final LuceneSyncWorkOrchestratorImpl readOrchestrator;
 
-	private final IndexManagerBackendContext indexManagerBackendContext;
+    private final IndexManagerBackendContext indexManagerBackendContext;
 
-	LuceneBackendImpl(Optional<String> backendName,
-			EventContext eventContext,
-			BackendThreads threads,
-			LuceneWorkFactory workFactory,
-			LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry,
-			LuceneQueryCachingContext cachingContext,
-			MultiTenancyStrategy multiTenancyStrategy,
-			TimingSource timingSource,
-			FailureHandler failureHandler) {
-		this.backendName = backendName;
-		this.eventContext = eventContext;
-		this.threads = threads;
+    LuceneBackendImpl(Optional<String> backendName, EventContext eventContext, BackendThreads threads, LuceneWorkFactory workFactory, LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry, LuceneQueryCachingContext cachingContext, MultiTenancyStrategy multiTenancyStrategy, TimingSource timingSource, FailureHandler failureHandler) {
+        this.backendName = backendName;
+        this.eventContext = eventContext;
+        this.threads = threads;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        Similarity similarity = analysisDefinitionRegistry.getSimilarity();
+        this.readOrchestrator = new LuceneSyncWorkOrchestratorImpl("Lucene read work orchestrator - " + eventContext.render(), similarity, cachingContext);
+        this.indexManagerBackendContext = new IndexManagerBackendContext(this, eventContext, threads, similarity, workFactory, multiTenancyStrategy, timingSource, analysisDefinitionRegistry, failureHandler, readOrchestrator);
+    }
 
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
-		Similarity similarity = analysisDefinitionRegistry.getSimilarity();
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		this.readOrchestrator = new LuceneSyncWorkOrchestratorImpl(
-				"Lucene read work orchestrator - " + eventContext.render(), similarity, cachingContext
-		);
+    @Override
+    public void start(BackendStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		this.indexManagerBackendContext = new IndexManagerBackendContext(
-				this, eventContext, threads, similarity,
-				workFactory, multiTenancyStrategy,
-				timingSource, analysisDefinitionRegistry,
-				failureHandler,
-				readOrchestrator
-		);
-	}
+    @Override
+    public CompletableFuture<?> preStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + eventContext.render() + "]";
-	}
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void start(BackendStartContext context) {
-		threads.onStart( context.configurationPropertySource(), context.beanResolver(), context.threadPoolProvider() );
-	}
+    @Override
+    // Checked using reflection
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> preStop() {
-		// Nothing to do
-		return CompletableFuture.completedFuture( null );
-	}
+    @Override
+    public Optional<String> name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void stop() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( LuceneSyncWorkOrchestratorImpl::stop, readOrchestrator );
-			closer.push( BackendThreads::onStop, threads );
-		}
-	}
+    @Override
+    public Backend toAPI() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // Checked using reflection
-	public <T> T unwrap(Class<T> clazz) {
-		if ( clazz.isAssignableFrom( LuceneBackend.class ) ) {
-			return (T) this;
-		}
-		throw LuceneMiscLog.INSTANCE.backendUnwrappingWithUnknownType(
-				clazz, LuceneBackend.class, eventContext
-		);
-	}
+    @Override
+    public Optional<Analyzer> analyzer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<String> name() {
-		return backendName;
-	}
+    @Override
+    public Optional<Analyzer> normalizer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Backend toAPI() {
-		return this;
-	}
-
-	@Override
-	public Optional<Analyzer> analyzer(String name) {
-		return Optional.ofNullable( analysisDefinitionRegistry.getAnalyzerDefinition( name ) );
-	}
-
-	@Override
-	public Optional<Analyzer> normalizer(String name) {
-		return Optional.ofNullable( analysisDefinitionRegistry.getNormalizerDefinition( name ) );
-	}
-
-	@Override
-	public IndexManagerBuilder createIndexManagerBuilder(
-			String indexName, String mappedTypeName, BackendBuildContext context, BackendMapperContext backendMapperContext,
-			ConfigurationPropertySource propertySource) {
-
-		LuceneIndexRootBuilder indexRootBuilder = new LuceneIndexRootBuilder(
-				EventContexts.fromIndexName( indexName ), backendMapperContext, mappedTypeName, analysisDefinitionRegistry
-		);
-
-		/*
-		 * We do not normalize index names: directory providers are expected to use the exact given index name,
-		 * or a reversible conversion of that name, as an internal key (file names, ...),
-		 * and therefore the internal key should stay unique.
-		 */
-		return new LuceneIndexManagerBuilder(
-				indexManagerBackendContext,
-				indexName, indexRootBuilder
-		);
-	}
+    @Override
+    public IndexManagerBuilder createIndexManagerBuilder(String indexName, String mappedTypeName, BackendBuildContext context, BackendMapperContext backendMapperContext, ConfigurationPropertySource propertySource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

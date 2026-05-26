@@ -17,96 +17,58 @@ import org.hibernate.search.util.common.AssertionFailure;
  * @param <S> The "self" type (the actual exposed type of this step).
  * @param <F> The type of field values.
  */
-abstract class AbstractLuceneStandardIndexFieldTypeOptionsStep<
-		S extends AbstractLuceneStandardIndexFieldTypeOptionsStep<?, F>,
-		F>
-		extends AbstractLuceneIndexFieldTypeOptionsStep<S, F>
-		implements LuceneStandardIndexFieldTypeOptionsStep<S, F> {
+abstract class AbstractLuceneStandardIndexFieldTypeOptionsStep<S extends AbstractLuceneStandardIndexFieldTypeOptionsStep<?, F>, F> extends AbstractLuceneIndexFieldTypeOptionsStep<S, F> implements LuceneStandardIndexFieldTypeOptionsStep<S, F> {
 
-	protected Projectable projectable = Projectable.DEFAULT;
-	protected Searchable searchable = Searchable.DEFAULT;
-	protected Aggregable aggregable = Aggregable.DEFAULT;
-	protected F indexNullAsValue = null;
+    protected Projectable projectable = Projectable.DEFAULT;
 
-	AbstractLuceneStandardIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> valueType,
-			DefaultStringConverters.Converter<F> defaultConverter) {
-		super( buildContext, valueType );
-		builder.parser( defaultConverter );
-		builder.formatter( defaultConverter );
-	}
+    protected Searchable searchable = Searchable.DEFAULT;
 
-	@Override
-	public S projectable(Projectable projectable) {
-		this.projectable = projectable;
-		return thisAsS();
-	}
+    protected Aggregable aggregable = Aggregable.DEFAULT;
 
-	@Override
-	public S indexNullAs(F indexNullAs) {
-		this.indexNullAsValue = indexNullAs;
-		return thisAsS();
-	}
+    protected F indexNullAsValue = null;
 
-	@Override
-	public S searchable(Searchable searchable) {
-		this.searchable = searchable;
-		return thisAsS();
-	}
+    AbstractLuceneStandardIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext, Class<F> valueType, DefaultStringConverters.Converter<F> defaultConverter) {
+        super(buildContext, valueType);
+        builder.parser(defaultConverter);
+        builder.formatter(defaultConverter);
+    }
 
-	@Override
-	public S aggregable(Aggregable aggregable) {
-		this.aggregable = aggregable;
-		return thisAsS();
-	}
+    @Override
+    public S projectable(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public abstract LuceneIndexValueFieldType<F> toIndexFieldType();
+    @Override
+    public S indexNullAs(F indexNullAs) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected static boolean resolveDefault(Projectable projectable) {
-		switch ( projectable ) {
-			case DEFAULT:
-			case NO:
-				return false;
-			case YES:
-				return true;
-			default:
-				throw new AssertionFailure( "Unexpected value for Projectable: " + projectable );
-		}
-	}
+    @Override
+    public S searchable(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected static boolean resolveDefault(Searchable searchable) {
-		switch ( searchable ) {
-			case DEFAULT:
-			case YES:
-				return true;
-			case NO:
-				return false;
-			default:
-				throw new AssertionFailure( "Unexpected value for Searchable: " + searchable );
-		}
-	}
+    @Override
+    public S aggregable(Aggregable aggregable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected static boolean resolveDefault(Sortable sortable) {
-		switch ( sortable ) {
-			case DEFAULT:
-			case NO:
-				return false;
-			case YES:
-				return true;
-			default:
-				throw new AssertionFailure( "Unexpected value for Sortable: " + sortable );
-		}
-	}
+    @Override
+    public abstract LuceneIndexValueFieldType<F> toIndexFieldType();
 
-	protected static boolean resolveDefault(Aggregable aggregable) {
-		switch ( aggregable ) {
-			case DEFAULT:
-			case NO:
-				return false;
-			case YES:
-				return true;
-			default:
-				throw new AssertionFailure( "Unexpected value for Aggregable: " + aggregable );
-		}
-	}
+    protected static boolean resolveDefault(Projectable projectable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected static boolean resolveDefault(Searchable searchable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected static boolean resolveDefault(Sortable sortable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected static boolean resolveDefault(Aggregable aggregable) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

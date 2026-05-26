@@ -19,58 +19,19 @@ import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.search.sort.spi.SortTypeKeys;
 import org.hibernate.search.engine.spatial.GeoPoint;
 
-class ElasticsearchGeoPointIndexFieldTypeOptionsStep
-		extends
-		AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<ElasticsearchGeoPointIndexFieldTypeOptionsStep, GeoPoint> {
+class ElasticsearchGeoPointIndexFieldTypeOptionsStep extends AbstractElasticsearchSimpleStandardFieldTypeOptionsStep<ElasticsearchGeoPointIndexFieldTypeOptionsStep, GeoPoint> {
 
-	ElasticsearchGeoPointIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, GeoPoint.class, DataTypes.GEO_POINT, DefaultStringConverters.GEO_POINT );
-	}
+    ElasticsearchGeoPointIndexFieldTypeOptionsStep(ElasticsearchIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, GeoPoint.class, DataTypes.GEO_POINT, DefaultStringConverters.GEO_POINT);
+    }
 
-	@Override
-	protected void complete() {
-		ElasticsearchGeoPointFieldCodec codec = new ElasticsearchGeoPointFieldCodec( buildContext.getUserFacingGson() );
-		builder.codec( codec );
+    @Override
+    protected void complete() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// Since docs values are going to be available as soon as the filed is either sortable or projectable
-		// it would open the other capability automatically. Hence:
-		resolvedSortable = resolvedSortable || resolvedProjectable;
-		resolvedProjectable = resolvedSortable;
-
-		// We need doc values for the projection script when not sorting on the same field
-		builder.mapping().setDocValues( resolvedProjectable );
-
-		if ( resolvedSearchable ) {
-			builder.searchable( true );
-			builder.queryElementFactory( PredicateTypeKeys.EXISTS, new ElasticsearchExistsPredicate.Factory<>() );
-			builder.queryElementFactory( PredicateTypeKeys.SPATIAL_WITHIN_CIRCLE,
-					new ElasticsearchGeoPointSpatialWithinCirclePredicate.Factory( codec ) );
-			builder.queryElementFactory( PredicateTypeKeys.SPATIAL_WITHIN_POLYGON,
-					new ElasticsearchGeoPointSpatialWithinPolygonPredicate.Factory() );
-			builder.queryElementFactory( PredicateTypeKeys.SPATIAL_WITHIN_BOUNDING_BOX,
-					new ElasticsearchGeoPointSpatialWithinBoundingBoxPredicate.Factory( codec ) );
-		}
-
-		if ( resolvedSortable ) {
-			builder.sortable( true );
-			builder.queryElementFactory( SortTypeKeys.DISTANCE, new ElasticsearchDistanceSort.Factory() );
-		}
-
-		if ( resolvedProjectable ) {
-			builder.projectable( true );
-			builder.queryElementFactory( ProjectionTypeKeys.FIELD, new ElasticsearchFieldProjection.Factory<>( codec ) );
-			builder.queryElementFactory( ProjectionTypeKeys.DISTANCE,
-					new ElasticsearchDistanceToFieldProjection.Factory() );
-		}
-
-		if ( resolvedAggregable ) {
-			builder.aggregable( true );
-			// No supported aggregation at the moment.
-		}
-	}
-
-	@Override
-	protected ElasticsearchGeoPointIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchGeoPointIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

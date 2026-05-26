@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.model.typepattern.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
 
 /**
@@ -17,18 +16,17 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public interface ExtractingTypePatternMatcher extends TypePatternMatcher {
 
-	@Override
-	default boolean matches(PojoTypeModel<?> typeToInspect) {
-		return extract( typeToInspect ).isPresent();
-	}
+    @Override
+    default boolean matches(PojoTypeModel<?> typeToInspect) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Attempts to match a given type against this pattern,
-	 * and if matched, returns an upper bound of the extracted type.
-	 *
-	 * @param typeToInspect A type that may, or may not, match the pattern.
-	 * @return The extracted type if there was a match, or an empty {@link Optional} otherwise.
-	 */
-	Optional<? extends PojoTypeModel<?>> extract(PojoTypeModel<?> typeToInspect);
-
+    /**
+     * Attempts to match a given type against this pattern,
+     * and if matched, returns an upper bound of the extracted type.
+     *
+     * @param typeToInspect A type that may, or may not, match the pattern.
+     * @return The extracted type if there was a match, or an empty {@link Optional} otherwise.
+     */
+    Optional<? extends PojoTypeModel<?>> extract(PojoTypeModel<?> typeToInspect);
 }

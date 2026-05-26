@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
-
 import org.hibernate.search.util.common.SearchException;
 import org.hibernate.search.util.common.impl.Throwables;
 
@@ -33,107 +32,73 @@ import org.hibernate.search.util.common.impl.Throwables;
  */
 public final class KeyValueProvider<K, V> {
 
-	public static <K, V> KeyValueProvider<K, V> create(Map<K, ? extends V> content,
-			BiFunction<? super K, ? super Set<K>, SearchException> missingValueExceptionFactory) {
-		return new KeyValueProvider<>( content, missingValueExceptionFactory,
-				toMultiMissingValue( missingValueExceptionFactory ) );
-	}
+    public static <K, V> KeyValueProvider<K, V> create(Map<K, ? extends V> content, BiFunction<? super K, ? super Set<K>, SearchException> missingValueExceptionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <K, V> KeyValueProvider<K, V> create(Map<K, ? extends V> content,
-			BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory,
-			BiFunction<? super Set<K>, ? super Set<K>, SearchException> multiMissingValueExceptionFactory) {
-		return new KeyValueProvider<>( content, singleMissingValueExceptionFactory,
-				multiMissingValueExceptionFactory );
-	}
+    public static <K, V> KeyValueProvider<K, V> create(Map<K, ? extends V> content, BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory, BiFunction<? super Set<K>, ? super Set<K>, SearchException> multiMissingValueExceptionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static <K, V> KeyValueProvider<K, V> createWithMultiKeyException(Map<K, ? extends V> content,
-			BiFunction<? super Set<K>, ? super Set<K>, SearchException> missingValueExceptionFactory) {
-		return new KeyValueProvider<>( content, toSingleMissingValue( missingValueExceptionFactory ),
-				missingValueExceptionFactory );
-	}
+    public static <K, V> KeyValueProvider<K, V> createWithMultiKeyException(Map<K, ? extends V> content, BiFunction<? super Set<K>, ? super Set<K>, SearchException> missingValueExceptionFactory) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static <K> BiFunction<K, Set<K>, SearchException> toSingleMissingValue(
-			BiFunction<? super Set<K>, ? super Set<K>, SearchException> missingValueExceptionFactory) {
-		return (invalidKey, allValidKeys) -> missingValueExceptionFactory.apply( Set.of( invalidKey ), allValidKeys );
-	}
+    private static <K> BiFunction<K, Set<K>, SearchException> toSingleMissingValue(BiFunction<? super Set<K>, ? super Set<K>, SearchException> missingValueExceptionFactory) {
+        return (invalidKey, allValidKeys) -> missingValueExceptionFactory.apply(Set.of(invalidKey), allValidKeys);
+    }
 
-	private static <K> BiFunction<Set<K>, Set<K>, SearchException> toMultiMissingValue(
-			BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory) {
-		return (invalidKeys, allValidKeys) -> {
-			SearchException exception = null;
-			for ( var invalidKey : invalidKeys ) {
-				exception = Throwables.combine( exception,
-						singleMissingValueExceptionFactory.apply( invalidKey, allValidKeys ) );
-			}
-			return exception;
-		};
-	}
+    private static <K> BiFunction<Set<K>, Set<K>, SearchException> toMultiMissingValue(BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory) {
+        return (invalidKeys, allValidKeys) -> {
+            SearchException exception = null;
+            for (var invalidKey : invalidKeys) {
+                exception = Throwables.combine(exception, singleMissingValueExceptionFactory.apply(invalidKey, allValidKeys));
+            }
+            return exception;
+        };
+    }
 
-	private final Map<K, ? extends V> content;
-	private final BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory;
-	private final BiFunction<? super Set<K>, ? super Set<K>, SearchException> multiMissingValueExceptionFactory;
+    private final Map<K, ? extends V> content;
 
-	public KeyValueProvider(Map<K, ? extends V> content,
-			BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory) {
-		this( content, singleMissingValueExceptionFactory,
-				toMultiMissingValue( singleMissingValueExceptionFactory ) );
-	}
+    private final BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory;
 
-	private KeyValueProvider(Map<K, ? extends V> content,
-			BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory,
-			BiFunction<? super Set<K>, ? super Set<K>, SearchException> multiMissingValueExceptionFactory) {
-		this.content = Collections.unmodifiableMap( content );
-		this.singleMissingValueExceptionFactory = singleMissingValueExceptionFactory;
-		this.multiMissingValueExceptionFactory = multiMissingValueExceptionFactory;
-	}
+    private final BiFunction<? super Set<K>, ? super Set<K>, SearchException> multiMissingValueExceptionFactory;
 
-	public V getOrFail(K key) {
-		V result = content.get( key );
-		if ( result == null ) {
-			throw singleMissingValueExceptionFactory.apply( key, content.keySet() );
-		}
-		return result;
-	}
+    public KeyValueProvider(Map<K, ? extends V> content, BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory) {
+        this(content, singleMissingValueExceptionFactory, toMultiMissingValue(singleMissingValueExceptionFactory));
+    }
 
-	public List<V> getAllOrFail(Collection<? extends K> keys) {
-		return getAllOrFail( keys, (k, v) -> v );
-	}
+    private KeyValueProvider(Map<K, ? extends V> content, BiFunction<? super K, ? super Set<K>, SearchException> singleMissingValueExceptionFactory, BiFunction<? super Set<K>, ? super Set<K>, SearchException> multiMissingValueExceptionFactory) {
+        this.content = Collections.unmodifiableMap(content);
+        this.singleMissingValueExceptionFactory = singleMissingValueExceptionFactory;
+        this.multiMissingValueExceptionFactory = multiMissingValueExceptionFactory;
+    }
 
-	public <V2> List<V2> getAllOrFail(Collection<? extends K> keys, BiFunction<K, V, V2> transform) {
-		List<V2> result = new ArrayList<>();
-		Set<K> missing = null;
-		for ( K key : keys ) {
-			V value = content.get( key );
-			if ( value == null ) {
-				if ( missing == null ) {
-					missing = new LinkedHashSet<>();
-				}
-				missing.add( key );
-			}
-			else {
-				result.add( transform.apply( key, value ) );
-			}
-		}
-		if ( missing != null ) {
-			throw multiMissingValueExceptionFactory.apply( missing, content.keySet() );
-		}
-		return result;
-	}
+    public V getOrFail(K key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Optional<? extends V> getOptional(K key) {
-		return Optional.ofNullable( content.get( key ) );
-	}
+    public List<V> getAllOrFail(Collection<? extends K> keys) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public V getOrNull(K key) {
-		return content.get( key );
-	}
+    public <V2> List<V2> getAllOrFail(Collection<? extends K> keys, BiFunction<K, V, V2> transform) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Set<K> keys() {
-		return content.keySet();
-	}
+    public Optional<? extends V> getOptional(K key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Collection<? extends V> values() {
-		return content.values();
-	}
+    public V getOrNull(K key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public Set<K> keys() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Collection<? extends V> values() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

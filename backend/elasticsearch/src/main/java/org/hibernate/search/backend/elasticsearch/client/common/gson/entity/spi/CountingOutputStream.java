@@ -7,43 +7,37 @@ package org.hibernate.search.backend.elasticsearch.client.common.gson.entity.spi
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import org.hibernate.search.util.common.annotation.Incubating;
 
 @Incubating
 final class CountingOutputStream extends FilterOutputStream {
 
-	private long bytesWritten = 0L;
+    private long bytesWritten = 0L;
 
-	public CountingOutputStream(OutputStream out) {
-		super( out );
-	}
+    public CountingOutputStream(OutputStream out) {
+        super(out);
+    }
 
-	@Override
-	public void write(int b) throws IOException {
-		out.write( b );
-		count( 1 );
-	}
+    @Override
+    public void write(int b) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void write(byte[] b) throws IOException {
-		write( b, 0, b.length );
-	}
+    @Override
+    public void write(byte[] b) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-		out.write( b, off, len );
-		count( len );
-	}
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void count(int written) {
-		if ( written > 0 ) {
-			bytesWritten += written;
-		}
-	}
+    void count(int written) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public long getBytesWritten() {
-		return bytesWritten;
-	}
-
+    public long getBytesWritten() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

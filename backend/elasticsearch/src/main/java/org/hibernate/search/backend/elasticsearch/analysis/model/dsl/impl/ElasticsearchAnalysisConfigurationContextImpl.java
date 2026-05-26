@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.analysis.model.dsl.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.search.backend.elasticsearch.analysis.ElasticsearchAnalysisConfigurationContext;
 import org.hibernate.search.backend.elasticsearch.analysis.model.dsl.ElasticsearchAnalysisComponentParametersStep;
 import org.hibernate.search.backend.elasticsearch.analysis.model.dsl.ElasticsearchAnalysisComponentTypeStep;
@@ -16,68 +15,37 @@ import org.hibernate.search.backend.elasticsearch.analysis.model.dsl.Elasticsear
 import org.hibernate.search.backend.elasticsearch.analysis.model.impl.ElasticsearchAnalysisDefinitionCollector;
 import org.hibernate.search.backend.elasticsearch.analysis.model.impl.ElasticsearchAnalysisDefinitionContributor;
 
-public class ElasticsearchAnalysisConfigurationContextImpl
-		implements ElasticsearchAnalysisConfigurationContext, ElasticsearchAnalysisDefinitionContributor {
+public class ElasticsearchAnalysisConfigurationContextImpl implements ElasticsearchAnalysisConfigurationContext, ElasticsearchAnalysisDefinitionContributor {
 
-	private final List<ElasticsearchAnalysisDefinitionContributor> children = new ArrayList<>();
+    private final List<ElasticsearchAnalysisDefinitionContributor> children = new ArrayList<>();
 
-	@Override
-	public ElasticsearchAnalyzerTypeStep analyzer(String name) {
-		return new ElasticsearchAnalyzerTypeStep() {
-			@Override
-			public ElasticsearchAnalyzerTokenizerStep custom() {
-				ElasticsearchAnalyzerComponentsStep context =
-						new ElasticsearchAnalyzerComponentsStep( name );
-				children.add( context );
-				return context;
-			}
+    @Override
+    public ElasticsearchAnalyzerTypeStep analyzer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			@Override
-			public ElasticsearchAnalysisComponentParametersStep type(String type) {
-				ElasticsearchAnalyzerParametersStep context =
-						new ElasticsearchAnalyzerParametersStep( name, type );
-				children.add( context );
-				return context;
-			}
-		};
-	}
+    @Override
+    public ElasticsearchNormalizerTypeStep normalizer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchNormalizerTypeStep normalizer(String name) {
-		return () -> {
-			ElasticsearchNormalizerComponentsStep context =
-					new ElasticsearchNormalizerComponentsStep( name );
-			children.add( context );
-			return context;
-		};
-	}
+    @Override
+    public ElasticsearchAnalysisComponentTypeStep tokenizer(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchAnalysisComponentTypeStep tokenizer(String name) {
-		ElasticsearchTokenizerParametersStep context = new ElasticsearchTokenizerParametersStep( name );
-		children.add( context );
-		return context;
-	}
+    @Override
+    public ElasticsearchAnalysisComponentTypeStep charFilter(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchAnalysisComponentTypeStep charFilter(String name) {
-		ElasticsearchCharFilterParametersStep context = new ElasticsearchCharFilterParametersStep( name );
-		children.add( context );
-		return context;
-	}
+    @Override
+    public ElasticsearchAnalysisComponentTypeStep tokenFilter(String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchAnalysisComponentTypeStep tokenFilter(String name) {
-		ElasticsearchTokenFilterParametersStep context = new ElasticsearchTokenFilterParametersStep( name );
-		children.add( context );
-		return context;
-	}
-
-	@Override
-	public void contribute(ElasticsearchAnalysisDefinitionCollector collector) {
-		for ( ElasticsearchAnalysisDefinitionContributor child : children ) {
-			child.contribute( collector );
-		}
-	}
-
+    @Override
+    public void contribute(ElasticsearchAnalysisDefinitionCollector collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

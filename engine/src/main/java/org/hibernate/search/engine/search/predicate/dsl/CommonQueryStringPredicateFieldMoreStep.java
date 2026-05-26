@@ -18,89 +18,79 @@ import org.hibernate.search.util.common.annotation.Incubating;
  * @param <S> The "self" type (the actual exposed type of this step).
  * @param <N> The type of the next step.
  */
-public interface CommonQueryStringPredicateFieldMoreStep<
-		SR,
-		S extends CommonQueryStringPredicateFieldMoreStep<SR, ?, N, FR>,
-		N extends CommonQueryStringPredicateOptionsStep<?>,
-		FR extends TypedPredicateFieldReference<SR, ?>>
-		extends CommonQueryStringPredicateMatchingStep<N>, MultiFieldPredicateFieldBoostStep<S> {
+public interface CommonQueryStringPredicateFieldMoreStep<SR, S extends CommonQueryStringPredicateFieldMoreStep<SR, ?, N, FR>, N extends CommonQueryStringPredicateOptionsStep<?>, FR extends TypedPredicateFieldReference<SR, ?>> extends CommonQueryStringPredicateMatchingStep<N>, MultiFieldPredicateFieldBoostStep<S> {
 
-	/**
-	 * Target the given field in the query string predicate,
-	 * as an alternative to the already-targeted fields.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * See {@link CommonQueryStringPredicateFieldStep#field(String)} for more information on targeted fields.
-	 *
-	 * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the index field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see CommonQueryStringPredicateFieldStep#field(String)
-	 */
-	default S field(String fieldPath) {
-		return fields( fieldPath );
-	}
+    /**
+     * Target the given field in the query string predicate,
+     * as an alternative to the already-targeted fields.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * See {@link CommonQueryStringPredicateFieldStep#field(String)} for more information on targeted fields.
+     *
+     * @param fieldPath The <a href="SearchPredicateFactory.html#field-paths">path</a> to the index field
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see CommonQueryStringPredicateFieldStep#field(String)
+     */
+    default S field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Target the given fields in the query string predicate,
-	 * as an alternative to the already-targeted fields.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * See {@link CommonQueryStringPredicateFieldStep#fields(String...)} for more information on targeted fields.
-	 *
-	 * @param fieldPaths The <a href="SearchPredicateFactory.html#field-paths">paths</a> to the index fields
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see CommonQueryStringPredicateFieldStep#fields(String...)
-	 */
-	S fields(String... fieldPaths);
+    /**
+     * Target the given fields in the query string predicate,
+     * as an alternative to the already-targeted fields.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * See {@link CommonQueryStringPredicateFieldStep#fields(String...)} for more information on targeted fields.
+     *
+     * @param fieldPaths The <a href="SearchPredicateFactory.html#field-paths">paths</a> to the index fields
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see CommonQueryStringPredicateFieldStep#fields(String...)
+     */
+    S fields(String... fieldPaths);
 
-	/**
-	 * Target the given field in the query string predicate,
-	 * as an alternative to the already-targeted fields.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * See {@link CommonQueryStringPredicateFieldStep#field(String)} for more information on targeted fields.
-	 *
-	 * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the index field
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see CommonQueryStringPredicateFieldStep#field(String)
-	 */
-	@Incubating
-	@SuppressWarnings("unchecked")
-	default S field(FR fieldReference) {
-		return fields( fieldReference );
-	}
+    /**
+     * Target the given field in the query string predicate,
+     * as an alternative to the already-targeted fields.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * See {@link CommonQueryStringPredicateFieldStep#field(String)} for more information on targeted fields.
+     *
+     * @param fieldReference The field reference representing a <a href="SearchPredicateFactory.html#field-references">definition</a> of the index field
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see CommonQueryStringPredicateFieldStep#field(String)
+     */
+    @Incubating
+    @SuppressWarnings("unchecked")
+    default S field(FR fieldReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Target the given fields in the query string predicate,
-	 * as an alternative to the already-targeted fields.
-	 * <p>
-	 * Only text fields are supported.
-	 * <p>
-	 * See {@link CommonQueryStringPredicateFieldStep#fields(String...)} for more information on targeted fields.
-	 *
-	 * @param fieldReferences The field reference representing <a href="SearchPredicateFactory.html#field-references">definition</a> of the index fields
-	 * to apply the predicate on.
-	 * @return The next step.
-	 *
-	 * @see CommonQueryStringPredicateFieldStep#fields(String...)
-	 */
-	@Incubating
-	@SuppressWarnings("unchecked")
-	default S fields(FR... fieldReferences) {
-		String[] paths = new String[fieldReferences.length];
-		for ( int i = 0; i < fieldReferences.length; i++ ) {
-			paths[i] = fieldReferences[i].absolutePath();
-		}
-		return fields( paths );
-	}
-
+    /**
+     * Target the given fields in the query string predicate,
+     * as an alternative to the already-targeted fields.
+     * <p>
+     * Only text fields are supported.
+     * <p>
+     * See {@link CommonQueryStringPredicateFieldStep#fields(String...)} for more information on targeted fields.
+     *
+     * @param fieldReferences The field reference representing <a href="SearchPredicateFactory.html#field-references">definition</a> of the index fields
+     * to apply the predicate on.
+     * @return The next step.
+     *
+     * @see CommonQueryStringPredicateFieldStep#fields(String...)
+     */
+    @Incubating
+    @SuppressWarnings("unchecked")
+    default S fields(FR... fieldReferences) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -16,7 +15,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-
 import org.hibernate.search.engine.backend.types.IndexFieldType;
 import org.hibernate.search.engine.backend.types.dsl.IndexFieldTypeFinalStep;
 import org.hibernate.search.mapper.pojo.bridge.binding.PropertyBindingContext;
@@ -26,124 +24,44 @@ import org.hibernate.search.util.common.AssertionFailure;
 
 abstract class AbstractProcessorAnnotationProcessor implements ProcessorPropertyMappingAnnotationProcessor {
 
-	protected static final String[] EMPTY = new String[0];
+    protected static final String[] EMPTY = new String[0];
 
-	@Override
-	public final void process(PropertyBindingContext bindingContext, AnnotationMirror annotation,
-			ProcessorAnnotationProcessorContext context, Element element) {
-		String annotationName = getAnnotationValueAsString( annotation, "name", "" );
-		String resolvedName = annotationName.isEmpty() ? element.getSimpleName().toString() : annotationName;
+    @Override
+    public final void process(PropertyBindingContext bindingContext, AnnotationMirror annotation, ProcessorAnnotationProcessorContext context, Element element) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// in binders, we only allow IndexFieldReference fields.
-		if ( element.asType() instanceof DeclaredType dt
-				&& ( (TypeElement) dt.asElement() ).getQualifiedName()
-						.contentEquals( "org.hibernate.search.engine.backend.document.IndexFieldReference" ) ) {
-			TypeMirror fieldType = dt.getTypeArguments().get( 0 );
+    protected abstract Optional<IndexFieldTypeFinalStep<?>> configureField(PropertyBindingContext bindingContext, AnnotationMirror annotation, ProcessorAnnotationProcessorContext context, Element element, TypeMirror fieldType);
 
-			configureField(
-					bindingContext, annotation,
-					context, element, fieldType
-			).ifPresent( step -> {
-				IndexFieldType<?> configuredField = step.toIndexFieldType();
-				bindingContext.indexSchemaElement().field( resolvedName, configuredField ).toReference();
-			} );
-		}
-		else {
-			context.messager().printMessage( Diagnostic.Kind.ERROR,
-					"Only fields of org.hibernate.search.engine.backend.document.IndexFieldReference type are allowed to be annotated with Hibernate Search annotations in the binder.",
-					element );
-		}
-	}
+    protected ContainerExtractorPath toContainerExtractorPath(AnnotationMirror extraction, ProcessorAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract Optional<IndexFieldTypeFinalStep<?>> configureField(PropertyBindingContext bindingContext,
-			AnnotationMirror annotation, ProcessorAnnotationProcessorContext context, Element element, TypeMirror fieldType);
+    protected ContainerExtractorPath toContainerExtractorPath(AnnotationMirror extraction, String defaultValue, ProcessorAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected ContainerExtractorPath toContainerExtractorPath(AnnotationMirror extraction,
-			ProcessorAnnotationProcessorContext context) {
-		return toContainerExtractorPath( extraction, "DEFAULT", context );
-	}
+    protected AnnotationMirror getAnnotationProperty(AnnotationMirror annotation, String annotationName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected ContainerExtractorPath toContainerExtractorPath(AnnotationMirror extraction, String defaultValue,
-			ProcessorAnnotationProcessorContext context) {
-		if ( extraction == null ) {
-			return ContainerExtractorPath.defaultExtractors();
-		}
-		else {
-			ContainerExtract extract =
-					ContainerExtract.valueOf( getAnnotationValueAsString( extraction, "extraction", defaultValue ) );
-			String[] extractors = toStringArray( getAnnotationValue( extraction, "value" ) );
-			switch ( extract ) {
-				case NO:
-					if ( extractors.length != 0 ) {
-						context.messager().printMessage(
-								Diagnostic.Kind.ERROR, "Unexpected extractor references:"
-										+ " extractors cannot be defined explicitly when extract = ContainerExtract.NO."
-										+ " Either leave 'extract' to its default value to define extractors explicitly"
-										+ " or leave the 'extractor' list to its default, empty value to disable extraction."
-						);
-					}
-					return ContainerExtractorPath.noExtractors();
-				case DEFAULT:
-					if ( extractors.length == 0 ) {
-						return ContainerExtractorPath.defaultExtractors();
-					}
-					else {
-						return ContainerExtractorPath.explicitExtractors( Arrays.asList( extractors ) );
-					}
-				default:
-					throw new AssertionFailure(
-							"Unexpected " + ContainerExtract.class.getSimpleName() + " value: " + extract
-					);
-			}
-		}
-	}
+    protected String getAnnotationValueAsString(AnnotationMirror annotation, String name, String defaultValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected AnnotationMirror getAnnotationProperty(AnnotationMirror annotation, String annotationName) {
-		AnnotationValue value = getAnnotationValue( annotation, annotationName );
-		return (AnnotationMirror) ( value == null ? null : value.getValue() );
-	}
+    protected String getAnnotationValueAsString(AnnotationMirror annotation, String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected String getAnnotationValueAsString(AnnotationMirror annotation, String name, String defaultValue) {
-		AnnotationValue annotationValue = getAnnotationValue( annotation, name );
-		if ( annotationValue == null ) {
-			return defaultValue;
-		}
-		return annotationValue.getValue().toString();
-	}
+    protected int getAnnotationValueAsInt(AnnotationMirror annotation, String name, int defaultValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected String getAnnotationValueAsString(AnnotationMirror annotation, String name) {
-		return getAnnotationValueAsString( annotation, name, null );
-	}
+    protected AnnotationValue getAnnotationValue(AnnotationMirror annotation, String name) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected int getAnnotationValueAsInt(AnnotationMirror annotation, String name, int defaultValue) {
-		AnnotationValue annotationValue = getAnnotationValue( annotation, name );
-		if ( annotationValue == null ) {
-			return defaultValue;
-		}
-		return (int) annotationValue.getValue();
-	}
-
-	protected AnnotationValue getAnnotationValue(AnnotationMirror annotation, String name) {
-		if ( annotation == null ) {
-			return null;
-		}
-		var elementValues = annotation.getElementValues();
-		for ( var entry : elementValues.entrySet() ) {
-			if ( entry.getKey().getSimpleName().contentEquals( name ) ) {
-				return entry.getValue();
-			}
-		}
-		return null;
-	}
-
-	protected String[] toStringArray(AnnotationValue value) {
-		if ( value == null ) {
-			return EMPTY;
-		}
-		if ( value.getValue() instanceof List<?> list ) {
-			return list.stream().map( v -> Objects.toString( ( (AnnotationValue) v ).getValue(), null ) )
-					.toArray( String[]::new );
-		}
-		return new String[] { Objects.toString( value.getValue(), null ) };
-	}
+    protected String[] toStringArray(AnnotationValue value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

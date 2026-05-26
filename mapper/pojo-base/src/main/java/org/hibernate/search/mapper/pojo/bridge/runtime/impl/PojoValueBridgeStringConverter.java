@@ -10,36 +10,31 @@ import org.hibernate.search.engine.backend.types.converter.runtime.FromDocumentV
 import org.hibernate.search.engine.backend.types.converter.runtime.ToDocumentValueConvertContext;
 import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
 
-public final class PojoValueBridgeStringConverter<F>
-		implements ToDocumentValueConverter<String, F>, FromDocumentValueConverter<F, String> {
+public final class PojoValueBridgeStringConverter<F> implements ToDocumentValueConverter<String, F>, FromDocumentValueConverter<F, String> {
 
-	private final ValueBridge<?, F> bridge;
+    private final ValueBridge<?, F> bridge;
 
-	public PojoValueBridgeStringConverter(ValueBridge<?, F> bridge) {
-		this.bridge = bridge;
-	}
+    public PojoValueBridgeStringConverter(ValueBridge<?, F> bridge) {
+        this.bridge = bridge;
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[" + bridge + "]";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public F toDocumentValue(String value, ToDocumentValueConvertContext context) {
-		return bridge.parse( value );
-	}
+    @Override
+    public F toDocumentValue(String value, ToDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String fromDocumentValue(F value, FromDocumentValueConvertContext context) {
-		return bridge.format( value );
-	}
+    @Override
+    public String fromDocumentValue(F value, FromDocumentValueConvertContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ToDocumentValueConverter<?, ?> other) {
-		if ( other == null || !getClass().equals( other.getClass() ) ) {
-			return false;
-		}
-		PojoValueBridgeStringConverter<?> castedOther = (PojoValueBridgeStringConverter<?>) other;
-		return bridge.isCompatibleWith( castedOther.bridge );
-	}
+    @Override
+    public boolean isCompatibleWith(ToDocumentValueConverter<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

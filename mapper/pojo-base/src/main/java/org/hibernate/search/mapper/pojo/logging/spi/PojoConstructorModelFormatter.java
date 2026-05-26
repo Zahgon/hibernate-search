@@ -9,15 +9,14 @@ import org.hibernate.search.util.common.logging.impl.CommaSeparatedClassesFormat
 
 public final class PojoConstructorModelFormatter {
 
-	private final PojoConstructorModel<?> constructorModel;
+    private final PojoConstructorModel<?> constructorModel;
 
-	public PojoConstructorModelFormatter(PojoConstructorModel<?> constructorModel) {
-		this.constructorModel = constructorModel;
-	}
+    public PojoConstructorModelFormatter(PojoConstructorModel<?> constructorModel) {
+        this.constructorModel = constructorModel;
+    }
 
-	@Override
-	public String toString() {
-		return constructorModel.typeModel().name() + "("
-				+ CommaSeparatedClassesFormatter.format( constructorModel.parametersJavaTypes() ) + ")";
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

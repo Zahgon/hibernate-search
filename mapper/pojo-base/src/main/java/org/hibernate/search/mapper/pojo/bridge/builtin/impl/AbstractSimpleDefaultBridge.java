@@ -24,42 +24,42 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.IdentifierBridgeToDocumen
  */
 abstract class AbstractSimpleDefaultBridge<V, F> implements ValueBridge<V, F>, IdentifierBridge<V> {
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final void close() {
-		// Nothing to do
-	}
+    @Override
+    public final void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final String toDocumentIdentifier(V propertyValue, IdentifierBridgeToDocumentIdentifierContext context) {
-		return toString( propertyValue );
-	}
+    @Override
+    public final String toDocumentIdentifier(V propertyValue, IdentifierBridgeToDocumentIdentifierContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final V fromDocumentIdentifier(String documentIdentifier, IdentifierBridgeFromDocumentIdentifierContext context) {
-		return fromString( documentIdentifier );
-	}
+    @Override
+    public final V fromDocumentIdentifier(String documentIdentifier, IdentifierBridgeFromDocumentIdentifierContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public V parseIdentifierLiteral(String value) {
-		return fromString( value );
-	}
+    @Override
+    public V parseIdentifierLiteral(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(IdentifierBridge<?> other) {
-		return other == this || getClass().equals( other.getClass() );
-	}
+    @Override
+    public boolean isCompatibleWith(IdentifierBridge<?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean isCompatibleWith(ValueBridge<?, ?> other) {
-		return other == this || getClass().equals( other.getClass() );
-	}
+    @Override
+    public boolean isCompatibleWith(ValueBridge<?, ?> other) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract V fromString(String value);
+    protected abstract V fromString(String value);
 
-	protected abstract String toString(V value);
+    protected abstract String toString(V value);
 }

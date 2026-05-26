@@ -11,29 +11,24 @@ import org.hibernate.search.engine.search.projection.spi.DistanceToFieldProjecti
 import org.hibernate.search.engine.spatial.DistanceUnit;
 import org.hibernate.search.util.common.impl.Contracts;
 
-public class DistanceToFieldProjectionOptionsStepImpl<P>
-		implements DistanceToFieldProjectionOptionsStep<DistanceToFieldProjectionOptionsStepImpl<P>, P> {
+public class DistanceToFieldProjectionOptionsStepImpl<P> implements DistanceToFieldProjectionOptionsStep<DistanceToFieldProjectionOptionsStepImpl<P>, P> {
 
-	protected final DistanceToFieldProjectionBuilder distanceFieldProjectionBuilder;
-	private final ProjectionCollector.Provider<Double, P> collectorProvider;
+    protected final DistanceToFieldProjectionBuilder distanceFieldProjectionBuilder;
 
-	DistanceToFieldProjectionOptionsStepImpl(DistanceToFieldProjectionBuilder distanceFieldProjectionBuilder,
-			ProjectionCollector.Provider<Double, P> collectorProvider) {
-		this.distanceFieldProjectionBuilder = distanceFieldProjectionBuilder;
-		this.collectorProvider = collectorProvider;
-	}
+    private final ProjectionCollector.Provider<Double, P> collectorProvider;
 
-	@Override
-	public DistanceToFieldProjectionOptionsStepImpl<P> unit(DistanceUnit unit) {
-		Contracts.assertNotNull( unit, "unit" );
+    DistanceToFieldProjectionOptionsStepImpl(DistanceToFieldProjectionBuilder distanceFieldProjectionBuilder, ProjectionCollector.Provider<Double, P> collectorProvider) {
+        this.distanceFieldProjectionBuilder = distanceFieldProjectionBuilder;
+        this.collectorProvider = collectorProvider;
+    }
 
-		distanceFieldProjectionBuilder.unit( unit );
-		return this;
-	}
+    @Override
+    public DistanceToFieldProjectionOptionsStepImpl<P> unit(DistanceUnit unit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchProjection<P> toProjection() {
-		return distanceFieldProjectionBuilder.build( collectorProvider );
-	}
-
+    @Override
+    public SearchProjection<P> toProjection() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -8,15 +8,13 @@ import org.hibernate.search.mapper.pojo.extractor.ContainerExtractionContext;
 
 final class PojoIndexingProcessorContainerExtractionContext implements ContainerExtractionContext {
 
-	static final PojoIndexingProcessorContainerExtractionContext INSTANCE =
-			new PojoIndexingProcessorContainerExtractionContext();
+    static final PojoIndexingProcessorContainerExtractionContext INSTANCE = new PojoIndexingProcessorContainerExtractionContext();
 
-	private PojoIndexingProcessorContainerExtractionContext() {
-	}
+    private PojoIndexingProcessorContainerExtractionContext() {
+    }
 
-	@Override
-	public void propagateOrIgnoreContainerExtractionException(RuntimeException exception) {
-		// We always propagate exceptions during indexing.
-		throw exception;
-	}
+    @Override
+    public void propagateOrIgnoreContainerExtractionException(RuntimeException exception) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

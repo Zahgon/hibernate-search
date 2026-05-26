@@ -16,50 +16,49 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoTypeModel;
  */
 public class BoundPojoModelPathPropertyNode<T, P> extends BoundPojoModelPath {
 
-	private final BoundPojoModelPathTypeNode<T> parent;
-	private final PojoPropertyModel<P> propertyModel;
+    private final BoundPojoModelPathTypeNode<T> parent;
 
-	BoundPojoModelPathPropertyNode(BoundPojoModelPathTypeNode<T> parent, PojoPropertyModel<P> propertyModel) {
-		this.parent = parent;
-		this.propertyModel = propertyModel;
-	}
+    private final PojoPropertyModel<P> propertyModel;
 
-	@Override
-	public BoundPojoModelPathTypeNode<T> getParent() {
-		return parent;
-	}
+    BoundPojoModelPathPropertyNode(BoundPojoModelPathTypeNode<T> parent, PojoPropertyModel<P> propertyModel) {
+        this.parent = parent;
+        this.propertyModel = propertyModel;
+    }
 
-	@Override
-	public PojoTypeModel<?> getRootType() {
-		return parent.getRootType();
-	}
+    @Override
+    public BoundPojoModelPathTypeNode<T> getParent() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoModelPathPropertyNode toUnboundPath() {
-		PojoModelPath.Builder builder = PojoModelPath.builder();
-		appendPath( builder );
-		return builder.toPropertyPathOrNull();
-	}
+    @Override
+    public PojoTypeModel<?> getRootType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BoundPojoModelPathValueNode<T, P, P> valueWithoutExtractors() {
-		return value( BoundContainerExtractorPath.noExtractors( propertyModel.typeModel() ) );
-	}
+    @Override
+    public PojoModelPathPropertyNode toUnboundPath() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public <V> BoundPojoModelPathValueNode<T, P, V> value(BoundContainerExtractorPath<? super P, V> extractorPath) {
-		return new BoundPojoModelPathValueNode<>( this, extractorPath );
-	}
+    public BoundPojoModelPathValueNode<T, P, P> valueWithoutExtractors() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PojoPropertyModel<P> getPropertyModel() {
-		return propertyModel;
-	}
+    public <V> BoundPojoModelPathValueNode<T, P, V> value(BoundContainerExtractorPath<? super P, V> extractorPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(StringBuilder builder) {
-		builder.append( "." ).append( propertyModel.name() );
-	}
+    public PojoPropertyModel<P> getPropertyModel() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void appendSelfPath(PojoModelPath.Builder builder) {
-		builder.property( propertyModel.name() );
-	}
+    @Override
+    void appendSelfPath(StringBuilder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    void appendSelfPath(PojoModelPath.Builder builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

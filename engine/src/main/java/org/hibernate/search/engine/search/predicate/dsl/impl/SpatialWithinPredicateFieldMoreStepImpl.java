@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.search.common.spi.SearchIndexScope;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.SpatialWithinPredicateFieldMoreStep;
@@ -27,147 +26,107 @@ import org.hibernate.search.engine.spatial.GeoPolygon;
 import org.hibernate.search.util.common.impl.CollectionHelper;
 import org.hibernate.search.util.common.impl.Contracts;
 
-class SpatialWithinPredicateFieldMoreStepImpl<SR>
-		implements
-		SpatialWithinPredicateFieldMoreStep<SR,
-				SpatialWithinPredicateFieldMoreStepImpl<SR>,
-				SpatialWithinPredicateOptionsStep<?>>,
-		AbstractBooleanMultiFieldPredicateCommonState.FieldSetState {
+class SpatialWithinPredicateFieldMoreStepImpl<SR> implements SpatialWithinPredicateFieldMoreStep<SR, SpatialWithinPredicateFieldMoreStepImpl<SR>, SpatialWithinPredicateOptionsStep<?>>, AbstractBooleanMultiFieldPredicateCommonState.FieldSetState {
 
-	private final CommonState<SR> commonState;
+    private final CommonState<SR> commonState;
 
-	private final List<String> fieldPaths;
+    private final List<String> fieldPaths;
 
-	private final List<SearchPredicateBuilder> predicateBuilders;
+    private final List<SearchPredicateBuilder> predicateBuilders;
 
-	private Float fieldSetBoost;
+    private Float fieldSetBoost;
 
-	SpatialWithinPredicateFieldMoreStepImpl(CommonState<SR> commonState, List<String> fieldPaths) {
-		this.commonState = commonState;
-		this.commonState.add( this );
-		this.fieldPaths = CollectionHelper.toImmutableList( fieldPaths );
-		this.predicateBuilders = new ArrayList<>( fieldPaths.size() );
-	}
+    SpatialWithinPredicateFieldMoreStepImpl(CommonState<SR> commonState, List<String> fieldPaths) {
+        this.commonState = commonState;
+        this.commonState.add(this);
+        this.fieldPaths = CollectionHelper.toImmutableList(fieldPaths);
+        this.predicateBuilders = new ArrayList<>(fieldPaths.size());
+    }
 
-	@Override
-	public SpatialWithinPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
-		return new SpatialWithinPredicateFieldMoreStepImpl<>( commonState, Arrays.asList( fieldPaths ) );
-	}
+    @Override
+    public SpatialWithinPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public SpatialWithinPredicateFieldMoreStepImpl<SR> fields(SpatialPredicateFieldReference<? super SR>... fieldReferences) {
-		List<String> fieldPaths = new ArrayList<>( fieldReferences.length );
-		for ( SpatialPredicateFieldReference<? super SR> fieldReference : fieldReferences ) {
-			fieldPaths.add( fieldReference.absolutePath() );
-		}
-		return new SpatialWithinPredicateFieldMoreStepImpl<>( commonState, fieldPaths );
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public SpatialWithinPredicateFieldMoreStepImpl<SR> fields(SpatialPredicateFieldReference<? super SR>... fieldReferences) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialWithinPredicateFieldMoreStepImpl<SR> boost(float boost) {
-		this.fieldSetBoost = boost;
-		return this;
-	}
+    @Override
+    public SpatialWithinPredicateFieldMoreStepImpl<SR> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialWithinPredicateOptionsStep<?> circle(GeoPoint center, double radius, DistanceUnit unit) {
-		Contracts.assertNotNull( center, "center" );
-		Contracts.assertNotNull( radius, "radius" );
-		Contracts.assertNotNull( unit, "unit" );
+    @Override
+    public SpatialWithinPredicateOptionsStep<?> circle(GeoPoint center, double radius, DistanceUnit unit) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return commonState.circle( center, radius, unit );
-	}
+    @Override
+    public SpatialWithinPredicateOptionsStep<?> polygon(GeoPolygon polygon) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialWithinPredicateOptionsStep<?> polygon(GeoPolygon polygon) {
-		Contracts.assertNotNull( polygon, "polygon" );
+    @Override
+    public SpatialWithinPredicateOptionsStep<?> boundingBox(GeoBoundingBox boundingBox) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return commonState.polygon( polygon );
-	}
+    @Override
+    public void contributePredicates(Consumer<SearchPredicate> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SpatialWithinPredicateOptionsStep<?> boundingBox(GeoBoundingBox boundingBox) {
-		Contracts.assertNotNull( boundingBox, "boundingBox" );
+    private void generateWithinCircleQueryBuilders(GeoPoint center, double radius, DistanceUnit unit) {
+        SearchIndexScope<?> scope = commonState.scope();
+        for (String fieldPath : fieldPaths) {
+            SpatialWithinCirclePredicateBuilder predicateBuilder = scope.fieldQueryElement(fieldPath, PredicateTypeKeys.SPATIAL_WITHIN_CIRCLE);
+            predicateBuilder.circle(center, radius, unit);
+            predicateBuilders.add(predicateBuilder);
+        }
+    }
 
-		return commonState.boundingBox( boundingBox );
-	}
+    private void generateWithinPolygonQueryBuilders(GeoPolygon polygon) {
+        SearchIndexScope<?> scope = commonState.scope();
+        for (String fieldPath : fieldPaths) {
+            SpatialWithinPolygonPredicateBuilder predicateBuilder = scope.fieldQueryElement(fieldPath, PredicateTypeKeys.SPATIAL_WITHIN_POLYGON);
+            predicateBuilder.polygon(polygon);
+            predicateBuilders.add(predicateBuilder);
+        }
+    }
 
-	@Override
-	public void contributePredicates(Consumer<SearchPredicate> collector) {
-		for ( SearchPredicateBuilder predicateBuilder : predicateBuilders ) {
-			// Perform last-minute changes, since it's the last call that will be made on this field set state
-			commonState.applyBoostAndConstantScore( fieldSetBoost, predicateBuilder );
+    private void generateWithinBoundingBoxQueryBuilders(GeoBoundingBox boundingBox) {
+        SearchIndexScope<?> scope = commonState.scope();
+        for (String fieldPath : fieldPaths) {
+            SpatialWithinBoundingBoxPredicateBuilder predicateBuilder = scope.fieldQueryElement(fieldPath, PredicateTypeKeys.SPATIAL_WITHIN_BOUNDING_BOX);
+            predicateBuilder.boundingBox(boundingBox);
+            predicateBuilders.add(predicateBuilder);
+        }
+    }
 
-			collector.accept( predicateBuilder.build() );
-		}
-	}
+    static class CommonState<SR> extends AbstractBooleanMultiFieldPredicateCommonState<CommonState<SR>, SpatialWithinPredicateFieldMoreStepImpl<SR>> implements SpatialWithinPredicateOptionsStep<CommonState<SR>> {
 
-	private void generateWithinCircleQueryBuilders(GeoPoint center, double radius, DistanceUnit unit) {
-		SearchIndexScope<?> scope = commonState.scope();
-		for ( String fieldPath : fieldPaths ) {
-			SpatialWithinCirclePredicateBuilder predicateBuilder =
-					scope.fieldQueryElement( fieldPath, PredicateTypeKeys.SPATIAL_WITHIN_CIRCLE );
-			predicateBuilder.circle( center, radius, unit );
-			predicateBuilders.add( predicateBuilder );
-		}
-	}
+        CommonState(SearchPredicateDslContext<?> dslContext) {
+            super(dslContext);
+        }
 
-	private void generateWithinPolygonQueryBuilders(GeoPolygon polygon) {
-		SearchIndexScope<?> scope = commonState.scope();
-		for ( String fieldPath : fieldPaths ) {
-			SpatialWithinPolygonPredicateBuilder predicateBuilder =
-					scope.fieldQueryElement( fieldPath, PredicateTypeKeys.SPATIAL_WITHIN_POLYGON );
-			predicateBuilder.polygon( polygon );
-			predicateBuilders.add( predicateBuilder );
-		}
-	}
+        SpatialWithinPredicateOptionsStep<?> circle(GeoPoint center, double radius, DistanceUnit unit) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private void generateWithinBoundingBoxQueryBuilders(GeoBoundingBox boundingBox) {
-		SearchIndexScope<?> scope = commonState.scope();
-		for ( String fieldPath : fieldPaths ) {
-			SpatialWithinBoundingBoxPredicateBuilder predicateBuilder =
-					scope.fieldQueryElement( fieldPath, PredicateTypeKeys.SPATIAL_WITHIN_BOUNDING_BOX );
-			predicateBuilder.boundingBox( boundingBox );
-			predicateBuilders.add( predicateBuilder );
-		}
-	}
+        SpatialWithinPredicateOptionsStep<?> polygon(GeoPolygon polygon) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	static class CommonState<SR>
-			extends AbstractBooleanMultiFieldPredicateCommonState<CommonState<SR>, SpatialWithinPredicateFieldMoreStepImpl<SR>>
-			implements SpatialWithinPredicateOptionsStep<CommonState<SR>> {
+        SpatialWithinPredicateOptionsStep<?> boundingBox(GeoBoundingBox boundingBox) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		CommonState(SearchPredicateDslContext<?> dslContext) {
-			super( dslContext );
-		}
-
-		SpatialWithinPredicateOptionsStep<?> circle(GeoPoint center, double radius, DistanceUnit unit) {
-			for ( SpatialWithinPredicateFieldMoreStepImpl<SR> fieldSetState : getFieldSetStates() ) {
-				fieldSetState.generateWithinCircleQueryBuilders( center, radius, unit );
-			}
-
-			return this;
-		}
-
-		SpatialWithinPredicateOptionsStep<?> polygon(GeoPolygon polygon) {
-			for ( SpatialWithinPredicateFieldMoreStepImpl<SR> fieldSetState : getFieldSetStates() ) {
-				fieldSetState.generateWithinPolygonQueryBuilders( polygon );
-			}
-
-			return this;
-		}
-
-		SpatialWithinPredicateOptionsStep<?> boundingBox(GeoBoundingBox boundingBox) {
-			for ( SpatialWithinPredicateFieldMoreStepImpl<SR> fieldSetState : getFieldSetStates() ) {
-				fieldSetState.generateWithinBoundingBoxQueryBuilders( boundingBox );
-			}
-
-			return this;
-		}
-
-		@Override
-		protected CommonState<SR> thisAsS() {
-			return this;
-		}
-	}
+        @Override
+        protected CommonState<SR> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

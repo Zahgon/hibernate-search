@@ -7,7 +7,6 @@ package org.hibernate.search.backend.elasticsearch.index.impl;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.backend.elasticsearch.document.model.impl.ElasticsearchIndexModel;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.backend.elasticsearch.scope.impl.ElasticsearchIndexScope;
@@ -17,46 +16,33 @@ import org.hibernate.search.engine.backend.scope.spi.IndexScopeBuilder;
 
 class ElasticsearchIndexScopeBuilder<SR> implements IndexScopeBuilder<SR> {
 
-	private final IndexManagerBackendContext backendContext;
-	private final BackendMappingContext mappingContext;
-	private final Class<SR> rootScopeType;
+    private final IndexManagerBackendContext backendContext;
 
-	// Use LinkedHashSet to ensure stable order when generating requests
-	private final Set<ElasticsearchIndexManagerImpl> indexManagers = new LinkedHashSet<>();
+    private final BackendMappingContext mappingContext;
 
-	ElasticsearchIndexScopeBuilder(IndexManagerBackendContext backendContext,
-			BackendMappingContext mappingContext, Class<SR> rootScopeType, ElasticsearchIndexManagerImpl indexManager) {
-		this.backendContext = backendContext;
-		this.mappingContext = mappingContext;
-		this.rootScopeType = rootScopeType;
-		this.indexManagers.add( indexManager );
-	}
+    private final Class<SR> rootScopeType;
 
-	void add(IndexManagerBackendContext backendContext, ElasticsearchIndexManagerImpl indexManager) {
-		if ( !this.backendContext.equals( backendContext ) ) {
-			throw QueryLog.INSTANCE.cannotMixElasticsearchScopeWithOtherBackend(
-					this, indexManager, backendContext.getEventContext()
-			);
-		}
-		indexManagers.add( indexManager );
-	}
+    // Use LinkedHashSet to ensure stable order when generating requests
+    private final Set<ElasticsearchIndexManagerImpl> indexManagers = new LinkedHashSet<>();
 
-	@Override
-	public IndexScope<SR> build() {
-		// Use LinkedHashSet to ensure stable order when generating requests
-		Set<ElasticsearchIndexModel> indexModels = indexManagers.stream().map( ElasticsearchIndexManagerImpl::model )
-				.collect( Collectors.toCollection( LinkedHashSet::new ) );
-		return new ElasticsearchIndexScope<>( mappingContext, backendContext, rootScopeType, indexModels );
-	}
+    ElasticsearchIndexScopeBuilder(IndexManagerBackendContext backendContext, BackendMappingContext mappingContext, Class<SR> rootScopeType, ElasticsearchIndexManagerImpl indexManager) {
+        this.backendContext = backendContext;
+        this.mappingContext = mappingContext;
+        this.rootScopeType = rootScopeType;
+        this.indexManagers.add(indexManager);
+    }
 
-	@Override
-	public String toString() {
-		return new StringBuilder( getClass().getSimpleName() )
-				.append( "[" )
-				.append( "backendContext=" ).append( backendContext )
-				.append( ", indexManagers=" ).append( indexManagers )
-				.append( "]" )
-				.toString();
-	}
+    void add(IndexManagerBackendContext backendContext, ElasticsearchIndexManagerImpl indexManager) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public IndexScope<SR> build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

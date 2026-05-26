@@ -10,26 +10,22 @@ import org.hibernate.search.engine.search.predicate.dsl.RangePredicateFieldStep;
 import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslContext;
 import org.hibernate.search.engine.search.reference.predicate.RangePredicateFieldReference;
 
-public final class RangePredicateFieldStepImpl<SR>
-		implements
-		RangePredicateFieldStep<SR, RangePredicateFieldMoreStep<SR, ?, ?>> {
+public final class RangePredicateFieldStepImpl<SR> implements RangePredicateFieldStep<SR, RangePredicateFieldMoreStep<SR, ?, ?>> {
 
-	private final SearchPredicateDslContext<?> dslContext;
+    private final SearchPredicateDslContext<?> dslContext;
 
-	public RangePredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
-		this.dslContext = dslContext;
-	}
+    public RangePredicateFieldStepImpl(SearchPredicateDslContext<?> dslContext) {
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public RangePredicateFieldMoreStep<SR, ?, ?> fields(String... fieldPaths) {
-		return AbstractRangePredicateFieldMoreStep.create( dslContext, fieldPaths );
-	}
+    @Override
+    public RangePredicateFieldMoreStep<SR, ?, ?> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> RangePredicateFieldMoreGenericStep<SR, ?, ?, RangePredicateFieldReference<? super SR, T>, T> fields(
-			RangePredicateFieldReference<? super SR, T>... fields) {
-		return AbstractRangePredicateFieldMoreStep.create( dslContext, fields );
-	}
-
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> RangePredicateFieldMoreGenericStep<SR, ?, ?, RangePredicateFieldReference<? super SR, T>, T> fields(RangePredicateFieldReference<? super SR, T>... fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

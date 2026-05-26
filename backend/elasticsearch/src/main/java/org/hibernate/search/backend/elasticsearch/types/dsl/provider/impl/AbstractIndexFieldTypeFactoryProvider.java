@@ -11,28 +11,22 @@ import org.hibernate.search.backend.elasticsearch.types.mapping.impl.Elasticsear
 import org.hibernate.search.engine.backend.mapping.spi.BackendMapperContext;
 import org.hibernate.search.engine.mapper.mapping.building.spi.IndexFieldTypeDefaultsProvider;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import com.google.gson.Gson;
 
-abstract class AbstractIndexFieldTypeFactoryProvider
-		implements ElasticsearchIndexFieldTypeFactoryProvider {
+abstract class AbstractIndexFieldTypeFactoryProvider implements ElasticsearchIndexFieldTypeFactoryProvider {
 
-	private final Gson userFacingGson;
-	private final Elasticsearch7DefaultFieldFormatProvider defaultFieldFormatProvider =
-			new Elasticsearch7DefaultFieldFormatProvider();
+    private final Gson userFacingGson;
 
-	public AbstractIndexFieldTypeFactoryProvider(Gson userFacingGson) {
-		this.userFacingGson = userFacingGson;
-	}
+    private final Elasticsearch7DefaultFieldFormatProvider defaultFieldFormatProvider = new Elasticsearch7DefaultFieldFormatProvider();
 
-	@Override
-	public final ElasticsearchIndexFieldTypeFactory create(EventContext eventContext,
-			BackendMapperContext backendMapperContext, IndexFieldTypeDefaultsProvider typeDefaultsProvider) {
-		return new ElasticsearchIndexFieldTypeFactoryImpl(
-				eventContext, backendMapperContext, userFacingGson, defaultFieldFormatProvider, typeDefaultsProvider,
-				vectorFieldTypeMappingContributor()
-		);
-	}
+    public AbstractIndexFieldTypeFactoryProvider(Gson userFacingGson) {
+        this.userFacingGson = userFacingGson;
+    }
 
-	protected abstract ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor();
+    @Override
+    public final ElasticsearchIndexFieldTypeFactory create(EventContext eventContext, BackendMapperContext backendMapperContext, IndexFieldTypeDefaultsProvider typeDefaultsProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected abstract ElasticsearchVectorFieldTypeMappingContributor vectorFieldTypeMappingContributor();
 }

@@ -19,59 +19,32 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  * @param <T> The property holder type received as input.
  * @param <P> The property type.
  */
-class PojoImplicitReindexingAssociationInverseSideResolverPropertyNode<T, P>
-		extends PojoImplicitReindexingAssociationInverseSideResolverNode<T> {
+class PojoImplicitReindexingAssociationInverseSideResolverPropertyNode<T, P> extends PojoImplicitReindexingAssociationInverseSideResolverNode<T> {
 
-	private final ValueReadHandle<P> handle;
-	private final PojoImplicitReindexingAssociationInverseSideResolverNode<? super P> nested;
+    private final ValueReadHandle<P> handle;
 
-	private final PojoModelPath modelPath;
+    private final PojoImplicitReindexingAssociationInverseSideResolverNode<? super P> nested;
 
-	public PojoImplicitReindexingAssociationInverseSideResolverPropertyNode(ValueReadHandle<P> handle,
-			PojoImplicitReindexingAssociationInverseSideResolverNode<? super P> nested,
-			PojoModelPath modelPath) {
-		this.handle = handle;
-		this.nested = nested;
-		this.modelPath = modelPath;
-	}
+    private final PojoModelPath modelPath;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoImplicitReindexingAssociationInverseSideResolverNode::close, nested );
-		}
-	}
+    public PojoImplicitReindexingAssociationInverseSideResolverPropertyNode(ValueReadHandle<P> handle, PojoImplicitReindexingAssociationInverseSideResolverNode<? super P> nested, PojoModelPath modelPath) {
+        this.handle = handle;
+        this.nested = nested;
+        this.modelPath = modelPath;
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process property" );
-		appender.attribute( "handle", handle );
-		appender.attribute( "nested", nested );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	void resolveEntitiesToReindex(PojoReindexingAssociationInverseSideCollector collector, T state,
-			PojoImplicitReindexingAssociationInverseSideResolverRootContext context) {
-		P propertyValue;
-		try {
-			try {
-				propertyValue = handle.get( state );
-			}
-			catch (RuntimeException e) {
-				context.propagateOrIgnorePropertyAccessException( e );
-				return;
-			}
-			if ( propertyValue != null ) {
-				nested.resolveEntitiesToReindex( collector, propertyValue, context );
-			}
-		}
-		catch (SearchProcessingWithContextException e) {
-			// The context was already added to the exception, just re-throw:
-			throw e;
-		}
-		catch (RuntimeException e) {
-			throw IndexingLog.INSTANCE.searchProcessingFailure( e, e.getMessage(), PojoEventContexts.fromPath( modelPath ) );
-		}
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    void resolveEntitiesToReindex(PojoReindexingAssociationInverseSideCollector collector, T state, PojoImplicitReindexingAssociationInverseSideResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

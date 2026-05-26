@@ -10,48 +10,33 @@ import org.hibernate.search.engine.search.common.spi.SearchIndexCompositeNodeCon
 import org.hibernate.search.engine.search.common.spi.SearchIndexCompositeNodeTypeContext;
 import org.hibernate.search.engine.search.common.spi.SearchIndexScope;
 
-public abstract class AbstractIndexCompositeNodeType<
-		SC extends SearchIndexScope<?>,
-		N extends SearchIndexCompositeNodeContext<SC>>
-		extends AbstractIndexNodeType<SC, N>
-		implements IndexObjectFieldTypeDescriptor, SearchIndexCompositeNodeTypeContext<SC, N> {
-	private final ObjectStructure objectStructure;
+public abstract class AbstractIndexCompositeNodeType<SC extends SearchIndexScope<?>, N extends SearchIndexCompositeNodeContext<SC>> extends AbstractIndexNodeType<SC, N> implements IndexObjectFieldTypeDescriptor, SearchIndexCompositeNodeTypeContext<SC, N> {
 
-	protected AbstractIndexCompositeNodeType(Builder<SC, N> builder) {
-		super( builder );
-		this.objectStructure = builder.objectStructure;
-	}
+    private final ObjectStructure objectStructure;
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "["
-				+ "objectStructure=" + objectStructure
-				+ ", traits=" + traits()
-				+ "]";
-	}
+    protected AbstractIndexCompositeNodeType(Builder<SC, N> builder) {
+        super(builder);
+        this.objectStructure = builder.objectStructure;
+    }
 
-	@Override
-	public boolean nested() {
-		switch ( objectStructure ) {
-			case NESTED:
-				return true;
-			case FLATTENED:
-			case DEFAULT:
-			default:
-				return false;
-		}
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class Builder<
-			SC extends SearchIndexScope<?>,
-			N extends SearchIndexCompositeNodeContext<SC>>
-			extends AbstractIndexNodeType.Builder<SC, N> {
-		private final ObjectStructure objectStructure;
+    @Override
+    public boolean nested() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(ObjectStructure objectStructure) {
-			this.objectStructure = objectStructure;
-		}
+    public abstract static class Builder<SC extends SearchIndexScope<?>, N extends SearchIndexCompositeNodeContext<SC>> extends AbstractIndexNodeType.Builder<SC, N> {
 
-		public abstract AbstractIndexCompositeNodeType<SC, N> build();
-	}
+        private final ObjectStructure objectStructure;
+
+        public Builder(ObjectStructure objectStructure) {
+            this.objectStructure = objectStructure;
+        }
+
+        public abstract AbstractIndexCompositeNodeType<SC, N> build();
+    }
 }

@@ -12,39 +12,34 @@ import org.hibernate.search.engine.search.common.spi.SearchQueryElementTypeKey;
 import org.hibernate.search.util.common.SearchException;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-public abstract class AbstractIndexNode<
-		S extends AbstractIndexNode<S, SC, ?>,
-		SC extends SearchIndexScope<?>,
-		NT extends SearchIndexNodeTypeContext<SC, ? super S>>
-		implements IndexNode<SC> {
-	protected final NT type;
+public abstract class AbstractIndexNode<S extends AbstractIndexNode<S, SC, ?>, SC extends SearchIndexScope<?>, NT extends SearchIndexNodeTypeContext<SC, ? super S>> implements IndexNode<SC> {
 
-	public AbstractIndexNode(NT type) {
-		this.type = type;
-	}
+    protected final NT type;
 
-	protected abstract S self();
+    public AbstractIndexNode(NT type) {
+        this.type = type;
+    }
 
-	public final NT type() {
-		return type;
-	}
+    protected abstract S self();
 
-	@Override
-	public final EventContext eventContext() {
-		return relativeEventContext();
-	}
+    public final NT type() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final <T> T queryElement(SearchQueryElementTypeKey<T> key, SC scope) {
-		SearchQueryElementFactory<? extends T, ? super SC, ? super S> factory = type.queryElementFactory( key );
-		return helper().queryElement( key, factory, scope, self() );
-	}
+    @Override
+    public final EventContext eventContext() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchException cannotUseQueryElement(SearchQueryElementTypeKey<?> key, String hint, Exception causeOrNull) {
-		return helper().cannotUseQueryElement( key, self(), hint, causeOrNull );
-	}
+    @Override
+    public final <T> T queryElement(SearchQueryElementTypeKey<T> key, SC scope) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	abstract SearchIndexSchemaElementContextHelper helper();
+    @Override
+    public SearchException cannotUseQueryElement(SearchQueryElementTypeKey<?> key, String hint, Exception causeOrNull) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    abstract SearchIndexSchemaElementContextHelper helper();
 }

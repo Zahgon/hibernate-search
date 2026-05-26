@@ -6,7 +6,6 @@ package org.hibernate.search.engine.search.aggregation.dsl.impl;
 
 import java.util.Map;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.search.aggregation.SearchAggregation;
 import org.hibernate.search.engine.search.aggregation.dsl.TermsAggregationOptionsStep;
 import org.hibernate.search.engine.search.aggregation.dsl.TermsAggregationValueStep;
@@ -17,76 +16,64 @@ import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFactory;
 import org.hibernate.search.util.common.impl.Contracts;
 
-class TermsAggregationOptionsStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>, F, V>
-		implements TermsAggregationValueStep<SR, TermsAggregationOptionsStepImpl<SR, PDF, F, V>, PDF, F, Map<F, V>> {
-	private final TermsAggregationBuilder<F, V> builder;
-	private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
+class TermsAggregationOptionsStepImpl<SR, PDF extends TypedSearchPredicateFactory<SR>, F, V> implements TermsAggregationValueStep<SR, TermsAggregationOptionsStepImpl<SR, PDF, F, V>, PDF, F, Map<F, V>> {
 
-	TermsAggregationOptionsStepImpl(TermsAggregationBuilder<F, V> builder,
-			SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
-		this.builder = builder;
-		this.dslContext = dslContext;
-	}
+    private final TermsAggregationBuilder<F, V> builder;
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByCountDescending() {
-		builder.orderByCountDescending();
-		return this;
-	}
+    private final SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext;
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByCountAscending() {
-		builder.orderByCountAscending();
-		return this;
-	}
+    TermsAggregationOptionsStepImpl(TermsAggregationBuilder<F, V> builder, SearchAggregationDslContext<SR, ?, ? extends PDF> dslContext) {
+        this.builder = builder;
+        this.dslContext = dslContext;
+    }
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByTermAscending() {
-		builder.orderByTermAscending();
-		return this;
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByCountDescending() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByTermDescending() {
-		builder.orderByTermDescending();
-		return this;
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByCountAscending() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> minDocumentCount(int minDocumentCount) {
-		Contracts.assertPositiveOrZero( minDocumentCount, "minDocumentCount" );
-		builder.minDocumentCount( minDocumentCount );
-		return this;
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByTermAscending() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> maxTermCount(int maxTermCount) {
-		Contracts.assertStrictlyPositive( maxTermCount, "maxTermCount" );
-		builder.maxTermCount( maxTermCount );
-		return this;
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> orderByTermDescending() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> filter(
-			Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
-		SearchPredicate predicate = clauseContributor.apply( dslContext.predicateFactory() ).toPredicate();
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> minDocumentCount(int minDocumentCount) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return filter( predicate );
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> maxTermCount(int maxTermCount) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TermsAggregationOptionsStepImpl<SR, PDF, F, V> filter(SearchPredicate searchPredicate) {
-		builder.filter( searchPredicate );
-		return this;
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> filter(Function<? super PDF, ? extends PredicateFinalStep> clauseContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchAggregation<Map<F, V>> toAggregation() {
-		return builder.build();
-	}
+    @Override
+    public TermsAggregationOptionsStepImpl<SR, PDF, F, V> filter(SearchPredicate searchPredicate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> TermsAggregationOptionsStep<SR, ?, PDF, F, Map<F, T>> value(SearchAggregation<T> aggregation) {
-		return new TermsAggregationOptionsStepImpl<>( builder.withValue( aggregation ), dslContext );
-	}
+    @Override
+    public SearchAggregation<Map<F, V>> toAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public <T> TermsAggregationOptionsStep<SR, ?, PDF, F, Map<F, T>> value(SearchAggregation<T> aggregation) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

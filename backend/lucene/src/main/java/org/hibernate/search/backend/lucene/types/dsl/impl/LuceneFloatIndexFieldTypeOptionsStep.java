@@ -15,37 +15,29 @@ import org.hibernate.search.backend.lucene.types.codec.impl.Storage;
 import org.hibernate.search.engine.backend.types.converter.spi.DefaultStringConverters;
 import org.hibernate.search.engine.search.aggregation.spi.FieldMetricAggregationBuilder;
 
-class LuceneFloatIndexFieldTypeOptionsStep
-		extends AbstractLuceneNumericIndexFieldTypeOptionsStep<LuceneFloatIndexFieldTypeOptionsStep, Float> {
+class LuceneFloatIndexFieldTypeOptionsStep extends AbstractLuceneNumericIndexFieldTypeOptionsStep<LuceneFloatIndexFieldTypeOptionsStep, Float> {
 
-	LuceneFloatIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
-		super( buildContext, Float.class, DefaultStringConverters.FLOAT );
-	}
+    LuceneFloatIndexFieldTypeOptionsStep(LuceneIndexFieldTypeBuildContext buildContext) {
+        super(buildContext, Float.class, DefaultStringConverters.FLOAT);
+    }
 
-	@Override
-	protected LuceneFloatIndexFieldTypeOptionsStep thisAsS() {
-		return this;
-	}
+    @Override
+    protected LuceneFloatIndexFieldTypeOptionsStep thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneNumericFieldCodec<Float, ?> createCodec(Indexing indexing, DocValues docValues,
-			Storage storage, Float indexNullAsValue) {
-		return new LuceneFloatFieldCodec( indexing, docValues, storage, indexNullAsValue );
-	}
+    @Override
+    protected AbstractLuceneNumericFieldCodec<Float, ?> createCodec(Indexing indexing, DocValues docValues, Storage storage, Float indexNullAsValue) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector,
-			Float,
-			AbstractLuceneNumericFieldCodec<Float, ?>> sumMetricAggregationFactory(
-					AbstractLuceneNumericFieldCodec<Float, ?> codec) {
-		return LuceneSumCompensatedSumAggregation.factory( codec );
-	}
+    @Override
+    protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, Float, AbstractLuceneNumericFieldCodec<Float, ?>> sumMetricAggregationFactory(AbstractLuceneNumericFieldCodec<Float, ?> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector,
-			Float,
-			AbstractLuceneNumericFieldCodec<Float, ?>> avgMetricAggregationFactory(
-					AbstractLuceneNumericFieldCodec<Float, ?> codec) {
-		return LuceneAvgCompensatedSumAggregation.factory( codec );
-	}
+    @Override
+    protected AbstractLuceneCodecAwareSearchQueryElementFactory<FieldMetricAggregationBuilder.TypeSelector, Float, AbstractLuceneNumericFieldCodec<Float, ?>> avgMetricAggregationFactory(AbstractLuceneNumericFieldCodec<Float, ?> codec) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

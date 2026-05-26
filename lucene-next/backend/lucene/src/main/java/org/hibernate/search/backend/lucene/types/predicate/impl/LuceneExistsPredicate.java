@@ -12,7 +12,6 @@ import org.hibernate.search.backend.lucene.search.predicate.impl.AbstractLuceneL
 import org.hibernate.search.backend.lucene.search.predicate.impl.PredicateRequestContext;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.ExistsPredicateBuilder;
-
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.FieldExistsQuery;
 import org.apache.lucene.search.Query;
@@ -20,64 +19,64 @@ import org.apache.lucene.search.TermQuery;
 
 public class LuceneExistsPredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneExistsPredicate(AbstractBuilder<?> builder) {
-		super( builder );
-	}
+    private LuceneExistsPredicate(AbstractBuilder<?> builder) {
+        super(builder);
+    }
 
-	private abstract static class AbstractBuilder<F> extends AbstractLuceneLeafSingleFieldPredicate.AbstractBuilder<F>
-			implements ExistsPredicateBuilder {
-		private AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			// Score is always constant for this query
-			constantScore();
-		}
+    private abstract static class AbstractBuilder<F> extends AbstractLuceneLeafSingleFieldPredicate.AbstractBuilder<F> implements ExistsPredicateBuilder {
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneExistsPredicate( this );
-		}
+        private AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            // Score is always constant for this query
+            constantScore();
+        }
 
-		@Override
-		protected abstract Query buildQuery(PredicateRequestContext context);
-	}
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	public static class DocValuesOrNormsBasedFactory<F>
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<ExistsPredicateBuilder, F> {
-		@Override
-		public DocValuesOrNormsBasedBuilder<F> create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<F> field) {
-			return new DocValuesOrNormsBasedBuilder<>( scope, field );
-		}
-	}
+        @Override
+        protected abstract Query buildQuery(PredicateRequestContext context);
+    }
 
-	private static class DocValuesOrNormsBasedBuilder<F> extends AbstractBuilder<F> implements ExistsPredicateBuilder {
-		private DocValuesOrNormsBasedBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-		}
+    public static class DocValuesOrNormsBasedFactory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<ExistsPredicateBuilder, F> {
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			return new FieldExistsQuery( absoluteFieldPath );
-		}
-	}
+        @Override
+        public DocValuesOrNormsBasedBuilder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	public static class DefaultFactory<F>
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<ExistsPredicateBuilder, F> {
-		@Override
-		public DefaultBuilder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			return new DefaultBuilder<>( scope, field );
-		}
-	}
+    private static class DocValuesOrNormsBasedBuilder<F> extends AbstractBuilder<F> implements ExistsPredicateBuilder {
 
-	private static class DefaultBuilder<F> extends AbstractBuilder<F> implements ExistsPredicateBuilder {
-		private DefaultBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-		}
+        private DocValuesOrNormsBasedBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			return new TermQuery( new Term( MetadataFields.fieldNamesFieldName(), absoluteFieldPath ) );
-		}
-	}
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
+    public static class DefaultFactory<F> extends AbstractLuceneValueFieldSearchQueryElementFactory<ExistsPredicateBuilder, F> {
+
+        @Override
+        public DefaultBuilder<F> create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static class DefaultBuilder<F> extends AbstractBuilder<F> implements ExistsPredicateBuilder {
+
+        private DefaultBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+        }
+
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

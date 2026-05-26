@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.search.predicate.impl;
 
 import java.lang.reflect.Array;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonArrayAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonObjectAccessor;
@@ -19,320 +18,269 @@ import org.hibernate.search.backend.elasticsearch.types.codec.impl.Elasticsearch
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.KnnPredicateBuilder;
 import org.hibernate.search.util.common.AssertionFailure;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public abstract class ElasticsearchKnnPredicate extends AbstractElasticsearchSingleFieldPredicate {
 
-	protected final ElasticsearchSearchPredicate filter;
-	protected final int k;
-	protected final JsonArray vector;
-	protected final Float similarity;
+    protected final ElasticsearchSearchPredicate filter;
 
-	private ElasticsearchKnnPredicate(AbstractKnnBuilder<?> builder) {
-		super( builder );
-		this.filter = builder.filter;
-		this.k = builder.k;
-		this.vector = builder.vector;
-		this.similarity = builder.similarity;
-		builder.filter = null;
-		builder.vector = null;
-	}
+    protected final int k;
 
-	protected JsonObject prepareFilter(PredicateRequestContext context) {
-		JsonObject mainFilter = filter == null ? null : filter.toJsonQuery( context );
-		JsonArray filters = context.tenantAndRoutingFilters();
-		if ( context.getNestedPath() == null ) {
-			return Queries.boolCombineMust( mainFilter, filters );
-		}
-		else if ( !filters.isEmpty() ) {
-			QueryLog.INSTANCE.knnUsedInNestedContextRequiresFilters();
-		}
-		return mainFilter;
-	}
+    protected final JsonArray vector;
 
-	public static class Elasticsearch812Factory<F>
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<KnnPredicateBuilder, F> {
-		public Elasticsearch812Factory(ElasticsearchFieldCodec<F> codec) {
-			super( codec );
-		}
+    protected final Float similarity;
 
-		@Override
-		public KnnPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new Elasticsearch812Impl.Builder<>( codec, scope, field );
-		}
-	}
+    private ElasticsearchKnnPredicate(AbstractKnnBuilder<?> builder) {
+        super(builder);
+        this.filter = builder.filter;
+        this.k = builder.k;
+        this.vector = builder.vector;
+        this.similarity = builder.similarity;
+        builder.filter = null;
+        builder.vector = null;
+    }
 
-	public static class OpenSearch2Factory<F>
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<KnnPredicateBuilder, F> {
-		public OpenSearch2Factory(ElasticsearchFieldCodec<F> codec) {
-			super( codec );
-		}
+    protected JsonObject prepareFilter(PredicateRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		@Override
-		public KnnPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new OpenSearch2Impl.Builder<>( codec, scope, field );
-		}
-	}
+    public static class Elasticsearch812Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<KnnPredicateBuilder, F> {
 
-	public static class OpenSearch214Factory<F>
-			extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<KnnPredicateBuilder, F> {
-		public OpenSearch214Factory(ElasticsearchFieldCodec<F> codec) {
-			super( codec );
-		}
+        public Elasticsearch812Factory(ElasticsearchFieldCodec<F> codec) {
+            super(codec);
+        }
 
-		@Override
-		public KnnPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			return new OpenSearch214Impl.Builder<>( codec, scope, field );
-		}
-	}
+        @Override
+        public KnnPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	private abstract static class AbstractKnnBuilder<F> extends AbstractBuilder implements KnnPredicateBuilder {
+    public static class OpenSearch2Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<KnnPredicateBuilder, F> {
 
-		private final Class<?> vectorElementsType;
-		private final int indexedVectorsDimension;
-		protected final ElasticsearchVectorFieldCodec<F> codec;
-		private int k;
-		private JsonArray vector;
-		private ElasticsearchSearchPredicate filter;
-		protected Float similarity;
+        public OpenSearch2Factory(ElasticsearchFieldCodec<F> codec) {
+            super(codec);
+        }
 
-		private AbstractKnnBuilder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexValueFieldContext<F> field) {
-			super( scope, field );
-			if ( codec instanceof ElasticsearchVectorFieldCodec ) {
-				this.codec = (ElasticsearchVectorFieldCodec<F>) codec;
-				vectorElementsType = this.codec.vectorElementsType();
-				indexedVectorsDimension = this.codec.getConfiguredDimensions();
-			}
-			else {
-				// shouldn't really happen as if someone tries this it should fail on `queryElementFactory` lookup.
-				throw new AssertionFailure( "Attempting to use a knn predicate on a non-vector field." );
-			}
-		}
+        @Override
+        public KnnPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void k(int k) {
-			this.k = k;
-		}
+    public static class OpenSearch214Factory<F> extends AbstractElasticsearchCodecAwareSearchQueryElementFactory<KnnPredicateBuilder, F> {
 
-		@Override
-		public void vector(Object vector) {
-			if ( !vector.getClass().isArray() ) {
-				throw new IllegalArgumentException( "Vector can only be either a float or a byte array (float[], byte[])." );
-			}
-			if ( !vectorElementsType.equals( vector.getClass().getComponentType() ) ) {
-				throw QueryLog.INSTANCE.vectorKnnMatchVectorTypeDiffersFromField( absoluteFieldPath, vectorElementsType,
-						vector.getClass().getComponentType() );
-			}
-			if ( Array.getLength( vector ) != indexedVectorsDimension ) {
-				throw QueryLog.INSTANCE.vectorKnnMatchVectorDimensionDiffersFromField( absoluteFieldPath,
-						indexedVectorsDimension,
-						Array.getLength( vector )
-				);
-			}
-			this.vector = vectorToJsonArray( vector, vectorElementsType );
-		}
+        public OpenSearch214Factory(ElasticsearchFieldCodec<F> codec) {
+            super(codec);
+        }
 
-		@Override
-		public void filter(SearchPredicate filter) {
-			ElasticsearchSearchPredicate elasticsearchFilter = ElasticsearchSearchPredicate.from( scope, filter );
-			elasticsearchFilter.checkNestableWithin( PredicateNestingContext.simple() );
-			this.filter = elasticsearchFilter;
-		}
+        @Override
+        public KnnPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	}
+    private abstract static class AbstractKnnBuilder<F> extends AbstractBuilder implements KnnPredicateBuilder {
 
-	private static JsonArray vectorToJsonArray(Object vector, Class<?> vectorElementsType) {
-		// we know it is an array since we've checked it when we got the vector
-		int length = Array.getLength( vector );
-		JsonArray array = new JsonArray( length );
-		for ( int i = 0; i < length; i++ ) {
-			if ( byte.class.equals( vectorElementsType ) ) {
-				array.add( Array.getByte( vector, i ) );
-			}
-			else {
-				array.add( Array.getFloat( vector, i ) );
-			}
-		}
-		return array;
-	}
+        private final Class<?> vectorElementsType;
 
-	private static class Elasticsearch812Impl extends ElasticsearchKnnPredicate {
+        private final int indexedVectorsDimension;
 
-		private static final JsonObjectAccessor KNN_ACCESSOR = JsonAccessor.root().property( "knn" ).asObject();
-		private static final JsonAccessor<String> FIELD_ACCESSOR = JsonAccessor.root().property( "field" ).asString();
-		private static final JsonArrayAccessor VECTOR_ACCESSOR = JsonAccessor.root().property( "query_vector" ).asArray();
-		private static final JsonObjectAccessor FILTER_ACCESSOR = JsonAccessor.root().property( "filter" ).asObject();
-		private static final JsonAccessor<Integer> NUM_CANDIDATES_ACCESSOR =
-				JsonAccessor.root().property( "num_candidates" ).asInteger();
-		private static final JsonAccessor<Float> SIMILARITY_ACCESSOR = JsonAccessor.root().property( "similarity" ).asFloat();
+        protected final ElasticsearchVectorFieldCodec<F> codec;
 
+        private int k;
 
-		private Elasticsearch812Impl(Builder<?> builder) {
-			super( builder );
-		}
+        private JsonArray vector;
 
-		@Override
-		protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
-			KNN_ACCESSOR.set( outerObject, innerObject );
+        private ElasticsearchSearchPredicate filter;
 
-			FIELD_ACCESSOR.set( innerObject, absoluteFieldPath );
-			NUM_CANDIDATES_ACCESSOR.set( innerObject, k );
-			VECTOR_ACCESSOR.set( innerObject, vector );
+        protected Float similarity;
 
-			JsonObject filter = prepareFilter( context );
-			if ( filter != null ) {
-				FILTER_ACCESSOR.set( innerObject, filter );
-			}
-			if ( similarity != null ) {
-				SIMILARITY_ACCESSOR.set( innerObject, similarity );
-			}
+        private AbstractKnnBuilder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+            super(scope, field);
+            if (codec instanceof ElasticsearchVectorFieldCodec) {
+                this.codec = (ElasticsearchVectorFieldCodec<F>) codec;
+                vectorElementsType = this.codec.vectorElementsType();
+                indexedVectorsDimension = this.codec.getConfiguredDimensions();
+            } else {
+                // shouldn't really happen as if someone tries this it should fail on `queryElementFactory` lookup.
+                throw new AssertionFailure("Attempting to use a knn predicate on a non-vector field.");
+            }
+        }
 
-			return outerObject;
-		}
+        @Override
+        public void k(int k) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private static class Builder<F> extends AbstractKnnBuilder<F> {
+        @Override
+        public void vector(Object vector) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			private Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope,
-					ElasticsearchSearchIndexValueFieldContext<F> field) {
-				super( codec, scope, field );
-			}
+        @Override
+        public void filter(SearchPredicate filter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-			@Override
-			public void requiredMinimumSimilarity(float similarity) {
-				this.similarity = similarity;
-			}
+    private static JsonArray vectorToJsonArray(Object vector, Class<?> vectorElementsType) {
+        // we know it is an array since we've checked it when we got the vector
+        int length = Array.getLength(vector);
+        JsonArray array = new JsonArray(length);
+        for (int i = 0; i < length; i++) {
+            if (byte.class.equals(vectorElementsType)) {
+                array.add(Array.getByte(vector, i));
+            } else {
+                array.add(Array.getFloat(vector, i));
+            }
+        }
+        return array;
+    }
 
-			@Override
-			public void requiredMinimumScore(float score) {
-				requiredMinimumSimilarity( codec.scoreToSimilarity( score ) );
-			}
+    private static class Elasticsearch812Impl extends ElasticsearchKnnPredicate {
 
-			@Override
-			public SearchPredicate build() {
-				return new Elasticsearch812Impl( this );
-			}
-		}
-	}
+        private static final JsonObjectAccessor KNN_ACCESSOR = JsonAccessor.root().property("knn").asObject();
 
-	private static class OpenSearch214Impl extends AbstractOpenSearchKnnPredicate {
+        private static final JsonAccessor<String> FIELD_ACCESSOR = JsonAccessor.root().property("field").asString();
 
-		private final Float score;
+        private static final JsonArrayAccessor VECTOR_ACCESSOR = JsonAccessor.root().property("query_vector").asArray();
 
-		private OpenSearch214Impl(Builder<?> builder) {
-			super( builder );
-			this.score = builder.score;
-		}
+        private static final JsonObjectAccessor FILTER_ACCESSOR = JsonAccessor.root().property("filter").asObject();
 
-		@Override
-		protected void addVersionSpecificFields(JsonObject innerObject) {
-			if ( similarity != null ) {
-				MAX_DISTANCE.set( innerObject, similarity );
-			}
-			if ( score != null ) {
-				MIN_SCORE.set( innerObject, score );
-			}
-			if ( similarity == null && score == null ) {
-				// [knn] requires exactly one of k, distance or score to be set
-				K_ACCESSOR.set( innerObject, k );
-			}
-		}
+        private static final JsonAccessor<Integer> NUM_CANDIDATES_ACCESSOR = JsonAccessor.root().property("num_candidates").asInteger();
 
-		protected static class Builder<F> extends AbstractKnnBuilder<F> {
-			protected Float score;
+        private static final JsonAccessor<Float> SIMILARITY_ACCESSOR = JsonAccessor.root().property("similarity").asFloat();
 
-			protected Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope,
-					ElasticsearchSearchIndexValueFieldContext<F> field) {
-				super( codec, scope, field );
-			}
+        private Elasticsearch812Impl(Builder<?> builder) {
+            super(builder);
+        }
 
-			@Override
-			public void requiredMinimumSimilarity(float similarity) {
-				this.similarity = similarity;
-			}
+        @Override
+        protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			@Override
-			public void requiredMinimumScore(float score) {
-				this.score = score;
-			}
+        private static class Builder<F> extends AbstractKnnBuilder<F> {
 
-			@Override
-			public SearchPredicate build() {
-				return new OpenSearch214Impl( this );
-			}
-		}
-	}
+            private Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+                super(codec, scope, field);
+            }
 
-	private static class OpenSearch2Impl extends AbstractOpenSearchKnnPredicate {
+            @Override
+            public void requiredMinimumSimilarity(float similarity) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-		protected OpenSearch2Impl(Builder<?> builder) {
-			super( builder );
-		}
+            @Override
+            public void requiredMinimumScore(float score) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-		@Override
-		protected void addVersionSpecificFields(JsonObject innerObject) {
-			K_ACCESSOR.set( innerObject, k );
-		}
+            @Override
+            public SearchPredicate build() {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-		protected static class Builder<F> extends AbstractKnnBuilder<F> {
-			protected Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope,
-					ElasticsearchSearchIndexValueFieldContext<F> field) {
-				super( codec, scope, field );
-			}
+    private static class OpenSearch214Impl extends AbstractOpenSearchKnnPredicate {
 
-			@Override
-			public void requiredMinimumSimilarity(float similarity) {
-				throw QueryLog.INSTANCE.knnRequiredMinimumSimilarityUnsupportedOption();
-			}
+        private final Float score;
 
-			@Override
-			public void requiredMinimumScore(float score) {
-				throw QueryLog.INSTANCE.knnRequiredMinimumSimilarityUnsupportedOption();
-			}
+        private OpenSearch214Impl(Builder<?> builder) {
+            super(builder);
+            this.score = builder.score;
+        }
 
-			@Override
-			public SearchPredicate build() {
-				return new OpenSearch2Impl( this );
-			}
-		}
-	}
+        @Override
+        protected void addVersionSpecificFields(JsonObject innerObject) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private abstract static class AbstractOpenSearchKnnPredicate extends ElasticsearchKnnPredicate {
+        protected static class Builder<F> extends AbstractKnnBuilder<F> {
 
-		protected static final JsonObjectAccessor KNN_ACCESSOR = JsonAccessor.root().property( "knn" ).asObject();
-		protected static final JsonArrayAccessor VECTOR_ACCESSOR = JsonAccessor.root().property( "vector" ).asArray();
-		protected static final JsonAccessor<Integer> K_ACCESSOR = JsonAccessor.root().property( "k" ).asInteger();
+            protected Float score;
 
-		protected static final JsonObjectAccessor FILTER_ACCESSOR = JsonAccessor.root().property( "filter" ).asObject();
-		protected static final JsonAccessor<Float> MAX_DISTANCE = JsonAccessor.root().property( "max_distance" ).asFloat();
-		protected static final JsonAccessor<Float> MIN_SCORE = JsonAccessor.root().property( "min_score" ).asFloat();
+            protected Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+                super(codec, scope, field);
+            }
 
-		private AbstractOpenSearchKnnPredicate(AbstractKnnBuilder<?> builder) {
-			super( builder );
-		}
+            @Override
+            public void requiredMinimumSimilarity(float similarity) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-		@Override
-		protected final JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject,
-				JsonObject innerObject) {
-			JsonObject field = new JsonObject();
-			KNN_ACCESSOR.set( outerObject, field );
+            @Override
+            public void requiredMinimumScore(float score) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
 
-			field.add( absoluteFieldPath, innerObject );
-			JsonObject filter = prepareFilter( context );
-			if ( filter != null ) {
-				FILTER_ACCESSOR.set( innerObject, filter );
-			}
-			addVersionSpecificFields( innerObject );
-			VECTOR_ACCESSOR.set( innerObject, vector );
+            @Override
+            public SearchPredicate build() {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-			return outerObject;
-		}
+    private static class OpenSearch2Impl extends AbstractOpenSearchKnnPredicate {
 
-		protected abstract void addVersionSpecificFields(JsonObject innerObject);
-	}
+        protected OpenSearch2Impl(Builder<?> builder) {
+            super(builder);
+        }
+
+        @Override
+        protected void addVersionSpecificFields(JsonObject innerObject) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        protected static class Builder<F> extends AbstractKnnBuilder<F> {
+
+            protected Builder(ElasticsearchFieldCodec<F> codec, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexValueFieldContext<F> field) {
+                super(codec, scope, field);
+            }
+
+            @Override
+            public void requiredMinimumSimilarity(float similarity) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+
+            @Override
+            public void requiredMinimumScore(float score) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+
+            @Override
+            public SearchPredicate build() {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
+
+    private abstract static class AbstractOpenSearchKnnPredicate extends ElasticsearchKnnPredicate {
+
+        protected static final JsonObjectAccessor KNN_ACCESSOR = JsonAccessor.root().property("knn").asObject();
+
+        protected static final JsonArrayAccessor VECTOR_ACCESSOR = JsonAccessor.root().property("vector").asArray();
+
+        protected static final JsonAccessor<Integer> K_ACCESSOR = JsonAccessor.root().property("k").asInteger();
+
+        protected static final JsonObjectAccessor FILTER_ACCESSOR = JsonAccessor.root().property("filter").asObject();
+
+        protected static final JsonAccessor<Float> MAX_DISTANCE = JsonAccessor.root().property("max_distance").asFloat();
+
+        protected static final JsonAccessor<Float> MIN_SCORE = JsonAccessor.root().property("min_score").asFloat();
+
+        private AbstractOpenSearchKnnPredicate(AbstractKnnBuilder<?> builder) {
+            super(builder);
+        }
+
+        @Override
+        protected final JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        protected abstract void addVersionSpecificFields(JsonObject innerObject);
+    }
 }

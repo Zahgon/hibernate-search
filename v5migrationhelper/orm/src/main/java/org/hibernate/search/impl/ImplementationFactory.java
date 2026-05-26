@@ -5,7 +5,6 @@
 package org.hibernate.search.impl;
 
 import java.lang.invoke.MethodHandles;
-
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.SearchFactory;
 import org.hibernate.search.util.logging.impl.LoggerFactory;
@@ -18,23 +17,17 @@ import org.hibernate.search.util.logging.impl.MigrationHelperLog;
  */
 public final class ImplementationFactory {
 
-	private static final MigrationHelperLog log = LoggerFactory.make( MethodHandles.lookup() );
+    private static final MigrationHelperLog log = LoggerFactory.make(MethodHandles.lookup());
 
-	private ImplementationFactory() {
-		//not meant to be instantiated
-	}
+    private ImplementationFactory() {
+        //not meant to be instantiated
+    }
 
-	public static FullTextSession createFullTextSession(org.hibernate.Session session) {
-		if ( session == null ) {
-			throw log.getNullSessionPassedToFullTextSessionCreationException();
-		}
-		else {
-			return new FullTextSessionImpl( session );
-		}
-	}
+    public static FullTextSession createFullTextSession(org.hibernate.Session session) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static SearchFactory createSearchFactory(V5MigrationOrmSearchIntegratorAdapter searchIntegrator) {
-		return new SearchFactoryImpl( searchIntegrator );
-	}
-
+    public static SearchFactory createSearchFactory(V5MigrationOrmSearchIntegratorAdapter searchIntegrator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

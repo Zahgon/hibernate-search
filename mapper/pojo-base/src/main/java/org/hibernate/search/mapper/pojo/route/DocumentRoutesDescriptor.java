@@ -7,60 +7,52 @@ package org.hibernate.search.mapper.pojo.route;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-
 import org.hibernate.search.util.common.impl.Contracts;
 
 public final class DocumentRoutesDescriptor implements Serializable {
 
-	public static DocumentRoutesDescriptor of(DocumentRouteDescriptor currentRoute) {
-		return of( currentRoute, Collections.emptySet() );
-	}
+    public static DocumentRoutesDescriptor of(DocumentRouteDescriptor currentRoute) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static DocumentRoutesDescriptor of(DocumentRouteDescriptor currentRoute,
-			Collection<DocumentRouteDescriptor> previousRoutes) {
-		return new DocumentRoutesDescriptor( currentRoute, previousRoutes );
-	}
+    public static DocumentRoutesDescriptor of(DocumentRouteDescriptor currentRoute, Collection<DocumentRouteDescriptor> previousRoutes) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * A util to convert the legacy representation of a route (a single string) to a {@link DocumentRoutesDescriptor}.
-	 * <p>
-	 * It will assume no routes are given if {@code providedRoutingKey} is {@code null},
-	 * so it's not possible to represent the default route using this util.
-	 *
-	 * @param providedRoutingKey The provided routing key, or {@code null}.
-	 * @return The corresponding routes, or {@code null}.
-	 */
-	public static DocumentRoutesDescriptor fromLegacyRoutingKey(String providedRoutingKey) {
-		if ( providedRoutingKey == null ) {
-			return null;
-		}
-		return of( DocumentRouteDescriptor.of( providedRoutingKey ) );
-	}
+    /**
+     * A util to convert the legacy representation of a route (a single string) to a {@link DocumentRoutesDescriptor}.
+     * <p>
+     * It will assume no routes are given if {@code providedRoutingKey} is {@code null},
+     * so it's not possible to represent the default route using this util.
+     *
+     * @param providedRoutingKey The provided routing key, or {@code null}.
+     * @return The corresponding routes, or {@code null}.
+     */
+    public static DocumentRoutesDescriptor fromLegacyRoutingKey(String providedRoutingKey) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private final DocumentRouteDescriptor currentRoute;
-	private final Collection<DocumentRouteDescriptor> previousRoutes;
+    private final DocumentRouteDescriptor currentRoute;
 
-	public DocumentRoutesDescriptor(DocumentRouteDescriptor currentRoute,
-			Collection<DocumentRouteDescriptor> previousRoutes) {
-		this.currentRoute = currentRoute;
-		Contracts.assertNotNull( previousRoutes, "previousRoutes" );
-		Contracts.assertNoNullElement( previousRoutes, "previousRoutes" );
-		this.previousRoutes = previousRoutes;
-	}
+    private final Collection<DocumentRouteDescriptor> previousRoutes;
 
-	@Override
-	public String toString() {
-		return "DocumentRoutesDescriptor{" +
-				"currentRoute=" + currentRoute +
-				", previousRoutes=" + previousRoutes +
-				'}';
-	}
+    public DocumentRoutesDescriptor(DocumentRouteDescriptor currentRoute, Collection<DocumentRouteDescriptor> previousRoutes) {
+        this.currentRoute = currentRoute;
+        Contracts.assertNotNull(previousRoutes, "previousRoutes");
+        Contracts.assertNoNullElement(previousRoutes, "previousRoutes");
+        this.previousRoutes = previousRoutes;
+    }
 
-	public DocumentRouteDescriptor currentRoute() {
-		return currentRoute;
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public Collection<DocumentRouteDescriptor> previousRoutes() {
-		return previousRoutes;
-	}
+    public DocumentRouteDescriptor currentRoute() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public Collection<DocumentRouteDescriptor> previousRoutes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

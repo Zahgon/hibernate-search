@@ -7,34 +7,34 @@ package org.hibernate.search.backend.lucene.search.predicate.impl;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.MatchNonePredicateBuilder;
-
 import org.apache.lucene.search.MatchNoDocsQuery;
 import org.apache.lucene.search.Query;
 
 class LuceneMatchNonePredicate extends AbstractLuceneSearchPredicate {
 
-	private LuceneMatchNonePredicate(Builder builder) {
-		super( builder );
-	}
+    private LuceneMatchNonePredicate(Builder builder) {
+        super(builder);
+    }
 
-	@Override
-	public void checkNestableWithin(String expectedParentNestedPath) {
-		// Nothing to do
-	}
+    @Override
+    public void checkNestableWithin(String expectedParentNestedPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Query doToQuery(PredicateRequestContext context) {
-		return MatchNoDocsQuery.INSTANCE;
-	}
+    @Override
+    protected Query doToQuery(PredicateRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	static class Builder extends AbstractBuilder implements MatchNonePredicateBuilder {
-		Builder(LuceneSearchIndexScope<?> scope) {
-			super( scope );
-		}
+    static class Builder extends AbstractBuilder implements MatchNonePredicateBuilder {
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneMatchNonePredicate( this );
-		}
-	}
+        Builder(LuceneSearchIndexScope<?> scope) {
+            super(scope);
+        }
+
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

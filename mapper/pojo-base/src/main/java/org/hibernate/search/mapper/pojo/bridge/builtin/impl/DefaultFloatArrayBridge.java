@@ -5,24 +5,22 @@
 package org.hibernate.search.mapper.pojo.bridge.builtin.impl;
 
 import java.util.Arrays;
-
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultFloatArrayBridge extends AbstractPassThroughDefaultBridge<float[]> {
 
-	public static final DefaultFloatArrayBridge INSTANCE = new DefaultFloatArrayBridge();
+    public static final DefaultFloatArrayBridge INSTANCE = new DefaultFloatArrayBridge();
 
-	private DefaultFloatArrayBridge() {
-	}
+    private DefaultFloatArrayBridge() {
+    }
 
-	@Override
-	protected String toString(float[] value) {
-		return Arrays.toString( value );
-	}
+    @Override
+    protected String toString(float[] value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected float[] fromString(String value) {
-		return ParseUtils.parseFloatPrimitiveArray( value );
-	}
-
+    @Override
+    protected float[] fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

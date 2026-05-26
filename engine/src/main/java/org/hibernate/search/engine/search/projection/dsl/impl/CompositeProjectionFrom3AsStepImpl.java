@@ -11,32 +11,28 @@ import org.hibernate.search.engine.search.projection.spi.CompositeProjectionBuil
 import org.hibernate.search.engine.search.spi.ResultsCompositor;
 import org.hibernate.search.util.common.function.TriFunction;
 
-class CompositeProjectionFrom3AsStepImpl<V1, V2, V3>
-		extends AbstractCompositeProjectionFromAsStep
-		implements CompositeProjectionFrom3AsStep<V1, V2, V3> {
+class CompositeProjectionFrom3AsStepImpl<V1, V2, V3> extends AbstractCompositeProjectionFromAsStep implements CompositeProjectionFrom3AsStep<V1, V2, V3> {
 
-	final SearchProjection<V1> inner1;
-	final SearchProjection<V2> inner2;
-	final SearchProjection<V3> inner3;
+    final SearchProjection<V1> inner1;
 
-	public CompositeProjectionFrom3AsStepImpl(CompositeProjectionBuilder builder,
-			SearchProjection<V1> inner1, SearchProjection<V2> inner2, SearchProjection<V3> inner3) {
-		super( builder );
-		this.inner1 = inner1;
-		this.inner2 = inner2;
-		this.inner3 = inner3;
-	}
+    final SearchProjection<V2> inner2;
 
-	@Override
-	public <V> CompositeProjectionValueStep<?, V> as(TriFunction<V1, V2, V3, V> transformer) {
-		return new CompositeProjectionValueStepImpl<>( builder, toProjectionArray(),
-				ResultsCompositor.from( transformer )
-		);
-	}
+    final SearchProjection<V3> inner3;
 
-	@Override
-	SearchProjection<?>[] toProjectionArray() {
-		return new SearchProjection<?>[] { inner1, inner2, inner3 };
-	}
+    public CompositeProjectionFrom3AsStepImpl(CompositeProjectionBuilder builder, SearchProjection<V1> inner1, SearchProjection<V2> inner2, SearchProjection<V3> inner3) {
+        super(builder);
+        this.inner1 = inner1;
+        this.inner2 = inner2;
+        this.inner3 = inner3;
+    }
 
+    @Override
+    public <V> CompositeProjectionValueStep<?, V> as(TriFunction<V1, V2, V3, V> transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    SearchProjection<?>[] toProjectionArray() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

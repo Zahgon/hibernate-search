@@ -6,45 +6,41 @@ package org.hibernate.search.mapper.orm.outboxpolling.cluster.impl;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.hibernate.Session;
 
 public class DefaultAgentRepository implements AgentRepository {
-	public static final class Provider implements AgentRepositoryProvider {
-		@Override
-		public AgentRepository create(Session session) {
-			return new DefaultAgentRepository( session );
-		}
-	}
 
-	private final Session session;
+    public static final class Provider implements AgentRepositoryProvider {
 
-	private DefaultAgentRepository(Session session) {
-		this.session = session;
-	}
+        @Override
+        public AgentRepository create(Session session) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-	@Override
-	public Agent find(UUID id) {
-		return session.find( Agent.class, id );
-	}
+    private final Session session;
 
-	@Override
-	public List<Agent> findAllOrderById() {
-		return session
-				.createQuery( "select a from " + OutboxPollingAgentAdditionalMappingProducer.ENTITY_NAME + " a order by id",
-						Agent.class )
-				.list();
-	}
+    private DefaultAgentRepository(Session session) {
+        this.session = session;
+    }
 
-	@Override
-	public void create(Agent agent) {
-		session.persist( agent );
-	}
+    @Override
+    public Agent find(UUID id) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void delete(List<Agent> agents) {
-		for ( Agent agent : agents ) {
-			session.remove( agent );
-		}
-	}
+    @Override
+    public List<Agent> findAllOrderById() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void create(Agent agent) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void delete(List<Agent> agents) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

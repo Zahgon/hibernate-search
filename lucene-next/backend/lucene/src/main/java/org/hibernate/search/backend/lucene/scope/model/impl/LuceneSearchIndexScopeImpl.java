@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
 import org.hibernate.search.backend.lucene.analysis.model.impl.LuceneAnalysisDefinitionRegistry;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexModel;
 import org.hibernate.search.backend.lucene.multitenancy.impl.MultiTenancyStrategy;
@@ -51,199 +50,170 @@ import org.hibernate.search.engine.search.projection.SearchProjection;
 import org.hibernate.search.engine.search.projection.dsl.spi.SearchProjectionDslContext;
 import org.hibernate.search.engine.search.sort.dsl.spi.SearchSortDslContext;
 import org.hibernate.search.engine.search.timeout.spi.TimeoutManager;
-
 import org.apache.lucene.search.Query;
 
-public final class LuceneSearchIndexScopeImpl<SR>
-		extends AbstractSearchIndexScope<
-				SR,
-				LuceneSearchIndexScopeImpl<SR>,
-				LuceneIndexModel,
-				LuceneSearchIndexNodeContext,
-				LuceneSearchIndexCompositeNodeContext>
-		implements LuceneSearchIndexScope<LuceneSearchIndexScopeImpl<SR>>,
-		LuceneSearchQueryIndexScope<SR, LuceneSearchIndexScopeImpl<SR>> {
+public final class LuceneSearchIndexScopeImpl<SR> extends AbstractSearchIndexScope<SR, LuceneSearchIndexScopeImpl<SR>, LuceneIndexModel, LuceneSearchIndexNodeContext, LuceneSearchIndexCompositeNodeContext> implements LuceneSearchIndexScope<LuceneSearchIndexScopeImpl<SR>>, LuceneSearchQueryIndexScope<SR, LuceneSearchIndexScopeImpl<SR>> {
 
-	// Backend context
-	private final SearchBackendContext backendContext;
-	private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
-	private final MultiTenancyStrategy multiTenancyStrategy;
+    // Backend context
+    private final SearchBackendContext backendContext;
 
-	// Global timing source
-	private final TimingSource timingSource;
+    private final LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry;
 
-	// Targeted indexes
-	private final Map<String, LuceneScopeIndexManagerContext> mappedTypeNameToIndex;
+    private final MultiTenancyStrategy multiTenancyStrategy;
 
-	// Query support
-	private final LuceneSearchPredicateBuilderFactory predicateBuilderFactory;
-	private final LuceneSearchSortBuilderFactory sortBuilderFactory;
-	private final LuceneSearchProjectionBuilderFactory projectionBuilderFactory;
-	private final LuceneSearchAggregationBuilderFactory aggregationBuilderFactory;
+    // Global timing source
+    private final TimingSource timingSource;
 
-	public LuceneSearchIndexScopeImpl(BackendMappingContext mappingContext,
-			Class<SR> rootScopeType,
-			SearchBackendContext backendContext,
-			LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry,
-			MultiTenancyStrategy multiTenancyStrategy,
-			TimingSource timingSource,
-			Set<? extends LuceneScopeIndexManagerContext> indexManagerContexts) {
-		super( mappingContext, rootScopeType, toModels( indexManagerContexts ) );
-		this.backendContext = backendContext;
-		this.analysisDefinitionRegistry = analysisDefinitionRegistry;
-		this.multiTenancyStrategy = multiTenancyStrategy;
-		this.timingSource = timingSource;
-		// Use LinkedHashMap/LinkedHashSet to ensure stable order when generating requests
-		this.mappedTypeNameToIndex = new LinkedHashMap<>();
-		for ( LuceneScopeIndexManagerContext indexManager : indexManagerContexts ) {
-			this.mappedTypeNameToIndex.put( indexManager.model().mappedTypeName(), indexManager );
-		}
+    // Targeted indexes
+    private final Map<String, LuceneScopeIndexManagerContext> mappedTypeNameToIndex;
 
-		this.predicateBuilderFactory = new LuceneSearchPredicateBuilderFactory( this );
-		this.sortBuilderFactory = new LuceneSearchSortBuilderFactory( this );
-		this.projectionBuilderFactory = new LuceneSearchProjectionBuilderFactory( this );
-		this.aggregationBuilderFactory = new LuceneSearchAggregationBuilderFactory( this );
-	}
+    // Query support
+    private final LuceneSearchPredicateBuilderFactory predicateBuilderFactory;
 
-	private LuceneSearchIndexScopeImpl(LuceneSearchIndexScopeImpl<SR> parentScope,
-			LuceneSearchIndexCompositeNodeContext overriddenRoot) {
-		super( parentScope, overriddenRoot );
-		this.backendContext = parentScope.backendContext;
-		this.analysisDefinitionRegistry = parentScope.analysisDefinitionRegistry;
-		this.multiTenancyStrategy = parentScope.multiTenancyStrategy;
-		this.timingSource = parentScope.timingSource;
-		this.mappedTypeNameToIndex = parentScope.mappedTypeNameToIndex;
+    private final LuceneSearchSortBuilderFactory sortBuilderFactory;
 
-		this.predicateBuilderFactory = new LuceneSearchPredicateBuilderFactory( this );
-		this.sortBuilderFactory = new LuceneSearchSortBuilderFactory( this );
-		this.projectionBuilderFactory = new LuceneSearchProjectionBuilderFactory( this );
-		this.aggregationBuilderFactory = new LuceneSearchAggregationBuilderFactory( this );
-	}
+    private final LuceneSearchProjectionBuilderFactory projectionBuilderFactory;
 
-	private static Set<? extends LuceneIndexModel> toModels(
-			Set<? extends LuceneScopeIndexManagerContext> indexManagerContexts) {
-		return indexManagerContexts.stream().map( LuceneScopeIndexManagerContext::model )
-				.collect( Collectors.toCollection( LinkedHashSet::new ) );
-	}
+    private final LuceneSearchAggregationBuilderFactory aggregationBuilderFactory;
 
-	@Override
-	protected LuceneSearchIndexScopeImpl<SR> self() {
-		return this;
-	}
+    public LuceneSearchIndexScopeImpl(BackendMappingContext mappingContext, Class<SR> rootScopeType, SearchBackendContext backendContext, LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry, MultiTenancyStrategy multiTenancyStrategy, TimingSource timingSource, Set<? extends LuceneScopeIndexManagerContext> indexManagerContexts) {
+        super(mappingContext, rootScopeType, toModels(indexManagerContexts));
+        this.backendContext = backendContext;
+        this.analysisDefinitionRegistry = analysisDefinitionRegistry;
+        this.multiTenancyStrategy = multiTenancyStrategy;
+        this.timingSource = timingSource;
+        // Use LinkedHashMap/LinkedHashSet to ensure stable order when generating requests
+        this.mappedTypeNameToIndex = new LinkedHashMap<>();
+        for (LuceneScopeIndexManagerContext indexManager : indexManagerContexts) {
+            this.mappedTypeNameToIndex.put(indexManager.model().mappedTypeName(), indexManager);
+        }
+        this.predicateBuilderFactory = new LuceneSearchPredicateBuilderFactory(this);
+        this.sortBuilderFactory = new LuceneSearchSortBuilderFactory(this);
+        this.projectionBuilderFactory = new LuceneSearchProjectionBuilderFactory(this);
+        this.aggregationBuilderFactory = new LuceneSearchAggregationBuilderFactory(this);
+    }
 
-	@Override
-	public LuceneSearchIndexScopeImpl<SR> withRoot(String objectFieldPath) {
-		return new LuceneSearchIndexScopeImpl<>( this, field( objectFieldPath ).toComposite() );
-	}
+    private LuceneSearchIndexScopeImpl(LuceneSearchIndexScopeImpl<SR> parentScope, LuceneSearchIndexCompositeNodeContext overriddenRoot) {
+        super(parentScope, overriddenRoot);
+        this.backendContext = parentScope.backendContext;
+        this.analysisDefinitionRegistry = parentScope.analysisDefinitionRegistry;
+        this.multiTenancyStrategy = parentScope.multiTenancyStrategy;
+        this.timingSource = parentScope.timingSource;
+        this.mappedTypeNameToIndex = parentScope.mappedTypeNameToIndex;
+        this.predicateBuilderFactory = new LuceneSearchPredicateBuilderFactory(this);
+        this.sortBuilderFactory = new LuceneSearchSortBuilderFactory(this);
+        this.projectionBuilderFactory = new LuceneSearchProjectionBuilderFactory(this);
+        this.aggregationBuilderFactory = new LuceneSearchAggregationBuilderFactory(this);
+    }
 
-	@Override
-	public LuceneSearchPredicateBuilderFactory predicateBuilders() {
-		return predicateBuilderFactory;
-	}
+    private static Set<? extends LuceneIndexModel> toModels(Set<? extends LuceneScopeIndexManagerContext> indexManagerContexts) {
+        return indexManagerContexts.stream().map(LuceneScopeIndexManagerContext::model).collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 
-	@Override
-	public LuceneSearchSortBuilderFactory sortBuilders() {
-		return sortBuilderFactory;
-	}
+    @Override
+    protected LuceneSearchIndexScopeImpl<SR> self() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneSearchProjectionBuilderFactory projectionBuilders() {
-		return projectionBuilderFactory;
-	}
+    @Override
+    public LuceneSearchIndexScopeImpl<SR> withRoot(String objectFieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneSearchAggregationBuilderFactory aggregationBuilders() {
-		return aggregationBuilderFactory;
-	}
+    @Override
+    public LuceneSearchPredicateBuilderFactory predicateBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <P> LuceneSearchQueryBuilder<P> select(BackendSessionContext sessionContext,
-			SearchLoadingContextBuilder<?, ?> loadingContextBuilder, SearchProjection<P> projection) {
-		return backendContext.createSearchQueryBuilder( this, sessionContext, loadingContextBuilder,
-				LuceneSearchProjection.from( this, projection ) );
-	}
+    @Override
+    public LuceneSearchSortBuilderFactory sortBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneSearchPredicateFactory<SR> predicateFactory() {
-		return new LuceneSearchPredicateFactoryImpl<>( rootScopeType, SearchPredicateDslContext.root( this ) );
-	}
+    @Override
+    public LuceneSearchProjectionBuilderFactory projectionBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneSearchSortFactory<SR> sortFactory() {
-		return new LuceneSearchSortFactoryImpl<>( SearchSortDslContext
-				.root( this, LuceneSearchSortFactoryImpl::new, predicateFactory() ) );
-	}
+    @Override
+    public LuceneSearchAggregationBuilderFactory aggregationBuilders() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <R, E> LuceneSearchProjectionFactory<SR, R, E> projectionFactory() {
-		return new LuceneSearchProjectionFactoryImpl<>( SearchProjectionDslContext.root( this ) );
-	}
+    @Override
+    public <P> LuceneSearchQueryBuilder<P> select(BackendSessionContext sessionContext, SearchLoadingContextBuilder<?, ?> loadingContextBuilder, SearchProjection<P> projection) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneSearchAggregationFactory<SR> aggregationFactory() {
-		return new LuceneSearchAggregationFactoryImpl<>( SearchAggregationDslContext.root( this, predicateFactory() ) );
-	}
+    @Override
+    public LuceneSearchPredicateFactory<SR> predicateFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchHighlighterFactory highlighterFactory() {
-		return new LuceneSearchHighlighterFactory( this );
-	}
+    @Override
+    public LuceneSearchSortFactory<SR> sortFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry() {
-		return analysisDefinitionRegistry;
-	}
+    @Override
+    public <R, E> LuceneSearchProjectionFactory<SR, R, E> projectionFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Query filterOrNull(String tenantId) {
-		return multiTenancyStrategy.filterOrNull( tenantId );
-	}
+    @Override
+    public LuceneSearchAggregationFactory<SR> aggregationFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public TimeoutManager createTimeoutManager(Long timeout, TimeUnit timeUnit, boolean exceptionOnTimeout) {
-		return TimeoutManager.of( timingSource, timeout, timeUnit, exceptionOnTimeout );
-	}
+    @Override
+    public SearchHighlighterFactory highlighterFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Collection<LuceneScopeIndexManagerContext> indexes() {
-		return mappedTypeNameToIndex.values();
-	}
+    @Override
+    public LuceneAnalysisDefinitionRegistry analysisDefinitionRegistry() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Map<String, ? extends LuceneSearchIndexContext> mappedTypeNameToIndex() {
-		return mappedTypeNameToIndex;
-	}
+    @Override
+    public Query filterOrNull(String tenantId) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean hasNestedDocuments() {
-		for ( LuceneScopeIndexManagerContext element : indexes() ) {
-			if ( element.model().hasNestedDocuments() ) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public TimeoutManager createTimeoutManager(Long timeout, TimeUnit timeUnit, boolean exceptionOnTimeout) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LuceneSearchIndexCompositeNodeContext createMultiIndexSearchRootContext(
-			List<LuceneSearchIndexCompositeNodeContext> rootForEachIndex) {
-		return new LuceneMultiIndexSearchIndexCompositeNodeContext( this, null,
-				rootForEachIndex );
-	}
+    @Override
+    public Collection<LuceneScopeIndexManagerContext> indexes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected LuceneSearchIndexNodeContext createMultiIndexSearchValueFieldContext(String absolutePath,
-			List<LuceneSearchIndexNodeContext> fieldForEachIndex) {
-		return new LuceneMultiIndexSearchIndexValueFieldContext<>( this, absolutePath,
-				(List) fieldForEachIndex );
-	}
+    @Override
+    public Map<String, ? extends LuceneSearchIndexContext> mappedTypeNameToIndex() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected LuceneSearchIndexNodeContext createMultiIndexSearchObjectFieldContext(String absolutePath,
-			List<LuceneSearchIndexNodeContext> fieldForEachIndex) {
-		return new LuceneMultiIndexSearchIndexCompositeNodeContext( this, absolutePath,
-				(List) fieldForEachIndex );
-	}
+    @Override
+    public boolean hasNestedDocuments() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    protected LuceneSearchIndexCompositeNodeContext createMultiIndexSearchRootContext(List<LuceneSearchIndexCompositeNodeContext> rootForEachIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected LuceneSearchIndexNodeContext createMultiIndexSearchValueFieldContext(String absolutePath, List<LuceneSearchIndexNodeContext> fieldForEachIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected LuceneSearchIndexNodeContext createMultiIndexSearchObjectFieldContext(String absolutePath, List<LuceneSearchIndexNodeContext> fieldForEachIndex) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

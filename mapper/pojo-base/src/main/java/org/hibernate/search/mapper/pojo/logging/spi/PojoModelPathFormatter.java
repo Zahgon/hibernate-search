@@ -8,14 +8,14 @@ import org.hibernate.search.mapper.pojo.model.path.PojoModelPath;
 
 public final class PojoModelPathFormatter {
 
-	private final PojoModelPath pojoModelPath;
+    private final PojoModelPath pojoModelPath;
 
-	public PojoModelPathFormatter(PojoModelPath pojoModelPath) {
-		this.pojoModelPath = pojoModelPath;
-	}
+    public PojoModelPathFormatter(PojoModelPath pojoModelPath) {
+        this.pojoModelPath = pojoModelPath;
+    }
 
-	@Override
-	public String toString() {
-		return pojoModelPath.toPathString();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

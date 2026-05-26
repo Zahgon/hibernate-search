@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.mapping.definition.programmatic.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.bridge.IdentifierBridge;
 import org.hibernate.search.mapper.pojo.bridge.mapping.impl.BeanBinder;
@@ -15,35 +14,33 @@ import org.hibernate.search.mapper.pojo.mapping.building.spi.PojoPropertyMetadat
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingDocumentIdOptionsStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.PropertyMappingStep;
 
-class PropertyMappingDocumentIdOptionsStepImpl extends DelegatingPropertyMappingStep
-		implements PropertyMappingDocumentIdOptionsStep, PojoPropertyMetadataContributor {
+class PropertyMappingDocumentIdOptionsStepImpl extends DelegatingPropertyMappingStep implements PropertyMappingDocumentIdOptionsStep, PojoPropertyMetadataContributor {
 
-	private IdentifierBinder binder;
-	private Map<String, Object> params;
+    private IdentifierBinder binder;
 
-	PropertyMappingDocumentIdOptionsStepImpl(PropertyMappingStep parent) {
-		super( parent );
-	}
+    private Map<String, Object> params;
 
-	@Override
-	public void contributeIndexMapping(PojoIndexMappingCollectorPropertyNode collector) {
-		collector.identifierBinder( binder, params );
-	}
+    PropertyMappingDocumentIdOptionsStepImpl(PropertyMappingStep parent) {
+        super(parent);
+    }
 
-	@Override
-	public PropertyMappingDocumentIdOptionsStep identifierBridge(Class<? extends IdentifierBridge<?>> bridgeClass) {
-		return identifierBridge( BeanReference.of( bridgeClass ) );
-	}
+    @Override
+    public void contributeIndexMapping(PojoIndexMappingCollectorPropertyNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingDocumentIdOptionsStep identifierBridge(BeanReference<? extends IdentifierBridge<?>> bridgeReference) {
-		return identifierBinder( new BeanBinder( bridgeReference ) );
-	}
+    @Override
+    public PropertyMappingDocumentIdOptionsStep identifierBridge(Class<? extends IdentifierBridge<?>> bridgeClass) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingDocumentIdOptionsStep identifierBinder(IdentifierBinder binder, Map<String, Object> params) {
-		this.binder = binder;
-		this.params = params;
-		return this;
-	}
+    @Override
+    public PropertyMappingDocumentIdOptionsStep identifierBridge(BeanReference<? extends IdentifierBridge<?>> bridgeReference) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PropertyMappingDocumentIdOptionsStep identifierBinder(IdentifierBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

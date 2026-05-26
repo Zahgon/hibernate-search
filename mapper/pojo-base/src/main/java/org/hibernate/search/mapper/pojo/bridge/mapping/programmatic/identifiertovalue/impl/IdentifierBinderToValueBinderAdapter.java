@@ -13,14 +13,15 @@ import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.ValueBinder;
  * used to apply an identifier bridge to create an index field.
  */
 public class IdentifierBinderToValueBinderAdapter implements ValueBinder {
-	private final IdentifierBinder identifierBinder;
 
-	public IdentifierBinderToValueBinderAdapter(IdentifierBinder identifierBinder) {
-		this.identifierBinder = identifierBinder;
-	}
+    private final IdentifierBinder identifierBinder;
 
-	@Override
-	public void bind(ValueBindingContext<?> context) {
-		identifierBinder.bind( new ValueBindingContextToIdentifierBindingContextAdapter<>( context ) );
-	}
+    public IdentifierBinderToValueBinderAdapter(IdentifierBinder identifierBinder) {
+        this.identifierBinder = identifierBinder;
+    }
+
+    @Override
+    public void bind(ValueBindingContext<?> context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

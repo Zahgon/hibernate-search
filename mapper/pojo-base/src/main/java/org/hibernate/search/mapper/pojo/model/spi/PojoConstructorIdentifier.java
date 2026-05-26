@@ -7,20 +7,22 @@ package org.hibernate.search.mapper.pojo.model.spi;
 import org.hibernate.search.util.common.logging.impl.CommaSeparatedClassesFormatter;
 
 public final class PojoConstructorIdentifier {
-	private final String name;
-	private final Class<?>[] parametersJavaTypes;
 
-	public PojoConstructorIdentifier(PojoConstructorModel<?> constructor) {
-		this.name = constructor.typeModel().name();
-		this.parametersJavaTypes = constructor.parametersJavaTypes();
-	}
+    private final String name;
 
-	public String toHighlightedString(int position) {
-		return name + "(" + CommaSeparatedClassesFormatter.formatHighlighted( parametersJavaTypes, position ) + ")";
-	}
+    private final Class<?>[] parametersJavaTypes;
 
-	@Override
-	public String toString() {
-		return toHighlightedString( -1 );
-	}
+    public PojoConstructorIdentifier(PojoConstructorModel<?> constructor) {
+        this.name = constructor.typeModel().name();
+        this.parametersJavaTypes = constructor.parametersJavaTypes();
+    }
+
+    public String toHighlightedString(int position) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

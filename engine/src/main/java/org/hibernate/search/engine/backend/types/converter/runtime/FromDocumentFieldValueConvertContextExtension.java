@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.backend.types.converter.runtime;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.backend.session.spi.BackendSessionContext;
 
 /**
@@ -26,21 +25,20 @@ import org.hibernate.search.engine.backend.session.spi.BackendSessionContext;
 @Deprecated(since = "6.1")
 public interface FromDocumentFieldValueConvertContextExtension<T> extends FromDocumentValueConvertContextExtension<T> {
 
-	@Override
-	default Optional<T> extendOptional(FromDocumentValueConvertContext original, BackendSessionContext sessionContext) {
-		return extendOptional( (FromDocumentFieldValueConvertContext) original, sessionContext );
-	}
+    @Override
+    default Optional<T> extendOptional(FromDocumentValueConvertContext original, BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * Attempt to extend a given context, returning an empty {@link Optional} in case of failure.
-	 * <p>
-	 * <strong>WARNING:</strong> this method is not API, see comments at the type level.
-	 *
-	 * @param original The original, non-extended {@link FromDocumentFieldValueConvertContext}.
-	 * @param sessionContext A {@link BackendSessionContext}.
-	 * @return An optional containing the extended context ({@link T}) in case
-	 * of success, or an empty optional otherwise.
-	 */
-	Optional<T> extendOptional(FromDocumentFieldValueConvertContext original, BackendSessionContext sessionContext);
-
+    /**
+     * Attempt to extend a given context, returning an empty {@link Optional} in case of failure.
+     * <p>
+     * <strong>WARNING:</strong> this method is not API, see comments at the type level.
+     *
+     * @param original The original, non-extended {@link FromDocumentFieldValueConvertContext}.
+     * @param sessionContext A {@link BackendSessionContext}.
+     * @return An optional containing the extended context ({@link T}) in case
+     * of success, or an empty optional otherwise.
+     */
+    Optional<T> extendOptional(FromDocumentFieldValueConvertContext original, BackendSessionContext sessionContext);
 }

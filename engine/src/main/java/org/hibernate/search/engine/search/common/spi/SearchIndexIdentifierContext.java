@@ -18,29 +18,20 @@ import org.hibernate.search.util.common.reporting.spi.EventContextProvider;
  */
 public interface SearchIndexIdentifierContext extends EventContextProvider {
 
-	DslConverter<String, String> RAW_DSL_CONVERTER = DslConverter.passThrough( String.class );
-	ProjectionConverter<String, String> RAW_PROJECTION_CONVERTER = ProjectionConverter.passThrough( String.class );
+    DslConverter<String, String> RAW_DSL_CONVERTER = DslConverter.passThrough(String.class);
 
-	EventContext relativeEventContext();
+    ProjectionConverter<String, String> RAW_PROJECTION_CONVERTER = ProjectionConverter.passThrough(String.class);
 
-	default DslConverter<?, String> dslConverter(ValueModel valueModel) {
-		switch ( valueModel ) {
-			case INDEX:
-			case RAW:
-				return RAW_DSL_CONVERTER;
-			case STRING:
-				return parserDslConverter();
-			case MAPPING:
-			default:
-				return mappingDslConverter();
-		}
-	}
+    EventContext relativeEventContext();
 
-	DslConverter<?, String> mappingDslConverter();
+    default DslConverter<?, String> dslConverter(ValueModel valueModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Incubating
-	DslConverter<?, String> parserDslConverter();
+    DslConverter<?, String> mappingDslConverter();
 
-	ProjectionConverter<String, ?> mappingProjectionConverter();
+    @Incubating
+    DslConverter<?, String> parserDslConverter();
 
+    ProjectionConverter<String, ?> mappingProjectionConverter();
 }

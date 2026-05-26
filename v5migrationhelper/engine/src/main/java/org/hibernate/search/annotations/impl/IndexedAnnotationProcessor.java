@@ -11,9 +11,9 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMapp
 
 @Deprecated
 public class IndexedAnnotationProcessor implements TypeMappingAnnotationProcessor<Indexed> {
-	@Override
-	public void process(TypeMappingStep mapping, Indexed annotation, TypeMappingAnnotationProcessorContext context) {
-		String indexName = context.toNullIfDefault( annotation.index(), "" );
-		mapping.indexed().index( indexName );
-	}
+
+    @Override
+    public void process(TypeMappingStep mapping, Indexed annotation, TypeMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

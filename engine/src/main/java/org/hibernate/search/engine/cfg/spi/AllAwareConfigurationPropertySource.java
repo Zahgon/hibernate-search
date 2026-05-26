@@ -7,7 +7,6 @@ package org.hibernate.search.engine.cfg.spi;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.impl.MapConfigurationPropertySource;
 import org.hibernate.search.engine.cfg.impl.SystemConfigurationPropertySource;
@@ -21,21 +20,20 @@ import org.hibernate.search.engine.cfg.impl.SystemConfigurationPropertySource;
  */
 public interface AllAwareConfigurationPropertySource extends ConfigurationPropertySource {
 
-	Set<String> resolveAll(BiPredicate<String, Object> predicate);
+    Set<String> resolveAll(BiPredicate<String, Object> predicate);
 
-	/**
-	 * @param map The {@link Map} object to extract property values from.
-	 * @return A source containing the properties from the given {@link Map} object.
-	 */
-	static AllAwareConfigurationPropertySource fromMap(Map<String, ?> map) {
-		return new MapConfigurationPropertySource( map );
-	}
+    /**
+     * @param map The {@link Map} object to extract property values from.
+     * @return A source containing the properties from the given {@link Map} object.
+     */
+    static AllAwareConfigurationPropertySource fromMap(Map<String, ?> map) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return A source containing the system properties ({@link System#getProperty(String)}).
-	 */
-	static AllAwareConfigurationPropertySource system() {
-		return SystemConfigurationPropertySource.get();
-	}
-
+    /**
+     * @return A source containing the system properties ({@link System#getProperty(String)}).
+     */
+    static AllAwareConfigurationPropertySource system() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

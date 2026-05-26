@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.search.common.spi.SearchIndexScope;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.WildcardPredicateFieldMoreStep;
@@ -18,73 +17,62 @@ import org.hibernate.search.engine.search.predicate.spi.PredicateTypeKeys;
 import org.hibernate.search.engine.search.predicate.spi.WildcardPredicateBuilder;
 import org.hibernate.search.util.common.impl.Contracts;
 
-class WildcardPredicateFieldMoreStepImpl<SR>
-		implements WildcardPredicateFieldMoreStep<SR, WildcardPredicateFieldMoreStepImpl<SR>, WildcardPredicateOptionsStep<?>>,
-		AbstractBooleanMultiFieldPredicateCommonState.FieldSetState {
+class WildcardPredicateFieldMoreStepImpl<SR> implements WildcardPredicateFieldMoreStep<SR, WildcardPredicateFieldMoreStepImpl<SR>, WildcardPredicateOptionsStep<?>>, AbstractBooleanMultiFieldPredicateCommonState.FieldSetState {
 
-	private final CommonState<SR> commonState;
+    private final CommonState<SR> commonState;
 
-	private final List<WildcardPredicateBuilder> predicateBuilders = new ArrayList<>();
+    private final List<WildcardPredicateBuilder> predicateBuilders = new ArrayList<>();
 
-	private Float fieldSetBoost;
+    private Float fieldSetBoost;
 
-	WildcardPredicateFieldMoreStepImpl(CommonState<SR> commonState, List<String> fieldPaths) {
-		this.commonState = commonState;
-		this.commonState.add( this );
-		SearchIndexScope<?> scope = commonState.scope();
-		for ( String fieldPath : fieldPaths ) {
-			predicateBuilders.add( scope.fieldQueryElement( fieldPath, PredicateTypeKeys.WILDCARD ) );
-		}
-	}
+    WildcardPredicateFieldMoreStepImpl(CommonState<SR> commonState, List<String> fieldPaths) {
+        this.commonState = commonState;
+        this.commonState.add(this);
+        SearchIndexScope<?> scope = commonState.scope();
+        for (String fieldPath : fieldPaths) {
+            predicateBuilders.add(scope.fieldQueryElement(fieldPath, PredicateTypeKeys.WILDCARD));
+        }
+    }
 
-	@Override
-	public WildcardPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
-		return new WildcardPredicateFieldMoreStepImpl<>( commonState, Arrays.asList( fieldPaths ) );
-	}
+    @Override
+    public WildcardPredicateFieldMoreStepImpl<SR> fields(String... fieldPaths) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WildcardPredicateFieldMoreStepImpl<SR> boost(float boost) {
-		this.fieldSetBoost = boost;
-		return this;
-	}
+    @Override
+    public WildcardPredicateFieldMoreStepImpl<SR> boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public WildcardPredicateOptionsStep<?> matching(String wildcardPattern) {
-		return commonState.matching( wildcardPattern );
-	}
+    @Override
+    public WildcardPredicateOptionsStep<?> matching(String wildcardPattern) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void contributePredicates(Consumer<SearchPredicate> collector) {
-		for ( WildcardPredicateBuilder predicateBuilder : predicateBuilders ) {
-			// Perform last-minute changes, since it's the last call that will be made on this field set state
-			commonState.applyBoostAndConstantScore( fieldSetBoost, predicateBuilder );
+    @Override
+    public void contributePredicates(Consumer<SearchPredicate> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			collector.accept( predicateBuilder.build() );
-		}
-	}
+    static class CommonState<SR> extends AbstractBooleanMultiFieldPredicateCommonState<CommonState<SR>, WildcardPredicateFieldMoreStepImpl<SR>> implements WildcardPredicateOptionsStep<CommonState<SR>> {
 
-	static class CommonState<SR>
-			extends AbstractBooleanMultiFieldPredicateCommonState<CommonState<SR>, WildcardPredicateFieldMoreStepImpl<SR>>
-			implements WildcardPredicateOptionsStep<CommonState<SR>> {
+        CommonState(SearchPredicateDslContext<?> dslContext) {
+            super(dslContext);
+        }
 
-		CommonState(SearchPredicateDslContext<?> dslContext) {
-			super( dslContext );
-		}
+        private WildcardPredicateOptionsStep<?> matching(String wildcardPattern) {
+            Contracts.assertNotNull(wildcardPattern, "wildcardPattern");
+            for (WildcardPredicateFieldMoreStepImpl<SR> fieldSetState : getFieldSetStates()) {
+                for (WildcardPredicateBuilder predicateBuilder : fieldSetState.predicateBuilders) {
+                    predicateBuilder.pattern(wildcardPattern);
+                }
+            }
+            return this;
+        }
 
-		private WildcardPredicateOptionsStep<?> matching(String wildcardPattern) {
-			Contracts.assertNotNull( wildcardPattern, "wildcardPattern" );
-			for ( WildcardPredicateFieldMoreStepImpl<SR> fieldSetState : getFieldSetStates() ) {
-				for ( WildcardPredicateBuilder predicateBuilder : fieldSetState.predicateBuilders ) {
-					predicateBuilder.pattern( wildcardPattern );
-				}
-			}
-			return this;
-		}
-
-		@Override
-		protected CommonState<SR> thisAsS() {
-			return this;
-		}
-	}
-
+        @Override
+        protected CommonState<SR> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

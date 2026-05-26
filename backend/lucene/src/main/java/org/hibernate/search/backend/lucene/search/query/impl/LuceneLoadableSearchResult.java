@@ -5,12 +5,10 @@
 package org.hibernate.search.backend.lucene.search.query.impl;
 
 import static org.hibernate.search.backend.lucene.search.projection.impl.LuceneSearchProjection.Extractor.transformUnsafe;
-
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.lucene.search.projection.impl.LuceneSearchProjection;
 import org.hibernate.search.backend.lucene.search.projection.impl.ProjectionTransformContext;
 import org.hibernate.search.backend.lucene.search.query.LuceneSearchResult;
@@ -20,7 +18,6 @@ import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.engine.search.query.SearchResultTotal;
 import org.hibernate.search.engine.search.timeout.spi.TimeoutManager;
-
 import org.apache.lucene.search.TopDocs;
 
 /**
@@ -35,71 +32,41 @@ import org.apache.lucene.search.TopDocs;
  * @param <H> The type of hits in the search result.
  */
 public class LuceneLoadableSearchResult<H> {
-	private final FromDocumentValueConvertContext fromDocumentValueConvertContext;
-	private final LuceneSearchProjection.Extractor<?, H> rootExtractor;
 
-	private final SearchResultTotal resultTotal;
-	private final TopDocs topDocs;
+    private final FromDocumentValueConvertContext fromDocumentValueConvertContext;
 
-	private List<Object> extractedData;
-	private final Map<AggregationKey<?>, ?> extractedAggregations;
-	private final ProjectionHitMapper<?> projectionHitMapper;
-	private final Duration took;
-	private final Boolean timedOut;
-	private final TimeoutManager timeoutManager;
+    private final LuceneSearchProjection.Extractor<?, H> rootExtractor;
 
-	LuceneLoadableSearchResult(FromDocumentValueConvertContext fromDocumentValueConvertContext,
-			LuceneSearchProjection.Extractor<?, H> rootExtractor,
-			SearchResultTotal resultTotal, TopDocs topDocs, List<Object> extractedData,
-			Map<AggregationKey<?>, ?> extractedAggregations,
-			ProjectionHitMapper<?> projectionHitMapper,
-			Duration took, boolean timedOut, TimeoutManager timeoutManager) {
-		this.fromDocumentValueConvertContext = fromDocumentValueConvertContext;
-		this.rootExtractor = rootExtractor;
-		this.resultTotal = resultTotal;
-		this.topDocs = topDocs;
-		this.extractedData = extractedData;
-		this.extractedAggregations = extractedAggregations;
-		this.projectionHitMapper = projectionHitMapper;
-		this.took = took;
-		this.timedOut = timedOut;
-		this.timeoutManager = timeoutManager;
-	}
+    private final SearchResultTotal resultTotal;
 
-	LuceneSearchResult<H> loadBlocking() {
-		ProjectionTransformContext transformContext = new ProjectionTransformContext(
-				fromDocumentValueConvertContext );
-		LoadingResult<?> loadingResult = projectionHitMapper.loadBlocking( timeoutManager.hardDeadlineOrNull() );
+    private final TopDocs topDocs;
 
-		int readIndex = 0;
-		int writeIndex = 0;
-		for ( ; readIndex < extractedData.size(); ++readIndex ) {
-			transformContext.reset();
-			H transformed = transformUnsafe(
-					rootExtractor, loadingResult, extractedData.get( readIndex ), transformContext
-			);
+    private List<Object> extractedData;
 
-			if ( transformContext.hasFailedLoad() ) {
-				// Skip the hit
-				continue;
-			}
+    private final Map<AggregationKey<?>, ?> extractedAggregations;
 
-			extractedData.set( writeIndex, transformed );
-			++writeIndex;
-		}
+    private final ProjectionHitMapper<?> projectionHitMapper;
 
-		if ( writeIndex < readIndex ) {
-			// Some hits were skipped; adjust the list size.
-			extractedData.subList( writeIndex, readIndex ).clear();
-		}
+    private final Duration took;
 
-		// The cast is safe, since all elements extend H and we make the list unmodifiable
-		@SuppressWarnings("unchecked")
-		List<H> loadedHits = Collections.unmodifiableList( (List<? extends H>) extractedData );
+    private final Boolean timedOut;
 
-		// Make sure that if someone uses this object incorrectly, it will always fail, and will fail early.
-		extractedData = null;
+    private final TimeoutManager timeoutManager;
 
-		return new LuceneSearchResultImpl<>( resultTotal, loadedHits, extractedAggregations, took, timedOut, topDocs );
-	}
+    LuceneLoadableSearchResult(FromDocumentValueConvertContext fromDocumentValueConvertContext, LuceneSearchProjection.Extractor<?, H> rootExtractor, SearchResultTotal resultTotal, TopDocs topDocs, List<Object> extractedData, Map<AggregationKey<?>, ?> extractedAggregations, ProjectionHitMapper<?> projectionHitMapper, Duration took, boolean timedOut, TimeoutManager timeoutManager) {
+        this.fromDocumentValueConvertContext = fromDocumentValueConvertContext;
+        this.rootExtractor = rootExtractor;
+        this.resultTotal = resultTotal;
+        this.topDocs = topDocs;
+        this.extractedData = extractedData;
+        this.extractedAggregations = extractedAggregations;
+        this.projectionHitMapper = projectionHitMapper;
+        this.took = took;
+        this.timedOut = timedOut;
+        this.timeoutManager = timeoutManager;
+    }
+
+    LuceneSearchResult<H> loadBlocking() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

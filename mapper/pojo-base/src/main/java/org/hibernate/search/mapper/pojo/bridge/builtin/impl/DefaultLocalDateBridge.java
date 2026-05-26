@@ -6,26 +6,24 @@ package org.hibernate.search.mapper.pojo.bridge.builtin.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 
 public final class DefaultLocalDateBridge extends AbstractPassThroughDefaultBridge<LocalDate> {
 
-	public static final DefaultLocalDateBridge INSTANCE = new DefaultLocalDateBridge();
+    public static final DefaultLocalDateBridge INSTANCE = new DefaultLocalDateBridge();
 
-	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
-	private DefaultLocalDateBridge() {
-	}
+    private DefaultLocalDateBridge() {
+    }
 
-	@Override
-	protected String toString(LocalDate value) {
-		return FORMATTER.format( value );
-	}
+    @Override
+    protected String toString(LocalDate value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected LocalDate fromString(String value) {
-		return ParseUtils.parseLocalDate( value );
-	}
-
+    @Override
+    protected LocalDate fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

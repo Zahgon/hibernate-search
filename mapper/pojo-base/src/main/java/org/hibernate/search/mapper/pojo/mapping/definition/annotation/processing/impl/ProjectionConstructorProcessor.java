@@ -12,24 +12,19 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.ConstructorMappingStep;
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.TypeMappingStep;
 
-public class ProjectionConstructorProcessor
-		implements ConstructorMappingAnnotationProcessor<ProjectionConstructor>,
-		TypeMappingAnnotationProcessor<ProjectionConstructor> {
+public class ProjectionConstructorProcessor implements ConstructorMappingAnnotationProcessor<ProjectionConstructor>, TypeMappingAnnotationProcessor<ProjectionConstructor> {
 
-	@Override
-	public void process(ConstructorMappingStep mapping, ProjectionConstructor annotation,
-			ConstructorMappingAnnotationProcessorContext context) {
-		doProcess( mapping );
-	}
+    @Override
+    public void process(ConstructorMappingStep mapping, ProjectionConstructor annotation, ConstructorMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void process(TypeMappingStep mapping, ProjectionConstructor annotation,
-			TypeMappingAnnotationProcessorContext context) {
-		doProcess( mapping.mainConstructor() );
-	}
+    @Override
+    public void process(TypeMappingStep mapping, ProjectionConstructor annotation, TypeMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private void doProcess(ConstructorMappingStep constructor) {
-		constructor.projectionConstructor();
-	}
-
+    private void doProcess(ConstructorMappingStep constructor) {
+        constructor.projectionConstructor();
+    }
 }

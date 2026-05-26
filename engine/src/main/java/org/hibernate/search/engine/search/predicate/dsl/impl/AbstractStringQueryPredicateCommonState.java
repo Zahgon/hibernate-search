@@ -5,7 +5,6 @@
 package org.hibernate.search.engine.search.predicate.dsl.impl;
 
 import java.util.function.Consumer;
-
 import org.hibernate.search.engine.search.common.BooleanOperator;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.dsl.CommonQueryStringPredicateOptionsStep;
@@ -15,79 +14,67 @@ import org.hibernate.search.engine.search.predicate.dsl.spi.SearchPredicateDslCo
 import org.hibernate.search.engine.search.predicate.spi.CommonQueryStringPredicateBuilder;
 import org.hibernate.search.util.common.impl.Contracts;
 
-abstract class AbstractStringQueryPredicateCommonState<
-		T extends AbstractStringQueryPredicateCommonState<?, ?, ?>,
-		S extends CommonQueryStringPredicateOptionsStep<T>,
-		B extends CommonQueryStringPredicateBuilder>
-		extends AbstractPredicateFinalStep
-		implements CommonQueryStringPredicateOptionsStep<T> {
-	protected final B builder;
-	private final MinimumShouldMatchConditionStepImpl<T> minimumShouldMatchStep;
+abstract class AbstractStringQueryPredicateCommonState<T extends AbstractStringQueryPredicateCommonState<?, ?, ?>, S extends CommonQueryStringPredicateOptionsStep<T>, B extends CommonQueryStringPredicateBuilder> extends AbstractPredicateFinalStep implements CommonQueryStringPredicateOptionsStep<T> {
 
-	AbstractStringQueryPredicateCommonState(SearchPredicateDslContext<?> dslContext) {
-		super( dslContext );
-		this.builder = createBuilder( dslContext );
-		this.minimumShouldMatchStep = new MinimumShouldMatchConditionStepImpl<>( builder, thisAsT() );
-	}
+    protected final B builder;
 
-	protected abstract B createBuilder(SearchPredicateDslContext<?> dslContext);
+    private final MinimumShouldMatchConditionStepImpl<T> minimumShouldMatchStep;
 
-	@Override
-	protected SearchPredicate build() {
-		return builder.build();
-	}
+    AbstractStringQueryPredicateCommonState(SearchPredicateDslContext<?> dslContext) {
+        super(dslContext);
+        this.builder = createBuilder(dslContext);
+        this.minimumShouldMatchStep = new MinimumShouldMatchConditionStepImpl<>(builder, thisAsT());
+    }
 
-	CommonQueryStringPredicateBuilder.FieldState field(String fieldPath) {
-		return builder.field( fieldPath );
-	}
+    protected abstract B createBuilder(SearchPredicateDslContext<?> dslContext);
 
+    @Override
+    protected SearchPredicate build() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected T matching(String queryString) {
-		Contracts.assertNotNull( queryString, "queryString" );
-		builder.queryString( queryString );
-		return thisAsT();
-	}
+    CommonQueryStringPredicateBuilder.FieldState field(String fieldPath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T constantScore() {
-		builder.constantScore();
-		return thisAsT();
-	}
+    protected T matching(String queryString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T boost(float boost) {
-		builder.boost( boost );
-		return thisAsT();
-	}
+    @Override
+    public T constantScore() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T defaultOperator(BooleanOperator operator) {
-		builder.defaultOperator( operator );
-		return thisAsT();
-	}
+    @Override
+    public T boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T analyzer(String analyzerName) {
-		builder.analyzer( analyzerName );
-		return thisAsT();
-	}
+    @Override
+    public T defaultOperator(BooleanOperator operator) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T skipAnalysis() {
-		builder.skipAnalysis();
-		return thisAsT();
-	}
+    @Override
+    public T analyzer(String analyzerName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public MinimumShouldMatchConditionStep<? extends T> minimumShouldMatch() {
-		return minimumShouldMatchStep;
-	}
+    @Override
+    public T skipAnalysis() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public T minimumShouldMatch(Consumer<? super MinimumShouldMatchConditionStep<?>> constraintContributor) {
-		constraintContributor.accept( minimumShouldMatchStep );
-		return thisAsT();
-	}
+    @Override
+    public MinimumShouldMatchConditionStep<? extends T> minimumShouldMatch() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract T thisAsT();
+    @Override
+    public T minimumShouldMatch(Consumer<? super MinimumShouldMatchConditionStep<?>> constraintContributor) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    protected abstract T thisAsT();
 }

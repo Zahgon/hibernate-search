@@ -11,47 +11,45 @@ import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateScoreStep;
 import org.hibernate.search.engine.search.predicate.dsl.SearchPredicateFactory;
 import org.hibernate.search.query.dsl.Termination;
-
 import org.apache.lucene.search.Query;
 
-abstract class AbstractConnectedMultiFieldsQueryBuilder<T, F extends PredicateScoreStep<? extends F> & PredicateFinalStep>
-		implements Termination<T> {
+abstract class AbstractConnectedMultiFieldsQueryBuilder<T, F extends PredicateScoreStep<? extends F> & PredicateFinalStep> implements Termination<T> {
 
-	protected final QueryBuildingContext queryContext;
-	private final QueryCustomizer queryCustomizer;
-	private final FieldsContext fieldsContext;
+    protected final QueryBuildingContext queryContext;
 
-	public AbstractConnectedMultiFieldsQueryBuilder(QueryBuildingContext queryContext,
-			QueryCustomizer queryCustomizer, FieldsContext fieldsContext) {
-		this.queryContext = queryContext;
-		this.queryCustomizer = queryCustomizer;
-		this.fieldsContext = fieldsContext;
-	}
+    private final QueryCustomizer queryCustomizer;
 
-	@Override
-	public final Query createQuery() {
-		return LuceneMigrationUtils.toLuceneQuery( createPredicate() );
-	}
+    private final FieldsContext fieldsContext;
 
-	private SearchPredicate createPredicate() {
-		SearchPredicateFactory factory = queryContext.getScope().predicate();
-		if ( fieldsContext.size() == 1 ) {
-			F finalStep = createPredicate( factory, fieldsContext.getFirst() );
-			queryCustomizer.applyScoreOptions( finalStep );
-			SearchPredicate predicate = finalStep.toPredicate();
-			return queryCustomizer.applyFilter( factory, predicate );
-		}
-		else {
-			BooleanPredicateClausesStep<?, ?> boolStep = factory.bool().with( b -> {
-				for ( FieldContext fieldContext : fieldsContext ) {
-					b.should( createPredicate( factory, fieldContext ) );
-				}
-				queryCustomizer.applyFilter( factory, b );
-			} );
-			queryCustomizer.applyScoreOptions( boolStep );
-			return boolStep.toPredicate();
-		}
-	}
+    public AbstractConnectedMultiFieldsQueryBuilder(QueryBuildingContext queryContext, QueryCustomizer queryCustomizer, FieldsContext fieldsContext) {
+        this.queryContext = queryContext;
+        this.queryCustomizer = queryCustomizer;
+        this.fieldsContext = fieldsContext;
+    }
 
-	protected abstract F createPredicate(SearchPredicateFactory factory, FieldContext fieldContext);
+    @Override
+    public final Query createQuery() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private SearchPredicate createPredicate() {
+        SearchPredicateFactory factory = queryContext.getScope().predicate();
+        if (fieldsContext.size() == 1) {
+            F finalStep = createPredicate(factory, fieldsContext.getFirst());
+            queryCustomizer.applyScoreOptions(finalStep);
+            SearchPredicate predicate = finalStep.toPredicate();
+            return queryCustomizer.applyFilter(factory, predicate);
+        } else {
+            BooleanPredicateClausesStep<?, ?> boolStep = factory.bool().with(b -> {
+                for (FieldContext fieldContext : fieldsContext) {
+                    b.should(createPredicate(factory, fieldContext));
+                }
+                queryCustomizer.applyFilter(factory, b);
+            });
+            queryCustomizer.applyScoreOptions(boolStep);
+            return boolStep.toPredicate();
+        }
+    }
+
+    protected abstract F createPredicate(SearchPredicateFactory factory, FieldContext fieldContext);
 }

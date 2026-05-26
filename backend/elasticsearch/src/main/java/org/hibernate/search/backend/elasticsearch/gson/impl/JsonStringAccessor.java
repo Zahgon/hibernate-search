@@ -8,13 +8,12 @@ import com.google.gson.JsonElement;
 
 public class JsonStringAccessor extends AbstractTypingJsonAccessor<String> {
 
-	public JsonStringAccessor(JsonAccessor<JsonElement> parentAccessor) {
-		super( parentAccessor );
-	}
+    public JsonStringAccessor(JsonAccessor<JsonElement> parentAccessor) {
+        super(parentAccessor);
+    }
 
-	@Override
-	protected JsonElementType<String> getExpectedElementType() {
-		return JsonElementTypes.STRING;
-	}
-
+    @Override
+    protected JsonElementType<String> getExpectedElementType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

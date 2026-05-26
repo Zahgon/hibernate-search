@@ -12,27 +12,11 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.processing
 import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.MethodParameterMappingStep;
 import org.hibernate.search.mapper.pojo.search.definition.binding.builtin.FieldProjectionBinder;
 
+public final class FieldProjectionProcessor implements MethodParameterMappingAnnotationProcessor<FieldProjection> {
 
-public final class FieldProjectionProcessor
-		implements MethodParameterMappingAnnotationProcessor<FieldProjection> {
-	@SuppressWarnings({ "deprecation", "removal" })
-	@Override
-	public void process(MethodParameterMappingStep mapping, FieldProjection annotation,
-			MethodParameterMappingAnnotationProcessorContext context) {
-		ValueModel valueModel = annotation.valueModel();
-		if ( !org.hibernate.search.engine.search.common.ValueConvert.DEFAULT.equals( annotation.convert() ) ) {
-			if ( !ValueModel.DEFAULT.equals( valueModel ) ) {
-				throw MappingLog.INSTANCE.usingNonDefaultValueConvertAndValueModelNotAllowed(
-						valueModel.name(),
-						annotation.convert().name(),
-						context.eventContext()
-				);
-			}
-			valueModel = org.hibernate.search.engine.search.common.ValueConvert.toValueModel( annotation.convert() );
-		}
-
-		mapping.projection( FieldProjectionBinder.create( context.toNullIfDefault( annotation.path(), "" ) )
-				.valueModel( valueModel ) );
-	}
-
+    @SuppressWarnings({ "deprecation", "removal" })
+    @Override
+    public void process(MethodParameterMappingStep mapping, FieldProjection annotation, MethodParameterMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

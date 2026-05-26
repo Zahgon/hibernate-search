@@ -11,70 +11,47 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
-
 import org.hibernate.search.util.common.logging.impl.CommonMiscLog;
 
 public final class AnnotationHelper {
 
-	private final ValueHandleFactory handleFactory;
+    private final ValueHandleFactory handleFactory;
 
-	private final Map<Class<? extends Annotation>, ValueReadHandle<Annotation[]>> containedAnnotationsHandleCache =
-			new HashMap<>();
+    private final Map<Class<? extends Annotation>, ValueReadHandle<Annotation[]>> containedAnnotationsHandleCache = new HashMap<>();
 
-	public AnnotationHelper(ValueHandleFactory handleFactory) {
-		this.handleFactory = handleFactory;
-	}
+    public AnnotationHelper(ValueHandleFactory handleFactory) {
+        this.handleFactory = handleFactory;
+    }
 
-	public Stream<? extends Annotation> expandRepeatableContainingAnnotation(Annotation containingAnnotationCandidate) {
-		Class<? extends Annotation> containingAnnotationCandidateType = containingAnnotationCandidate.annotationType();
-		ValueReadHandle<Annotation[]> containedAnnotationsHandle = containedAnnotationsHandleCache.computeIfAbsent(
-				containingAnnotationCandidateType, this::createContainedAnnotationsHandle
-		);
-		if ( containedAnnotationsHandle != null ) {
-			try {
-				Annotation[] annotationArray = containedAnnotationsHandle.get( containingAnnotationCandidate );
-				return Arrays.stream( annotationArray );
-			}
-			catch (Throwable e) {
-				CommonMiscLog.INSTANCE.cannotAccessRepeateableContainingAnnotationValue(
-						containingAnnotationCandidateType, e
-				);
-			}
-		}
-		// Not a containing annotation
-		return Stream.of( containingAnnotationCandidate );
-	}
+    public Stream<? extends Annotation> expandRepeatableContainingAnnotation(Annotation containingAnnotationCandidate) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private ValueReadHandle<Annotation[]> createContainedAnnotationsHandle(
-			Class<? extends Annotation> containingAnnotationCandidateType) {
-		Method valueMethod;
-		try {
-			valueMethod = containingAnnotationCandidateType.getDeclaredMethod( "value" );
-		}
-		catch (NoSuchMethodException e) {
-			// Not a containing annotation
-			return null;
-		}
-		Class<?> valueMethodReturnType = valueMethod.getReturnType();
-		if ( valueMethodReturnType.isArray() ) {
-			Class<?> elementType = valueMethodReturnType.getComponentType();
-			if ( Annotation.class.isAssignableFrom( elementType ) ) {
-				Repeatable repeatable = elementType.getAnnotation( Repeatable.class );
-				if ( repeatable != null && containingAnnotationCandidateType.equals( repeatable.value() ) ) {
-					try {
-						@SuppressWarnings("unchecked") // Checked using reflection just above
-						ValueReadHandle<Annotation[]> result =
-								(ValueReadHandle<Annotation[]>) handleFactory.createForMethod( valueMethod );
-						return result;
-					}
-					catch (IllegalAccessException e) {
-						CommonMiscLog.INSTANCE.cannotAccessRepeateableContainingAnnotationValue(
-								containingAnnotationCandidateType, e
-						);
-					}
-				}
-			}
-		}
-		return null;
-	}
+    private ValueReadHandle<Annotation[]> createContainedAnnotationsHandle(Class<? extends Annotation> containingAnnotationCandidateType) {
+        Method valueMethod;
+        try {
+            valueMethod = containingAnnotationCandidateType.getDeclaredMethod("value");
+        } catch (NoSuchMethodException e) {
+            // Not a containing annotation
+            return null;
+        }
+        Class<?> valueMethodReturnType = valueMethod.getReturnType();
+        if (valueMethodReturnType.isArray()) {
+            Class<?> elementType = valueMethodReturnType.getComponentType();
+            if (Annotation.class.isAssignableFrom(elementType)) {
+                Repeatable repeatable = elementType.getAnnotation(Repeatable.class);
+                if (repeatable != null && containingAnnotationCandidateType.equals(repeatable.value())) {
+                    try {
+                        // Checked using reflection just above
+                        @SuppressWarnings("unchecked")
+                        ValueReadHandle<Annotation[]> result = (ValueReadHandle<Annotation[]>) handleFactory.createForMethod(valueMethod);
+                        return result;
+                    } catch (IllegalAccessException e) {
+                        CommonMiscLog.INSTANCE.cannotAccessRepeateableContainingAnnotationValue(containingAnnotationCandidateType, e);
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -8,7 +8,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.backend.lucene.cfg.LuceneIndexSettings;
 import org.hibernate.search.backend.lucene.document.model.impl.LuceneIndexModel;
 import org.hibernate.search.backend.lucene.index.spi.ShardingStrategy;
@@ -23,83 +22,56 @@ import org.hibernate.search.engine.environment.bean.BeanResolver;
 
 class ShardingStrategyInitializationContextImpl implements ShardingStrategyInitializationContext {
 
-	private static final ConfigurationProperty<BeanReference<? extends ShardingStrategy>> SHARDING_STRATEGY =
-			ConfigurationProperty.forKey( LuceneIndexSettings.ShardingRadicals.STRATEGY )
-					.asBeanReference( ShardingStrategy.class )
-					.withDefault( BeanReference.of(
-							ShardingStrategy.class, LuceneIndexSettings.Defaults.SHARDING_STRATEGY
-					) )
-					.build();
+    private static final ConfigurationProperty<BeanReference<? extends ShardingStrategy>> SHARDING_STRATEGY = ConfigurationProperty.forKey(LuceneIndexSettings.ShardingRadicals.STRATEGY).asBeanReference(ShardingStrategy.class).withDefault(BeanReference.of(ShardingStrategy.class, LuceneIndexSettings.Defaults.SHARDING_STRATEGY)).build();
 
-	private final IndexManagerBackendContext backendContext;
-	private final LuceneIndexModel model;
-	private final IndexManagerStartContext startContext;
-	private final ConfigurationPropertySource shardingPropertySource;
+    private final IndexManagerBackendContext backendContext;
 
-	private Set<String> shardIdentifiers = new LinkedHashSet<>();
+    private final LuceneIndexModel model;
 
-	ShardingStrategyInitializationContextImpl(IndexManagerBackendContext backendContext,
-			LuceneIndexModel model, IndexManagerStartContext startContext,
-			ConfigurationPropertySource indexPropertySource) {
-		this.backendContext = backendContext;
-		this.model = model;
-		this.startContext = startContext;
-		this.shardingPropertySource = indexPropertySource.withMask( "sharding" );
-	}
+    private final IndexManagerStartContext startContext;
 
-	@Override
-	public void shardIdentifiers(Set<String> shardIdentifiers) {
-		this.shardIdentifiers.clear();
-		this.shardIdentifiers.addAll( shardIdentifiers );
-	}
+    private final ConfigurationPropertySource shardingPropertySource;
 
-	@Override
-	public void disableSharding() {
-		this.shardIdentifiers = null;
-	}
+    private Set<String> shardIdentifiers = new LinkedHashSet<>();
 
-	@Override
-	public String indexName() {
-		return model.hibernateSearchName();
-	}
+    ShardingStrategyInitializationContextImpl(IndexManagerBackendContext backendContext, LuceneIndexModel model, IndexManagerStartContext startContext, ConfigurationPropertySource indexPropertySource) {
+        this.backendContext = backendContext;
+        this.model = model;
+        this.startContext = startContext;
+        this.shardingPropertySource = indexPropertySource.withMask("sharding");
+    }
 
-	@Override
-	public BeanResolver beanResolver() {
-		return startContext.beanResolver();
-	}
+    @Override
+    public void shardIdentifiers(Set<String> shardIdentifiers) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ConfigurationPropertySource configurationPropertySource() {
-		return shardingPropertySource;
-	}
+    @Override
+    public void disableSharding() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public BeanHolder<? extends ShardingStrategy> create(Map<String, Shard> shardCollector) {
-		BeanHolder<? extends ShardingStrategy> shardingStrategyHolder =
-				SHARDING_STRATEGY.getAndTransform( shardingPropertySource, beanResolver()::resolve );
+    @Override
+    public String indexName() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		shardingStrategyHolder.get().initialize( this );
+    @Override
+    public BeanResolver beanResolver() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( shardIdentifiers == null ) {
-			// Sharding is disabled => single shard
-			contributeShard( shardCollector, Optional.empty() );
-			return null;
-		}
+    @Override
+    public ConfigurationPropertySource configurationPropertySource() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		if ( shardIdentifiers.isEmpty() ) {
-			throw ConfigurationLog.INSTANCE.missingShardIdentifiersAfterShardingStrategyInitialization(
-					shardingStrategyHolder.get()
-			);
-		}
+    public BeanHolder<? extends ShardingStrategy> create(Map<String, Shard> shardCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		for ( String shardIdentifier : shardIdentifiers ) {
-			contributeShard( shardCollector, Optional.of( shardIdentifier ) );
-		}
-
-		return shardingStrategyHolder;
-	}
-
-	private void contributeShard(Map<String, Shard> shardCollector, Optional<String> shardId) {
-		Shard shard = new Shard( shardId, backendContext, model );
-		shardCollector.put( shardId.orElse( null ), shard );
-	}
+    private void contributeShard(Map<String, Shard> shardCollector, Optional<String> shardId) {
+        Shard shard = new Shard(shardId, backendContext, model);
+        shardCollector.put(shardId.orElse(null), shard);
+    }
 }

@@ -8,96 +8,67 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchResponse;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
 import org.hibernate.search.backend.elasticsearch.work.factory.impl.ElasticsearchWorkFactory;
-
 import com.google.gson.JsonObject;
 
 public class DeleteByQueryWork extends AbstractNonBulkableWork<Void> {
 
-	private final NonBulkableWork<?> refreshWork;
+    private final NonBulkableWork<?> refreshWork;
 
-	protected DeleteByQueryWork(Builder builder) {
-		super( builder );
-		this.refreshWork = builder.buildRefreshWork();
-	}
+    protected DeleteByQueryWork(Builder builder) {
+        super(builder);
+        this.refreshWork = builder.buildRefreshWork();
+    }
 
-	@Override
-	protected CompletableFuture<?> beforeExecute(ElasticsearchWorkExecutionContext executionContext,
-			ElasticsearchRequest request) {
-		if ( refreshWork != null ) {
-			// Refresh the index in order to minimize the risk of version conflict.
-			return refreshWork.execute( executionContext );
-		}
-		else {
-			// Refresh is not supported, just hope for the best.
-			return CompletableFuture.completedFuture( null );
-		}
-	}
+    @Override
+    protected CompletableFuture<?> beforeExecute(ElasticsearchWorkExecutionContext executionContext, ElasticsearchRequest request) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
-		return null;
-	}
+    @Override
+    protected Void generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder
-			extends AbstractBuilder<Builder> {
-		private final URLEncodedString indexName;
-		private final JsonObject payload;
-		private final Set<URLEncodedString> typeNames = new HashSet<>();
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		private Collection<String> routingKeys;
+        private final URLEncodedString indexName;
 
-		private final RefreshWork.Builder refreshWorkBuilder;
+        private final JsonObject payload;
 
-		public Builder(URLEncodedString indexName, JsonObject payload, ElasticsearchWorkFactory workFactory) {
-			super( ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE );
-			this.indexName = indexName;
-			this.payload = payload;
-			this.refreshWorkBuilder = workFactory.isRefreshSupported() ? workFactory.refresh().index( indexName ) : null;
-		}
+        private final Set<URLEncodedString> typeNames = new HashSet<>();
 
-		public Builder routingKeys(Collection<String> routingKeys) {
-			this.routingKeys = routingKeys;
-			return this;
-		}
+        private Collection<String> routingKeys;
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.post()
-							.pathComponent( indexName )
-							/*
-							 * Ignore conflicts: if we wrote to a document concurrently,
-							 * we just want to keep it as is.
-							 */
-							.param( "conflicts", "proceed" );
+        private final RefreshWork.Builder refreshWorkBuilder;
 
-			if ( !typeNames.isEmpty() ) {
-				builder.multiValuedPathComponent( typeNames );
-			}
+        public Builder(URLEncodedString indexName, JsonObject payload, ElasticsearchWorkFactory workFactory) {
+            super(ElasticsearchRequestSuccessAssessor.DEFAULT_INSTANCE);
+            this.indexName = indexName;
+            this.payload = payload;
+            this.refreshWorkBuilder = workFactory.isRefreshSupported() ? workFactory.refresh().index(indexName) : null;
+        }
 
-			if ( routingKeys != null && !routingKeys.isEmpty() ) {
-				builder.multiValuedParam( "routing", routingKeys );
-			}
+        public Builder routingKeys(Collection<String> routingKeys) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			builder.pathComponent( Paths._DELETE_BY_QUERY )
-					.body( payload );
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return builder.build();
-		}
+        protected NonBulkableWork<?> buildRefreshWork() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected NonBulkableWork<?> buildRefreshWork() {
-			return refreshWorkBuilder != null ? refreshWorkBuilder.build() : null;
-		}
-
-		@Override
-		public DeleteByQueryWork build() {
-			return new DeleteByQueryWork( this );
-		}
-	}
+        @Override
+        public DeleteByQueryWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.backend.elasticsearch.search.predicate.impl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.AbstractElasticsearchCompositeNodeSearchQueryElementFactory;
 import org.hibernate.search.backend.elasticsearch.search.common.impl.ElasticsearchSearchIndexCompositeNodeContext;
@@ -22,158 +21,141 @@ import org.hibernate.search.engine.search.predicate.dsl.TypedSearchPredicateFact
 import org.hibernate.search.engine.search.predicate.spi.NamedPredicateBuilder;
 import org.hibernate.search.engine.search.predicate.spi.NamedValuesBasedPredicateDefinitionContext;
 import org.hibernate.search.engine.search.predicate.spi.NamedValuesBasedTypedPredicateDefinitionContext;
-
 import com.google.gson.JsonObject;
 
 public class ElasticsearchNamedPredicate extends AbstractElasticsearchSingleFieldPredicate {
 
-	private final ElasticsearchSearchPredicate providedPredicate;
+    private final ElasticsearchSearchPredicate providedPredicate;
 
-	private ElasticsearchNamedPredicate(Builder builder, ElasticsearchSearchPredicate providedPredicate) {
-		super( builder );
-		this.providedPredicate = providedPredicate;
-	}
+    private ElasticsearchNamedPredicate(Builder builder, ElasticsearchSearchPredicate providedPredicate) {
+        super(builder);
+        this.providedPredicate = providedPredicate;
+    }
 
-	@Override
-	public void checkNestableWithin(PredicateNestingContext context) {
-		providedPredicate.checkNestableWithin( context );
-		super.checkNestableWithin( context );
-	}
+    @Override
+    public void checkNestableWithin(PredicateNestingContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected JsonObject doToJsonQuery(PredicateRequestContext context,
-			JsonObject outerObject, JsonObject innerObject) {
-		return providedPredicate.toJsonQuery( context );
-	}
+    @Override
+    protected JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Factory
-			extends AbstractElasticsearchCompositeNodeSearchQueryElementFactory<NamedPredicateBuilder> {
-		private final PredicateDefinition definition;
-		private final String predicateName;
+    public static class Factory extends AbstractElasticsearchCompositeNodeSearchQueryElementFactory<NamedPredicateBuilder> {
 
-		public Factory(PredicateDefinition definition, String predicateName) {
-			this.definition = definition;
-			this.predicateName = predicateName;
-		}
+        private final PredicateDefinition definition;
 
-		@Override
-		public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
-			super.checkCompatibleWith( other );
-			Factory castedOther = (Factory) other;
-			if ( !definition.equals( castedOther.definition ) ) {
-				throw QueryLog.INSTANCE.differentPredicateDefinitionForQueryElement( definition, castedOther.definition );
-			}
-		}
+        private final String predicateName;
 
-		@Override
-		public NamedPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexCompositeNodeContext node) {
-			return new BasicBuilder( definition, predicateName, scope, node );
-		}
-	}
+        public Factory(PredicateDefinition definition, String predicateName) {
+            this.definition = definition;
+            this.predicateName = predicateName;
+        }
 
-	public static class TypedFactory<SR>
-			extends AbstractElasticsearchCompositeNodeSearchQueryElementFactory<NamedPredicateBuilder> {
-		private final TypedPredicateDefinition<SR> definition;
-		private final String predicateName;
+        @Override
+        public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public TypedFactory(TypedPredicateDefinition<SR> definition, String predicateName) {
-			this.definition = definition;
-			this.predicateName = predicateName;
-		}
+        @Override
+        public NamedPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexCompositeNodeContext node) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
-			super.checkCompatibleWith( other );
-			TypedFactory<?> castedOther = (TypedFactory<?>) other;
-			if ( !definition.equals( castedOther.definition ) ) {
-				throw QueryLog.INSTANCE.differentPredicateDefinitionForQueryElement( definition, castedOther.definition );
-			}
-		}
+    public static class TypedFactory<SR> extends AbstractElasticsearchCompositeNodeSearchQueryElementFactory<NamedPredicateBuilder> {
 
-		@Override
-		public NamedPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexCompositeNodeContext node) {
-			return new TypedBuilder<>( definition, predicateName, scope, node );
-		}
-	}
+        private final TypedPredicateDefinition<SR> definition;
 
-	private abstract static class Builder extends AbstractBuilder implements NamedPredicateBuilder {
-		protected final String predicateName;
-		protected final ElasticsearchSearchIndexCompositeNodeContext field;
-		protected final Map<String, Object> params = new LinkedHashMap<>();
+        private final String predicateName;
 
-		Builder(String predicateName,
-				ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexCompositeNodeContext node) {
-			super( scope, node );
-			this.predicateName = predicateName;
-			this.field = node;
-		}
+        public TypedFactory(TypedPredicateDefinition<SR> definition, String predicateName) {
+            this.definition = definition;
+            this.predicateName = predicateName;
+        }
 
-		@Override
-		public final void param(String name, Object value) {
-			params.put( name, value );
-		}
+        @Override
+        public void checkCompatibleWith(SearchQueryElementFactory<?, ?, ?> other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected abstract ElasticsearchSearchPredicate providedPredicate();
+        @Override
+        public NamedPredicateBuilder create(ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexCompositeNodeContext node) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public final SearchPredicate build() {
-			return new ElasticsearchNamedPredicate( this, providedPredicate() );
-		}
+    private abstract static class Builder extends AbstractBuilder implements NamedPredicateBuilder {
 
-	}
+        protected final String predicateName;
 
-	private static class BasicBuilder extends Builder {
-		private final PredicateDefinition definition;
-		private SearchPredicateFactory factory;
+        protected final ElasticsearchSearchIndexCompositeNodeContext field;
 
-		BasicBuilder(PredicateDefinition definition, String predicateName,
-				ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexCompositeNodeContext node) {
-			super( predicateName, scope, node );
-			this.definition = definition;
-		}
+        protected final Map<String, Object> params = new LinkedHashMap<>();
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public void factory(ExtendedSearchPredicateFactory<?, ?> factory) {
-			this.factory = factory.withScopeRoot( NonStaticMetamodelScope.class );
-		}
+        Builder(String predicateName, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexCompositeNodeContext node) {
+            super(scope, node);
+            this.predicateName = predicateName;
+            this.field = node;
+        }
 
-		@Override
-		protected ElasticsearchSearchPredicate providedPredicate() {
-			NamedValuesBasedPredicateDefinitionContext ctx =
-					new NamedValuesBasedPredicateDefinitionContext( factory, params,
-							name -> QueryLog.INSTANCE.paramNotDefined( name, predicateName, field.eventContext() ) );
+        @Override
+        public final void param(String name, Object value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return ElasticsearchSearchPredicate.from( scope, definition.create( ctx ) );
-		}
-	}
+        protected abstract ElasticsearchSearchPredicate providedPredicate();
 
-	private static class TypedBuilder<SR> extends Builder {
-		private final TypedPredicateDefinition<SR> definition;
-		private TypedSearchPredicateFactory<SR> factory;
+        @Override
+        public final SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		TypedBuilder(TypedPredicateDefinition<SR> definition, String predicateName, ElasticsearchSearchIndexScope<?> scope,
-				ElasticsearchSearchIndexCompositeNodeContext node) {
-			super( predicateName, scope, node );
-			this.definition = definition;
-		}
+    private static class BasicBuilder extends Builder {
 
-		@SuppressWarnings("unchecked")
-		@Override
-		public void factory(ExtendedSearchPredicateFactory<?, ?> factory) {
-			this.factory = factory.withScopeRoot( definition.scopeRootType() );
-		}
+        private final PredicateDefinition definition;
 
-		@Override
-		protected ElasticsearchSearchPredicate providedPredicate() {
-			var ctx = new NamedValuesBasedTypedPredicateDefinitionContext<>( factory, params,
-					name -> QueryLog.INSTANCE.paramNotDefined( name, predicateName, field.eventContext() ) );
+        private SearchPredicateFactory factory;
 
-			return ElasticsearchSearchPredicate.from( scope, definition.create( ctx ) );
-		}
-	}
+        BasicBuilder(PredicateDefinition definition, String predicateName, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexCompositeNodeContext node) {
+            super(predicateName, scope, node);
+            this.definition = definition;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void factory(ExtendedSearchPredicateFactory<?, ?> factory) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected ElasticsearchSearchPredicate providedPredicate() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
+
+    private static class TypedBuilder<SR> extends Builder {
+
+        private final TypedPredicateDefinition<SR> definition;
+
+        private TypedSearchPredicateFactory<SR> factory;
+
+        TypedBuilder(TypedPredicateDefinition<SR> definition, String predicateName, ElasticsearchSearchIndexScope<?> scope, ElasticsearchSearchIndexCompositeNodeContext node) {
+            super(predicateName, scope, node);
+            this.definition = definition;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public void factory(ExtendedSearchPredicateFactory<?, ?> factory) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        protected ElasticsearchSearchPredicate providedPredicate() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

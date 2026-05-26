@@ -7,7 +7,6 @@ package org.hibernate.search.engine.search.projection.spi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.hibernate.search.engine.search.projection.ProjectionCollector;
 
 /**
@@ -18,59 +17,52 @@ import org.hibernate.search.engine.search.projection.ProjectionCollector;
  * @param <V> The type of values to accumulate obtained by transforming extracted values ({@code E}).
  * @param <R> The type of the final result containing values of type {@code V}.
  */
-abstract class ListBasedProjectionCollector<E, V, R>
-		implements ProjectionCollector<E, V, List<Object>, R> {
+abstract class ListBasedProjectionCollector<E, V, R> implements ProjectionCollector<E, V, List<Object>, R> {
 
-	ListBasedProjectionCollector() {
-	}
+    ListBasedProjectionCollector() {
+    }
 
-	@Override
-	public final String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public final String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final List<Object> createInitial() {
-		return new ArrayList<>();
-	}
+    @Override
+    public final List<Object> createInitial() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final List<Object> accumulate(List<Object> accumulated, E value) {
-		accumulated.add( value );
-		return accumulated;
-	}
+    @Override
+    public final List<Object> accumulate(List<Object> accumulated, E value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final List<Object> accumulateAll(List<Object> accumulated, Collection<E> values) {
-		accumulated.addAll( values );
-		return accumulated;
-	}
+    @Override
+    public final List<Object> accumulateAll(List<Object> accumulated, Collection<E> values) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final int size(List<Object> accumulated) {
-		return accumulated.size();
-	}
+    @Override
+    public final int size(List<Object> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public final E get(List<Object> accumulated, int index) {
-		return (E) accumulated.get( index );
-	}
+    @Override
+    @SuppressWarnings("unchecked")
+    public final E get(List<Object> accumulated, int index) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public final List<Object> transform(List<Object> accumulated, int index, V transformed) {
-		accumulated.set( index, transformed );
-		return accumulated;
-	}
+    @Override
+    public final List<Object> transform(List<Object> accumulated, int index, V transformed) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public final R finish(List<Object> accumulated) {
-		// Hack to avoid instantiating another list: we convert a List<Object> into a List<U> just by replacing its elements.
-		// It works *only* because we know the actual underlying type of the list,
-		// and we know it can work just as well with U as with Object.
-		return doFinish( (List<V>) (List) accumulated );
-	}
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public final R finish(List<Object> accumulated) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract R doFinish(List<V> accumulated);
+    protected abstract R doFinish(List<V> accumulated);
 }

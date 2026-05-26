@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.model.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.AbstractPojoIndexingDependencyCollectorDirectValueNode;
 import org.hibernate.search.mapper.pojo.automaticindexing.building.impl.PojoIndexingDependencyCollectorPropertyNode;
 import org.hibernate.search.mapper.pojo.model.PojoElementAccessor;
@@ -22,46 +21,39 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoBootstrapIntrospector;
  */
 public class PojoModelPropertyRootElement<P> extends AbstractPojoModelCompositeElement<P> implements PojoModelProperty {
 
-	private final BoundPojoModelPathValueNode<?, P, P> modelPath;
+    private final BoundPojoModelPathValueNode<?, P, P> modelPath;
 
-	public PojoModelPropertyRootElement(BoundPojoModelPathPropertyNode<?, P> modelPath,
-			PojoBootstrapIntrospector introspector,
-			PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
-		super( introspector, typeAdditionalMetadataProvider );
-		this.modelPath = modelPath.valueWithoutExtractors();
-	}
+    public PojoModelPropertyRootElement(BoundPojoModelPathPropertyNode<?, P> modelPath, PojoBootstrapIntrospector introspector, PojoTypeAdditionalMetadataProvider typeAdditionalMetadataProvider) {
+        super(introspector, typeAdditionalMetadataProvider);
+        this.modelPath = modelPath.valueWithoutExtractors();
+    }
 
-	@Override
-	public String toString() {
-		return modelPath.getParent().getPropertyModel().toString();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <M> Collection<M> markers(Class<M> markerType) {
-		return Collections.emptyList();
-	}
+    @Override
+    public <M> Collection<M> markers(Class<M> markerType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String name() {
-		return modelPath.getParent().getPropertyModel().name();
-	}
+    @Override
+    public String name() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public void contributeDependencies(PojoIndexingDependencyCollectorPropertyNode<?, P> dependencyCollector) {
-		if ( hasAccessor() ) {
-			AbstractPojoIndexingDependencyCollectorDirectValueNode<P, P> collectorValueNode =
-					dependencyCollector.value( modelPath.getBoundExtractorPath() );
-			collectorValueNode.collectDependency();
-			contributePropertyDependencies( collectorValueNode.type() );
-		}
-	}
+    public void contributeDependencies(PojoIndexingDependencyCollectorPropertyNode<?, P> dependencyCollector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	PojoElementAccessor<P> doCreateAccessor() {
-		return new PojoRootElementAccessor<>();
-	}
+    @Override
+    PojoElementAccessor<P> doCreateAccessor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	BoundPojoModelPathTypeNode<P> getModelPathTypeNode() {
-		return modelPath.type();
-	}
+    @Override
+    BoundPojoModelPathTypeNode<P> getModelPathTypeNode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

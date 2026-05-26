@@ -5,61 +5,38 @@
 package org.hibernate.search.backend.lucene.analysis.impl;
 
 import java.io.IOException;
-
 import org.hibernate.search.backend.lucene.logging.impl.AnalysisLog;
-
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 final class HibernateSearchNormalizerCheckingFilter extends TokenFilter {
 
-	private static final char TOKEN_SEPARATOR = ' ';
+    private static final char TOKEN_SEPARATOR = ' ';
 
-	private final String normalizerName;
+    private final String normalizerName;
 
-	private final CharTermAttribute termAtt = addAttribute( CharTermAttribute.class );
+    private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
 
-	private final StringBuilder concatenatedTokenBuilder = new StringBuilder();
+    private final StringBuilder concatenatedTokenBuilder = new StringBuilder();
 
-	HibernateSearchNormalizerCheckingFilter(TokenStream input, String normalizerName) {
-		super( input );
-		this.normalizerName = normalizerName;
-	}
+    HibernateSearchNormalizerCheckingFilter(TokenStream input, String normalizerName) {
+        super(input);
+        this.normalizerName = normalizerName;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		return obj != null
-				&& getClass().equals( obj.getClass() )
-				&& normalizerName.equals( ( (HibernateSearchNormalizerCheckingFilter) obj ).normalizerName )
-				&& super.equals( obj );
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode() * 31 + normalizerName.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean incrementToken() throws IOException {
-		int tokenCount = 0;
-
-		concatenatedTokenBuilder.setLength( 0 );
-
-		while ( input.incrementToken() ) {
-			++tokenCount;
-			if ( tokenCount > 1 ) {
-				concatenatedTokenBuilder.append( TOKEN_SEPARATOR );
-			}
-			concatenatedTokenBuilder.append( termAtt );
-		}
-
-		if ( tokenCount > 1 ) {
-			termAtt.setEmpty().append( concatenatedTokenBuilder );
-			AnalysisLog.INSTANCE.normalizerProducedMultipleTokens( normalizerName, tokenCount );
-		}
-
-		return tokenCount > 0;
-	}
-
+    @Override
+    public boolean incrementToken() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

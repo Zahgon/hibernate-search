@@ -10,23 +10,12 @@ import org.hibernate.search.backend.elasticsearch.client.common.spi.Elasticsearc
 import org.hibernate.search.engine.environment.bean.BeanHolder;
 import org.hibernate.search.engine.environment.bean.spi.BeanConfigurationContext;
 import org.hibernate.search.engine.environment.bean.spi.BeanConfigurer;
-
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 
 public class ElasticsearchAwsBeanConfigurer implements BeanConfigurer {
-	@Override
-	public void configure(BeanConfigurationContext context) {
-		context.define(
-				ElasticsearchRequestInterceptorProvider.class,
-				beanResolver -> BeanHolder.of( new ElasticsearchAwsSigningInterceptorProvider() )
-		);
-		context.define(
-				ElasticsearchAwsCredentialsProvider.class, ElasticsearchAwsCredentialsTypeNames.DEFAULT,
-				beanResolver -> BeanHolder.of( ignored -> DefaultCredentialsProvider.builder().build() )
-		);
-		context.define(
-				ElasticsearchAwsCredentialsProvider.class, ElasticsearchAwsCredentialsTypeNames.STATIC,
-				beanResolver -> BeanHolder.of( new ElasticsearchAwsStaticCredentialsProvider() )
-		);
-	}
+
+    @Override
+    public void configure(BeanConfigurationContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

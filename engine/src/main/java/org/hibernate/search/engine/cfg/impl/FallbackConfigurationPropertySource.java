@@ -5,46 +5,31 @@
 package org.hibernate.search.engine.cfg.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.cfg.ConfigurationPropertySource;
 
 public class FallbackConfigurationPropertySource implements ConfigurationPropertySource {
-	private final ConfigurationPropertySource main;
-	private final ConfigurationPropertySource fallback;
 
-	public FallbackConfigurationPropertySource(ConfigurationPropertySource main, ConfigurationPropertySource fallback) {
-		this.main = main;
-		this.fallback = fallback;
-	}
+    private final ConfigurationPropertySource main;
 
-	@Override
-	public Optional<?> get(String key) {
-		Optional<?> value = main.get( key );
-		if ( !value.isPresent() ) {
-			return fallback.get( key );
-		}
-		else {
-			return value;
-		}
-	}
+    private final ConfigurationPropertySource fallback;
 
-	@Override
-	public Optional<String> resolve(String key) {
-		if ( !main.get( key ).isPresent() && fallback.get( key ).isPresent() ) {
-			return fallback.resolve( key );
-		}
-		else {
-			return main.resolve( key );
-		}
-	}
+    public FallbackConfigurationPropertySource(ConfigurationPropertySource main, ConfigurationPropertySource fallback) {
+        this.main = main;
+        this.fallback = fallback;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder( getClass().getSimpleName() )
-				.append( "[" )
-				.append( "main=" ).append( main )
-				.append( ", fallback=" ).append( fallback )
-				.append( "]" );
-		return sb.toString();
-	}
+    @Override
+    public Optional<?> get(String key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<String> resolve(String key) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

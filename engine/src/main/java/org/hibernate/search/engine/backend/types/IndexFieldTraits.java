@@ -20,99 +20,118 @@ package org.hibernate.search.engine.backend.types;
  */
 public final class IndexFieldTraits {
 
-	private IndexFieldTraits() {
-	}
+    private IndexFieldTraits() {
+    }
 
-	/**
-	 * Constants for the names of predicate-related traits that can be exposed by index fields.
-	 *
-	 * @see IndexFieldTraits
-	 */
-	public static class Predicates {
+    /**
+     * Constants for the names of predicate-related traits that can be exposed by index fields.
+     *
+     * @see IndexFieldTraits
+     */
+    public static class Predicates {
 
-		private Predicates() {
-		}
+        private Predicates() {
+        }
 
-		public static String named(String name) {
-			return "predicate:named:" + name;
-		}
+        public static String named(String name) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public static final String EXISTS = "predicate:exists";
-		public static final String KNN = "predicate:knn";
-		public static final String MATCH = "predicate:match";
-		public static final String NESTED = "predicate:nested";
-		public static final String PHRASE = "predicate:phrase";
-		public static final String PREFIX = "predicate:prefix";
-		public static final String RANGE = "predicate:range";
-		public static final String QUERY_STRING = "predicate:query-string";
-		public static final String REGEXP = "predicate:regexp";
-		public static final String SIMPLE_QUERY_STRING = "predicate:simple-query-string";
-		public static final String SPATIAL_WITHIN_BOUNDING_BOX = "predicate:spatial:within-bounding-box";
-		public static final String SPATIAL_WITHIN_CIRCLE = "predicate:spatial:within-circle";
-		public static final String SPATIAL_WITHIN_POLYGON = "predicate:spatial:within-polygon";
-		public static final String TERMS = "predicate:terms";
-		public static final String WILDCARD = "predicate:wildcard";
+        public static final String EXISTS = "predicate:exists";
 
-	}
+        public static final String KNN = "predicate:knn";
 
-	/**
-	 * Constants for the names of sort-related traits that can be exposed by index fields.
-	 *
-	 * @see IndexFieldTraits
-	 */
-	public static class Sorts {
+        public static final String MATCH = "predicate:match";
 
-		private Sorts() {
-		}
+        public static final String NESTED = "predicate:nested";
 
-		public static final String DISTANCE = "sort:distance";
-		public static final String FIELD = "sort:field";
+        public static final String PHRASE = "predicate:phrase";
 
-	}
+        public static final String PREFIX = "predicate:prefix";
 
-	/**
-	 * Constants for the names of projection-related traits that can be exposed by index fields.
-	 *
-	 * @see IndexFieldTraits
-	 */
-	public static class Projections {
+        public static final String RANGE = "predicate:range";
 
-		private Projections() {
-		}
+        public static final String QUERY_STRING = "predicate:query-string";
 
+        public static final String REGEXP = "predicate:regexp";
 
-		public static final String DISTANCE = "projection:distance";
-		public static final String FIELD = "projection:field";
-		public static final String HIGHLIGHT = "projection:highlight";
-		public static final String OBJECT = "projection:object";
+        public static final String SIMPLE_QUERY_STRING = "predicate:simple-query-string";
 
-	}
+        public static final String SPATIAL_WITHIN_BOUNDING_BOX = "predicate:spatial:within-bounding-box";
 
-	/**
-	 * Constants for the names of aggregation-related traits that can be exposed by index fields.
-	 *
-	 * @see IndexFieldTraits
-	 */
-	public static class Aggregations {
+        public static final String SPATIAL_WITHIN_CIRCLE = "predicate:spatial:within-circle";
 
-		private Aggregations() {
-		}
+        public static final String SPATIAL_WITHIN_POLYGON = "predicate:spatial:within-polygon";
 
-		public static final String RANGE = "aggregation:range";
-		public static final String TERMS = "aggregation:terms";
-		public static final String SUM = "aggregation:sum";
-		public static final String MIN = "aggregation:min";
-		public static final String MAX = "aggregation:max";
-		public static final String COUNT = "aggregation:count";
-		public static final String COUNT_DOCUMENTS = "aggregation:countDocuments";
-		/**
-		 * @deprecated Use {@link #COUNT} instead.
-		 */
-		@Deprecated(since = "8.1", forRemoval = true)
-		public static final String COUNT_DISTINCT = "aggregation:countDistinct";
-		public static final String AVG = "aggregation:avg";
+        public static final String TERMS = "predicate:terms";
 
-	}
+        public static final String WILDCARD = "predicate:wildcard";
+    }
 
+    /**
+     * Constants for the names of sort-related traits that can be exposed by index fields.
+     *
+     * @see IndexFieldTraits
+     */
+    public static class Sorts {
 
+        private Sorts() {
+        }
+
+        public static final String DISTANCE = "sort:distance";
+
+        public static final String FIELD = "sort:field";
+    }
+
+    /**
+     * Constants for the names of projection-related traits that can be exposed by index fields.
+     *
+     * @see IndexFieldTraits
+     */
+    public static class Projections {
+
+        private Projections() {
+        }
+
+        public static final String DISTANCE = "projection:distance";
+
+        public static final String FIELD = "projection:field";
+
+        public static final String HIGHLIGHT = "projection:highlight";
+
+        public static final String OBJECT = "projection:object";
+    }
+
+    /**
+     * Constants for the names of aggregation-related traits that can be exposed by index fields.
+     *
+     * @see IndexFieldTraits
+     */
+    public static class Aggregations {
+
+        private Aggregations() {
+        }
+
+        public static final String RANGE = "aggregation:range";
+
+        public static final String TERMS = "aggregation:terms";
+
+        public static final String SUM = "aggregation:sum";
+
+        public static final String MIN = "aggregation:min";
+
+        public static final String MAX = "aggregation:max";
+
+        public static final String COUNT = "aggregation:count";
+
+        public static final String COUNT_DOCUMENTS = "aggregation:countDocuments";
+
+        /**
+         * @deprecated Use {@link #COUNT} instead.
+         */
+        @Deprecated(since = "8.1", forRemoval = true)
+        public static final String COUNT_DISTINCT = "aggregation:countDistinct";
+
+        public static final String AVG = "aggregation:avg";
+    }
 }

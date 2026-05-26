@@ -5,10 +5,8 @@
 package org.hibernate.search.backend.lucene.lowlevel.reader.impl;
 
 import java.io.IOException;
-
 import org.hibernate.search.backend.lucene.lowlevel.writer.impl.IndexWriterProvider;
 import org.hibernate.search.engine.common.timing.spi.TimingSource;
-
 import org.apache.lucene.index.DirectoryReader;
 
 /**
@@ -25,120 +23,94 @@ import org.apache.lucene.index.DirectoryReader;
  */
 public class NearRealTimeIndexReaderProvider implements IndexReaderProvider {
 
-	private final IndexWriterProvider indexWriterProvider;
-	private final TimingSource timingSource;
-	private final int refreshInterval;
+    private final IndexWriterProvider indexWriterProvider;
 
-	/**
-	 * Current open IndexReader, or null when closed.
-	 */
-	private volatile IndexReaderEntry currentReaderEntry = null;
+    private final TimingSource timingSource;
 
-	public NearRealTimeIndexReaderProvider(IndexWriterProvider indexWriterProvider,
-			TimingSource timingSource, int refreshInterval) {
-		this.indexWriterProvider = indexWriterProvider;
-		this.timingSource = timingSource;
-		this.refreshInterval = refreshInterval;
-	}
+    private final int refreshInterval;
 
-	@Override
-	public void clear() throws IOException {
-		if ( currentReaderEntry == null ) {
-			return;
-		}
+    /**
+     * Current open IndexReader, or null when closed.
+     */
+    private volatile IndexReaderEntry currentReaderEntry = null;
 
-		setCurrentReaderEntry( null );
-	}
+    public NearRealTimeIndexReaderProvider(IndexWriterProvider indexWriterProvider, TimingSource timingSource, int refreshInterval) {
+        this.indexWriterProvider = indexWriterProvider;
+        this.timingSource = timingSource;
+        this.refreshInterval = refreshInterval;
+    }
 
-	@Override
-	public DirectoryReader getOrCreate() throws IOException {
-		IndexReaderEntry entry = currentReaderEntry;
+    @Override
+    public void clear() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		// Optimistic locking and checks to avoid synchronization
-		if ( entry != null && entry.reader.tryIncRef() ) {
-			// Do this *after* tryIncRef,
-			// otherwise the reader could get closed between the call to isFresh and the return
-			if ( entry.isFresh() ) {
-				return entry.reader;
-			}
-			else {
-				entry.reader.decRef();
-			}
-		}
+    @Override
+    public DirectoryReader getOrCreate() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		return getFreshIndexReader().reader;
-	}
+    @Override
+    public synchronized DirectoryReader getCurrentForTests() throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public synchronized DirectoryReader getCurrentForTests() throws IOException {
-		return currentReaderEntry == null ? null : currentReaderEntry.reader;
-	}
+    private synchronized IndexReaderEntry getFreshIndexReader() throws IOException {
+        IndexReaderEntry oldEntry = currentReaderEntry;
+        IndexReaderEntry freshEntry;
+        if (oldEntry == null) {
+            DirectoryReader newReader = indexWriterProvider.getOrCreate().openReader();
+            freshEntry = new IndexReaderEntry(newReader, timingSource, refreshInterval);
+        } else {
+            DirectoryReader newReaderOrNull = indexWriterProvider.getOrCreate().openReaderIfChanged(oldEntry.reader);
+            if (newReaderOrNull == null) {
+                // No change, keep the old reader
+                freshEntry = oldEntry;
+            } else {
+                freshEntry = new IndexReaderEntry(newReaderOrNull, timingSource, refreshInterval);
+            }
+        }
+        if (oldEntry != freshEntry) {
+            setCurrentReaderEntry(freshEntry);
+        }
+        // At this point the reference count is at least one, for the holder.
+        // Let's also increment the reference for the caller.
+        freshEntry.reader.incRef();
+        return freshEntry;
+    }
 
-	private synchronized IndexReaderEntry getFreshIndexReader() throws IOException {
-		IndexReaderEntry oldEntry = currentReaderEntry;
-		IndexReaderEntry freshEntry;
-		if ( oldEntry == null ) {
-			DirectoryReader newReader = indexWriterProvider.getOrCreate().openReader();
-			freshEntry = new IndexReaderEntry( newReader, timingSource, refreshInterval );
-		}
-		else {
-			DirectoryReader newReaderOrNull = indexWriterProvider.getOrCreate().openReaderIfChanged( oldEntry.reader );
-			if ( newReaderOrNull == null ) {
-				// No change, keep the old reader
-				freshEntry = oldEntry;
-			}
-			else {
-				freshEntry = new IndexReaderEntry( newReaderOrNull, timingSource, refreshInterval );
-			}
-		}
+    private synchronized void setCurrentReaderEntry(IndexReaderEntry newEntry) throws IOException {
+        IndexReaderEntry oldEntry = currentReaderEntry;
+        currentReaderEntry = newEntry;
+        if (oldEntry != null) {
+            // Make sure to close the old reader as soon as no user thread is using it.
+            oldEntry.reader.decRef();
+        }
+    }
 
-		if ( oldEntry != freshEntry ) {
-			setCurrentReaderEntry( freshEntry );
-		}
+    private static class IndexReaderEntry {
 
-		// At this point the reference count is at least one, for the holder.
-		// Let's also increment the reference for the caller.
-		freshEntry.reader.incRef();
+        private final DirectoryReader reader;
 
-		return freshEntry;
-	}
+        private final TimingSource timingSource;
 
-	private synchronized void setCurrentReaderEntry(IndexReaderEntry newEntry) throws IOException {
-		IndexReaderEntry oldEntry = currentReaderEntry;
-		currentReaderEntry = newEntry;
-		if ( oldEntry != null ) {
-			// Make sure to close the old reader as soon as no user thread is using it.
-			oldEntry.reader.decRef();
-		}
-	}
+        private final long expiration;
 
-	private static class IndexReaderEntry {
-		private final DirectoryReader reader;
-		private final TimingSource timingSource;
-		private final long expiration;
+        private IndexReaderEntry(DirectoryReader reader, TimingSource timingSource, int refreshInterval) {
+            this.reader = reader;
+            this.timingSource = timingSource;
+            this.expiration = refreshInterval == 0 ? 0 : timingSource.monotonicTimeEstimate() + refreshInterval;
+        }
 
-		private IndexReaderEntry(DirectoryReader reader, TimingSource timingSource, int refreshInterval) {
-			this.reader = reader;
-			this.timingSource = timingSource;
-			this.expiration = refreshInterval == 0 ? 0 : timingSource.monotonicTimeEstimate() + refreshInterval;
-		}
-
-		/**
-		 * @return {@code true} if the reader is still fresh enough to be used,
-		 * i.e. if it is completely up-to-date with the state of the index writer
-		 * OR is out-of-date by less than the configured refresh interval,
-		 * and refresh wasn't forced by a previous write.
-		 * @throws IOException If an I/O failure occurs.
-		 */
-		boolean isFresh() throws IOException {
-			if ( expiration == 0 || expiration < timingSource.monotonicTimeEstimate() ) {
-				// The last refresh was a long time ago. Let's check if the reader is really fresh.
-				return reader.isCurrent();
-			}
-			else {
-				// The last refresh was recent enough. Let's assume the reader is fresh.
-				return true;
-			}
-		}
-	}
+        /**
+         * @return {@code true} if the reader is still fresh enough to be used,
+         * i.e. if it is completely up-to-date with the state of the index writer
+         * OR is out-of-date by less than the configured refresh interval,
+         * and refresh wasn't forced by a previous write.
+         * @throws IOException If an I/O failure occurs.
+         */
+        boolean isFresh() throws IOException {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

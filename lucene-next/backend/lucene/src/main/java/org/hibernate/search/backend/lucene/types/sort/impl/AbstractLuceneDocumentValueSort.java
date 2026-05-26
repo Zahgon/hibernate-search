@@ -19,111 +19,101 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.hibernate.search.util.common.AssertionFailure;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 
 public abstract class AbstractLuceneDocumentValueSort extends AbstractLuceneReversibleSort {
 
-	private final String absoluteFieldPath;
-	private final LuceneSearchPredicate nestedFilter;
-	private final String nestedDocumentPath;
-	private final MultiValueMode multiValueMode;
+    private final String absoluteFieldPath;
 
-	protected AbstractLuceneDocumentValueSort(AbstractBuilder builder) {
-		super( builder );
-		absoluteFieldPath = builder.absoluteFieldPath;
-		nestedFilter = builder.nestedFilter;
-		nestedDocumentPath = builder.nestedDocumentPath;
-		multiValueMode = builder.getMultiValueMode();
-	}
+    private final LuceneSearchPredicate nestedFilter;
 
-	@Override
-	public void toSortFields(LuceneSearchSortCollector collector) {
-		var fieldComparatorSource = createFieldComparatorSource( collector );
-		var sortField = new SortField( this.absoluteFieldPath, fieldComparatorSource, order == SortOrder.DESC );
-		collector.collectSortField( sortField );
-	}
+    private final String nestedDocumentPath;
 
-	private LuceneFieldComparatorSource createFieldComparatorSource(LuceneSearchSortCollector collector) {
-		Query nestedFilter = getNestedFilter( collector );
-		return doCreateFieldComparatorSource( nestedDocumentPath, multiValueMode, nestedFilter );
-	}
+    private final MultiValueMode multiValueMode;
 
-	protected abstract LuceneFieldComparatorSource doCreateFieldComparatorSource(String nestedDocumentPath,
-			MultiValueMode multiValueMode, Query nestedFilter);
+    protected AbstractLuceneDocumentValueSort(AbstractBuilder builder) {
+        super(builder);
+        absoluteFieldPath = builder.absoluteFieldPath;
+        nestedFilter = builder.nestedFilter;
+        nestedDocumentPath = builder.nestedDocumentPath;
+        multiValueMode = builder.getMultiValueMode();
+    }
 
-	private Query getNestedFilter(SortRequestContext context) {
-		return nestedFilter == null
-				? null
-				: nestedFilter.toQuery( context.toPredicateRequestContext( nestedDocumentPath ) );
-	}
+    @Override
+    public void toSortFields(LuceneSearchSortCollector collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public abstract static class AbstractBuilder extends AbstractLuceneReversibleSort.AbstractBuilder {
-		protected final String absoluteFieldPath;
-		protected final String nestedDocumentPath;
-		private SortMode mode;
-		protected LuceneSearchPredicate nestedFilter;
+    private LuceneFieldComparatorSource createFieldComparatorSource(LuceneSearchSortCollector collector) {
+        Query nestedFilter = getNestedFilter(collector);
+        return doCreateFieldComparatorSource(nestedDocumentPath, multiValueMode, nestedFilter);
+    }
 
-		protected AbstractBuilder(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<?> field) {
-			this( scope, field.absolutePath(), field.nestedDocumentPath() );
-		}
+    protected abstract LuceneFieldComparatorSource doCreateFieldComparatorSource(String nestedDocumentPath, MultiValueMode multiValueMode, Query nestedFilter);
 
-		protected AbstractBuilder(LuceneSearchIndexScope<?> scope,
-				String absoluteFieldPath, String nestedDocumentPath) {
-			super( scope );
-			this.absoluteFieldPath = absoluteFieldPath;
-			this.nestedDocumentPath = nestedDocumentPath;
-		}
+    private Query getNestedFilter(SortRequestContext context) {
+        return nestedFilter == null ? null : nestedFilter.toQuery(context.toPredicateRequestContext(nestedDocumentPath));
+    }
 
-		public void mode(SortMode mode) {
-			if ( nestedDocumentPath != null && SortMode.MEDIAN.equals( mode ) ) {
-				throw QueryLog.INSTANCE.invalidSortModeAcrossNested( mode, getEventContext() );
-			}
-			this.mode = mode;
-		}
+    public abstract static class AbstractBuilder extends AbstractLuceneReversibleSort.AbstractBuilder {
 
-		public void filter(SearchPredicate filter) {
-			if ( nestedDocumentPath == null ) {
-				throw QueryLog.INSTANCE.cannotFilterSortOnRootDocumentField( absoluteFieldPath, getEventContext() );
-			}
-			LuceneSearchPredicate luceneFilter = LuceneSearchPredicate.from( scope, filter );
-			luceneFilter.checkNestableWithin( nestedDocumentPath );
-			this.nestedFilter = luceneFilter;
-		}
+        protected final String absoluteFieldPath;
 
-		private MultiValueMode getMultiValueMode() {
-			MultiValueMode multiValueMode;
-			if ( mode == null ) {
-				multiValueMode = order == SortOrder.DESC ? MultiValueMode.MAX : MultiValueMode.MIN;
-			}
-			else {
-				switch ( mode ) {
-					case MIN:
-						multiValueMode = MultiValueMode.MIN;
-						break;
-					case MAX:
-						multiValueMode = MultiValueMode.MAX;
-						break;
-					case AVG:
-						multiValueMode = MultiValueMode.AVG;
-						break;
-					case SUM:
-						multiValueMode = MultiValueMode.SUM;
-						break;
-					case MEDIAN:
-						multiValueMode = MultiValueMode.MEDIAN;
-						break;
-					default:
-						throw new AssertionFailure( "Unexpected sort mode: " + mode );
-				}
-			}
-			return multiValueMode;
-		}
+        protected final String nestedDocumentPath;
 
-		protected final EventContext getEventContext() {
-			return EventContexts.fromIndexFieldAbsolutePath( absoluteFieldPath );
-		}
-	}
+        private SortMode mode;
+
+        protected LuceneSearchPredicate nestedFilter;
+
+        protected AbstractBuilder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<?> field) {
+            this(scope, field.absolutePath(), field.nestedDocumentPath());
+        }
+
+        protected AbstractBuilder(LuceneSearchIndexScope<?> scope, String absoluteFieldPath, String nestedDocumentPath) {
+            super(scope);
+            this.absoluteFieldPath = absoluteFieldPath;
+            this.nestedDocumentPath = nestedDocumentPath;
+        }
+
+        public void mode(SortMode mode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void filter(SearchPredicate filter) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        private MultiValueMode getMultiValueMode() {
+            MultiValueMode multiValueMode;
+            if (mode == null) {
+                multiValueMode = order == SortOrder.DESC ? MultiValueMode.MAX : MultiValueMode.MIN;
+            } else {
+                switch(mode) {
+                    case MIN:
+                        multiValueMode = MultiValueMode.MIN;
+                        break;
+                    case MAX:
+                        multiValueMode = MultiValueMode.MAX;
+                        break;
+                    case AVG:
+                        multiValueMode = MultiValueMode.AVG;
+                        break;
+                    case SUM:
+                        multiValueMode = MultiValueMode.SUM;
+                        break;
+                    case MEDIAN:
+                        multiValueMode = MultiValueMode.MEDIAN;
+                        break;
+                    default:
+                        throw new AssertionFailure("Unexpected sort mode: " + mode);
+                }
+            }
+            return multiValueMode;
+        }
+
+        protected final EventContext getEventContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

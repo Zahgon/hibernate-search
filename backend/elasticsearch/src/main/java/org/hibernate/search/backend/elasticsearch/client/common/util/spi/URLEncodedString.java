@@ -7,7 +7,6 @@ package org.hibernate.search.backend.elasticsearch.client.common.util.spi;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-
 import org.hibernate.search.util.common.AssertionFailure;
 import org.hibernate.search.util.common.impl.Contracts;
 
@@ -17,54 +16,40 @@ import org.hibernate.search.util.common.impl.Contracts;
  */
 public final class URLEncodedString {
 
-	public final String encoded;
-	public final String original;
+    public final String encoded;
 
-	/**
-	 * Do not invoke directly.
-	 * @see #fromString(String)
-	 * @param string the original string to be encoded.
-	 */
-	private URLEncodedString(String string) {
-		this.original = string;
-		try {
-			encoded = URLEncoder.encode( string, StandardCharsets.UTF_8.name() );
-		}
-		catch (UnsupportedEncodingException e) {
-			throw new AssertionFailure( "Unexpected error retrieving the UTF-8 charset", e );
-		}
-	}
+    public final String original;
 
-	@Override
-	public String toString() {
-		return original;
-	}
+    /**
+     * Do not invoke directly.
+     * @see #fromString(String)
+     * @param string the original string to be encoded.
+     */
+    private URLEncodedString(String string) {
+        this.original = string;
+        try {
+            encoded = URLEncoder.encode(string, StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionFailure("Unexpected error retrieving the UTF-8 charset", e);
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		return original.hashCode();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if ( this == obj ) {
-			return true;
-		}
-		else if ( obj == null ) {
-			return false;
-		}
-		else if ( URLEncodedString.class != obj.getClass() ) {
-			return false;
-		}
-		else {
-			URLEncodedString other = (URLEncodedString) obj;
-			return original.equals( other.original );
-		}
-	}
+    @Override
+    public int hashCode() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static URLEncodedString fromString(String string) {
-		Contracts.assertNotNull( string, "string" );
-		return new URLEncodedString( string );
-	}
+    @Override
+    public boolean equals(Object obj) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public static URLEncodedString fromString(String string) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -6,7 +6,6 @@ package org.hibernate.search.mapper.pojo.mapping.definition.annotation.processin
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.BeanReference;
 import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.PropertyBinderRef;
 import org.hibernate.search.mapper.pojo.bridge.mapping.impl.BeanDelegatingBinder;
@@ -20,29 +19,16 @@ import org.hibernate.search.mapper.pojo.mapping.definition.programmatic.Property
 
 public final class PropertyBindingProcessor implements PropertyMappingAnnotationProcessor<PropertyBinding> {
 
-	@Override
-	public void process(PropertyMappingStep mapping, PropertyBinding annotation,
-			PropertyMappingAnnotationProcessorContext context) {
-		PropertyBinderRef propertyBinder = annotation.binder();
-		PropertyBinder binder = createBinder( propertyBinder, context );
+    @Override
+    public void process(PropertyMappingStep mapping, PropertyBinding annotation, PropertyMappingAnnotationProcessorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Map<String, Object> params = context.toMap( propertyBinder.params() );
-		mapping.binder( binder, params );
-	}
-
-	private PropertyBinder createBinder(PropertyBinderRef binderReferenceAnnotation,
-			MappingAnnotationProcessorContext context) {
-		Optional<BeanReference<? extends PropertyBinder>> binderReference = context.toBeanReference(
-				PropertyBinder.class,
-				PropertyBinderRef.UndefinedBinderImplementationType.class,
-				binderReferenceAnnotation.type(), binderReferenceAnnotation.name(),
-				binderReferenceAnnotation.retrieval()
-		);
-
-		if ( !binderReference.isPresent() ) {
-			throw MappingLog.INSTANCE.missingBinderReferenceInBinding();
-		}
-
-		return new BeanDelegatingBinder( binderReference.get() );
-	}
+    private PropertyBinder createBinder(PropertyBinderRef binderReferenceAnnotation, MappingAnnotationProcessorContext context) {
+        Optional<BeanReference<? extends PropertyBinder>> binderReference = context.toBeanReference(PropertyBinder.class, PropertyBinderRef.UndefinedBinderImplementationType.class, binderReferenceAnnotation.type(), binderReferenceAnnotation.name(), binderReferenceAnnotation.retrieval());
+        if (!binderReference.isPresent()) {
+            throw MappingLog.INSTANCE.missingBinderReferenceInBinding();
+        }
+        return new BeanDelegatingBinder(binderReference.get());
+    }
 }

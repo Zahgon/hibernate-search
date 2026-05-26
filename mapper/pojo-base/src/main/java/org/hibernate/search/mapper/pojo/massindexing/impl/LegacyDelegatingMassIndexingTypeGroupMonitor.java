@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.massindexing.impl;
 
 import java.util.OptionalLong;
-
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingMonitor;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingTypeGroupMonitor;
 import org.hibernate.search.mapper.pojo.massindexing.MassIndexingTypeGroupMonitorContext;
@@ -15,29 +14,25 @@ import org.hibernate.search.util.common.annotation.Incubating;
 @Incubating
 public final class LegacyDelegatingMassIndexingTypeGroupMonitor implements MassIndexingTypeGroupMonitor {
 
-	private final MassIndexingMonitor delegate;
+    private final MassIndexingMonitor delegate;
 
-	public LegacyDelegatingMassIndexingTypeGroupMonitor(MassIndexingMonitor delegate,
-			MassIndexingTypeGroupMonitorCreateContext context) {
-		this.delegate = delegate;
-	}
+    public LegacyDelegatingMassIndexingTypeGroupMonitor(MassIndexingMonitor delegate, MassIndexingTypeGroupMonitorCreateContext context) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public void documentsIndexed(long increment) {
-		// do nothing
-	}
+    @Override
+    public void documentsIndexed(long increment) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("removal")
-	@Override
-	public void indexingStarted(MassIndexingTypeGroupMonitorContext context) {
-		OptionalLong count = context.totalCount();
-		if ( count.isPresent() ) {
-			delegate.addToTotalCount( count.getAsLong() );
-		}
-	}
+    @SuppressWarnings("removal")
+    @Override
+    public void indexingStarted(MassIndexingTypeGroupMonitorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void indexingCompleted(MassIndexingTypeGroupMonitorContext context) {
-		// do nothing
-	}
+    @Override
+    public void indexingCompleted(MassIndexingTypeGroupMonitorContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

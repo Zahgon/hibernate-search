@@ -10,16 +10,16 @@ import org.hibernate.search.engine.search.aggregation.dsl.spi.SearchAggregationD
 import org.hibernate.search.engine.search.aggregation.spi.AggregationTypeKeys;
 import org.hibernate.search.engine.search.aggregation.spi.CountDocumentAggregationBuilder;
 
-public class CountDocumentsAggregationFinalStepImpl
-		implements CountDocumentsAggregationFinalStep {
-	private final CountDocumentAggregationBuilder builder;
+public class CountDocumentsAggregationFinalStepImpl implements CountDocumentsAggregationFinalStep {
 
-	public CountDocumentsAggregationFinalStepImpl(SearchAggregationDslContext<?, ?, ?> dslContext) {
-		this.builder = dslContext.scope().rootQueryElement( AggregationTypeKeys.COUNT_DOCUMENTS ).builder();
-	}
+    private final CountDocumentAggregationBuilder builder;
 
-	@Override
-	public SearchAggregation<Long> toAggregation() {
-		return builder.build();
-	}
+    public CountDocumentsAggregationFinalStepImpl(SearchAggregationDslContext<?, ?, ?> dslContext) {
+        this.builder = dslContext.scope().rootQueryElement(AggregationTypeKeys.COUNT_DOCUMENTS).builder();
+    }
+
+    @Override
+    public SearchAggregation<Long> toAggregation() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

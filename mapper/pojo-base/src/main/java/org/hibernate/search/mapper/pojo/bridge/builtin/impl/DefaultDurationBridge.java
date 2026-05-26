@@ -5,39 +5,33 @@
 package org.hibernate.search.mapper.pojo.bridge.builtin.impl;
 
 import java.time.Duration;
-
 import org.hibernate.search.engine.cfg.spi.ParseUtils;
 import org.hibernate.search.mapper.pojo.logging.impl.FormattingLog;
 
 public final class DefaultDurationBridge extends AbstractConvertingDefaultBridge<Duration, Long> {
 
-	public static final DefaultDurationBridge INSTANCE = new DefaultDurationBridge();
+    public static final DefaultDurationBridge INSTANCE = new DefaultDurationBridge();
 
-	private DefaultDurationBridge() {
-	}
+    private DefaultDurationBridge() {
+    }
 
-	@Override
-	protected String toString(Duration value) {
-		return value.toString();
-	}
+    @Override
+    protected String toString(Duration value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Duration fromString(String value) {
-		return ParseUtils.parseDuration( value );
-	}
+    @Override
+    protected Duration fromString(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Long toConvertedValue(Duration value) {
-		try {
-			return value.toNanos();
-		}
-		catch (ArithmeticException ae) {
-			throw FormattingLog.INSTANCE.valueTooLargeForConversionException( Long.class, value, ae );
-		}
-	}
+    @Override
+    protected Long toConvertedValue(Duration value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected Duration fromConvertedValue(Long value) {
-		return Duration.ofNanos( value );
-	}
+    @Override
+    protected Duration fromConvertedValue(Long value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

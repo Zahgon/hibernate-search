@@ -9,19 +9,14 @@ import org.hibernate.search.backend.elasticsearch.logging.impl.AnalysisLog;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.TokenizerDefinition;
 import org.hibernate.search.util.common.impl.StringHelper;
 
-class ElasticsearchTokenizerParametersStep
-		extends AbstractElasticsearchAnalysisComponentParametersStep<TokenizerDefinition> {
+class ElasticsearchTokenizerParametersStep extends AbstractElasticsearchAnalysisComponentParametersStep<TokenizerDefinition> {
 
-	ElasticsearchTokenizerParametersStep(String name) {
-		super( name, new TokenizerDefinition() );
-	}
+    ElasticsearchTokenizerParametersStep(String name) {
+        super(name, new TokenizerDefinition());
+    }
 
-	@Override
-	public void contribute(ElasticsearchAnalysisDefinitionCollector collector) {
-		if ( StringHelper.isEmpty( definition.getType() ) ) {
-			throw AnalysisLog.INSTANCE.invalidElasticsearchTokenizerDefinition( name );
-		}
-		collector.collect( name, definition );
-	}
-
+    @Override
+    public void contribute(ElasticsearchAnalysisDefinitionCollector collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

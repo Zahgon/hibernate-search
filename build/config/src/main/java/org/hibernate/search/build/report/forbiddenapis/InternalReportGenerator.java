@@ -4,7 +4,6 @@
  */
 package org.hibernate.search.build.report.forbiddenapis;
 
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -15,63 +14,40 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
-
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 
 public class InternalReportGenerator {
 
-	public static void main(String[] args) throws IOException {
-		generateReport(
-				args[1],
-				args[2],
-				args[3],
-				ReportGeneratorHelper.createIndex( args[0] ),
-				new ReportGeneratorRules( 4, args )
-		);
-	}
+    public static void main(String[] args) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static void generateReport(
-			String outputPath,
-			String reportName,
-			String basePackageToScan,
-			Index index,
-			ReportGeneratorRules ignoreRules)
-			throws IOException {
+    private static void generateReport(String outputPath, String reportName, String basePackageToScan, Index index, ReportGeneratorRules ignoreRules) throws IOException {
+        Collection<DotName> packages = allPackages(index, basePackageToScan);
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(Path.of(outputPath).resolve(reportName + ".txt").toFile()), StandardCharsets.UTF_8);
+            Writer writerInternal = new OutputStreamWriter(new FileOutputStream(Path.of(outputPath).resolve(reportName + "-internal.txt").toFile()), StandardCharsets.UTF_8)) {
+            writer.write("@defaultMessage Do not use code from internal packages\n");
+            for (DotName pakcage : packages) {
+                String path = pakcage.toString();
+                ReportGeneratorHelper.writeReportLines(writer, path, ignoreRules.matchAnyPublicRule(path));
+                ReportGeneratorHelper.writeReportLines(writerInternal, path, ignoreRules.matchAnyInternalRule(path));
+            }
+        }
+    }
 
-		Collection<DotName> packages = allPackages( index, basePackageToScan );
-		try ( Writer writer = new OutputStreamWriter(
-				new FileOutputStream( Path.of( outputPath ).resolve( reportName + ".txt" ).toFile() ),
-				StandardCharsets.UTF_8 );
-				Writer writerInternal = new OutputStreamWriter(
-						new FileOutputStream( Path.of( outputPath ).resolve( reportName + "-internal.txt" ).toFile() ),
-						StandardCharsets.UTF_8
-				) ) {
-			writer.write( "@defaultMessage Do not use code from internal packages\n" );
+    private static Collection<DotName> allPackages(Index index, String base) {
+        Set<DotName> result = new TreeSet<>();
+        doAllPackages(index, DotName.createSimple(base), result);
+        return result;
+    }
 
-			for ( DotName pakcage : packages ) {
-				String path = pakcage.toString();
-				ReportGeneratorHelper.writeReportLines( writer, path, ignoreRules.matchAnyPublicRule( path ) );
-				ReportGeneratorHelper.writeReportLines( writerInternal, path, ignoreRules.matchAnyInternalRule( path ) );
-			}
-		}
-	}
+    private static final Pattern INTERNAL_PACKAGE = Pattern.compile("^.+\\.internal\\b.*$");
 
-	private static Collection<DotName> allPackages(Index index, String base) {
-		Set<DotName> result = new TreeSet<>();
-
-		doAllPackages( index, DotName.createSimple( base ), result );
-
-		return result;
-	}
-
-	private static final Pattern INTERNAL_PACKAGE = Pattern.compile( "^.+\\.internal\\b.*$" );
-
-	private static void doAllPackages(Index index, DotName current, Set<DotName> result) {
-		if ( INTERNAL_PACKAGE.matcher( current.toString() ).matches() ) {
-			result.add( current );
-		}
-		index.getSubpackages( current ).forEach( p -> doAllPackages( index, p, result ) );
-	}
-
+    private static void doAllPackages(Index index, DotName current, Set<DotName> result) {
+        if (INTERNAL_PACKAGE.matcher(current.toString()).matches()) {
+            result.add(current);
+        }
+        index.getSubpackages(current).forEach(p -> doAllPackages(index, p, result));
+    }
 }

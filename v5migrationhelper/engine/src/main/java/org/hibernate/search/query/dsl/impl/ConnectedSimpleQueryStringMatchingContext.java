@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright Red Hat Inc. and Hibernate Authors
  */
-
 package org.hibernate.search.query.dsl.impl;
 
 import org.hibernate.search.query.dsl.SimpleQueryStringDefinitionTermination;
@@ -14,55 +13,48 @@ import org.hibernate.search.query.dsl.SimpleQueryStringTermination;
  */
 public class ConnectedSimpleQueryStringMatchingContext implements SimpleQueryStringMatchingContext {
 
-	private final QueryBuildingContext queryContext;
-	private final QueryCustomizer queryCustomizer;
+    private final QueryBuildingContext queryContext;
 
-	private final FieldsContext fieldsContext;
+    private final QueryCustomizer queryCustomizer;
 
-	private boolean withAndAsDefaultOperator = false;
+    private final FieldsContext fieldsContext;
 
-	public ConnectedSimpleQueryStringMatchingContext(String field, QueryCustomizer queryCustomizer,
-			QueryBuildingContext queryContext) {
-		this.queryContext = queryContext;
-		this.queryCustomizer = queryCustomizer;
-		this.fieldsContext = new FieldsContext( new String[] { field }, queryContext );
-	}
+    private boolean withAndAsDefaultOperator = false;
 
-	public ConnectedSimpleQueryStringMatchingContext(String[] fields, QueryCustomizer queryCustomizer,
-			QueryBuildingContext queryContext) {
-		this.queryContext = queryContext;
-		this.queryCustomizer = queryCustomizer;
-		this.fieldsContext = new FieldsContext( fields, queryContext );
-	}
+    public ConnectedSimpleQueryStringMatchingContext(String field, QueryCustomizer queryCustomizer, QueryBuildingContext queryContext) {
+        this.queryContext = queryContext;
+        this.queryCustomizer = queryCustomizer;
+        this.fieldsContext = new FieldsContext(new String[] { field }, queryContext);
+    }
 
-	@Override
-	public SimpleQueryStringMatchingContext andField(String field) {
-		fieldsContext.add( field );
-		return this;
-	}
+    public ConnectedSimpleQueryStringMatchingContext(String[] fields, QueryCustomizer queryCustomizer, QueryBuildingContext queryContext) {
+        this.queryContext = queryContext;
+        this.queryCustomizer = queryCustomizer;
+        this.fieldsContext = new FieldsContext(fields, queryContext);
+    }
 
-	@Override
-	public SimpleQueryStringMatchingContext andFields(String... fields) {
-		fieldsContext.addAll( fields );
-		return this;
-	}
+    @Override
+    public SimpleQueryStringMatchingContext andField(String field) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringMatchingContext boostedTo(float boost) {
-		fieldsContext.boostedTo( boost );
-		return this;
-	}
+    @Override
+    public SimpleQueryStringMatchingContext andFields(String... fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringTermination matching(String simpleQueryString) {
-		return new ConnectedMultiFieldsSimpleQueryStringQueryBuilder( queryContext, queryCustomizer, fieldsContext,
-				simpleQueryString, withAndAsDefaultOperator );
-	}
+    @Override
+    public SimpleQueryStringMatchingContext boostedTo(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SimpleQueryStringDefinitionTermination withAndAsDefaultOperator() {
-		withAndAsDefaultOperator = true;
-		return this;
-	}
+    @Override
+    public SimpleQueryStringTermination matching(String simpleQueryString) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    @Override
+    public SimpleQueryStringDefinitionTermination withAndAsDefaultOperator() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

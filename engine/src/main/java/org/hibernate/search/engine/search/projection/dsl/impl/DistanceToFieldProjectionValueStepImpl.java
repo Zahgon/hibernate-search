@@ -11,22 +11,15 @@ import org.hibernate.search.engine.search.projection.dsl.spi.SearchProjectionDsl
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 import org.hibernate.search.engine.spatial.GeoPoint;
 
-public final class DistanceToFieldProjectionValueStepImpl
-		extends DistanceToFieldProjectionOptionsStepImpl<Double>
-		implements DistanceToFieldProjectionValueStep<DistanceToFieldProjectionOptionsStepImpl<Double>, Double> {
+public final class DistanceToFieldProjectionValueStepImpl extends DistanceToFieldProjectionOptionsStepImpl<Double> implements DistanceToFieldProjectionValueStep<DistanceToFieldProjectionOptionsStepImpl<Double>, Double> {
 
-	public DistanceToFieldProjectionValueStepImpl(SearchProjectionDslContext<?> dslContext, String fieldPath,
-			GeoPoint center) {
-		super( dslContext.scope().fieldQueryElement( fieldPath, ProjectionTypeKeys.DISTANCE ),
-				ProjectionCollector.nullable() );
-		distanceFieldProjectionBuilder.center( center );
-	}
+    public DistanceToFieldProjectionValueStepImpl(SearchProjectionDslContext<?> dslContext, String fieldPath, GeoPoint center) {
+        super(dslContext.scope().fieldQueryElement(fieldPath, ProjectionTypeKeys.DISTANCE), ProjectionCollector.nullable());
+        distanceFieldProjectionBuilder.center(center);
+    }
 
-	@Override
-	public <R> DistanceToFieldProjectionOptionsStep<?, R> collector(ProjectionCollector.Provider<Double, R> collector) {
-		return new DistanceToFieldProjectionOptionsStepImpl<>( distanceFieldProjectionBuilder,
-				collector
-		);
-	}
-
+    @Override
+    public <R> DistanceToFieldProjectionOptionsStep<?, R> collector(ProjectionCollector.Provider<Double, R> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

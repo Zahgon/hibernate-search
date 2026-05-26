@@ -22,37 +22,27 @@ import org.hibernate.search.util.common.spi.ToStringTreeAppender;
  */
 public class PojoImplicitReindexingResolverCastedTypeNode<T, U> extends PojoImplicitReindexingResolverNode<T> {
 
-	private final PojoCaster<? super U> caster;
-	private final PojoImplicitReindexingResolverNode<? super U> nested;
+    private final PojoCaster<? super U> caster;
 
-	public PojoImplicitReindexingResolverCastedTypeNode(PojoCaster<? super U> caster,
-			PojoImplicitReindexingResolverNode<? super U> nested) {
-		this.caster = caster;
-		this.nested = nested;
-	}
+    private final PojoImplicitReindexingResolverNode<? super U> nested;
 
-	@Override
-	public void close() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( PojoImplicitReindexingResolverNode::close, nested );
-		}
-	}
+    public PojoImplicitReindexingResolverCastedTypeNode(PojoCaster<? super U> caster, PojoImplicitReindexingResolverNode<? super U> nested) {
+        this.caster = caster;
+        this.nested = nested;
+    }
 
-	@Override
-	public void appendTo(ToStringTreeAppender appender) {
-		appender.attribute( "operation", "process type (with cast, ignore if it fails)" );
-		appender.attribute( "caster", caster );
-		appender.attribute( "nested", nested );
-	}
+    @Override
+    public void close() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void resolveEntitiesToReindex(PojoReindexingCollector collector,
-			T dirty, PojoImplicitReindexingResolverRootContext context) {
-		// The caster can only cast to the raw type, beyond that we have to use an unchecked cast.
-		@SuppressWarnings("unchecked")
-		U castedDirty = (U) caster.castOrNull( context.sessionContext().runtimeIntrospector().unproxy( dirty ) );
-		if ( castedDirty != null ) {
-			nested.resolveEntitiesToReindex( collector, castedDirty, context );
-		}
-	}
+    @Override
+    public void appendTo(ToStringTreeAppender appender) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void resolveEntitiesToReindex(PojoReindexingCollector collector, T dirty, PojoImplicitReindexingResolverRootContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

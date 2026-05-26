@@ -8,14 +8,13 @@ import org.hibernate.search.engine.spatial.GeoPoint;
 
 public class ProjectionExtractContext {
 
-	private final ProjectionRequestRootContext requestContext;
+    private final ProjectionRequestRootContext requestContext;
 
-	public ProjectionExtractContext(ProjectionRequestRootContext requestContext) {
-		this.requestContext = requestContext;
-	}
+    public ProjectionExtractContext(ProjectionRequestRootContext requestContext) {
+        this.requestContext = requestContext;
+    }
 
-	Integer getDistanceSortIndex(String absoluteFieldPath, GeoPoint location) {
-		return requestContext.getDistanceSortIndex( absoluteFieldPath, location );
-	}
-
+    Integer getDistanceSortIndex(String absoluteFieldPath, GeoPoint location) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

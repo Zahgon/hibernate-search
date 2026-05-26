@@ -7,7 +7,6 @@ package org.hibernate.search.mapper.orm.loading.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.Hibernate;
 import org.hibernate.metamodel.mapping.EntityMappingType;
 import org.hibernate.query.Query;
@@ -26,62 +25,33 @@ import org.hibernate.search.util.common.reflect.spi.ValueReadHandle;
  */
 class HibernateOrmSelectionEntityByNonIdPropertyLoader<E> extends AbstractHibernateOrmSelectionEntityLoader<E> {
 
-	private final PojoLoadingTypeContext<E> targetEntityTypeContext;
-	private final String documentIdSourcePropertyName;
-	private final ValueReadHandle<?> documentIdSourceHandle;
+    private final PojoLoadingTypeContext<E> targetEntityTypeContext;
 
-	HibernateOrmSelectionEntityByNonIdPropertyLoader(EntityMappingType entityMappingType,
-			PojoLoadingTypeContext<E> targetEntityTypeContext,
-			TypeQueryFactory<E, ?> queryFactory,
-			String documentIdSourcePropertyName,
-			ValueReadHandle<?> documentIdSourceHandle,
-			HibernateOrmLoadingSessionContext sessionContext,
-			MutableEntityLoadingOptions loadingOptions) {
-		super( entityMappingType, queryFactory, sessionContext, loadingOptions );
-		this.targetEntityTypeContext = targetEntityTypeContext;
-		this.documentIdSourcePropertyName = documentIdSourcePropertyName;
-		this.documentIdSourceHandle = documentIdSourceHandle;
-	}
+    private final String documentIdSourcePropertyName;
 
-	@Override
-	protected List<E> doLoadEntities(List<?> allIds, Long timeout) {
-		Map<Object, E> entityById = CollectionHelper.newHashMap( allIds.size() );
+    private final ValueReadHandle<?> documentIdSourceHandle;
 
-		int fetchSize = loadingOptions.fetchSize();
-		Query<E> query = createQuery( fetchSize, timeout );
+    HibernateOrmSelectionEntityByNonIdPropertyLoader(EntityMappingType entityMappingType, PojoLoadingTypeContext<E> targetEntityTypeContext, TypeQueryFactory<E, ?> queryFactory, String documentIdSourcePropertyName, ValueReadHandle<?> documentIdSourceHandle, HibernateOrmLoadingSessionContext sessionContext, MutableEntityLoadingOptions loadingOptions) {
+        super(entityMappingType, queryFactory, sessionContext, loadingOptions);
+        this.targetEntityTypeContext = targetEntityTypeContext;
+        this.documentIdSourcePropertyName = documentIdSourcePropertyName;
+        this.documentIdSourceHandle = documentIdSourceHandle;
+    }
 
-		List<Object> ids = new ArrayList<>( fetchSize );
-		for ( Object documentIdSourceValue : allIds ) {
-			ids.add( documentIdSourceValue );
-			if ( ids.size() >= fetchSize ) {
-				query.setParameterList( IDS_PARAMETER_NAME, ids );
-				addResults( entityById, query.getResultList() );
-				ids.clear();
-			}
-		}
-		if ( !ids.isEmpty() ) {
-			query.setParameterList( IDS_PARAMETER_NAME, ids );
-			addResults( entityById, query.getResultList() );
-		}
+    @Override
+    protected List<E> doLoadEntities(List<?> allIds, Long timeout) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		List<E> result = new ArrayList<>( allIds.size() );
-		for ( Object identifier : allIds ) {
-			result.add( entityById.get( identifier ) );
-		}
-		return result;
-	}
-
-	private void addResults(Map<Object, E> resultMap, List<? extends E> loadedEntities) {
-		for ( E loadedEntity : loadedEntities ) {
-			// The handle may point to a field, in which case it won't work on a proxy. Unproxy first.
-			Object unproxied = Hibernate.unproxy( loadedEntity );
-			Object documentIdSourceValue = documentIdSourceHandle.get( unproxied );
-			Object previous = resultMap.put( documentIdSourceValue, loadedEntity );
-			if ( previous != null ) {
-				throw LoadingLog.INSTANCE.foundMultipleEntitiesForDocumentId( targetEntityTypeContext.entityName(),
-						documentIdSourcePropertyName, documentIdSourceValue );
-			}
-		}
-	}
-
+    private void addResults(Map<Object, E> resultMap, List<? extends E> loadedEntities) {
+        for (E loadedEntity : loadedEntities) {
+            // The handle may point to a field, in which case it won't work on a proxy. Unproxy first.
+            Object unproxied = Hibernate.unproxy(loadedEntity);
+            Object documentIdSourceValue = documentIdSourceHandle.get(unproxied);
+            Object previous = resultMap.put(documentIdSourceValue, loadedEntity);
+            if (previous != null) {
+                throw LoadingLog.INSTANCE.foundMultipleEntitiesForDocumentId(targetEntityTypeContext.entityName(), documentIdSourcePropertyName, documentIdSourceValue);
+            }
+        }
+    }
 }

@@ -5,98 +5,81 @@
 package org.hibernate.search.backend.elasticsearch.work.impl;
 
 import java.util.Set;
-
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchRequest;
 import org.hibernate.search.backend.elasticsearch.client.common.spi.ElasticsearchResponse;
 import org.hibernate.search.backend.elasticsearch.client.common.util.spi.URLEncodedString;
 import org.hibernate.search.backend.elasticsearch.client.impl.Paths;
 import org.hibernate.search.backend.elasticsearch.logging.impl.QueryLog;
 import org.hibernate.search.backend.elasticsearch.work.result.impl.ExplainResult;
-
 import com.google.gson.JsonObject;
 
 public class ExplainWork extends AbstractNonBulkableWork<ExplainResult> {
 
-	private static final ElasticsearchRequestSuccessAssessor SUCCESS_ASSESSOR =
-			ElasticsearchRequestSuccessAssessor.builder().ignoreErrorStatuses( 404 ).build();
+    private static final ElasticsearchRequestSuccessAssessor SUCCESS_ASSESSOR = ElasticsearchRequestSuccessAssessor.builder().ignoreErrorStatuses(404).build();
 
-	private final URLEncodedString indexName;
-	private final URLEncodedString id;
+    private final URLEncodedString indexName;
 
-	private ExplainWork(Builder builder) {
-		super( builder );
-		this.indexName = builder.indexName;
-		this.id = builder.id;
-	}
+    private final URLEncodedString id;
 
-	@Override
-	protected ExplainResult generateResult(ElasticsearchWorkExecutionContext context,
-			ElasticsearchResponse response) {
-		if ( response.statusCode() == 404 ) {
-			throw QueryLog.INSTANCE.explainUnknownDocument( indexName, id );
-		}
-		JsonObject body = response.body();
-		return new ExplainResultImpl( body );
-	}
+    private ExplainWork(Builder builder) {
+        super(builder);
+        this.indexName = builder.indexName;
+        this.id = builder.id;
+    }
 
-	public static class Builder
-			extends AbstractBuilder<Builder> {
-		private final URLEncodedString indexName;
-		private final URLEncodedString id;
-		private final JsonObject payload;
+    @Override
+    protected ExplainResult generateResult(ElasticsearchWorkExecutionContext context, ElasticsearchResponse response) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private Set<String> routingKeys;
+    public static class Builder extends AbstractBuilder<Builder> {
 
-		public static Builder create(URLEncodedString indexName, URLEncodedString id, JsonObject payload) {
-			return new Builder( indexName, id, payload );
-		}
+        private final URLEncodedString indexName;
 
-		private Builder(URLEncodedString indexName, URLEncodedString id, JsonObject payload) {
-			super( SUCCESS_ASSESSOR );
-			this.indexName = indexName;
-			this.id = id;
-			this.payload = payload;
-		}
+        private final URLEncodedString id;
 
-		public Builder routingKeys(Set<String> routingKeys) {
-			this.routingKeys = routingKeys;
-			return this;
-		}
+        private final JsonObject payload;
 
-		@Override
-		protected ElasticsearchRequest buildRequest() {
-			ElasticsearchRequest.Builder builder =
-					ElasticsearchRequest.get()
-							.pathComponent( indexName )
-							.pathComponent( Paths._EXPLAIN )
-							.pathComponent( id )
-							.body( payload );
+        private Set<String> routingKeys;
 
-			if ( !routingKeys.isEmpty() ) {
-				builder.multiValuedParam( "routing", routingKeys );
-			}
+        public static Builder create(URLEncodedString indexName, URLEncodedString id, JsonObject payload) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return builder.build();
-		}
+        private Builder(URLEncodedString indexName, URLEncodedString id, JsonObject payload) {
+            super(SUCCESS_ASSESSOR);
+            this.indexName = indexName;
+            this.id = id;
+            this.payload = payload;
+        }
 
-		@Override
-		public ExplainWork build() {
-			return new ExplainWork( this );
-		}
-	}
+        public Builder routingKeys(Set<String> routingKeys) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-	private static class ExplainResultImpl implements ExplainResult {
+        @Override
+        protected ElasticsearchRequest buildRequest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private final JsonObject jsonObject;
+        @Override
+        public ExplainWork build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private ExplainResultImpl(JsonObject jsonObject) {
-			super();
-			this.jsonObject = jsonObject;
-		}
+    private static class ExplainResultImpl implements ExplainResult {
 
-		@Override
-		public JsonObject getJsonObject() {
-			return jsonObject;
-		}
-	}
+        private final JsonObject jsonObject;
+
+        private ExplainResultImpl(JsonObject jsonObject) {
+            super();
+            this.jsonObject = jsonObject;
+        }
+
+        @Override
+        public JsonObject getJsonObject() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

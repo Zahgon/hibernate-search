@@ -17,127 +17,106 @@ import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 import org.hibernate.search.engine.search.sort.spi.DistanceSortBuilder;
 import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.util.common.AssertionFailure;
-
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.SloppyMath;
 
 public class LuceneGeoPointDistanceSort extends AbstractLuceneDocumentValueSort {
 
-	private final double effectiveMissingValue;
-	private final GeoPoint center;
+    private final double effectiveMissingValue;
 
-	private LuceneGeoPointDistanceSort(Builder builder) {
-		super( builder );
-		effectiveMissingValue = builder.getEffectiveMissingValue();
-		center = builder.center;
-	}
+    private final GeoPoint center;
 
-	@Override
-	protected LuceneFieldComparatorSource doCreateFieldComparatorSource(String nestedDocumentPath,
-			MultiValueMode multiValueMode, Query nestedFilter) {
-		return new LuceneGeoPointDistanceComparatorSource( nestedDocumentPath, center, effectiveMissingValue, multiValueMode,
-				nestedFilter );
-	}
+    private LuceneGeoPointDistanceSort(Builder builder) {
+        super(builder);
+        effectiveMissingValue = builder.getEffectiveMissingValue();
+        center = builder.center;
+    }
 
-	public static class Factory
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<DistanceSortBuilder, GeoPoint> {
-		@Override
-		public DistanceSortBuilder create(LuceneSearchIndexScope<?> scope,
-				LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			return new Builder( scope, field );
-		}
-	}
+    @Override
+    protected LuceneFieldComparatorSource doCreateFieldComparatorSource(String nestedDocumentPath, MultiValueMode multiValueMode, Query nestedFilter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class Builder extends AbstractBuilder implements DistanceSortBuilder {
-		private GeoPoint center;
-		private Object missingValue;
+    public static class Factory extends AbstractLuceneValueFieldSearchQueryElementFactory<DistanceSortBuilder, GeoPoint> {
 
-		private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			super( scope, field );
-		}
+        @Override
+        public DistanceSortBuilder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		@Override
-		public void center(GeoPoint center) {
-			this.center = center;
-		}
+    private static class Builder extends AbstractBuilder implements DistanceSortBuilder {
 
-		@Override
-		public void missingFirst() {
-			missingValue = SortMissingValue.MISSING_FIRST;
-		}
+        private GeoPoint center;
 
-		@Override
-		public void missingLast() {
-			missingValue = SortMissingValue.MISSING_LAST;
-		}
+        private Object missingValue;
 
-		@Override
-		public void missingHighest() {
-			missingValue = SortMissingValue.MISSING_HIGHEST;
-		}
+        private Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            super(scope, field);
+        }
 
-		@Override
-		public void missingLowest() {
-			missingValue = SortMissingValue.MISSING_LOWEST;
-		}
+        @Override
+        public void center(GeoPoint center) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void missingAs(GeoPoint value) {
-			missingValue = value;
-		}
+        @Override
+        public void missingFirst() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public void mode(SortMode mode) {
-			switch ( mode ) {
-				case MIN:
-				case MAX:
-				case AVG:
-				case MEDIAN:
-					super.mode( mode );
-					break;
-				case SUM:
-				default:
-					throw QueryLog.INSTANCE.invalidSortModeForDistanceSort( mode, getEventContext() );
-			}
-		}
+        @Override
+        public void missingLast() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public SearchSort build() {
-			return new LuceneGeoPointDistanceSort( this );
-		}
+        @Override
+        public void missingHighest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		private double getEffectiveMissingValue() {
-			if ( missingValue == null ) {
-				// missing value implicit distance (same as ES):
-				return Double.POSITIVE_INFINITY;
-			}
+        @Override
+        public void missingLowest() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( missingValue == SortMissingValue.MISSING_FIRST ) {
-				return ( order == SortOrder.DESC ) ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
-			}
+        @Override
+        public void missingAs(GeoPoint value) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( missingValue == SortMissingValue.MISSING_LAST ) {
-				return ( order == SortOrder.DESC ) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
-			}
+        @Override
+        public void mode(SortMode mode) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( missingValue == SortMissingValue.MISSING_LOWEST ) {
-				return Double.NEGATIVE_INFINITY;
-			}
+        @Override
+        public SearchSort build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			if ( missingValue == SortMissingValue.MISSING_HIGHEST ) {
-				return Double.POSITIVE_INFINITY;
-			}
-
-			if ( missingValue instanceof GeoPoint ) {
-				GeoPoint geoPointMissingValue = (GeoPoint) missingValue;
-
-				return SloppyMath.haversinMeters(
-						geoPointMissingValue.latitude(), geoPointMissingValue.longitude(),
-						center.latitude(), center.longitude()
-				);
-			}
-
-			throw new AssertionFailure( "Unexpected missing value: " + missingValue );
-		}
-	}
+        private double getEffectiveMissingValue() {
+            if (missingValue == null) {
+                // missing value implicit distance (same as ES):
+                return Double.POSITIVE_INFINITY;
+            }
+            if (missingValue == SortMissingValue.MISSING_FIRST) {
+                return (order == SortOrder.DESC) ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+            }
+            if (missingValue == SortMissingValue.MISSING_LAST) {
+                return (order == SortOrder.DESC) ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
+            }
+            if (missingValue == SortMissingValue.MISSING_LOWEST) {
+                return Double.NEGATIVE_INFINITY;
+            }
+            if (missingValue == SortMissingValue.MISSING_HIGHEST) {
+                return Double.POSITIVE_INFINITY;
+            }
+            if (missingValue instanceof GeoPoint) {
+                GeoPoint geoPointMissingValue = (GeoPoint) missingValue;
+                return SloppyMath.haversinMeters(geoPointMissingValue.latitude(), geoPointMissingValue.longitude(), center.latitude(), center.longitude());
+            }
+            throw new AssertionFailure("Unexpected missing value: " + missingValue);
+        }
+    }
 }

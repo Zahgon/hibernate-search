@@ -14,48 +14,39 @@ import org.hibernate.search.util.common.impl.SuppressingCloser;
 
 public class AgentClusterLinkContext {
 
-	private final TransactionHelper transactionHelper;
-	private final SessionHelper sessionHelper;
-	private final AgentRepositoryProvider agentRepositoryProvider;
+    private final TransactionHelper transactionHelper;
 
-	private SessionImplementor session;
-	private AgentRepository agentRepository;
+    private final SessionHelper sessionHelper;
 
-	public AgentClusterLinkContext(TransactionHelper transactionHelper, SessionHelper sessionHelper,
-			AgentRepositoryProvider agentRepositoryProvider) {
-		this.transactionHelper = transactionHelper;
-		this.sessionHelper = sessionHelper;
-		this.agentRepositoryProvider = agentRepositoryProvider;
-	}
+    private final AgentRepositoryProvider agentRepositoryProvider;
 
-	void begin() {
-		session = sessionHelper.openSession();
-		transactionHelper.begin( session );
-		agentRepository = agentRepositoryProvider.create( session );
-	}
+    private SessionImplementor session;
 
-	public AgentRepository agentRepository() {
-		return agentRepository;
-	}
+    private AgentRepository agentRepository;
 
-	public void commitAndBeginNewTransaction() {
-		commit();
-		begin();
-	}
+    public AgentClusterLinkContext(TransactionHelper transactionHelper, SessionHelper sessionHelper, AgentRepositoryProvider agentRepositoryProvider) {
+        this.transactionHelper = transactionHelper;
+        this.sessionHelper = sessionHelper;
+        this.agentRepositoryProvider = agentRepositoryProvider;
+    }
 
-	void commit() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( transactionHelper::commit, session );
-			closer.push( SessionImplementor::close, session );
-			session = null;
-			agentRepository = null;
-		}
-	}
+    void begin() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void rollbackLatestTransactionSafely(Throwable t) {
-		new SuppressingCloser( t )
-				.push( s -> transactionHelper.rollbackSafely( s, t ), session )
-				.push( SessionImplementor::close, session );
-	}
+    public AgentRepository agentRepository() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
+    public void commitAndBeginNewTransaction() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    void commit() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    void rollbackLatestTransactionSafely(Throwable t) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

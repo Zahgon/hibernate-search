@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.model.additionalmetadata.building.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.engine.environment.bean.spi.ParameterizedBeanReference;
 import org.hibernate.search.mapper.pojo.logging.impl.MappingLog;
 import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.PojoAdditionalMetadataCollectorEntityTypeNode;
@@ -16,59 +15,45 @@ import org.hibernate.search.mapper.pojo.model.spi.PojoRawTypeModel;
 
 class PojoEntityTypeAdditionalMetadataBuilder implements PojoAdditionalMetadataCollectorEntityTypeNode {
 
-	private String entityName;
-	private String secondaryEntityName;
-	private PojoPathDefinitionProvider pathDefinitionProvider = SimplePojoPathsDefinitionProvider.INSTANCE;
-	private String entityIdPropertyName;
-	private ParameterizedBeanReference<?> loadingBinderRef;
+    private String entityName;
 
-	PojoEntityTypeAdditionalMetadataBuilder() {
-	}
+    private String secondaryEntityName;
 
-	@Override
-	public void entityName(String entityName) {
-		if ( this.entityName != null && !this.entityName.equals( entityName ) ) {
-			throw MappingLog.INSTANCE.multipleEntityNames(
-					this.entityName,
-					entityName
-			);
-		}
-		this.entityName = entityName;
-	}
+    private PojoPathDefinitionProvider pathDefinitionProvider = SimplePojoPathsDefinitionProvider.INSTANCE;
 
-	@Override
-	public void secondaryEntityName(String secondaryEntityName) {
-		if ( this.secondaryEntityName != null && !this.secondaryEntityName.equals( secondaryEntityName ) ) {
-			throw MappingLog.INSTANCE.multipleSecondaryEntityNames(
-					this.secondaryEntityName,
-					secondaryEntityName
-			);
-		}
-		this.secondaryEntityName = secondaryEntityName;
-	}
+    private String entityIdPropertyName;
 
-	@Override
-	public void pathDefinitionProvider(PojoPathDefinitionProvider pathDefinitionProvider) {
-		this.pathDefinitionProvider = pathDefinitionProvider;
-	}
+    private ParameterizedBeanReference<?> loadingBinderRef;
 
-	@Override
-	public void entityIdPropertyName(String propertyName) {
-		this.entityIdPropertyName = propertyName;
-	}
+    PojoEntityTypeAdditionalMetadataBuilder() {
+    }
 
-	@Override
-	public void loadingBinder(ParameterizedBeanReference<?> binderRef) {
-		this.loadingBinderRef = binderRef;
-	}
+    @Override
+    public void entityName(String entityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public PojoEntityTypeAdditionalMetadata build(PojoRawTypeModel<?> typeModel) {
-		return new PojoEntityTypeAdditionalMetadata(
-				entityName != null ? entityName : typeModel.typeIdentifier().javaClass().getSimpleName(),
-				secondaryEntityName,
-				pathDefinitionProvider,
-				Optional.ofNullable( entityIdPropertyName ),
-				loadingBinderRef
-		);
-	}
+    @Override
+    public void secondaryEntityName(String secondaryEntityName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void pathDefinitionProvider(PojoPathDefinitionProvider pathDefinitionProvider) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void entityIdPropertyName(String propertyName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public void loadingBinder(ParameterizedBeanReference<?> binderRef) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    public PojoEntityTypeAdditionalMetadata build(PojoRawTypeModel<?> typeModel) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

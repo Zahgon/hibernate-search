@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathPropertyNode;
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 import org.hibernate.search.mapper.pojo.model.path.spi.PojoPathDefinition;
@@ -23,20 +22,18 @@ import org.hibernate.search.mapper.pojo.model.path.spi.PojoPathDefinitionProvide
  */
 public class SimplePojoPathsDefinitionProvider implements PojoPathDefinitionProvider {
 
-	public static final SimplePojoPathsDefinitionProvider INSTANCE = new SimplePojoPathsDefinitionProvider();
+    public static final SimplePojoPathsDefinitionProvider INSTANCE = new SimplePojoPathsDefinitionProvider();
 
-	private SimplePojoPathsDefinitionProvider() {
-	}
+    private SimplePojoPathsDefinitionProvider() {
+    }
 
-	@Override
-	public List<String> preDefinedOrdinals() {
-		return Collections.emptyList(); // No pre-defined ordinals
-	}
+    @Override
+    public List<String> preDefinedOrdinals() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PojoPathDefinition interpretPath(PojoModelPathValueNode source) {
-		Set<String> stringRepresentations = new LinkedHashSet<>();
-		stringRepresentations.add( source.parent().toPropertyString() );
-		return new PojoPathDefinition( stringRepresentations, Optional.empty() );
-	}
+    @Override
+    public PojoPathDefinition interpretPath(PojoModelPathValueNode source) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -9,22 +9,23 @@ import org.hibernate.search.engine.search.sort.dsl.SortOrder;
 
 public abstract class AbstractLuceneReversibleSort extends AbstractLuceneSort {
 
-	protected final SortOrder order;
+    protected final SortOrder order;
 
-	protected AbstractLuceneReversibleSort(AbstractBuilder builder) {
-		super( builder );
-		order = builder.order;
-	}
+    protected AbstractLuceneReversibleSort(AbstractBuilder builder) {
+        super(builder);
+        order = builder.order;
+    }
 
-	public abstract static class AbstractBuilder extends AbstractLuceneSort.AbstractBuilder {
-		protected SortOrder order;
+    public abstract static class AbstractBuilder extends AbstractLuceneSort.AbstractBuilder {
 
-		protected AbstractBuilder(LuceneSearchIndexScope<?> scope) {
-			super( scope );
-		}
+        protected SortOrder order;
 
-		public void order(SortOrder order) {
-			this.order = order;
-		}
-	}
+        protected AbstractBuilder(LuceneSearchIndexScope<?> scope) {
+            super(scope);
+        }
+
+        public void order(SortOrder order) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

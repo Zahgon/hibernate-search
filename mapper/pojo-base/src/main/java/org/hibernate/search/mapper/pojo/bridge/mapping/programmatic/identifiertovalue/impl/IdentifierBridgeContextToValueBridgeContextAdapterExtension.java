@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.identifiertovalue.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.mapper.pojo.bridge.runtime.IdentifierBridgeFromDocumentIdentifierContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.IdentifierBridgeToDocumentIdentifierContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeFromIndexedValueContext;
@@ -15,24 +14,20 @@ import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValue
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeMappingContext;
 import org.hibernate.search.mapper.pojo.bridge.runtime.spi.BridgeSessionContext;
 
-final class IdentifierBridgeContextToValueBridgeContextAdapterExtension
-		implements ValueBridgeToIndexedValueContextExtension<IdentifierBridgeToDocumentIdentifierContext>,
-		ValueBridgeFromIndexedValueContextExtension<IdentifierBridgeFromDocumentIdentifierContext> {
-	static final IdentifierBridgeContextToValueBridgeContextAdapterExtension INSTANCE =
-			new IdentifierBridgeContextToValueBridgeContextAdapterExtension();
+final class IdentifierBridgeContextToValueBridgeContextAdapterExtension implements ValueBridgeToIndexedValueContextExtension<IdentifierBridgeToDocumentIdentifierContext>, ValueBridgeFromIndexedValueContextExtension<IdentifierBridgeFromDocumentIdentifierContext> {
 
-	private IdentifierBridgeContextToValueBridgeContextAdapterExtension() {
-	}
+    static final IdentifierBridgeContextToValueBridgeContextAdapterExtension INSTANCE = new IdentifierBridgeContextToValueBridgeContextAdapterExtension();
 
-	@Override
-	public Optional<IdentifierBridgeFromDocumentIdentifierContext> extendOptional(
-			ValueBridgeFromIndexedValueContext original, BridgeSessionContext sessionContext) {
-		return Optional.of( sessionContext.identifierBridgeFromDocumentIdentifierContext() );
-	}
+    private IdentifierBridgeContextToValueBridgeContextAdapterExtension() {
+    }
 
-	@Override
-	public Optional<IdentifierBridgeToDocumentIdentifierContext> extendOptional(
-			ValueBridgeToIndexedValueContext original, BridgeMappingContext mappingContext) {
-		return Optional.of( mappingContext.identifierBridgeToDocumentIdentifierContext() );
-	}
+    @Override
+    public Optional<IdentifierBridgeFromDocumentIdentifierContext> extendOptional(ValueBridgeFromIndexedValueContext original, BridgeSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public Optional<IdentifierBridgeToDocumentIdentifierContext> extendOptional(ValueBridgeToIndexedValueContext original, BridgeMappingContext mappingContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

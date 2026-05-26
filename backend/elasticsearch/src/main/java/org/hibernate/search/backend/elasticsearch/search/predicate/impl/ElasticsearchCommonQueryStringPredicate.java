@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonAccessor;
 import org.hibernate.search.backend.elasticsearch.gson.impl.JsonObjectAccessor;
 import org.hibernate.search.backend.elasticsearch.lowlevel.index.analysis.impl.AnalyzerConstants;
@@ -19,7 +18,6 @@ import org.hibernate.search.engine.search.common.spi.SearchIndexSchemaElementCon
 import org.hibernate.search.engine.search.common.spi.SearchQueryElementTypeKey;
 import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.CommonQueryStringPredicateBuilder;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,175 +25,134 @@ import com.google.gson.JsonPrimitive;
 
 abstract class ElasticsearchCommonQueryStringPredicate extends AbstractElasticsearchNestablePredicate {
 
-	private static final JsonAccessor<String> QUERY_ACCESSOR = JsonAccessor.root().property( "query" ).asString();
-	private static final JsonAccessor<JsonElement> DEFAULT_OPERATOR_ACCESSOR =
-			JsonAccessor.root().property( "default_operator" );
-	private static final JsonAccessor<JsonArray> FIELDS_ACCESSOR = JsonAccessor.root().property( "fields" ).asArray();
-	private static final JsonAccessor<String> ANALYZER_ACCESSOR = JsonAccessor.root().property( "analyzer" ).asString();
-	private static final JsonAccessor<String> MINIMUM_SHOULD_MATCH_ACCESSOR =
-			JsonAccessor.root().property( "minimum_should_match" ).asString();
+    private static final JsonAccessor<String> QUERY_ACCESSOR = JsonAccessor.root().property("query").asString();
 
-	private static final JsonPrimitive AND_OPERATOR_KEYWORD_JSON = new JsonPrimitive( "and" );
-	private static final JsonPrimitive OR_OPERATOR_KEYWORD_JSON = new JsonPrimitive( "or" );
+    private static final JsonAccessor<JsonElement> DEFAULT_OPERATOR_ACCESSOR = JsonAccessor.root().property("default_operator");
 
-	private final List<String> nestedPathHierarchy;
-	private final List<String> fieldPaths;
+    private static final JsonAccessor<JsonArray> FIELDS_ACCESSOR = JsonAccessor.root().property("fields").asArray();
 
-	private final List<JsonPrimitive> fieldNameAndBoosts;
-	private final JsonPrimitive defaultOperator;
-	private final String queryString;
-	private final String analyzer;
-	private final ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
+    private static final JsonAccessor<String> ANALYZER_ACCESSOR = JsonAccessor.root().property("analyzer").asString();
 
-	ElasticsearchCommonQueryStringPredicate(Builder builder) {
-		super( builder );
-		nestedPathHierarchy = builder.firstFieldState.field().nestedPathHierarchy();
-		// Warning: we must use field().absolutePath(), not the keys in the map,
-		// because that key may be a relative path when using SearchPredicateFactory.withRoot(...)
-		fieldPaths = new ArrayList<>( builder.fieldStates.size() );
-		for ( ElasticsearchCommonQueryStringPredicateBuilderFieldState state : builder.fieldStates.values() ) {
-			fieldPaths.add( state.field().absolutePath() );
-		}
-		fieldNameAndBoosts = new ArrayList<>();
-		for ( ElasticsearchCommonQueryStringPredicateBuilderFieldState fieldContext : builder.fieldStates.values() ) {
-			fieldNameAndBoosts.add( fieldContext.build() );
-		}
-		defaultOperator = builder.defaultOperator;
-		queryString = builder.queryString;
-		analyzer = builder.analyzer;
-		minimumShouldMatchConstraints = builder.minimumShouldMatchConstraints;
+    private static final JsonAccessor<String> MINIMUM_SHOULD_MATCH_ACCESSOR = JsonAccessor.root().property("minimum_should_match").asString();
 
-		builder.minimumShouldMatchConstraints = null;
-	}
+    private static final JsonPrimitive AND_OPERATOR_KEYWORD_JSON = new JsonPrimitive("and");
 
-	@Override
-	protected final JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject,
-			JsonObject innerObject) {
-		QUERY_ACCESSOR.set( innerObject, queryString );
-		DEFAULT_OPERATOR_ACCESSOR.set( innerObject, defaultOperator );
+    private static final JsonPrimitive OR_OPERATOR_KEYWORD_JSON = new JsonPrimitive("or");
 
-		JsonArray fieldArray = new JsonArray();
-		for ( JsonPrimitive fieldNameAndBoost : fieldNameAndBoosts ) {
-			fieldArray.add( fieldNameAndBoost );
-		}
-		FIELDS_ACCESSOR.set( innerObject, fieldArray );
+    private final List<String> nestedPathHierarchy;
 
-		if ( analyzer != null ) {
-			ANALYZER_ACCESSOR.set( innerObject, analyzer );
-		}
+    private final List<String> fieldPaths;
 
-		if ( !minimumShouldMatchConstraints.isEmpty() ) {
-			MINIMUM_SHOULD_MATCH_ACCESSOR.set(
-					innerObject,
-					minimumShouldMatchConstraints.formatMinimumShouldMatchConstraints()
-			);
-		}
+    private final List<JsonPrimitive> fieldNameAndBoosts;
 
-		addSpecificProperties( context, outerObject, innerObject );
+    private final JsonPrimitive defaultOperator;
 
-		queryNameAccessor().set( outerObject, innerObject );
+    private final String queryString;
 
-		return outerObject;
-	}
+    private final String analyzer;
 
-	protected abstract void addSpecificProperties(PredicateRequestContext context, JsonObject outerObject,
-			JsonObject innerObject);
+    private final ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
 
-	protected abstract JsonObjectAccessor queryNameAccessor();
+    ElasticsearchCommonQueryStringPredicate(Builder builder) {
+        super(builder);
+        nestedPathHierarchy = builder.firstFieldState.field().nestedPathHierarchy();
+        // Warning: we must use field().absolutePath(), not the keys in the map,
+        // because that key may be a relative path when using SearchPredicateFactory.withRoot(...)
+        fieldPaths = new ArrayList<>(builder.fieldStates.size());
+        for (ElasticsearchCommonQueryStringPredicateBuilderFieldState state : builder.fieldStates.values()) {
+            fieldPaths.add(state.field().absolutePath());
+        }
+        fieldNameAndBoosts = new ArrayList<>();
+        for (ElasticsearchCommonQueryStringPredicateBuilderFieldState fieldContext : builder.fieldStates.values()) {
+            fieldNameAndBoosts.add(fieldContext.build());
+        }
+        defaultOperator = builder.defaultOperator;
+        queryString = builder.queryString;
+        analyzer = builder.analyzer;
+        minimumShouldMatchConstraints = builder.minimumShouldMatchConstraints;
+        builder.minimumShouldMatchConstraints = null;
+    }
 
-	@Override
-	protected List<String> getNestedPathHierarchy() {
-		return nestedPathHierarchy;
-	}
+    @Override
+    protected final JsonObject doToJsonQuery(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected List<String> getFieldPathsForErrorMessage() {
-		return fieldPaths;
-	}
+    protected abstract void addSpecificProperties(PredicateRequestContext context, JsonObject outerObject, JsonObject innerObject);
 
+    protected abstract JsonObjectAccessor queryNameAccessor();
 
-	public abstract static class Builder extends AbstractBuilder implements CommonQueryStringPredicateBuilder {
+    @Override
+    protected List<String> getNestedPathHierarchy() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		protected ElasticsearchCommonQueryStringPredicateBuilderFieldState firstFieldState;
-		protected final Map<String, ElasticsearchCommonQueryStringPredicateBuilderFieldState> fieldStates =
-				new LinkedHashMap<>();
-		protected JsonPrimitive defaultOperator = OR_OPERATOR_KEYWORD_JSON;
-		protected String queryString;
-		protected String analyzer;
-		private ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
+    @Override
+    protected List<String> getFieldPathsForErrorMessage() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		Builder(ElasticsearchSearchIndexScope<?> scope) {
-			super( scope );
-			this.minimumShouldMatchConstraints = new ElasticsearchCommonMinimumShouldMatchConstraints();
-		}
+    public abstract static class Builder extends AbstractBuilder implements CommonQueryStringPredicateBuilder {
 
-		@Override
-		public final void defaultOperator(BooleanOperator operator) {
-			switch ( operator ) {
-				case AND:
-					this.defaultOperator = AND_OPERATOR_KEYWORD_JSON;
-					break;
-				case OR:
-					this.defaultOperator = OR_OPERATOR_KEYWORD_JSON;
-					break;
-			}
-		}
+        protected ElasticsearchCommonQueryStringPredicateBuilderFieldState firstFieldState;
 
-		@Override
-		public final void queryString(String queryString) {
-			this.queryString = queryString;
-		}
+        protected final Map<String, ElasticsearchCommonQueryStringPredicateBuilderFieldState> fieldStates = new LinkedHashMap<>();
 
-		@Override
-		public final FieldState field(String fieldPath) {
-			ElasticsearchCommonQueryStringPredicateBuilderFieldState fieldState = fieldStates.get( fieldPath );
-			if ( fieldState == null ) {
-				fieldState = scope.fieldQueryElement( fieldPath, typeKey() );
-				if ( firstFieldState == null ) {
-					firstFieldState = fieldState;
-				}
-				else {
-					SearchIndexSchemaElementContextHelper.checkNestedDocumentPathCompatibility(
-							firstFieldState.field(), fieldState.field() );
-				}
-				fieldStates.put( fieldPath, fieldState );
-			}
-			return fieldState;
-		}
+        protected JsonPrimitive defaultOperator = OR_OPERATOR_KEYWORD_JSON;
 
-		@Override
-		public final void analyzer(String analyzerName) {
-			this.analyzer = analyzerName;
-		}
+        protected String queryString;
 
-		@Override
-		public final void skipAnalysis() {
-			analyzer( AnalyzerConstants.KEYWORD_ANALYZER );
-		}
+        protected String analyzer;
 
-		@Override
-		public void minimumShouldMatchNumber(int ignoreConstraintCeiling, int matchingClausesNumber) {
-			minimumShouldMatchConstraints.minimumShouldMatchNumber( ignoreConstraintCeiling, matchingClausesNumber );
-		}
+        private ElasticsearchCommonMinimumShouldMatchConstraints minimumShouldMatchConstraints;
 
-		@Override
-		public void minimumShouldMatchPercent(int ignoreConstraintCeiling, int matchingClausesPercent) {
-			minimumShouldMatchConstraints.minimumShouldMatchPercent( ignoreConstraintCeiling, matchingClausesPercent );
-		}
+        Builder(ElasticsearchSearchIndexScope<?> scope) {
+            super(scope);
+            this.minimumShouldMatchConstraints = new ElasticsearchCommonMinimumShouldMatchConstraints();
+        }
 
-		@Override
-		public final SearchPredicate build() {
-			if ( analyzer == null ) {
-				for ( ElasticsearchCommonQueryStringPredicateBuilderFieldState field : fieldStates.values() ) {
-					field.checkAnalyzerOrNormalizerCompatibleAcrossIndexes();
-				}
-			}
+        @Override
+        public final void defaultOperator(BooleanOperator operator) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return doBuild( this );
-		}
+        @Override
+        public final void queryString(String queryString) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected abstract SearchPredicate doBuild(Builder builder);
+        @Override
+        public final FieldState field(String fieldPath) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		protected abstract SearchQueryElementTypeKey<ElasticsearchCommonQueryStringPredicateBuilderFieldState> typeKey();
-	}
+        @Override
+        public final void analyzer(String analyzerName) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public final void skipAnalysis() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void minimumShouldMatchNumber(int ignoreConstraintCeiling, int matchingClausesNumber) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public void minimumShouldMatchPercent(int ignoreConstraintCeiling, int matchingClausesPercent) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public final SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        protected abstract SearchPredicate doBuild(Builder builder);
+
+        protected abstract SearchQueryElementTypeKey<ElasticsearchCommonQueryStringPredicateBuilderFieldState> typeKey();
+    }
 }

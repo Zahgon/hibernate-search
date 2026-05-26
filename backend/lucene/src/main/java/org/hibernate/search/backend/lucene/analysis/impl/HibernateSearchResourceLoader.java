@@ -5,12 +5,10 @@
 package org.hibernate.search.backend.lucene.analysis.impl;
 
 import java.io.InputStream;
-
 import org.hibernate.search.backend.lucene.logging.impl.LuceneMiscLog;
 import org.hibernate.search.engine.environment.classpath.spi.ClassLoaderHelper;
 import org.hibernate.search.engine.environment.classpath.spi.ClassResolver;
 import org.hibernate.search.engine.environment.classpath.spi.ResourceResolver;
-
 import org.apache.lucene.util.ResourceLoader;
 
 /**
@@ -22,42 +20,27 @@ import org.apache.lucene.util.ResourceLoader;
  */
 final class HibernateSearchResourceLoader implements ResourceLoader {
 
-	private final ClassResolver classResolver;
-	private final ResourceResolver resourceResolver;
+    private final ClassResolver classResolver;
 
-	HibernateSearchResourceLoader(ClassResolver classResolver, ResourceResolver resourceResolver) {
-		this.classResolver = classResolver;
-		this.resourceResolver = resourceResolver;
-	}
+    private final ResourceResolver resourceResolver;
 
-	@Override
-	public InputStream openResource(String resource) {
-		InputStream inputStream = resourceResolver.locateResourceStream( resource );
+    HibernateSearchResourceLoader(ClassResolver classResolver, ResourceResolver resourceResolver) {
+        this.classResolver = classResolver;
+        this.resourceResolver = resourceResolver;
+    }
 
-		if ( inputStream == null ) {
-			throw LuceneMiscLog.INSTANCE.unableToLoadResource( resource );
-		}
-		else {
-			return inputStream;
-		}
-	}
+    @Override
+    public InputStream openResource(String resource) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> Class<? extends T> findClass(String className, Class<T> expectedType) {
-		return ClassLoaderHelper.classForName(
-				expectedType,
-				className,
-				classResolver
-		);
-	}
+    @Override
+    public <T> Class<? extends T> findClass(String className, Class<T> expectedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <T> T newInstance(String className, Class<T> expectedType) {
-		return ClassLoaderHelper.instanceFromName(
-				expectedType,
-				className,
-				classResolver
-		);
-	}
-
+    @Override
+    public <T> T newInstance(String className, Class<T> expectedType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

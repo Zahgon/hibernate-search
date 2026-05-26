@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.elasticsearch.mapping.impl;
 
 import java.util.Optional;
-
 import org.hibernate.search.backend.elasticsearch.document.impl.DocumentMetadataContributor;
 import org.hibernate.search.backend.elasticsearch.document.model.dsl.impl.ElasticsearchStringImplicitFieldContributor;
 import org.hibernate.search.backend.elasticsearch.document.model.dsl.impl.IndexSchemaRootContributor;
@@ -21,7 +20,6 @@ import org.hibernate.search.backend.elasticsearch.search.projection.impl.Project
 import org.hibernate.search.backend.elasticsearch.search.projection.impl.ProjectionExtractionHelper;
 import org.hibernate.search.backend.elasticsearch.search.projection.impl.ProjectionRequestContext;
 import org.hibernate.search.engine.backend.document.model.dsl.spi.ImplicitFieldContributor;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -31,87 +29,75 @@ import com.google.gson.JsonPrimitive;
  */
 public class DiscriminatorTypeNameMapping implements TypeNameMapping {
 
-	private static final String MAPPED_TYPE_FIELD_NAME = MetadataFields.internalFieldName( "entity_type" );
+    private static final String MAPPED_TYPE_FIELD_NAME = MetadataFields.internalFieldName("entity_type");
 
-	private final TypeNameDiscriminatorSchemaRootContributor schemaRootContributor =
-			new TypeNameDiscriminatorSchemaRootContributor();
+    private final TypeNameDiscriminatorSchemaRootContributor schemaRootContributor = new TypeNameDiscriminatorSchemaRootContributor();
 
-	private final TypeNameFromDiscriminatorExtractionHelper typeNameExtractionHelper =
-			new TypeNameFromDiscriminatorExtractionHelper();
+    private final TypeNameFromDiscriminatorExtractionHelper typeNameExtractionHelper = new TypeNameFromDiscriminatorExtractionHelper();
 
-	@Override
-	public Optional<IndexSchemaRootContributor> getIndexSchemaRootContributor() {
-		return Optional.of( schemaRootContributor );
-	}
+    @Override
+    public Optional<IndexSchemaRootContributor> getIndexSchemaRootContributor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<DocumentMetadataContributor> getDocumentMetadataContributor(String mappedTypeName) {
-		return Optional.of( new TypeNameDiscriminatorContributor( mappedTypeName ) );
-	}
+    @Override
+    public Optional<DocumentMetadataContributor> getDocumentMetadataContributor(String mappedTypeName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Optional<ImplicitFieldContributor> getImplicitFieldContributor() {
-		return Optional.of( new ElasticsearchStringImplicitFieldContributor( MAPPED_TYPE_FIELD_NAME ) );
-	}
+    @Override
+    public Optional<ImplicitFieldContributor> getImplicitFieldContributor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ProjectionExtractionHelper<String> onStart(IndexLayoutStrategy indexLayoutStrategy) {
-		// do nothing, just return the instance:
-		return typeNameExtractionHelper;
-	}
+    @Override
+    public ProjectionExtractionHelper<String> onStart(IndexLayoutStrategy indexLayoutStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void register(IndexNames indexNames, String mappedTypeName) {
-		// Nothing to do
-	}
+    @Override
+    public void register(IndexNames indexNames, String mappedTypeName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static final class TypeNameDiscriminatorSchemaRootContributor
-			implements IndexSchemaRootContributor {
-		@Override
-		public void contribute(RootTypeMapping rootTypeMapping) {
-			PropertyMapping mappedTypePropertyMapping = new PropertyMapping();
-			mappedTypePropertyMapping.setType( DataTypes.KEYWORD );
-			mappedTypePropertyMapping.setIndex( false );
-			mappedTypePropertyMapping.setDocValues( true );
-			rootTypeMapping.addProperty( MAPPED_TYPE_FIELD_NAME, mappedTypePropertyMapping );
-		}
-	}
+    private static final class TypeNameDiscriminatorSchemaRootContributor implements IndexSchemaRootContributor {
 
-	private static final class TypeNameDiscriminatorContributor
-			implements DocumentMetadataContributor {
-		private static final JsonAccessor<String> DOCUMENT_MAPPED_TYPE_FIELD_ACCESSOR =
-				JsonAccessor.root().property( MAPPED_TYPE_FIELD_NAME ).asString();
+        @Override
+        public void contribute(RootTypeMapping rootTypeMapping) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private final String mappedTypeName;
+    private static final class TypeNameDiscriminatorContributor implements DocumentMetadataContributor {
 
-		private TypeNameDiscriminatorContributor(String mappedTypeName) {
-			this.mappedTypeName = mappedTypeName;
-		}
+        private static final JsonAccessor<String> DOCUMENT_MAPPED_TYPE_FIELD_ACCESSOR = JsonAccessor.root().property(MAPPED_TYPE_FIELD_NAME).asString();
 
-		@Override
-		public void contribute(JsonObject document, String tenantId, String id) {
-			DOCUMENT_MAPPED_TYPE_FIELD_ACCESSOR.set( document, mappedTypeName );
-		}
-	}
+        private final String mappedTypeName;
 
-	private static final class TypeNameFromDiscriminatorExtractionHelper implements ProjectionExtractionHelper<String> {
+        private TypeNameDiscriminatorContributor(String mappedTypeName) {
+            this.mappedTypeName = mappedTypeName;
+        }
 
-		private static final JsonAccessor<String> HIT_MAPPED_TYPE_NAME_ACCESSOR =
-				JsonAccessor.root().property( "fields" ).asObject()
-						.property( MAPPED_TYPE_FIELD_NAME ).asArray()
-						.element( 0 ).asString();
+        @Override
+        public void contribute(JsonObject document, String tenantId, String id) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		private static final JsonPrimitive MAPPED_TYPE_FIELD_NAME_JSON = new JsonPrimitive( MAPPED_TYPE_FIELD_NAME );
+    private static final class TypeNameFromDiscriminatorExtractionHelper implements ProjectionExtractionHelper<String> {
 
-		@Override
-		public void request(JsonObject requestBody, ProjectionRequestContext context) {
-			context.root().getSearchSyntax().requestDocValues( requestBody, MAPPED_TYPE_FIELD_NAME_JSON );
-		}
+        private static final JsonAccessor<String> HIT_MAPPED_TYPE_NAME_ACCESSOR = JsonAccessor.root().property("fields").asObject().property(MAPPED_TYPE_FIELD_NAME).asArray().element(0).asString();
 
-		@Override
-		public String extract(JsonObject hit, ProjectionExtractContext context) {
-			return HIT_MAPPED_TYPE_NAME_ACCESSOR.get( hit )
-					.orElseThrow( () -> QueryLog.INSTANCE.missingTypeFieldInDocument( MAPPED_TYPE_FIELD_NAME ) );
-		}
-	}
+        private static final JsonPrimitive MAPPED_TYPE_FIELD_NAME_JSON = new JsonPrimitive(MAPPED_TYPE_FIELD_NAME);
+
+        @Override
+        public void request(JsonObject requestBody, ProjectionRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public String extract(JsonObject hit, ProjectionExtractContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

@@ -9,22 +9,19 @@ import com.google.gson.JsonElement;
 
 public abstract class AbstractElasticsearchFieldCodec<T> implements ElasticsearchFieldCodec<T> {
 
-	protected final Gson gson;
+    protected final Gson gson;
 
-	public AbstractElasticsearchFieldCodec(Gson gson) {
-		this.gson = gson;
-	}
+    public AbstractElasticsearchFieldCodec(Gson gson) {
+        this.gson = gson;
+    }
 
-	@Override
-	public JsonElement fromJsonStringToElement(String value) {
-		return gson.fromJson( value, JsonElement.class );
-	}
+    @Override
+    public JsonElement fromJsonStringToElement(String value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public String fromJsonElementToString(JsonElement value) {
-		if ( value == null || value.isJsonNull() ) {
-			return null;
-		}
-		return gson.toJson( value );
-	}
+    @Override
+    public String fromJsonElementToString(JsonElement value) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.types.predicate.impl;
 
 import java.util.List;
-
 import org.hibernate.search.backend.lucene.search.common.impl.AbstractLuceneValueFieldSearchQueryElementFactory;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexScope;
 import org.hibernate.search.backend.lucene.search.common.impl.LuceneSearchIndexValueFieldContext;
@@ -15,57 +14,45 @@ import org.hibernate.search.engine.search.predicate.SearchPredicate;
 import org.hibernate.search.engine.search.predicate.spi.SpatialWithinPolygonPredicateBuilder;
 import org.hibernate.search.engine.spatial.GeoPoint;
 import org.hibernate.search.engine.spatial.GeoPolygon;
-
 import org.apache.lucene.document.LatLonPoint;
 import org.apache.lucene.geo.Polygon;
 import org.apache.lucene.search.Query;
 
 public class LuceneGeoPointSpatialWithinPolygonPredicate extends AbstractLuceneLeafSingleFieldPredicate {
 
-	private LuceneGeoPointSpatialWithinPolygonPredicate(Builder builder) {
-		super( builder );
-	}
+    private LuceneGeoPointSpatialWithinPolygonPredicate(Builder builder) {
+        super(builder);
+    }
 
-	public static class Factory
-			extends AbstractLuceneValueFieldSearchQueryElementFactory<SpatialWithinPolygonPredicateBuilder, GeoPoint> {
-		@Override
-		public Builder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			return new Builder( scope, field );
-		}
-	}
+    public static class Factory extends AbstractLuceneValueFieldSearchQueryElementFactory<SpatialWithinPolygonPredicateBuilder, GeoPoint> {
 
-	static class Builder extends AbstractBuilder<GeoPoint> implements SpatialWithinPolygonPredicateBuilder {
-		protected GeoPolygon polygon;
+        @Override
+        public Builder create(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 
-		Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
-			super( scope, field );
-		}
+    static class Builder extends AbstractBuilder<GeoPoint> implements SpatialWithinPolygonPredicateBuilder {
 
-		@Override
-		public void polygon(GeoPolygon polygon) {
-			this.polygon = polygon;
-		}
+        protected GeoPolygon polygon;
 
-		@Override
-		public SearchPredicate build() {
-			return new LuceneGeoPointSpatialWithinPolygonPredicate( this );
-		}
+        Builder(LuceneSearchIndexScope<?> scope, LuceneSearchIndexValueFieldContext<GeoPoint> field) {
+            super(scope, field);
+        }
 
-		@Override
-		protected Query buildQuery(PredicateRequestContext context) {
-			List<GeoPoint> points = polygon.points();
+        @Override
+        public void polygon(GeoPolygon polygon) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			double[] polyLats = new double[points.size()];
-			double[] polyLons = new double[points.size()];
+        @Override
+        public SearchPredicate build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			for ( int i = 0; i < points.size(); i++ ) {
-				polyLats[i] = points.get( i ).latitude();
-				polyLons[i] = points.get( i ).longitude();
-			}
-
-			Polygon lucenePolygon = new Polygon( polyLats, polyLons );
-
-			return LatLonPoint.newPolygonQuery( absoluteFieldPath, lucenePolygon );
-		}
-	}
+        @Override
+        protected Query buildQuery(PredicateRequestContext context) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

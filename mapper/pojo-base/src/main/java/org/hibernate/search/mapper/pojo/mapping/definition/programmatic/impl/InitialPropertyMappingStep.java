@@ -5,7 +5,6 @@
 package org.hibernate.search.mapper.pojo.mapping.definition.programmatic.impl;
 
 import java.util.Map;
-
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.MarkerBinder;
 import org.hibernate.search.mapper.pojo.bridge.mapping.programmatic.PropertyBinder;
 import org.hibernate.search.mapper.pojo.mapping.building.spi.ErrorCollectingPojoPropertyMetadataContributor;
@@ -28,183 +27,136 @@ import org.hibernate.search.mapper.pojo.model.additionalmetadata.building.spi.Po
 import org.hibernate.search.mapper.pojo.model.path.PojoModelPathValueNode;
 import org.hibernate.search.mapper.pojo.model.spi.PojoPropertyModel;
 
-class InitialPropertyMappingStep
-		implements PropertyMappingStep, PojoTypeMetadataContributor {
+class InitialPropertyMappingStep implements PropertyMappingStep, PojoTypeMetadataContributor {
 
-	private final TypeMappingStepImpl parent;
-	private final PojoPropertyModel<?> propertyModel;
+    private final TypeMappingStepImpl parent;
 
-	private final ErrorCollectingPojoPropertyMetadataContributor children =
-			new ErrorCollectingPojoPropertyMetadataContributor();
+    private final PojoPropertyModel<?> propertyModel;
 
-	InitialPropertyMappingStep(TypeMappingStepImpl parent, PojoPropertyModel<?> propertyModel) {
-		this.parent = parent;
-		this.propertyModel = propertyModel;
-	}
+    private final ErrorCollectingPojoPropertyMetadataContributor children = new ErrorCollectingPojoPropertyMetadataContributor();
 
-	@Override
-	public TypeMappingStep hostingType() {
-		return parent;
-	}
+    InitialPropertyMappingStep(TypeMappingStepImpl parent, PojoPropertyModel<?> propertyModel) {
+        this.parent = parent;
+        this.propertyModel = propertyModel;
+    }
 
-	@Override
-	public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorTypeNode collector) {
-		if ( children.hasContent() ) {
-			collector.property( propertyModel.name(), children::contributeAdditionalMetadata );
-		}
-	}
+    @Override
+    public TypeMappingStep hostingType() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void contributeIndexMapping(PojoIndexMappingCollectorTypeNode collector) {
-		if ( children.hasContent() ) {
-			PojoIndexMappingCollectorPropertyNode collectorPropertyNode = collector.property( propertyModel.name() );
-			children.contributeIndexMapping( collectorPropertyNode );
-		}
-	}
+    @Override
+    public void contributeAdditionalMetadata(PojoAdditionalMetadataCollectorTypeNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingDocumentIdOptionsStep documentId() {
-		PropertyMappingDocumentIdOptionsStepImpl child = new PropertyMappingDocumentIdOptionsStepImpl( this );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public void contributeIndexMapping(PojoIndexMappingCollectorTypeNode collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingStep binder(PropertyBinder binder, Map<String, Object> params) {
-		children.add( new PropertyBridgeMappingContributor( binder, params ) );
-		return this;
-	}
+    @Override
+    public PropertyMappingDocumentIdOptionsStep documentId() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingStep marker(MarkerBinder binder, Map<String, Object> params) {
-		children.add( new MarkerMappingContributor( binder, params ) );
-		return this;
-	}
+    @Override
+    public PropertyMappingStep binder(PropertyBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingGenericFieldOptionsStep genericField() {
-		return genericField( null );
-	}
+    @Override
+    public PropertyMappingStep marker(MarkerBinder binder, Map<String, Object> params) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingGenericFieldOptionsStep genericField(String relativeFieldName) {
-		PropertyMappingGenericFieldOptionsStepImpl child =
-				new PropertyMappingGenericFieldOptionsStepImpl( this, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingGenericFieldOptionsStep genericField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFullTextFieldOptionsStep fullTextField() {
-		return fullTextField( null );
-	}
+    @Override
+    public PropertyMappingGenericFieldOptionsStep genericField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFullTextFieldOptionsStep fullTextField(String relativeFieldName) {
-		PropertyMappingFullTextFieldOptionsStepImpl child =
-				new PropertyMappingFullTextFieldOptionsStepImpl( this, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingFullTextFieldOptionsStep fullTextField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingKeywordFieldOptionsStep keywordField() {
-		return keywordField( null );
-	}
+    @Override
+    public PropertyMappingFullTextFieldOptionsStep fullTextField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingKeywordFieldOptionsStep keywordField(String relativeFieldName) {
-		PropertyMappingKeywordFieldOptionsStepImpl child =
-				new PropertyMappingKeywordFieldOptionsStepImpl( this, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingKeywordFieldOptionsStep keywordField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField() {
-		return scaledNumberField( null );
-	}
+    @Override
+    public PropertyMappingKeywordFieldOptionsStep keywordField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField(String relativeFieldName) {
-		PropertyMappingScaledNumberFieldOptionsStepImpl child =
-				new PropertyMappingScaledNumberFieldOptionsStepImpl( this, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFieldOptionsStep<?> nonStandardField() {
-		return nonStandardField( null );
-	}
+    @Override
+    public PropertyMappingScaledNumberFieldOptionsStep scaledNumberField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingFieldOptionsStep<?> nonStandardField(String relativeFieldName) {
-		PropertyMappingNonStandardFieldOptionsStep child =
-				new PropertyMappingNonStandardFieldOptionsStep( this, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingFieldOptionsStep<?> nonStandardField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingIndexedEmbeddedStep indexedEmbedded() {
-		return indexedEmbedded( null );
-	}
+    @Override
+    public PropertyMappingFieldOptionsStep<?> nonStandardField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingIndexedEmbeddedStep indexedEmbedded(String relativeFieldName) {
-		PropertyMappingIndexedEmbeddedStepImpl child = new PropertyMappingIndexedEmbeddedStepImpl(
-				this, parent.getTypeModel().typeIdentifier(), relativeFieldName
-		);
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingIndexedEmbeddedStep indexedEmbedded() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AssociationInverseSideOptionsStep associationInverseSide(PojoModelPathValueNode inversePath) {
-		AssociationInverseSideOptionsStepImpl child = new AssociationInverseSideOptionsStepImpl(
-				this, inversePath
-		);
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingIndexedEmbeddedStep indexedEmbedded(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexingDependencyOptionsStep indexingDependency() {
-		IndexingDependencyOptionsStepImpl child = new IndexingDependencyOptionsStepImpl( this );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public AssociationInverseSideOptionsStep associationInverseSide(PojoModelPathValueNode inversePath) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField(int dimension) {
-		PropertyMappingVectorFieldOptionsStepImpl child =
-				new PropertyMappingVectorFieldOptionsStepImpl( this, dimension, null );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public IndexingDependencyOptionsStep indexingDependency() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField(int dimension, String relativeFieldName) {
-		PropertyMappingVectorFieldOptionsStepImpl child =
-				new PropertyMappingVectorFieldOptionsStepImpl( this, dimension, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField(int dimension) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField() {
-		PropertyMappingVectorFieldOptionsStepImpl child =
-				new PropertyMappingVectorFieldOptionsStepImpl( this, null, null );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField(int dimension, String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public PropertyMappingVectorFieldOptionsStep vectorField(String relativeFieldName) {
-		PropertyMappingVectorFieldOptionsStepImpl child =
-				new PropertyMappingVectorFieldOptionsStepImpl( this, null, relativeFieldName );
-		children.add( child );
-		return child;
-	}
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    @Override
+    public PropertyMappingVectorFieldOptionsStep vectorField(String relativeFieldName) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

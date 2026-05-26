@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
 import org.hibernate.search.backend.lucene.LuceneBackend;
 import org.hibernate.search.backend.lucene.analysis.impl.LuceneAnalysisPerformer;
 import org.hibernate.search.backend.lucene.document.impl.LuceneIndexEntryFactory;
@@ -41,220 +40,183 @@ import org.hibernate.search.engine.search.common.spi.SearchIndexIdentifierContex
 import org.hibernate.search.util.common.impl.Closer;
 import org.hibernate.search.util.common.impl.Futures;
 import org.hibernate.search.util.common.reporting.EventContext;
-
 import org.apache.lucene.analysis.Analyzer;
 
-public class LuceneIndexManagerImpl
-		implements IndexManagerImplementor, LuceneIndexManager,
-		LuceneScopeIndexManagerContext {
+public class LuceneIndexManagerImpl implements IndexManagerImplementor, LuceneIndexManager, LuceneScopeIndexManagerContext {
 
-	private static final SavedState.Key<SavedState> SHARD_HOLDER_KEY = SavedState.key( "shard_holder" );
+    private static final SavedState.Key<SavedState> SHARD_HOLDER_KEY = SavedState.key("shard_holder");
 
-	private final IndexManagerBackendContext backendContext;
+    private final IndexManagerBackendContext backendContext;
 
-	private final String indexName;
-	private final LuceneIndexModel model;
-	private final LuceneIndexEntryFactory indexEntryFactory;
+    private final String indexName;
 
-	private final ShardHolder shardHolder;
+    private final LuceneIndexModel model;
 
-	private final LuceneIndexSchemaManager schemaManager;
-	private final LuceneAnalysisPerformer analysisPerformer;
+    private final LuceneIndexEntryFactory indexEntryFactory;
 
-	LuceneIndexManagerImpl(IndexManagerBackendContext backendContext,
-			String indexName, LuceneIndexModel model, LuceneIndexEntryFactory indexEntryFactory) {
-		this.backendContext = backendContext;
+    private final ShardHolder shardHolder;
 
-		this.indexName = indexName;
-		this.model = model;
-		this.indexEntryFactory = indexEntryFactory;
+    private final LuceneIndexSchemaManager schemaManager;
 
-		this.shardHolder = new ShardHolder( backendContext, model );
-		this.schemaManager = backendContext.createSchemaManager( indexName, shardHolder );
-		this.analysisPerformer = new LuceneAnalysisPerformer( backendContext.toAPI() );
-	}
+    private final LuceneAnalysisPerformer analysisPerformer;
 
-	@Override
-	public String toString() {
-		return new StringBuilder( getClass().getSimpleName() )
-				.append( "[" )
-				.append( "name=" ).append( indexName )
-				.append( "]" )
-				.toString();
-	}
+    LuceneIndexManagerImpl(IndexManagerBackendContext backendContext, String indexName, LuceneIndexModel model, LuceneIndexEntryFactory indexEntryFactory) {
+        this.backendContext = backendContext;
+        this.indexName = indexName;
+        this.model = model;
+        this.indexEntryFactory = indexEntryFactory;
+        this.shardHolder = new ShardHolder(backendContext, model);
+        this.schemaManager = backendContext.createSchemaManager(indexName, shardHolder);
+        this.analysisPerformer = new LuceneAnalysisPerformer(backendContext.toAPI());
+    }
 
-	@Override
-	public SavedState saveForRestart() {
-		return SavedState.builder()
-				.put( SHARD_HOLDER_KEY, shardHolder.saveForRestart() )
-				.build();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void preStart(IndexManagerStartContext context, SavedState savedState) {
-		shardHolder.preStart( context, savedState.get( SHARD_HOLDER_KEY ).orElse( SavedState.empty() ) );
-	}
+    @Override
+    public SavedState saveForRestart() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void start(IndexManagerStartContext context) {
-		shardHolder.start( context );
-	}
+    @Override
+    public void preStart(IndexManagerStartContext context, SavedState savedState) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<?> preStop() {
-		return shardHolder.preStop();
-	}
+    @Override
+    public void start(IndexManagerStartContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void stop() {
-		try ( Closer<RuntimeException> closer = new Closer<>() ) {
-			closer.push( ShardHolder::stop, shardHolder );
-			closer.push( LuceneIndexModel::close, model );
-		}
-	}
+    @Override
+    public CompletableFuture<?> preStop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexSchemaManager schemaManager() {
-		return schemaManager;
-	}
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext,
-			DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
-		return backendContext.createIndexingPlan(
-				shardHolder, indexEntryFactory,
-				sessionContext,
-				commitStrategy, refreshStrategy
-		);
-	}
+    @Override
+    public IndexSchemaManager schemaManager() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexIndexer createIndexer(BackendSessionContext sessionContext) {
-		return backendContext.createIndexer(
-				shardHolder, indexEntryFactory,
-				sessionContext
-		);
-	}
+    @Override
+    public IndexIndexingPlan createIndexingPlan(BackendSessionContext sessionContext, DocumentCommitStrategy commitStrategy, DocumentRefreshStrategy refreshStrategy) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
-		return backendContext.createWorkspace( shardHolder, tenantIds );
-	}
+    @Override
+    public IndexIndexer createIndexer(BackendSessionContext sessionContext) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public <SR> IndexScopeBuilder<SR> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScopeType) {
-		return new LuceneIndexScopeBuilder<>(
-				backendContext, mappingContext, rootScopeType, this
-		);
-	}
+    @Override
+    public IndexWorkspace createWorkspace(BackendMappingContext mappingContext, Set<String> tenantIds) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void addTo(IndexScopeBuilder<?> builder) {
-		if ( builder instanceof LuceneIndexScopeBuilder<?> luceneBuilder ) {
-			luceneBuilder.add( backendContext, this );
-		}
-		else {
-			throw QueryLog.INSTANCE.cannotMixLuceneScopeWithOtherType(
-					builder, this, backendContext.getEventContext()
-			);
-		}
-	}
+    @Override
+    public <SR> IndexScopeBuilder<SR> createScopeBuilder(BackendMappingContext mappingContext, Class<SR> rootScopeType) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public void openIndexReaders(Set<String> routingKeys, DirectoryReaderCollector readerCollector) throws IOException {
-		shardHolder.openIndexReaders( routingKeys, readerCollector );
-	}
+    @Override
+    public void addTo(IndexScopeBuilder<?> builder) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneIndexModel model() {
-		return model;
-	}
+    @Override
+    public void openIndexReaders(Set<String> routingKeys, DirectoryReaderCollector readerCollector) throws IOException {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public SearchIndexIdentifierContext identifier() {
-		return model.identifier();
-	}
+    @Override
+    public LuceneIndexModel model() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexManager toAPI() {
-		return this;
-	}
+    @Override
+    public SearchIndexIdentifierContext identifier() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public LuceneBackend backend() {
-		return backendContext.toAPI();
-	}
+    @Override
+    public IndexManager toAPI() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public IndexDescriptor descriptor() {
-		return model;
-	}
+    @Override
+    public LuceneBackend backend() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public List<? extends AnalysisToken> analyze(String analyzerName, String terms) {
-		return analysisPerformer.analyze( analyzerName, terms );
-	}
+    @Override
+    public IndexDescriptor descriptor() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public AnalysisToken normalize(String normalizerName, String terms) {
-		return analysisPerformer.normalize( normalizerName, terms );
-	}
+    @Override
+    public List<? extends AnalysisToken> analyze(String analyzerName, String terms) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletionStage<List<? extends AnalysisToken>> analyzeAsync(String analyzerName, String terms,
-			OperationSubmitter operationSubmitter) {
-		return CompletableFuture.completedFuture( analyze( analyzerName, terms ) );
-	}
+    @Override
+    public AnalysisToken normalize(String normalizerName, String terms) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletionStage<AnalysisToken> normalizeAsync(String normalizerName, String terms,
-			OperationSubmitter operationSubmitter) {
-		return CompletableFuture.completedFuture( normalize( normalizerName, terms ) );
-	}
+    @Override
+    public CompletionStage<List<? extends AnalysisToken>> analyzeAsync(String analyzerName, String terms, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Analyzer indexingAnalyzer() {
-		return model.getIndexingAnalyzer();
-	}
+    @Override
+    public CompletionStage<AnalysisToken> normalizeAsync(String normalizerName, String terms, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Analyzer searchAnalyzer() {
-		return model.getSearchAnalyzer();
-	}
+    @Override
+    public Analyzer indexingAnalyzer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public long computeSizeInBytes() {
-		return Futures.unwrappedExceptionJoin( computeSizeInBytesAsync() );
-	}
+    @Override
+    public Analyzer searchAnalyzer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<Long> computeSizeInBytesAsync() {
-		return computeSizeInBytesAsync( OperationSubmitter.rejecting() );
-	}
+    @Override
+    public long computeSizeInBytes() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public CompletableFuture<Long> computeSizeInBytesAsync(OperationSubmitter operationSubmitter) {
-		return schemaManager.computeSizeInBytes( operationSubmitter );
-	}
+    @Override
+    public CompletableFuture<Long> computeSizeInBytesAsync() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	@SuppressWarnings("unchecked") // Checked using reflection
-	public <T> T unwrap(Class<T> clazz) {
-		if ( clazz.isAssignableFrom( LuceneIndexManager.class ) ) {
-			return (T) this;
-		}
-		throw LuceneMiscLog.INSTANCE.indexManagerUnwrappingWithUnknownType(
-				clazz, LuceneIndexManager.class, getBackendAndIndexEventContext()
-		);
-	}
+    @Override
+    public CompletableFuture<Long> computeSizeInBytesAsync(OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public final List<Shard> getShardsForTests() {
-		return shardHolder.shardsForTests();
-	}
+    @Override
+    // Checked using reflection
+    @SuppressWarnings("unchecked")
+    public <T> T unwrap(Class<T> clazz) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private EventContext getBackendAndIndexEventContext() {
-		return backendContext.getEventContext().append(
-				EventContexts.fromIndexName( indexName )
-		);
-	}
+    public final List<Shard> getShardsForTests() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    private EventContext getBackendAndIndexEventContext() {
+        return backendContext.getEventContext().append(EventContexts.fromIndexName(indexName));
+    }
 }

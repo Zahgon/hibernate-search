@@ -5,7 +5,6 @@
 package org.hibernate.search.backend.lucene.orchestration.impl;
 
 import java.util.concurrent.CompletableFuture;
-
 import org.hibernate.search.backend.lucene.work.impl.IndexingWork;
 import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
 
@@ -19,24 +18,23 @@ import org.hibernate.search.engine.backend.work.execution.OperationSubmitter;
  */
 public interface LuceneSerialWorkOrchestrator {
 
-	default <T> void submit(CompletableFuture<T> future, IndexingWork<T> work, OperationSubmitter operationSubmitter) {
-		submit( new LuceneBatchedWork<>( work, future ), operationSubmitter );
-	}
+    default <T> void submit(CompletableFuture<T> future, IndexingWork<T> work, OperationSubmitter operationSubmitter) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	void submit(LuceneBatchedWork<?> work, OperationSubmitter operationSubmitter);
+    void submit(LuceneBatchedWork<?> work, OperationSubmitter operationSubmitter);
 
-	/**
-	 * Force a commit immediately.
-	 * <p>
-	 * The commit will be executed <strong>in the current thread</strong>.
-	 */
-	void forceCommitInCurrentThread();
+    /**
+     * Force a commit immediately.
+     * <p>
+     * The commit will be executed <strong>in the current thread</strong>.
+     */
+    void forceCommitInCurrentThread();
 
-	/**
-	 * Force a refresh immediately.
-	 * <p>
-	 * The refresh will be executed <strong>in the current thread</strong>.
-	 */
-	void forceRefreshInCurrentThread();
-
+    /**
+     * Force a refresh immediately.
+     * <p>
+     * The refresh will be executed <strong>in the current thread</strong>.
+     */
+    void forceRefreshInCurrentThread();
 }

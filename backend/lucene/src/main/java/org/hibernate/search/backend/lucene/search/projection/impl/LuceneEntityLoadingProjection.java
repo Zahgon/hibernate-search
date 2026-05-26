@@ -13,46 +13,30 @@ import org.hibernate.search.engine.search.loading.spi.LoadingResult;
 import org.hibernate.search.engine.search.loading.spi.ProjectionHitMapper;
 import org.hibernate.search.engine.search.projection.spi.ProjectionTypeKeys;
 
-public class LuceneEntityLoadingProjection<E> extends AbstractLuceneProjection<E>
-		implements LuceneSearchProjection.Extractor<Object, E> {
+public class LuceneEntityLoadingProjection<E> extends AbstractLuceneProjection<E> implements LuceneSearchProjection.Extractor<Object, E> {
 
-	LuceneEntityLoadingProjection(LuceneSearchIndexScope<?> scope) {
-		super( scope );
-	}
+    LuceneEntityLoadingProjection(LuceneSearchIndexScope<?> scope) {
+        super(scope);
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Extractor<?, E> request(ProjectionRequestContext context) {
-		context.checkNotNested(
-				ProjectionTypeKeys.ENTITY,
-				LuceneSearchHints.INSTANCE.entityProjectionNestingNotSupportedHint()
-		);
-		return this;
-	}
+    @Override
+    public Extractor<?, E> request(ProjectionRequestContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public Values<Object> values(ProjectionExtractContext context) {
-		ProjectionHitMapper<?> mapper = context.projectionHitMapper();
-		return new DocumentReferenceValues<Object>( context.collectorExecutionContext() ) {
-			@Override
-			protected Object toReference(String typeName, String identifier) {
-				return mapper.planLoading( new LuceneDocumentReference( typeName, identifier ) );
-			}
-		};
-	}
+    @Override
+    public Values<Object> values(ProjectionExtractContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public E transform(LoadingResult<?> loadingResult, Object extractedData,
-			ProjectionTransformContext context) {
-		E loaded = (E) loadingResult.get( extractedData );
-		if ( loaded == null ) {
-			context.reportFailedLoad();
-		}
-		return loaded;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public E transform(LoadingResult<?> loadingResult, Object extractedData, ProjectionTransformContext context) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

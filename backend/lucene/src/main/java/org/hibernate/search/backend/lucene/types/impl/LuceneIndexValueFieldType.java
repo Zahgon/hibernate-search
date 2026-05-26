@@ -12,100 +12,98 @@ import org.hibernate.search.engine.backend.types.IndexFieldType;
 import org.hibernate.search.engine.backend.types.converter.spi.DslConverter;
 import org.hibernate.search.engine.backend.types.converter.spi.ProjectionConverter;
 import org.hibernate.search.engine.backend.types.spi.AbstractIndexValueFieldType;
-
 import org.apache.lucene.analysis.Analyzer;
 
-public final class LuceneIndexValueFieldType<F>
-		extends AbstractIndexValueFieldType<
-				LuceneSearchIndexScope<?>,
-				LuceneSearchIndexValueFieldContext<F>,
-				F>
-		implements IndexFieldType<F>, LuceneSearchIndexValueFieldTypeContext<F> {
+public final class LuceneIndexValueFieldType<F> extends AbstractIndexValueFieldType<LuceneSearchIndexScope<?>, LuceneSearchIndexValueFieldContext<F>, F> implements IndexFieldType<F>, LuceneSearchIndexValueFieldTypeContext<F> {
 
-	private final LuceneFieldCodec<F, ?> codec;
-	private final Analyzer indexingAnalyzerOrNormalizer;
-	private final Analyzer searchAnalyzerOrNormalizer;
-	private final boolean hasTermVectorsConfigured;
-	private final ProjectionConverter<?, ?> rawProjectionConverter;
-	private final DslConverter<?, ?> rawDslConverter;
+    private final LuceneFieldCodec<F, ?> codec;
 
-	private LuceneIndexValueFieldType(Builder<F> builder) {
-		super( builder );
-		this.codec = builder.codec;
-		this.indexingAnalyzerOrNormalizer = builder.indexingAnalyzerOrNormalizer;
-		this.searchAnalyzerOrNormalizer = builder.searchAnalyzerOrNormalizer;
-		this.hasTermVectorsConfigured = builder.hasTermVectorsConfigured;
-		this.rawProjectionConverter = ProjectionConverter.passThrough( codec.encodedType() );
-		this.rawDslConverter = DslConverter.passThrough( codec.encodedType() );
-	}
+    private final Analyzer indexingAnalyzerOrNormalizer;
 
-	@Override
-	public LuceneFieldCodec<F, ?> codec() {
-		return codec;
-	}
+    private final Analyzer searchAnalyzerOrNormalizer;
 
-	public Analyzer indexingAnalyzerOrNormalizer() {
-		return indexingAnalyzerOrNormalizer;
-	}
+    private final boolean hasTermVectorsConfigured;
 
-	@Override
-	public Analyzer searchAnalyzerOrNormalizer() {
-		return searchAnalyzerOrNormalizer;
-	}
+    private final ProjectionConverter<?, ?> rawProjectionConverter;
 
-	@Override
-	public boolean hasTermVectorsConfigured() {
-		return hasTermVectorsConfigured;
-	}
+    private final DslConverter<?, ?> rawDslConverter;
 
-	@Override
-	public DslConverter<?, ?> rawDslConverter() {
-		return rawDslConverter;
-	}
+    private LuceneIndexValueFieldType(Builder<F> builder) {
+        super(builder);
+        this.codec = builder.codec;
+        this.indexingAnalyzerOrNormalizer = builder.indexingAnalyzerOrNormalizer;
+        this.searchAnalyzerOrNormalizer = builder.searchAnalyzerOrNormalizer;
+        this.hasTermVectorsConfigured = builder.hasTermVectorsConfigured;
+        this.rawProjectionConverter = ProjectionConverter.passThrough(codec.encodedType());
+        this.rawDslConverter = DslConverter.passThrough(codec.encodedType());
+    }
 
-	@Override
-	public ProjectionConverter<?, ?> rawProjectionConverter() {
-		return rawProjectionConverter;
-	}
+    @Override
+    public LuceneFieldCodec<F, ?> codec() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	public static class Builder<F>
-			extends AbstractIndexValueFieldType.Builder<
-					LuceneSearchIndexScope<?>,
-					LuceneSearchIndexValueFieldContext<F>,
-					F> {
+    public Analyzer indexingAnalyzerOrNormalizer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		private LuceneFieldCodec<F, ?> codec;
-		private Analyzer indexingAnalyzerOrNormalizer;
-		private Analyzer searchAnalyzerOrNormalizer;
-		private boolean hasTermVectorsConfigured;
+    @Override
+    public Analyzer searchAnalyzerOrNormalizer() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Builder(Class<F> valueClass) {
-			super( valueClass );
-		}
+    @Override
+    public boolean hasTermVectorsConfigured() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public void codec(LuceneFieldCodec<F, ?> codec) {
-			this.codec = codec;
-		}
+    @Override
+    public DslConverter<?, ?> rawDslConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public void indexingAnalyzerOrNormalizer(Analyzer analyzer) {
-			this.indexingAnalyzerOrNormalizer = analyzer;
-		}
+    @Override
+    public ProjectionConverter<?, ?> rawProjectionConverter() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-		public Analyzer indexingAnalyzerOrNormalizer() {
-			return indexingAnalyzerOrNormalizer;
-		}
+    public static class Builder<F> extends AbstractIndexValueFieldType.Builder<LuceneSearchIndexScope<?>, LuceneSearchIndexValueFieldContext<F>, F> {
 
-		public void searchAnalyzerOrNormalizer(Analyzer analyzer) {
-			this.searchAnalyzerOrNormalizer = analyzer;
-		}
+        private LuceneFieldCodec<F, ?> codec;
 
-		public void hasTermVectorsConfigured(boolean hasTermVectorsConfigured) {
-			this.hasTermVectorsConfigured = hasTermVectorsConfigured;
-		}
+        private Analyzer indexingAnalyzerOrNormalizer;
 
-		@Override
-		public LuceneIndexValueFieldType<F> build() {
-			return new LuceneIndexValueFieldType<>( this );
-		}
-	}
+        private Analyzer searchAnalyzerOrNormalizer;
+
+        private boolean hasTermVectorsConfigured;
+
+        public Builder(Class<F> valueClass) {
+            super(valueClass);
+        }
+
+        public void codec(LuceneFieldCodec<F, ?> codec) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void indexingAnalyzerOrNormalizer(Analyzer analyzer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public Analyzer indexingAnalyzerOrNormalizer() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void searchAnalyzerOrNormalizer(Analyzer analyzer) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        public void hasTermVectorsConfigured(boolean hasTermVectorsConfigured) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public LuceneIndexValueFieldType<F> build() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }

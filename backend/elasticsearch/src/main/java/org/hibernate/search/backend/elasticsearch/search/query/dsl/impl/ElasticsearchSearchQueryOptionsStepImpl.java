@@ -19,63 +19,47 @@ import org.hibernate.search.engine.search.highlighter.dsl.SearchHighlighterFacto
 import org.hibernate.search.engine.search.loading.spi.SearchLoadingContextBuilder;
 import org.hibernate.search.engine.search.query.dsl.spi.AbstractExtendedSearchQueryOptionsStep;
 
-class ElasticsearchSearchQueryOptionsStepImpl<SR, H, LOS>
-		extends AbstractExtendedSearchQueryOptionsStep<
-				SR,
-				ElasticsearchSearchQueryOptionsStep<SR, H, LOS>,
-				H,
-				ElasticsearchSearchResult<H>,
-				ElasticsearchSearchScroll<H>,
-				LOS,
-				ElasticsearchSearchPredicateFactory<SR>,
-				ElasticsearchSearchSortFactory<SR>,
-				ElasticsearchSearchAggregationFactory<SR>,
-				ElasticsearchSearchQueryIndexScope<SR, ?>>
-		implements ElasticsearchSearchQueryWhereStep<SR, H, LOS>, ElasticsearchSearchQueryOptionsStep<SR, H, LOS> {
+class ElasticsearchSearchQueryOptionsStepImpl<SR, H, LOS> extends AbstractExtendedSearchQueryOptionsStep<SR, ElasticsearchSearchQueryOptionsStep<SR, H, LOS>, H, ElasticsearchSearchResult<H>, ElasticsearchSearchScroll<H>, LOS, ElasticsearchSearchPredicateFactory<SR>, ElasticsearchSearchSortFactory<SR>, ElasticsearchSearchAggregationFactory<SR>, ElasticsearchSearchQueryIndexScope<SR, ?>> implements ElasticsearchSearchQueryWhereStep<SR, H, LOS>, ElasticsearchSearchQueryOptionsStep<SR, H, LOS> {
 
-	private final ElasticsearchSearchQueryBuilder<H> searchQueryBuilder;
+    private final ElasticsearchSearchQueryBuilder<H> searchQueryBuilder;
 
-	ElasticsearchSearchQueryOptionsStepImpl(ElasticsearchSearchQueryIndexScope<SR, ?> scope,
-			ElasticsearchSearchQueryBuilder<H> searchQueryBuilder,
-			SearchLoadingContextBuilder<?, LOS> loadingContextBuilder) {
-		super( scope, searchQueryBuilder, loadingContextBuilder );
-		this.searchQueryBuilder = searchQueryBuilder;
-	}
+    ElasticsearchSearchQueryOptionsStepImpl(ElasticsearchSearchQueryIndexScope<SR, ?> scope, ElasticsearchSearchQueryBuilder<H> searchQueryBuilder, SearchLoadingContextBuilder<?, LOS> loadingContextBuilder) {
+        super(scope, searchQueryBuilder, loadingContextBuilder);
+        this.searchQueryBuilder = searchQueryBuilder;
+    }
 
-	@Override
-	public ElasticsearchSearchQueryOptionsStep<SR, H, LOS> requestTransformer(
-			ElasticsearchSearchRequestTransformer transformer) {
-		searchQueryBuilder.requestTransformer( transformer );
-		return thisAsS();
-	}
+    @Override
+    public ElasticsearchSearchQueryOptionsStep<SR, H, LOS> requestTransformer(ElasticsearchSearchRequestTransformer transformer) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	public ElasticsearchSearchQuery<H> toQuery() {
-		return searchQueryBuilder.build();
-	}
+    @Override
+    public ElasticsearchSearchQuery<H> toQuery() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchQueryOptionsStepImpl<SR, H, LOS> thisAsS() {
-		return this;
-	}
+    @Override
+    protected ElasticsearchSearchQueryOptionsStepImpl<SR, H, LOS> thisAsS() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchPredicateFactory<SR> predicateFactory() {
-		return scope.predicateFactory();
-	}
+    @Override
+    protected ElasticsearchSearchPredicateFactory<SR> predicateFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchSortFactory<SR> sortFactory() {
-		return scope.sortFactory();
-	}
+    @Override
+    protected ElasticsearchSearchSortFactory<SR> sortFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected ElasticsearchSearchAggregationFactory<SR> aggregationFactory() {
-		return scope.aggregationFactory();
-	}
+    @Override
+    protected ElasticsearchSearchAggregationFactory<SR> aggregationFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	@Override
-	protected SearchHighlighterFactory highlighterFactory() {
-		return scope.highlighterFactory();
-	}
+    @Override
+    protected SearchHighlighterFactory highlighterFactory() {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 }

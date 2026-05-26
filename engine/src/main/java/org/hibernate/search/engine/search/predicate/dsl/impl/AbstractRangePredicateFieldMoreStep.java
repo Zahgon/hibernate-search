@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.hibernate.search.engine.logging.impl.QueryLog;
 import org.hibernate.search.engine.reporting.spi.EventContexts;
 import org.hibernate.search.engine.search.common.ValueModel;
@@ -26,264 +25,172 @@ import org.hibernate.search.util.common.data.Range;
 import org.hibernate.search.util.common.impl.Contracts;
 import org.hibernate.search.util.common.reporting.EventContext;
 
-abstract class AbstractRangePredicateFieldMoreStep<
-		SR,
-		CS extends AbstractRangePredicateFieldMoreStep.GenericCommonState<SR, T, V, S>,
-		S extends AbstractRangePredicateFieldMoreStep<SR, CS, S, T, V>,
-		T,
-		V>
-		implements
-		AbstractBooleanMultiFieldPredicateCommonState.FieldSetState {
+abstract class AbstractRangePredicateFieldMoreStep<SR, CS extends AbstractRangePredicateFieldMoreStep.GenericCommonState<SR, T, V, S>, S extends AbstractRangePredicateFieldMoreStep<SR, CS, S, T, V>, T, V> implements AbstractBooleanMultiFieldPredicateCommonState.FieldSetState {
 
-	protected final CS commonState;
+    protected final CS commonState;
 
-	private final List<V> fields;
-	private final List<RangePredicateBuilder> predicateBuilders = new ArrayList<>();
+    private final List<V> fields;
 
-	private Float fieldSetBoost;
+    private final List<RangePredicateBuilder> predicateBuilders = new ArrayList<>();
 
-	static <SR> RangePredicateFieldMoreStepString<SR> create(
-			SearchPredicateDslContext<?> dslContext, String[] fields) {
-		return new RangePredicateFieldMoreStepString<>(
-				dslContext,
-				Arrays.asList( fields )
-		);
-	}
+    private Float fieldSetBoost;
 
-	static <SR, T> RangePredicateFieldMoreStepReference<SR, T> create(
-			SearchPredicateDslContext<?> dslContext, RangePredicateFieldReference<? super SR, T>[] fields) {
-		List<RangePredicateFieldReference<? super SR, T>> fieldsList = Arrays.asList( fields );
-		return new RangePredicateFieldMoreStepReference<>(
-				dslContext,
-				fieldsList
-		);
-	}
+    static <SR> RangePredicateFieldMoreStepString<SR> create(SearchPredicateDslContext<?> dslContext, String[] fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private AbstractRangePredicateFieldMoreStep(CS commonState, List<V> fields) {
-		this.commonState = commonState;
-		this.commonState.add( this );
-		this.fields = fields;
-		for ( V field : fields ) {
-			// only check that the range predicate can be applied to the requested field:
-			commonState.scope().fieldQueryElement( fieldPath( field ), PredicateTypeKeys.RANGE );
-		}
-	}
+    static <SR, T> RangePredicateFieldMoreStepReference<SR, T> create(SearchPredicateDslContext<?> dslContext, RangePredicateFieldReference<? super SR, T>[] fields) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	protected abstract String fieldPath(V field);
+    private AbstractRangePredicateFieldMoreStep(CS commonState, List<V> fields) {
+        this.commonState = commonState;
+        this.commonState.add(this);
+        this.fields = fields;
+        for (V field : fields) {
+            // only check that the range predicate can be applied to the requested field:
+            commonState.scope().fieldQueryElement(fieldPath(field), PredicateTypeKeys.RANGE);
+        }
+    }
 
-	protected abstract S thisAsS();
+    protected abstract String fieldPath(V field);
 
-	public S boost(float boost) {
-		this.fieldSetBoost = boost;
-		return thisAsS();
-	}
+    protected abstract S thisAsS();
 
-	@Override
-	public void contributePredicates(Consumer<SearchPredicate> collector) {
-		for ( RangePredicateBuilder predicateBuilder : predicateBuilders ) {
-			// Perform last-minute changes, since it's the last call that will be made on this field set state
-			commonState.applyBoostAndConstantScore( fieldSetBoost, predicateBuilder );
+    public S boost(float boost) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-			collector.accept( predicateBuilder.build() );
-		}
-	}
+    @Override
+    public void contributePredicates(Consumer<SearchPredicate> collector) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	private static class RangePredicateFieldMoreStepString<SR>
-			extends
-			AbstractRangePredicateFieldMoreStep<SR,
-					RangePredicateFieldMoreStepString.CommonState<SR>,
-					RangePredicateFieldMoreStepString<SR>,
-					Object,
-					String>
-			implements
-			RangePredicateFieldMoreStep<SR,
-					RangePredicateFieldMoreStepString<SR>,
-					RangePredicateFieldMoreStepString.CommonState<SR>> {
+    private static class RangePredicateFieldMoreStepString<SR> extends AbstractRangePredicateFieldMoreStep<SR, RangePredicateFieldMoreStepString.CommonState<SR>, RangePredicateFieldMoreStepString<SR>, Object, String> implements RangePredicateFieldMoreStep<SR, RangePredicateFieldMoreStepString<SR>, RangePredicateFieldMoreStepString.CommonState<SR>> {
 
-		private RangePredicateFieldMoreStepString(SearchPredicateDslContext<?> dslContext, List<String> fields) {
-			this( new CommonState<>( dslContext ), fields );
-		}
+        private RangePredicateFieldMoreStepString(SearchPredicateDslContext<?> dslContext, List<String> fields) {
+            this(new CommonState<>(dslContext), fields);
+        }
 
-		private RangePredicateFieldMoreStepString(CommonState<SR> commonState, List<String> fields) {
-			super( commonState, fields );
-		}
+        private RangePredicateFieldMoreStepString(CommonState<SR> commonState, List<String> fields) {
+            super(commonState, fields);
+        }
 
-		@Override
-		protected String fieldPath(String field) {
-			return field;
-		}
+        @Override
+        protected String fieldPath(String field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		protected RangePredicateFieldMoreStepString<SR> thisAsS() {
-			return this;
-		}
+        @Override
+        protected RangePredicateFieldMoreStepString<SR> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public RangePredicateFieldMoreStepString<SR> fields(String... fieldPaths) {
-			return new RangePredicateFieldMoreStepString<>( commonState, Arrays.asList( fieldPaths ) );
-		}
+        @Override
+        public RangePredicateFieldMoreStepString<SR> fields(String... fieldPaths) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState<SR> within(Range<?> range, ValueModel convert) {
-			Contracts.assertNotNull( range, "range" );
-			Contracts.assertNotNull( convert, "convert" );
-			return (CommonState<SR>) commonState.within( range, v -> convert );
-		}
+        @Override
+        public CommonState<SR> within(Range<?> range, ValueModel convert) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState<SR> withinAny(Collection<? extends Range<?>> ranges, ValueModel valueModel) {
-			Contracts.assertNotNull( ranges, "ranges" );
-			Contracts.assertNotNull( valueModel, "convert" );
-			return (CommonState<SR>) commonState.withinAny( ranges, v -> valueModel );
-		}
+        @Override
+        public CommonState<SR> withinAny(Collection<? extends Range<?>> ranges, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public static class CommonState<SR>
-				extends GenericCommonState<SR, Object, String, RangePredicateFieldMoreStepString<SR>> {
-			CommonState(SearchPredicateDslContext<?> dslContext) {
-				super( dslContext );
-			}
+        public static class CommonState<SR> extends GenericCommonState<SR, Object, String, RangePredicateFieldMoreStepString<SR>> {
 
-			@Override
-			protected String fieldPath(String field) {
-				return field;
-			}
-		}
-	}
+            CommonState(SearchPredicateDslContext<?> dslContext) {
+                super(dslContext);
+            }
 
-	private static class RangePredicateFieldMoreStepReference<SR, T>
-			extends
-			AbstractRangePredicateFieldMoreStep<SR,
-					RangePredicateFieldMoreStepReference.CommonState<SR, T>,
-					RangePredicateFieldMoreStepReference<SR, T>,
-					T,
-					RangePredicateFieldReference<? super SR, T>>
-			implements
-			RangePredicateFieldMoreGenericStep<SR,
-					RangePredicateFieldMoreStepReference<SR, T>,
-					RangePredicateFieldMoreStepReference.CommonState<SR, T>,
-					RangePredicateFieldReference<? super SR, T>,
-					T> {
+            @Override
+            protected String fieldPath(String field) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-		private RangePredicateFieldMoreStepReference(SearchPredicateDslContext<?> dslContext,
-				List<RangePredicateFieldReference<? super SR, T>> fields) {
-			this( new CommonState<>( dslContext ), fields );
-		}
+    private static class RangePredicateFieldMoreStepReference<SR, T> extends AbstractRangePredicateFieldMoreStep<SR, RangePredicateFieldMoreStepReference.CommonState<SR, T>, RangePredicateFieldMoreStepReference<SR, T>, T, RangePredicateFieldReference<? super SR, T>> implements RangePredicateFieldMoreGenericStep<SR, RangePredicateFieldMoreStepReference<SR, T>, RangePredicateFieldMoreStepReference.CommonState<SR, T>, RangePredicateFieldReference<? super SR, T>, T> {
 
-		private RangePredicateFieldMoreStepReference(CommonState<SR, T> commonState,
-				List<RangePredicateFieldReference<? super SR, T>> fields) {
-			super( commonState, fields );
-		}
+        private RangePredicateFieldMoreStepReference(SearchPredicateDslContext<?> dslContext, List<RangePredicateFieldReference<? super SR, T>> fields) {
+            this(new CommonState<>(dslContext), fields);
+        }
 
-		@Override
-		protected String fieldPath(RangePredicateFieldReference<? super SR, T> field) {
-			return field.absolutePath();
-		}
+        private RangePredicateFieldMoreStepReference(CommonState<SR, T> commonState, List<RangePredicateFieldReference<? super SR, T>> fields) {
+            super(commonState, fields);
+        }
 
-		@Override
-		protected RangePredicateFieldMoreStepReference<SR, T> thisAsS() {
-			return this;
-		}
+        @Override
+        protected String fieldPath(RangePredicateFieldReference<? super SR, T> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public RangePredicateFieldMoreStepReference<SR, T> field(RangePredicateFieldReference<? super SR, T> field) {
-			return new RangePredicateFieldMoreStepReference<>( commonState, List.of( field ) );
-		}
+        @Override
+        protected RangePredicateFieldMoreStepReference<SR, T> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		@SuppressWarnings("unchecked")
-		public RangePredicateFieldMoreStepReference<SR, T> fields(RangePredicateFieldReference<? super SR, T>... fields) {
-			return new RangePredicateFieldMoreStepReference<>( commonState, Arrays.asList( fields ) );
-		}
+        @Override
+        public RangePredicateFieldMoreStepReference<SR, T> field(RangePredicateFieldReference<? super SR, T> field) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState<SR, T> within(Range<? extends T> range) {
-			return (CommonState<SR, T>) commonState.within( range, RangePredicateFieldReference::valueModel );
-		}
+        @Override
+        @SuppressWarnings("unchecked")
+        public RangePredicateFieldMoreStepReference<SR, T> fields(RangePredicateFieldReference<? super SR, T>... fields) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		@Override
-		public CommonState<SR, T> withinAny(Collection<? extends Range<?>> ranges, ValueModel valueModel) {
-			return (CommonState<SR, T>) commonState.withinAny( ranges, RangePredicateFieldReference::valueModel );
-		}
+        @Override
+        public CommonState<SR, T> within(Range<? extends T> range) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
+        @Override
+        public CommonState<SR, T> withinAny(Collection<? extends Range<?>> ranges, ValueModel valueModel) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public static class CommonState<SR, T>
-				extends
-				GenericCommonState<SR,
-						T,
-						RangePredicateFieldReference<? super SR, T>,
-						RangePredicateFieldMoreStepReference<SR, T>> {
-			CommonState(SearchPredicateDslContext<?> dslContext) {
-				super( dslContext );
-			}
+        public static class CommonState<SR, T> extends GenericCommonState<SR, T, RangePredicateFieldReference<? super SR, T>, RangePredicateFieldMoreStepReference<SR, T>> {
 
-			@Override
-			protected String fieldPath(RangePredicateFieldReference<? super SR, T> field) {
-				return field.absolutePath();
-			}
-		}
-	}
+            CommonState(SearchPredicateDslContext<?> dslContext) {
+                super(dslContext);
+            }
 
-	abstract static class GenericCommonState<SR, T, V, S extends AbstractRangePredicateFieldMoreStep<SR, ?, S, T, V>>
-			extends
-			AbstractBooleanMultiFieldPredicateCommonState<GenericCommonState<SR, T, V, S>,
-					AbstractRangePredicateFieldMoreStep<SR, ?, S, T, V>>
-			implements RangePredicateOptionsStep<GenericCommonState<SR, T, V, S>> {
+            @Override
+            protected String fieldPath(RangePredicateFieldReference<? super SR, T> field) {
+                throw new UnsupportedOperationException("STUB: not implemented");
+            }
+        }
+    }
 
-		GenericCommonState(SearchPredicateDslContext<?> dslContext) {
-			super( dslContext );
-		}
+    abstract static class GenericCommonState<SR, T, V, S extends AbstractRangePredicateFieldMoreStep<SR, ?, S, T, V>> extends AbstractBooleanMultiFieldPredicateCommonState<GenericCommonState<SR, T, V, S>, AbstractRangePredicateFieldMoreStep<SR, ?, S, T, V>> implements RangePredicateOptionsStep<GenericCommonState<SR, T, V, S>> {
 
-		@Override
-		protected GenericCommonState<SR, T, V, S> thisAsS() {
-			return this;
-		}
+        GenericCommonState(SearchPredicateDslContext<?> dslContext) {
+            super(dslContext);
+        }
 
-		protected abstract String fieldPath(V field);
+        @Override
+        protected GenericCommonState<SR, T, V, S> thisAsS() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		GenericCommonState<SR, T, V, S> within(Range<?> range, Function<V, ValueModel> valueModelFunction) {
+        protected abstract String fieldPath(V field);
 
-			if ( range.lowerBoundValue().isEmpty() && range.upperBoundValue().isEmpty() ) {
-				throw QueryLog.INSTANCE.rangePredicateCannotMatchNullValue( getEventContext() );
-			}
-			for ( var fieldSetState : getFieldSetStates() ) {
-				for ( V field : fieldSetState.fields ) {
-					ValueModel valueModel = valueModelFunction.apply( field );
-					RangePredicateBuilder builder = scope().fieldQueryElement( fieldPath( field ), PredicateTypeKeys.RANGE );
-					builder.within( range, valueModel, valueModel );
-					fieldSetState.predicateBuilders.add( builder );
-				}
-			}
-			return this;
-		}
+        GenericCommonState<SR, T, V, S> within(Range<?> range, Function<V, ValueModel> valueModelFunction) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-		public GenericCommonState<SR, T, V, S> withinAny(Collection<? extends Range<?>> ranges,
-				Function<V, ValueModel> valueModelFunction) {
-			for ( var fieldSetState : getFieldSetStates() ) {
-				for ( V field : fieldSetState.fields ) {
-					for ( var range : ranges ) {
-						Contracts.assertNotNull( range, "range" );
-						if ( range.lowerBoundValue().isEmpty() && range.upperBoundValue().isEmpty() ) {
-							throw QueryLog.INSTANCE.rangePredicateCannotMatchNullValue( getEventContext() );
-						}
-						ValueModel valueModel = valueModelFunction.apply( field );
-						RangePredicateBuilder builder =
-								scope().fieldQueryElement( fieldPath( field ), PredicateTypeKeys.RANGE );
-						builder.within( range, valueModel, valueModel );
-						fieldSetState.predicateBuilders.add( builder );
-					}
-				}
-			}
+        public GenericCommonState<SR, T, V, S> withinAny(Collection<? extends Range<?>> ranges, Function<V, ValueModel> valueModelFunction) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
-			return this;
-		}
-
-		protected final EventContext getEventContext() {
-			return EventContexts.fromIndexFieldAbsolutePaths(
-					getFieldSetStates().stream().flatMap( f -> f.fields.stream() )
-							.map( this::fieldPath )
-							.toList()
-			);
-		}
-	}
-
+        protected final EventContext getEventContext() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+    }
 }
